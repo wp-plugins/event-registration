@@ -4,7 +4,7 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.6
-Stable tag: 
+Stable tag: 1.0
 
 
 
@@ -42,6 +42,11 @@ This plugin is provided "as is" and without any warranty or expectation of funct
 But please don't redistribute this plugin from anywhere other than right here. But send me your improvements and I'll add them in and include a shout-out to you here.
 
 == Screenshots ==
+
+1. Organization Setup Screen
+2. Event Setup Screen
+3. Webpage Setup Screen
+4. Sample Webpage
 
 www.avdude.com/wp/events
 
