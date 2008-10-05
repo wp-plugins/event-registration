@@ -4,7 +4,7 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.6
-Stable tag: 1.1
+Stable tag: 1.1.1
 
 
 
