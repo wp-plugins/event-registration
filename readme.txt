@@ -1,10 +1,10 @@
 === Event Registration ===
-Contributors: davidfleming
+Contributors: david fleming
 Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.6
-Stable tag: 1.1.1
+Stable tag: 1.2
 
 
 
@@ -30,7 +30,7 @@ the plugin and find it useful, your donations would also help me keep it going a
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Go to the Event Registration Menu and Configure Organization and enter your company info - note you will need a paypal id if you plan on accepting paypal payments
 4. Go to the Event Setup and create a new event, make sure you select 'make active'.
-1. Create a new page (not post) on your site. Put `{EVENTREGIS}` in it on a line by itself.
+5. Create a new page (not post) on your site. Put `{EVENTREGIS}` in it on a line by itself.
 
 All done. 
 
