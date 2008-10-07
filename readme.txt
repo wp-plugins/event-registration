@@ -6,8 +6,9 @@ Requires at least: 2.0.2
 Tested up to: 2.6
 Stable tag: 1.2.3
 
-== Description ==
+Provides the ability to setup event list and accept online registrations for events and administer them via WordPress.
 
+== Description ==
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress.
 
 I tried to find a plugin to suit my needs to have a quick and efficient way to provide online registrations for the various events an organization may have or sponsor.  
