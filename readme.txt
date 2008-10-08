@@ -8,6 +8,8 @@ Stable tag: 1.2.3
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress.
 
+
+
 == Description ==
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress.
 
