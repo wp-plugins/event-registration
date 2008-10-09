@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.avdude.com/wp
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. Reporting features provide a list of events, list of attendees, and excel export.
-Version: 1.2.3
+Version: 2.1
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
@@ -295,6 +295,7 @@ function event_config_mnu()	{
 					   $org_zip		= $_POST['org_zip'];
 					   $email		= $_POST['email'];
 					   $paypal_id	= $_POST['paypal_id'];
+					   $paypal_cur  = $_POST['currency_format'];
 					   
 					   $sql = "UPDATE " . $events_organization_tbl . " SET organization = '$org_name', organization_street1='$org_street1', organization_street2='$org_street2', organization_city='$org_city',
 					   organization_state='$org_state', organization_zip='$org_zip', contact_email='$email', paypal_id='$paypal_id' WHERE id ='$org_id'";
@@ -303,19 +304,48 @@ function event_config_mnu()	{
 
 					 $wpdb->query($sql);
 					 
-					//create option for table name	  
-					$option_name = 'paypal_id' ; 
+					//create option for paypal id	  
+				    
+				    $option_name = 'paypal_id' ; 
 					$newvalue = $paypal_id;
-				    update_option($option_name, $newvalue);
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					 
+				    
+				    
 	
 					
-					 //create option for table name	  
+					 //create option for registrar	  
+				 
 					$option_name = 'registrar' ; 
 					$newvalue = $email;
-				    update_option($option_name, $newvalue);
-					}	  
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					 
+					
+					
+					$option_name = 'paypal_cur' ; 
+					$newvalue = $paypal_cur;
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					 
 			
-		   		   
+		   		 }  
 		  
 	  
 
@@ -336,7 +366,26 @@ function event_config_mnu()	{
 	   		echo "Organization State: <input name='org_state' size='3' value='".$Organization_state."'>    ";
 	   		echo "Organization Zip Code: <input name='org_zip' size='10' value='".$Organization_zip."'><br>";
 	   		echo "Primary contact email: <input name='email' size='45' value='".$contact."'><br>";
-	   		echo "Paypal I.D. (typically payment@yourdomain.com): <input name='paypal_id' size='45' value='".$paypal_id."'><br><br><br>";
+	   		echo "Paypal I.D. (typically payment@yourdomain.com): <input name='paypal_id' size='45' value='".$paypal_id."'><br>";
+			echo "Paypal Currency: <select name = 'currency_format'><option value='". $paypal_cur . "'>" . $paypal_cur . "</option>";
+			echo "<option value='USD'>USD</option>
+				<option value='AUD'>AUD</option>
+				<option value='GBP'>GBP</option>
+				<option value='CAD'>CAD</option>
+				<option value='CZK'>CZK</option>
+				<option value='DKK'>DKK</option>
+				<option value='EUR'>EUR</option>
+				<option value='HKD'>HKD</option>
+				<option value='HUF'>HUF</option>
+				<option value='ILS'>ILS</option>
+				<option value='JPY'>JPY</option>
+				<option value='MXN'>MXN</option>
+				<option value='NZD'>NZD</option>
+				<option value='NOK'>NOK</option>
+				<option value='PLN'>PLN</option>
+				<option value='SGD'>SGD</option>
+				<option value='SEK'>SEK</option>
+				<option value='CHF'>CHF</option></select><br><br>";
 	   		echo "<input type='hidden' value='".$org_id."' name='org_id'>";
 	   		echo "<input type='hidden' name='update_org' value='update'>";
 	   		echo "<input type='submit' name='Submit' value='Update'></form>";
@@ -475,6 +524,8 @@ function event_regis_events(){
 function register_attendees(){
 			global $wpdb;
 			$events_detail_tbl = get_option('events_detail_tbl');
+			$paypal_cur = get_option('paypal_cur');
+			
 			
 			//Query Database for Active event and get variable
 			$sql  = "SELECT * FROM " . $events_detail_tbl . " WHERE is_active='yes'";
@@ -485,7 +536,7 @@ function register_attendees(){
 
 						
 			echo "<table width='780'><td>";	
-			echo "<b>".$event_name." - Cost $ " .$event_cost."</b></p></p>";			
+			echo "<b>".$event_name." - Cost ".$paypal_cur." ".$event_cost.".00</b></p></p>";			
 			?>
 			<br></td><tr><td>
 			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>" onsubmit="return FrontPage_Form1_Validator(this)" language="JavaScript" name="FrontPage_Form1">
@@ -511,8 +562,8 @@ function register_attendees(){
 			<option value="pick one" selected>pick one</option>
 			<option value="Website">Website</option>
 			<option value="A Friend">A Friend</option>
-			<option value="Church Bulletin">Church Bulletin</option>
-			<option value="Church Announcment">Church Announcment</option>
+			<option value="Brochure">A Brochure</option>
+			<option value="Announcment">An Announcment</option>
 			<option value="Other">Other</option>
 			</select></font></p>
 			<p align="left"><font face="Arial" size="2"><b>How do you plan on paying for 
@@ -601,6 +652,7 @@ function events_payment_page()
 			$events_detail_tbl = get_option('events_detail_tbl');			
 			$attendee_id = get_option('attendee_id');
 			$attendee_name = get_option('attendee_name');
+			$paypal_cur = get_option('paypal_cur');
 			
 				//query event database for organization information
 			$sql  = "SELECT * FROM ". $events_organization_tbl . " WHERE id='1'";
@@ -637,7 +689,7 @@ function events_payment_page()
 			<img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccVisa.gif" alt="Visa"><img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccMC.gif" alt="Mastercard"><img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccAmex.gif" alt="American Express"><img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccDiscover.gif" alt="Discover"><img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccBank.gif" alt="Bank">
 			</p><Br><BR>
 			<table width="750"><tr><td width="200">
-			<B><h3><? echo $event_name." - $ ".$event_cost;?></b></h3></td><td>
+			<B><h3><? echo $event_name." - ".$paypal_cur." ".$event_cost;?>.00</b></h3></td><td>
 			<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal" method="post">
 			
 			<font face="Arial">
@@ -647,7 +699,7 @@ function events_payment_page()
 			<input type="hidden" name="item_name" value="<?echo $event_name." - ".$attendee_name;?>" style="font-weight: 700">
 			<input type="hidden" name="item_number" value="<?echo $event_identifier;?>" style="font-weight: 700">
 			<input type="hidden" name="amount" value="<? echo $event_cost;?>" style="font-weight: 700">
-			<input type="hidden" name="currency_code" value="USD" style="font-weight: 700">
+			<input type="hidden" name="currency_code" value="<?echo $paypal_cur;?>" style="font-weight: 700">
 			<input type="hidden" name="undefined_quantity" value="1" style="font-weight: 700">
 			<input type="hidden" name="custom" value="<?echo $attendee_id;?>" style="font-weight: 700">
 			<input type="hidden" name="image_url" style="font-weight: 700">
@@ -692,7 +744,4 @@ if ( $run_reports == "current_attendees" ) {events_reports_current_attendee();}
 
 
 }
-
-
-
 ?>
