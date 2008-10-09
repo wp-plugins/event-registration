@@ -4,13 +4,13 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.6
-Stable tag: 1.2.3
+Stable tag: 2.1
 
-
+Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
 == Description ==
 
-Provides the ability to setup event list and accept online registrations for events and administer them via WordPress.
+
 
 I tried to find a plugin to suit my needs to have a quick and efficient way to provide online registrations for the various events an organization may have or sponsor.  
 I could not find a simple solution and most online services charge $1.00 per registered person plus a % of the fee, this can get expensive quickly, thus the need for my plugin.
