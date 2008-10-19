@@ -7,8 +7,6 @@ Version: 2.1
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
-?>
-<?php
 /*  Copyright 2008  DAVID_FLEMING  (email : CONSULTANT@AVDUDE.COM)
 
     This program is free software; you can redistribute it and/or modify
@@ -37,8 +35,6 @@ Things I still need to do:
 	
 	*/
 	
-?>
-<?PHP
 
 //Define the table versions for unique tables required in Events Registration
 
@@ -243,9 +239,7 @@ function event_regis_run(){
 	register_attendees();
 	}
 }
-?>
 
-<?php
 //ADD EVENT_REGIS PLUGIN - ACTIVATED
 
 function add_event_registration_menus() {
@@ -539,26 +533,19 @@ function register_attendees(){
 			echo "<b>".$event_name." - Cost ".$paypal_cur." ".$event_cost.".00</b></p></p>";			
 			?>
 			<br></td><tr><td>
-			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>" onsubmit="return FrontPage_Form1_Validator(this)" language="JavaScript" name="FrontPage_Form1">
-			<p align="left"><font face="Arial" size="2"><b>First Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--webbot bot="Validation" s-data-type="String" b-value-required="TRUE" i-minimum-length="2" i-maximum-length="45" --><input tabIndex="1" maxLength="35" size="47" name="fname"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>Last Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--webbot bot="Validation" s-data-type="String" b-value-required="TRUE" i-minimum-length="3" i-maximum-length="45" --><input tabIndex="1" maxLength="35" size="47" name="lname"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><b><font face="Arial" size="2">Email:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="6" i-maximum-length="37" --><input tabIndex="7" maxLength="37" size="37" name="email"></font></b><font face="Arial">&nbsp;</font><font face="Arial" color="#ff0000" size="2">*<br>
+			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>" >
+			<p align="left"><font face="Arial" size="2"><b>First Name<input tabIndex="1" maxLength="35" size="47" name="fname"></b><font color="#ff0000">*</font></font></p>
+			<p align="left"><font face="Arial" size="2"><b>Last Name<input tabIndex="2" maxLength="35" size="47" name="lname"></b><font color="#ff0000">*</font></font></p>
+			<p align="left"><b><font face="Arial" size="2">Email:<input tabIndex="3" maxLength="37" size="37" name="email"></font></b><font face="Arial">&nbsp;</font><font face="Arial" color="#ff0000" size="2">*<br>
 			</font><b><font face="Arial" size="2"><br>
-			Phone:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="9" i-maximum-length="15" --><input tabIndex="8" maxLength="15" size="28" name="phone"></font></b><font face="Arial" color="#ff0000" size="2">*</font></p>
-			<p align="left"><b><font face="Arial" size="2">Address:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="3" i-maximum-length="35" --><input tabIndex="9" maxLength="35" size="49" name="address"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>City:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="3" i-maximum-length="20" -->
-			<input tabIndex="10" maxLength="20" size="33" name="city"> </b>
+			Phone:<input tabIndex="4" maxLength="15" size="28" name="phone"></font></b><font face="Arial" color="#ff0000" size="2">*</font></p>
+			<p align="left"><b><font face="Arial" size="2">Address:&nbsp;<input tabIndex="5" maxLength="35" size="49" name="address"></b><font color="#ff0000">*</font></font></p>
+			<p align="left"><font face="Arial" size="2"><b>City:<input tabIndex="6" maxLength="20" size="33" name="city"> </b>
 			<font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>State or Province:&nbsp;&nbsp;&nbsp;&nbsp;<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="1" i-maximum-length="30" --><input tabIndex="11" maxLength="30" size="18" name="state"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>Zip:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="5" i-maximum-length="10" -->
-			<input tabIndex="12" maxLength="10" size="16" name="zip"></b><font color="#ff0000">*</font><b><br>
+			<p align="left"><font face="Arial" size="2"><b>State or Province:<input tabIndex="7" maxLength="30" size="18" name="state"></b><font color="#ff0000">*</font></font></p>
+			<p align="left"><font face="Arial" size="2"><b>Zip:<input tabIndex="8" maxLength="10" size="16" name="zip"></b><font color="#ff0000">*</font><b><br>
 			<br>
-			How did you hear about this event? </b></font><font face="Arial">
-			&nbsp;<!--webbot bot="Validation" s-display-name="reduired" b-value-required="TRUE" --><select tabIndex="14" size="1" name="hear">
+			How did you hear about this event?</b></font><font face="Arial">&nbsp;<select tabIndex="9" size="1" name="hear">
 			<option value="pick one" selected>pick one</option>
 			<option value="Website">Website</option>
 			<option value="A Friend">A Friend</option>
@@ -567,7 +554,7 @@ function register_attendees(){
 			<option value="Other">Other</option>
 			</select></font></p>
 			<p align="left"><font face="Arial" size="2"><b>How do you plan on paying for 
-			your Registration?&nbsp;</b> <select tabIndex="15" size="1" name="payment">
+			your Registration?</b> <select tabIndex="10" size="1" name="payment">
 			<option value="pickone" selected>pickone</option>
 			<option value="Paypal">Credit Card or Paypal</option>
 			<option value="Cash/Check">Cash or Check</option>
@@ -575,7 +562,7 @@ function register_attendees(){
 			<input type="hidden" name="regevent_action" value="post_attendee">
 			<input type="hidden" name="event_id" value="<?echo $event_id;?>">
 			<p align="center"><input type="submit" name="Submit" value="Submit"> 
-			<font color="#FF0000"><b>(Only click the Submit Button Once)</b></font></form></td></tr></table>
+			<font color="#FF0000"><b>(Only click the Submit Button Once)</b></font></form></td></tr></table></body>
 			<?
 }
 			
