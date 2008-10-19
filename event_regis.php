@@ -3,12 +3,10 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.avdude.com/wp
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. Reporting features provide a list of events, list of attendees, and excel export.
-Version: 1.2.3
+Version: 2.3
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
-?>
-<?php
 /*  Copyright 2008  DAVID_FLEMING  (email : CONSULTANT@AVDUDE.COM)
 
     This program is free software; you can redistribute it and/or modify
@@ -37,8 +35,6 @@ Things I still need to do:
 	
 	*/
 	
-?>
-<?PHP
 
 //Define the table versions for unique tables required in Events Registration
 
@@ -243,9 +239,7 @@ function event_regis_run(){
 	register_attendees();
 	}
 }
-?>
 
-<?php
 //ADD EVENT_REGIS PLUGIN - ACTIVATED
 
 function add_event_registration_menus() {
@@ -295,6 +289,7 @@ function event_config_mnu()	{
 					   $org_zip		= $_POST['org_zip'];
 					   $email		= $_POST['email'];
 					   $paypal_id	= $_POST['paypal_id'];
+					   $paypal_cur  = $_POST['currency_format'];
 					   
 					   $sql = "UPDATE " . $events_organization_tbl . " SET organization = '$org_name', organization_street1='$org_street1', organization_street2='$org_street2', organization_city='$org_city',
 					   organization_state='$org_state', organization_zip='$org_zip', contact_email='$email', paypal_id='$paypal_id' WHERE id ='$org_id'";
@@ -303,19 +298,48 @@ function event_config_mnu()	{
 
 					 $wpdb->query($sql);
 					 
-					//create option for table name	  
-					$option_name = 'paypal_id' ; 
+					//create option for paypal id	  
+				    
+				    $option_name = 'paypal_id' ; 
 					$newvalue = $paypal_id;
-				    update_option($option_name, $newvalue);
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					 
+				    
+				    
 	
 					
-					 //create option for table name	  
+					 //create option for registrar	  
+				 
 					$option_name = 'registrar' ; 
 					$newvalue = $email;
-				    update_option($option_name, $newvalue);
-					}	  
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					 
+					
+					
+					$option_name = 'paypal_cur' ; 
+					$newvalue = $paypal_cur;
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					 
 			
-		   		   
+		   		 }  
 		  
 	  
 
@@ -336,7 +360,26 @@ function event_config_mnu()	{
 	   		echo "Organization State: <input name='org_state' size='3' value='".$Organization_state."'>    ";
 	   		echo "Organization Zip Code: <input name='org_zip' size='10' value='".$Organization_zip."'><br>";
 	   		echo "Primary contact email: <input name='email' size='45' value='".$contact."'><br>";
-	   		echo "Paypal I.D. (typically payment@yourdomain.com): <input name='paypal_id' size='45' value='".$paypal_id."'><br><br><br>";
+	   		echo "Paypal I.D. (typically payment@yourdomain.com): <input name='paypal_id' size='45' value='".$paypal_id."'><br>";
+			echo "Paypal Currency: <select name = 'currency_format'><option value='". $paypal_cur . "'>" . $paypal_cur . "</option>";
+			echo "<option value='USD'>USD</option>
+				<option value='AUD'>AUD</option>
+				<option value='GBP'>GBP</option>
+				<option value='CAD'>CAD</option>
+				<option value='CZK'>CZK</option>
+				<option value='DKK'>DKK</option>
+				<option value='EUR'>EUR</option>
+				<option value='HKD'>HKD</option>
+				<option value='HUF'>HUF</option>
+				<option value='ILS'>ILS</option>
+				<option value='JPY'>JPY</option>
+				<option value='MXN'>MXN</option>
+				<option value='NZD'>NZD</option>
+				<option value='NOK'>NOK</option>
+				<option value='PLN'>PLN</option>
+				<option value='SGD'>SGD</option>
+				<option value='SEK'>SEK</option>
+				<option value='CHF'>CHF</option></select><br><br>";
 	   		echo "<input type='hidden' value='".$org_id."' name='org_id'>";
 	   		echo "<input type='hidden' name='update_org' value='update'>";
 	   		echo "<input type='submit' name='Submit' value='Update'></form>";
@@ -475,6 +518,8 @@ function event_regis_events(){
 function register_attendees(){
 			global $wpdb;
 			$events_detail_tbl = get_option('events_detail_tbl');
+			$paypal_cur = get_option('paypal_cur');
+			
 			
 			//Query Database for Active event and get variable
 			$sql  = "SELECT * FROM " . $events_detail_tbl . " WHERE is_active='yes'";
@@ -485,38 +530,31 @@ function register_attendees(){
 
 						
 			echo "<table width='780'><td>";	
-			echo "<b>".$event_name." - Cost $ " .$event_cost."</b></p></p>";			
+			echo "<b>".$event_name." - Cost ".$paypal_cur." ".$event_cost.".00</b></p></p>";			
 			?>
 			<br></td><tr><td>
-			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>" onsubmit="return FrontPage_Form1_Validator(this)" language="JavaScript" name="FrontPage_Form1">
-			<p align="left"><font face="Arial" size="2"><b>First Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--webbot bot="Validation" s-data-type="String" b-value-required="TRUE" i-minimum-length="2" i-maximum-length="45" --><input tabIndex="1" maxLength="35" size="47" name="fname"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>Last Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--webbot bot="Validation" s-data-type="String" b-value-required="TRUE" i-minimum-length="3" i-maximum-length="45" --><input tabIndex="1" maxLength="35" size="47" name="lname"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><b><font face="Arial" size="2">Email:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="6" i-maximum-length="37" --><input tabIndex="7" maxLength="37" size="37" name="email"></font></b><font face="Arial">&nbsp;</font><font face="Arial" color="#ff0000" size="2">*<br>
+			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>" >
+			<p align="left"><font face="Arial" size="2"><b>First Name<input tabIndex="1" maxLength="35" size="47" name="fname"></b><font color="#ff0000">*</font></font></p>
+			<p align="left"><font face="Arial" size="2"><b>Last Name<input tabIndex="2" maxLength="35" size="47" name="lname"></b><font color="#ff0000">*</font></font></p>
+			<p align="left"><b><font face="Arial" size="2">Email:<input tabIndex="3" maxLength="37" size="37" name="email"></font></b><font face="Arial">&nbsp;</font><font face="Arial" color="#ff0000" size="2">*<br>
 			</font><b><font face="Arial" size="2"><br>
-			Phone:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="9" i-maximum-length="15" --><input tabIndex="8" maxLength="15" size="28" name="phone"></font></b><font face="Arial" color="#ff0000" size="2">*</font></p>
-			<p align="left"><b><font face="Arial" size="2">Address:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="3" i-maximum-length="35" --><input tabIndex="9" maxLength="35" size="49" name="address"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>City:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="3" i-maximum-length="20" -->
-			<input tabIndex="10" maxLength="20" size="33" name="city"> </b>
+			Phone:<input tabIndex="4" maxLength="15" size="28" name="phone"></font></b><font face="Arial" color="#ff0000" size="2">*</font></p>
+			<p align="left"><b><font face="Arial" size="2">Address:&nbsp;<input tabIndex="5" maxLength="35" size="49" name="address"></b><font color="#ff0000">*</font></font></p>
+			<p align="left"><font face="Arial" size="2"><b>City:<input tabIndex="6" maxLength="20" size="33" name="city"> </b>
 			<font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>State or Province:&nbsp;&nbsp;&nbsp;&nbsp;<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="1" i-maximum-length="30" --><input tabIndex="11" maxLength="30" size="18" name="state"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>Zip:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="5" i-maximum-length="10" -->
-			<input tabIndex="12" maxLength="10" size="16" name="zip"></b><font color="#ff0000">*</font><b><br>
+			<p align="left"><font face="Arial" size="2"><b>State or Province:<input tabIndex="7" maxLength="30" size="18" name="state"></b><font color="#ff0000">*</font></font></p>
+			<p align="left"><font face="Arial" size="2"><b>Zip:<input tabIndex="8" maxLength="10" size="16" name="zip"></b><font color="#ff0000">*</font><b><br>
 			<br>
-			How did you hear about this event? </b></font><font face="Arial">
-			&nbsp;<!--webbot bot="Validation" s-display-name="reduired" b-value-required="TRUE" --><select tabIndex="14" size="1" name="hear">
+			How did you hear about this event?</b></font><font face="Arial">&nbsp;<select tabIndex="9" size="1" name="hear">
 			<option value="pick one" selected>pick one</option>
 			<option value="Website">Website</option>
 			<option value="A Friend">A Friend</option>
-			<option value="Church Bulletin">Church Bulletin</option>
-			<option value="Church Announcment">Church Announcment</option>
+			<option value="Brochure">A Brochure</option>
+			<option value="Announcment">An Announcment</option>
 			<option value="Other">Other</option>
 			</select></font></p>
 			<p align="left"><font face="Arial" size="2"><b>How do you plan on paying for 
-			your Registration?&nbsp;</b> <select tabIndex="15" size="1" name="payment">
+			your Registration?</b> <select tabIndex="10" size="1" name="payment">
 			<option value="pickone" selected>pickone</option>
 			<option value="Paypal">Credit Card or Paypal</option>
 			<option value="Cash/Check">Cash or Check</option>
@@ -524,7 +562,7 @@ function register_attendees(){
 			<input type="hidden" name="regevent_action" value="post_attendee">
 			<input type="hidden" name="event_id" value="<?echo $event_id;?>">
 			<p align="center"><input type="submit" name="Submit" value="Submit"> 
-			<font color="#FF0000"><b>(Only click the Submit Button Once)</b></font></form></td></tr></table>
+			<font color="#FF0000"><b>(Only click the Submit Button Once)</b></font></form></td></tr></table></body>
 			<?
 }
 			
@@ -601,6 +639,7 @@ function events_payment_page()
 			$events_detail_tbl = get_option('events_detail_tbl');			
 			$attendee_id = get_option('attendee_id');
 			$attendee_name = get_option('attendee_name');
+			$paypal_cur = get_option('paypal_cur');
 			
 				//query event database for organization information
 			$sql  = "SELECT * FROM ". $events_organization_tbl . " WHERE id='1'";
@@ -637,7 +676,7 @@ function events_payment_page()
 			<img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccVisa.gif" alt="Visa"><img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccMC.gif" alt="Mastercard"><img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccAmex.gif" alt="American Express"><img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccDiscover.gif" alt="Discover"><img border="0" src="https://www.paypalobjects.com/WEBSCR-540-20080922-1/en_US/i/logo/logo_ccBank.gif" alt="Bank">
 			</p><Br><BR>
 			<table width="750"><tr><td width="200">
-			<B><h3><? echo $event_name." - $ ".$event_cost;?></b></h3></td><td>
+			<B><h3><? echo $event_name." - ".$paypal_cur." ".$event_cost;?>.00</b></h3></td><td>
 			<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal" method="post">
 			
 			<font face="Arial">
@@ -647,7 +686,7 @@ function events_payment_page()
 			<input type="hidden" name="item_name" value="<?echo $event_name." - ".$attendee_name;?>" style="font-weight: 700">
 			<input type="hidden" name="item_number" value="<?echo $event_identifier;?>" style="font-weight: 700">
 			<input type="hidden" name="amount" value="<? echo $event_cost;?>" style="font-weight: 700">
-			<input type="hidden" name="currency_code" value="USD" style="font-weight: 700">
+			<input type="hidden" name="currency_code" value="<?echo $paypal_cur;?>" style="font-weight: 700">
 			<input type="hidden" name="undefined_quantity" value="1" style="font-weight: 700">
 			<input type="hidden" name="custom" value="<?echo $attendee_id;?>" style="font-weight: 700">
 			<input type="hidden" name="image_url" style="font-weight: 700">
@@ -692,7 +731,4 @@ if ( $run_reports == "current_attendees" ) {events_reports_current_attendee();}
 
 
 }
-
-
-
 ?>
