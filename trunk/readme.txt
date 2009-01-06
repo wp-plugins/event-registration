@@ -3,20 +3,17 @@ Contributors: davidfleming
 Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
-Tested up to: 2.6
-Stable tag: 2.3
+Tested up to: 2.7
+Stable tag: 2.6
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
 == Description ==
 
-
-
-I tried to find a plugin to suit my needs to have a quick and efficient way to provide online registrations for the various events an organization may have or sponsor.  
-I could not find a simple solution and most online services charge $1.00 per registered person plus a % of the fee, this can get expensive quickly, thus the need for my plugin.
-This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a 
-database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. 
+This plugin provides a way to take online registrations for events such as conference and seminars that are held live.
+This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. 
 Reporting features provide a list of events, list of attendees, and excel export.
+I have added the ability to edit events and to allow single event or event listing on the registration page.
 
 = Support =
 
@@ -33,7 +30,8 @@ If you like the plugin and find it useful, your donations would also help me kee
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Go to the Event Registration Menu and Configure Organization and enter your company info - note you will need a paypal id if you plan on accepting paypal payments
 4. Go to the Event Setup and create a new event, make sure you select 'make active'.
-1. Create a new page (not post) on your site. Put `{EVENTREGIS}` in it on a line by itself.
+5. Create a new page (not post) on your site. Put `{EVENTREGIS}` in it on a line by itself.
+6. Note: if you are upgradings from a previous version please backup your data prior to upgrade.
 
 All done. 
 
