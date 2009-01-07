@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.avdude.com/wp
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. Reporting features provide a list of events, list of attendees, and excel export.
-Version: 2.5
+Version: 2.7
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
@@ -52,9 +52,9 @@ Things I still need to do:
 
 //Define the table versions for unique tables required in Events Registration
 
-$events_attendee_tbl_version = "2.0";
-$events_detail_tbl_version = "2.0";
-$events_organization_tbl_version = "2.1";
+$events_attendee_tbl_version = "2.2";
+$events_detail_tbl_version = "2.2";
+$events_organization_tbl_version = "2.2";
 
 
 //Function to install/update data tables in the Wordpress database
@@ -121,7 +121,7 @@ function events_data_tables_install () {
 				  }
 		}
 	// Code here with new database upgrade info/table Must change version number to work.
-		 $events_attendee_tbl_version = "2.0";
+		 $events_attendee_tbl_version = "2.2";
 		 $installed_ver = get_option( "events_attendee_tbl_version" );
 	     if( $installed_ver != $events_attendee_tbl_version ) {
 
@@ -207,7 +207,7 @@ function events_data_tables_install () {
 				    add_option($option_name, $newvalue, $deprecated, $autoload);
 			  }
 			}
-	 $events_detail_tbl_version = "2.0";
+	 $events_detail_tbl_version = "2.2";
      $installed_ver = get_option( "$events_detail_tbl_version" );
      if( $installed_ver != $events_detail_tbl_version ) {
 
@@ -291,7 +291,7 @@ function events_data_tables_install () {
 }
 
 //Upgrade Info Here
-	$events_organization_tbl_version = "2.1";
+	$events_organization_tbl_version = "2.2";
 
      $installed_ver = get_option( "events_organization_tbl_version" );
      if( $installed_ver != $events_organization_tbl_version ) {
@@ -992,7 +992,7 @@ function add_attedees_to_db(){
 				$paypal_id =$row['paypal_id'];
 				$paypal_cur =$row['currency_format'];
 				$events_listing_type =$row['events_listing_type'];
-				$message =$row['message'];
+				$conf_message =$row['message'];
 				}
 
 
@@ -1002,7 +1002,7 @@ function add_attedees_to_db(){
 			$event_name = $current_event;
 
 			$distro=$registrar;
-			$message=("I, $fname $lname  have signed up on-line for $event_name.\n\nMy email address is  $email.\n\nMy selected method of payment was $payment.\n\n I have the following Special Needs: $custom_1"); //BHC
+			$message=("I, $fname $lname  have signed up on-line for $event_name.\n\nMy email address is  $email.\n\nMy selected method of payment was $payment.\n\n"); //BHC
 			wp_mail($distro, $event_name, $message);
 
 
