@@ -4,7 +4,7 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 2.7
+Stable tag: 2.9
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
@@ -19,7 +19,24 @@ I have added the ability to edit events and to allow single event or event listi
 
 I will be working on this to improve as I have a list of improvements I need right away, but I thought I would get it out there and see if others liked/could use it.  email questions or comments to consultant@avdude.com.  
 
-Current update will invovle multiple registrations for different events at the same time.
+Changes:
+2.9
+	Resolved Confirmation mail not sending text
+	Resolved amount not shown on registration page, registration confirmation page, and paypal site
+	Resolved payment paypal & check information display properly
+
+2.6	Changed email confirmation to use wp_mail() (built into wordpress) default instead of smtp plugin.
+	Changed mail header to use registrars email address instead of wordpress default
+	Added funtion for single or multiple event display on registration.
+	Fixed paypal to say PayPal
+	Removed broken image links from PayPal
+	Droped in codeblocks to update tables
+	Change buy now button to PAY NOW
+	Added ability to edit existing events
+	added ability to edit confirmation email sent to registrants
+	Added ability to add 4 custom form questions to registration page - only visible is used.
+	Added description for events  and display description of registration page
+
 
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at www.avdude.com/wp
 
