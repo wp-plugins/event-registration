@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.avdude.com/wp
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. Reporting features provide a list of events, list of attendees, and excel export.
-Version: 2.7
+Version: 2.9
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
@@ -27,7 +27,12 @@ Author URI: http://www.avdude.com
 
 /*
 Changes:
-	Changed email confirmation to use wp_mail() (built into wordpress) default instead of smtp plugin.
+2.9
+	Resolved Confirmation mail not sending text
+	Resolved amount not shown on registration page, registration confirmation page, and paypal site
+	Resolved payment paypal & check information display properly
+
+2.6	Changed email confirmation to use wp_mail() (built into wordpress) default instead of smtp plugin.
 	Changed mail header to use registrars email address instead of wordpress default
 	Added funtion for single or multiple event display on registration.
 	Fixed paypal to say PayPal
@@ -42,10 +47,6 @@ Changes:
 
 Things I still need to do:
 	Add start/end date for active registration
-	incorporate description into registration page & add form entry slot for description
-	Finish the main menu page - see below
-	version checker
-	this uses wpmail plugin to send mail, please install and activate
 
 	*/
 
@@ -677,7 +678,7 @@ function event_regis_events(){
 			$event_desc = $row['event_desc'];
 			$event_description = $row['event_desc'];
 			$identifier = $row['event_identifier'];
-			$cost = $row['event_cost'];
+			$event_cost = $row['event_cost'];
 			$checks = $row['allow_checks'];
 			$active = $row['is_active'];
 			$question1 = $row['question1'];
@@ -847,7 +848,7 @@ function register_attendees(){
 			$event_desc = $row['event_desc'];
 			$event_description = $row['event_desc'];
 			$identifier = $row['event_identifier'];
-			$cost = $row['event_cost'];
+			$event_cost = $row['event_cost'];
 			$checks = $row['allow_checks'];
 			$active = $row['is_active'];
 			$question1 = $row['question1'];
@@ -1002,7 +1003,7 @@ function add_attedees_to_db(){
 			$event_name = $current_event;
 
 			$distro=$registrar;
-			$message=("I, $fname $lname  have signed up on-line for $event_name.\n\nMy email address is  $email.\n\nMy selected method of payment was $payment.\n\n"); //BHC
+			$message=("I, $fname $lname  have signed up on-line for $event_name.\n\nMy email address is  $email.\n\nMy selected method of payment was $payment.\n\n");
 			wp_mail($distro, $event_name, $message);
 
 
@@ -1049,9 +1050,7 @@ function add_attedees_to_db(){
 
 			echo "Your Registration has been added. Please watch your email for a confirmation of registration.";
 			echo "<br><br>";
-			/* if ( $payment == "Paypal" ) {events_payment_paypal();}
-			else {events_payment_page();}
-			} */
+			
 			events_payment_page();
 			}
 
@@ -1106,7 +1105,7 @@ while ($row = mysql_fetch_assoc ($result))
 						$event_desc = $row['event_desc'];
 						$event_description = $row['event_desc'];
 						$identifier = $row['event_identifier'];
-						$cost = $row['event_cost'];
+						$event_cost = $row['event_cost'];
 						$allow_checks = $row['allow_checks'];
 						$active = $row['is_active'];
 						$question1 = $row['question1'];
@@ -1132,7 +1131,7 @@ while ($row = mysql_fetch_assoc ($result))
 
 			</p><Br><BR>
 			<table width="500"><tr><td VALIGN='MIDDLE' ALIGN='CENTER'>&nbsp;<br>
-			<B><h3><? echo $event_name." - ".$paypal_cur." ".$event_cost;?>.00</b></h3>&nbsp;</td><td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER' >
+			<B><? echo $event_name." - ".$paypal_cur." ".$event_cost;?>.00</b>&nbsp;</td><td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER' >
 			<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal" method="post">
 			<font face="Arial">
 			<input type="hidden" name="bn" value="AMPPFPWZ.301" style="font-weight: 700">
