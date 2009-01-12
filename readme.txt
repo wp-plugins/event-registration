@@ -4,7 +4,7 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 2.95
+Stable tag: 2.9.5
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
@@ -20,7 +20,7 @@ I have added the ability to edit events and to allow single event or event listi
 I will be working on this to improve as I have a list of improvements I need right away, but I thought I would get it out there and see if others liked/could use it.  email questions or comments to consultant@avdude.com.  
 
 Changes:
-Changes:
+
 2.95
 	Added the ability to send retun link in email for payment - setup a new page and place {EVENTREGPAY}.  Store page link in Organization options in admin panel.  Email link includes page name and attendees unique registration ID.  If payment has already been posted in the payment section, the page will notify attendee of payments previously made.
 
