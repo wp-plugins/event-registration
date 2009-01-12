@@ -17,8 +17,8 @@ if ( file_exists( ABSPATH . 'wp-config.php') ) {
 
 global $wpdb;
 
-$events_detail_tbl = $_GET['id'];
-$events_attendee_tbl = $_GET['atnd'];
+$id= $_REQUEST['id'];
+$events_attendee_tbl = $_REQUEST['atnd'];
 $today = date("Y-m-d"); 
 
 
@@ -26,12 +26,9 @@ $today = date("Y-m-d");
 $events_detail_tbl = get_option('events_detail_tbl');
 $current_event = get_option('current_event');
 $events_attendee_tbl = get_option('events_attendee_tbl');
-$sql  = "SELECT * FROM " . $events_detail_tbl . " WHERE is_active='yes'";
+$sql  = "SELECT * FROM " . $events_detail_tbl . " WHERE id='$id'";
 $result = mysql_query($sql);
 list($event_id, $event_name, $event_description, $event_identifier, $event_cost, $allow_checks, $is_active) = mysql_fetch_array($result, MYSQL_NUM);
-
-
-
 
 
 
@@ -73,7 +70,7 @@ if ($data == "") {
 //Uses the header() function to tell the browser  a file that needs to be downloaded. 
 //The user will see a pop-up asking them to save the spreadsheet
 header("Content-type: application/x-msdownload"); 
-header("Content-Disposition: attachment; filename=".$current_event."_".$today.".xls"); 
+header("Content-Disposition: attachment; filename=".$event_name."_".$today.".xls"); 
 header("Pragma: no-cache"); 
 header("Expires: 0"); 
 print "$header\n$data";  
