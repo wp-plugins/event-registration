@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.avdude.com/wp
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. Reporting features provide a list of events, list of attendees, and excel export.
-Version: 2.9
+Version: 2.95
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
@@ -27,6 +27,33 @@ Author URI: http://www.avdude.com
 
 /*
 Changes:
+2.95
+	Added the ability to send retun link in email for payment - setup a new page and place {EVENTREGPAY}.  Store page link in Organization options in admin panel.  Email link includes page name and attendees unique registration ID.  If payment has already been posted in the payment section, the page will notify attendee of payments previously made.
+
+2.94
+	Added support to send custom confirmation email for each event or default email for organization or no confirmation mail at all.
+	
+	Paypal ID required to display creditcard/paypal info on payment screen.
+	
+	Modified the Event Report Page to choose which event to view/export from list of all events.
+	
+	Added support to have the event description display or not display on the registration page.  Option on the Event Setup Page.
+	
+	Added support to limit the number of attendees for an event.  Option on the Event Setup Page.
+	
+	Added support for free/no cost events.  If the fee is left blank on the event setup page, payment options and cost are not displayed on the reg form and 
+	payment information is not displayed on reg confirmation page.
+
+	Added ability to display attendee list on page or post {EVENTATTENDEES} - displays event name, description and list of attendeeds by order of registration.  
+		To change sort order of attendees change line 399 to  $sql  = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id' ORDER BY lname";
+2.93
+	Resolved potential Mysql error due to database call
+2.92
+	Some minor bug fixes
+	changed event name from 45 to 100 characters
+2.91
+	Resolved attendee posting error (no data in attendee datatable)
+	Resolved EVENT ID deletion when editing event	
 2.9
 	Resolved Confirmation mail not sending text
 	Resolved amount not shown on registration page, registration confirmation page, and paypal site
@@ -53,9 +80,9 @@ Things I still need to do:
 
 //Define the table versions for unique tables required in Events Registration
 
-$events_attendee_tbl_version = "2.2";
-$events_detail_tbl_version = "2.2";
-$events_organization_tbl_version = "2.2";
+$events_attendee_tbl_version = "2.95";
+$events_detail_tbl_version = "2.95";
+$events_organization_tbl_version = "2.95";
 
 
 //Function to install/update data tables in the Wordpress database
@@ -122,7 +149,7 @@ function events_data_tables_install () {
 				  }
 		}
 	// Code here with new database upgrade info/table Must change version number to work.
-		 $events_attendee_tbl_version = "2.2";
+		 $events_attendee_tbl_version = "2.95";
 		 $installed_ver = get_option( "events_attendee_tbl_version" );
 	     if( $installed_ver != $events_attendee_tbl_version ) {
 
@@ -170,17 +197,29 @@ function events_data_tables_install () {
 	   if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 			   $sql = "CREATE TABLE " . $table_name . " (
 				  id int(10) unsigned NOT NULL AUTO_INCREMENT,
-				  event_name VARCHAR(45) DEFAULT NULL,
+				  event_name VARCHAR(100) DEFAULT NULL,
 				  event_desc VARCHAR(500) DEFAULT NULL,
+				  display_desc VARCHAR (4) DEFAULT NULL,
 				  event_identifier VARCHAR(45) DEFAULT NULL,
+				  start_month VARCHAR (15) DEFAULT NULL,
+				  start_day VARCHAR (15) DEFAULT NULL,
+				  start_year VARCHAR (15) DEFAULT NULL,
+				  start_time VARCHAR (15) DEFAULT NULL,
+				  end_month VARCHAR (15) DEFAULT NULL,
+				  end_day VARCHAR (15) DEFAULT NULL,
+				  end_year VARCHAR (15) DEFAULT NULL,
+				  end_time VARCHAR (15) DEFAULT NULL,
+				  reg_limit VARCHAR (15) DEFAULT NULL,
 				  event_cost VARCHAR(45) DEFAULT NULL,
 				  allow_checks VARCHAR(45) DEFAULT NULL,
+				  send_mail VARCHAR (2) DEFAULT NULL,
 				  is_active VARCHAR(45) DEFAULT NULL,
 				  question1 VARCHAR(200) DEFAULT NULL,
 				  question2 VARCHAR(200) DEFAULT NULL,
 				  question3 VARCHAR(200) DEFAULT NULL,
 				  question4 VARCHAR(200) DEFAULT NULL,
-				  				  UNIQUE KEY id (id)
+				  conf_mail VARCHAR (1000) DEFAULT NULL,
+				   UNIQUE KEY id (id)
 				);";
 
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -208,27 +247,40 @@ function events_data_tables_install () {
 				    add_option($option_name, $newvalue, $deprecated, $autoload);
 			  }
 			}
-	 $events_detail_tbl_version = "2.2";
+	 $events_detail_tbl_version = "2.95";
      $installed_ver = get_option( "$events_detail_tbl_version" );
      if( $installed_ver != $events_detail_tbl_version ) {
 
  			   $sql = "CREATE TABLE " . $table_name . " (
 				  id int(10) unsigned NOT NULL AUTO_INCREMENT,
-				  event_name VARCHAR(45) DEFAULT NULL,
+				  event_name VARCHAR(100) DEFAULT NULL,
 				  event_desc VARCHAR(500) DEFAULT NULL,
+				  display_desc VARCHAR (4) DEFAULT NULL,
 				  event_identifier VARCHAR(45) DEFAULT NULL,
+				  start_month VARCHAR (15) DEFAULT NULL,
+				  start_day VARCHAR (15) DEFAULT NULL,
+				  start_year VARCHAR (15) DEFAULT NULL,
+				  start_time VARCHAR (15) DEFAULT NULL,
+				  end_month VARCHAR (15) DEFAULT NULL,
+				  end_day VARCHAR (15) DEFAULT NULL,
+				  end_year VARCHAR (15) DEFAULT NULL,
+				  end_time VARCHAR (15) DEFAULT NULL,
+				  reg_limit VARCHAR (15) DEFAULT NULL,
 				  event_cost VARCHAR(45) DEFAULT NULL,
 				  allow_checks VARCHAR(45) DEFAULT NULL,
+				  send_mail VARCHAR(2) DEFAULT NULL,
 				  is_active VARCHAR(45) DEFAULT NULL,
 				  question1 VARCHAR(200) DEFAULT NULL,
 				  question2 VARCHAR(200) DEFAULT NULL,
 				  question3 VARCHAR(200) DEFAULT NULL,
 				  question4 VARCHAR(200) DEFAULT NULL,
+				  conf_mail VARCHAR(1000) DEFAULT NULL,
 				  				  UNIQUE KEY id (id)
 				);";
 
       require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
       dbDelta($sql);
+
 
       update_option( "events_detail_tbl_version", $events_detail_tbl_version );
       }
@@ -255,6 +307,8 @@ function events_data_tables_install () {
 				  paypal_id VARCHAR(55) DEFAULT NULL,
 				  currency_format VARCHAR(45) DEFAULT NULL,
 				  events_listing_type VARCHAR(45) DEFAULT NULL,
+				  return_url VARCHAR(100) DEFAULT NULL,
+				  default_mail VARCHAR(2) DEEFULT NULL,
 				  message VARCHAR(500) DEFAULT NULL,
 				  UNIQUE KEY id (id)
 				);";
@@ -265,7 +319,7 @@ function events_data_tables_install () {
 			$message=("Enter your custom confirmation message here."); //BHC
 
 
-			$sql="INSERT into $table_name (organization, message) values ('Your Company', '".$message."')";
+			$sql="INSERT into $table_name (organization, default_mail, message) values ('Your Company', 'Y', '".$message."')";
 			$wpdb->query($sql);
 
 
@@ -292,7 +346,7 @@ function events_data_tables_install () {
 }
 
 //Upgrade Info Here
-	$events_organization_tbl_version = "2.2";
+	$events_organization_tbl_version = "2.95";
 
      $installed_ver = get_option( "events_organization_tbl_version" );
      if( $installed_ver != $events_organization_tbl_version ) {
@@ -309,6 +363,8 @@ function events_data_tables_install () {
 				  paypal_id VARCHAR(55) DEFAULT NULL,
 				  currency_format VARCHAR(45) DEFAULT NULL,
 				  events_listing_type VARCHAR(45) DEFAULT NULL,
+				  return_url VARCHAR(100) DEFAULT NULL,
+				  default_mail VARCHAR(2) DEEFULT NULL,
 				  message VARCHAR(500) DEFAULT NULL,
 				  UNIQUE KEY id (id)
 				);";
@@ -317,10 +373,10 @@ function events_data_tables_install () {
       dbDelta($sql);
 
 
-      		$message=("**This is an automated response - DO NOT REPLY! A contact email address is listed below.***\n\nThank you, $fname for signing up for $event_name. If you have not done so already, please mail your check today or pay online using our Paypal interface. If you have selected payment by check, you can mail your check to:\n\n==========\n\n$Organization\n$Organization_street1\n$Organization_street2\n$Organization_city\n$Organization_state $Organization_zip\n\n==========\n\nIf you have any questions, you can contact the organizer at $registrar"); //BHC
+      		$message=("**This is an automated response - DO NOT REPLY! A contact email address is listed below.***\n\nThank you for signing up. Your registration has been recieved.  If you have not already done so, please submit payment.\n\nIf you have any questions, you can contact the organizer at "); //BHC
 
 
-			$sql="UPDATE $table_name SET message ='".$message."' WHERE id = '1')";
+			$sql="UPDATE $table_name SET default_mail='Y', message ='".$message."' WHERE id = '1')";
 			$wpdb->query($sql);
 
 
@@ -347,6 +403,9 @@ add_action('admin_menu', 'add_event_registration_menus');
 // Enable the ability for the event_funct to be loaded from pages
 
 add_filter('the_content','event_regis_insert');
+add_filter('the_content','event_regis_attendees_insert');
+add_filter('the_content','event_regis_pay_insert');
+
 
 // Function to deal with loading the events into pages
 
@@ -358,6 +417,56 @@ function event_regis_insert($content)
 			    }
 			  return $content;
 		}
+function event_regis_attendees_insert($content)
+		{
+			  if (preg_match('{EVENTATTENDEES}',$content))
+			    {
+			      $content = str_replace('{EVENTATTENDEES}',event_attendee_list_run(),$content);
+			    }
+			  return $content;
+		}		
+		
+function event_regis_pay_insert($content)
+		{
+			  if (preg_match('{EVENTREGPAY}',$content))
+			    {
+			      $content = str_replace('{EVENTREGPAY}',event_regis_pay(),$content);
+			    }
+			
+			 return $content;
+		}
+		
+
+
+function event_attendee_list_run(){
+	global $wpdb;
+	$events_detail_tbl = get_option('events_detail_tbl');
+	$events_attendee_tbl = get_option('events_attendee_tbl');
+						
+						
+	$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE is_active='yes'";
+	$result = mysql_query($sql);
+	while ($row = mysql_fetch_assoc ($result))
+		{
+		$event_id = $row['id'];
+		$event_name = $row['event_name'];
+		$event_desc = $row['event_desc'];
+		echo "<b><h2>Attendee Listing For: <u>".$event_name."</u></h2></b></br>";
+		echo $event_desc."<br><br><hr>";
+		}
+						
+	$sql  = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
+	$result = mysql_query($sql);
+	while ($row = mysql_fetch_assoc ($result))
+		{
+	    $id = $row['id'];
+		$lname = $row['lname'];
+		$fname = $row['fname'];
+		echo $fname." ".$lname."<br>";
+		}
+}
+
+
 
 
 
@@ -409,9 +518,6 @@ function event_regis_main_mnu(){
 
 /*  The following functions are what I wish to add to the main menu page
 	1. Display current count of attendees for active event (show event name, description and id)- shows by default
-	2. Display current attendees with edit/delete option - requires button press
-	3. Allow manual payment processing - requires button press
-	4. Export current event list attendees to excel - requires button press
 */
 event_registration_reports();
 
@@ -440,11 +546,12 @@ function event_config_mnu()	{
 					   $email		= $_POST['email'];
 					   $paypal_id	= $_POST['paypal_id'];
 					   $paypal_cur  = $_POST['currency_format'];
+					   $return_url = $_POST['return_url'];
 					   $events_listing_type = $_POST['events_listing_type'];
+					   $default_mail = $_POST['default_mail'];
 					   $message = $_POST['message'];
 
-					   $sql = "UPDATE " . $events_organization_tbl . " SET organization = '$org_name', organization_street1='$org_street1', organization_street2='$org_street2', organization_city='$org_city', organization_state='$org_state', organization_zip='$org_zip',
-					   contact_email='$email', paypal_id='$paypal_id', currency_format='$paypal_cur', events_listing_type='$events_listing_type', message='$message' WHERE id ='$org_id'";
+					   $sql = "UPDATE " . $events_organization_tbl . " SET organization = '$org_name', organization_street1='$org_street1', organization_street2='$org_street2', organization_city='$org_city', organization_state='$org_state', organization_zip='$org_zip', contact_email='$email', paypal_id='$paypal_id', currency_format='$paypal_cur', events_listing_type='$events_listing_type', return_url = '$return_url', default_mail='$default_mail', message='$message' WHERE id ='$org_id'";
 
 
 
@@ -472,6 +579,17 @@ function event_config_mnu()	{
 						    $autoload='no';
 						    add_option($option_name, $newvalue, $deprecated, $autoload);
 					  }
+					  
+					$option_name = 'return_url' ;
+					$newvalue = $return_url;
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+
 
 
 					 //create option for registrar
@@ -520,10 +638,12 @@ function event_config_mnu()	{
 	 				$registrar = $row['contact_email'];
 					$paypal_id =$row['paypal_id'];
 					$paypal_cur =$row['currency_format'];
+					$return_url = $row['return_url'];
 					$events_listing_type =$row['events_listing_type'];
+					$default_mail = $row['default_mail'];
 					$message =$row['message'];
 					}
-
+echo "default mail is:".$default_mail;
 	   		echo "<br><br><p align='center'><b>This information is used to provide 'Make Check Payable' and paypal integration information</b></p><br><br>";
 	   		echo "<p align='center'><table width='850'><tr><td><p align='left'>";
 	   		echo "<form method='post' action=".$_SERVER['REQUEST_URI'].">";
@@ -534,7 +654,7 @@ function event_config_mnu()	{
 	   		echo "Organization State: <input name='org_state' size='3' value='".$Organization_state."'>    ";
 	   		echo "Organization Zip Code: <input name='org_zip' size='10' value='".$Organization_zip."'><br>";
 	   		echo "Primary contact email: <input name='email' size='45' value='".$contact."'><br>";
-	   		echo "Paypal I.D. (typically payment@yourdomain.com): <input name='paypal_id' size='45' value='".$paypal_id."'><br>";
+	   		echo "Paypal I.D. (typically payment@yourdomain.com - leave blank if you do not want to accept paypal):<br> <input name='paypal_id' size='45' value='".$paypal_id."'><br>";
 			echo "Paypal Currency: <select name = 'currency_format'><option value='". $paypal_cur . "'>" . $paypal_cur . "</option>";
 			echo "<option value='USD'>USD</option>
 				<option value='AUD'>AUD</option>
@@ -557,7 +677,21 @@ function event_config_mnu()	{
 			echo "Do you want to show a single event or all events on the regisration page? <select name='events_listing_type'><option value='".$events_listing_type."'>".$events_listing_type ."</option>";
 			echo "<option value='single'>Single Event</option>
 			      <option value='all'>All Events</option></select><br><br>";
-			echo "Confirmation Email Text: (See Readme for help) <br><textarea rows='5' cols='125' name='message' >".$message."</textarea><br><br>";
+			echo "Return URL (used for return to make payments): <input name='return_url' size='75' value='".$return_url."'><br>";
+			echo "<br>Do You Want To Send Confirmation Emails? (This option must be enable to send custom mails in events)";
+											
+									if ($default_mail ==""){
+										echo "<INPUT TYPE='radio' NAME='default_mail' VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='default_mail' VALUE='N'>No<br>";}
+									if ($default_mail =="Y"){
+										echo "<INPUT TYPE='radio' NAME='default_mail' CHECKED VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='default_mail' VALUE='N'>No<br>";}
+									if ($default_mail =="N"){
+										echo "<INPUT TYPE='radio' NAME='default_mail' VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='default_mail' CHECKED VALUE='N'>No<br>";}			
+									
+																			   
+			echo "<br>Default Confirmation Email Text: <br><textarea rows='5' cols='125' name='message' >".$message."</textarea><br><br>";
 	   		echo "<input type='hidden' value='".$org_id."' name='org_id'>";
 	   		echo "<input type='hidden' name='update_org' value='update'>";
 	   		echo "<input type='submit' name='Submit' value='Update'></form>";
@@ -596,14 +730,26 @@ function event_regis_events(){
 					       		{
 								    $event_name=$row['event_name'];
 								    $event_desc=$row['event_desc']; // BHC
-					       			    $identifier=$row['event_identifier'];
-					       			    $cost=$row['event_cost'];
-					       			    $checks=$row['allow_checks'];
-					       			    $active=$row['is_active'];
-					       			    $question1= $row['question1'];
-					       			    $question2= $row['question2'];
-					       			    $question3= $row['question3'];
-					       			    $question4= $row['question4'];
+								    $display_desc=$row['display_desc'];
+					       			$identifier=$row['event_identifier'];
+					       			$reg_limit = $row['reg_limit'];
+					       			$start_month =$row['start_month'];
+									$start_day = $row['start_day'];
+									$start_year = $row['start_year'];
+									$end_month = $row['end_month'];
+									$end_day = $row['end_day'];
+									$end_year = $row['end_year'];
+									$start_time = $row['start_time'];
+									$end_time = $row['end_time'];
+					       			$cost=$row['event_cost'];
+					       			$checks=$row['allow_checks'];
+					       			$active=$row['is_active'];
+					       			$question1= $row['question1'];
+					       			$question2= $row['question2'];
+					       			$question3= $row['question3'];
+					       			$question4= $row['question4'];
+					       			$send_mail= $row['send_mail'];
+					       			$conf_mail= $row['conf_mail'];
 
 					       			    echo "<tr><td></td><td valign='top'><form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
 										echo "<input type='hidden' name='action' value='edit'>";
@@ -613,13 +759,37 @@ function event_regis_events(){
 										echo "<input type='hidden' name='action' value='delete'>";
 										echo "<input type='hidden' name='id' value='".$row['id']."'>";
 										echo "<INPUT TYPE='SUBMIT' VALUE='DELETE' ONCLICK=\"return confirm('Are you sure you want to delete ".$row['event_name']."?')\"></form></td><td valign='top'>";
-					       			    echo "Event ID <b><u>".$identifier."</b></u><td>Event Name <b><u>".$event_name."</b></u> Cost <b><u>$ ".$cost."</b></u><br><br>";
-					       			    echo "Description <b><u>".$event_desc."</b></u><br><br>";
+					       			    echo "Event ID <b><u>".$identifier."</b></u><td>Event Name: <b><u>".$event_name."</b></u> Cost:  <b><u>".$cost."</b></u><br><br>";
+					       			    echo "Start Date:<b><u>".$start_month." ".$start_day.", ".$start_year."</b></u>  Start Time:<b><u>".$start_time."</b></u>  End Date: <b><u>".$end_month." ".$end_day.", ".$end_year."</u></b>  End Time:<b><u>".$end_time."</b></u><br>";
+					       			    echo "Registration Limit  <b><u>".$reg_limit."</b></u><br>";
+										echo "Do you want to display the event description on registration page?";
+										if ($display_desc ==""){
+										echo " <b><i>PLEASE UPDATE THIS EVENT</i></b><br>";
+									    }
+										if ($display_desc =="Y"){
+										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='Y'>Yes<br>";
+									    }
+										if ($display_desc =="N"){
+										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='N'>No<br>";}
+
+										echo "Description <b><u>".$event_desc."</b></u><br><br>";
+										
 					       			    echo "Accept Checks <b><u>".$checks."</b></u> Is This Event Active? <b><u>".$active."</b></u><br><br>";
                                         echo "Custom Question 1 <b><u>".$question1."</b></u><br>";
                                         echo "Custom Question 2 <b><u>".$question2."</b></u><br>";
                                         echo "Custom Question 3 <b><u>".$question3."</b></u><br>";
                                         echo "Custom Question 4 <b><u>".$question4."</b></u><br>";
+                                        echo "<br>Do you want to send an custom confirmation message for this event?";
+										if ($send_mail ==""){
+										echo " <b><i>PLEASE UPDATE THIS EVENT</i></b><br>";
+									    }
+										if ($send_mail =="Y"){
+										echo "<INPUT TYPE='radio' NAME='send_mail' CHECKED VALUE='Y'>Yes<br>";
+									    }
+										if ($send_mail =="N"){
+										echo "<INPUT TYPE='radio' NAME='send_mail' CHECKED VALUE='N'>No<br>";}
+										echo "Custom Confirmation Mail <b><u>".$conf_mail."</b></u><br>";
+										
                                         echo "<hr></td></tr>";
 
 					       			 /*   echo "<tr><td>";
@@ -676,8 +846,18 @@ function event_regis_events(){
 			$id = $row['id'];
 			$event_name = $row['event_name'];
 			$event_desc = $row['event_desc'];
+			$display_desc= $row['display_desc'];
 			$event_description = $row['event_desc'];
 			$identifier = $row['event_identifier'];
+			$start_month =$row['start_month'];
+			$start_day = $row['start_day'];
+			$start_year = $row['start_year'];
+			$end_month = $row['end_month'];
+			$end_day = $row['end_day'];
+			$end_year = $row['end_year'];
+			$start_time = $row['start_time'];
+			$end_time = $row['end_time'];
+			$reg_limit = $row['reg_limit'];
 			$event_cost = $row['event_cost'];
 			$checks = $row['allow_checks'];
 			$active = $row['is_active'];
@@ -685,20 +865,166 @@ function event_regis_events(){
 			$question2 = $row['question2'];
 			$question3 = $row['question3'];
 			$question4 = $row['question4'];
+			$conf_mail=$row['conf_mail'];
+			$send_mail=$row['send_mail'];
 				}
 
 			update_option("current_event", $event_name);
 
 					   			?>
 						   			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>"
-									<br><br>EVENT NAME: <input name="event" size="45" value ="<? echo $event_name;?>">      ID FOR EVENT (used for paypal reference)<input name="ident" value ="<? echo $event_identifier;?>"><br>
+									<br><br>EVENT NAME: <input name="event" size="100" value ="<? echo $event_name;?>">      ID FOR EVENT (used for paypal reference)<input name="ident" value ="<? echo $identifier;?>"><br>
 									<br><br>EVENT DESCRIPTION: <textarea rows='2' cols='125' name='desc' ><? echo $event_desc;?></textarea><br>
-                                    COST FOR EVENT  $<input name="cost" size="10" value ="<? echo $event_cost;?>">     WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select><br><br>
+
+	Start Date: <SELECT NAME="start_month">
+	<OPTION VALUE="<?echo $start_month;?>"><?echo $start_month;?></option>
+	<OPTION VALUE="Jan">January</option>
+	<OPTION VALUE="Feb">February</option>
+	<OPTION VALUE="Mar">March</option>
+	<OPTION VALUE="Apr">April</option>
+	<OPTION VALUE="May">May</option>
+	<OPTION VALUE="Jun">June</option>
+	<OPTION VALUE="Jul">July</option>
+	<OPTION VALUE="Aug">August</option>
+	<OPTION VALUE="Sep">September</option>
+	<OPTION VALUE="Oct">October</option>
+	<OPTION VALUE="Nov">November
+	<OPTION VALUE="Dec">December
+</SELECT>
+<SELECT NAME="start_day">
+	<OPTION VALUE="<?echo $start_day;?>"><?echo $start_day;?>
+	<OPTION VALUE="1">1
+	<OPTION VALUE="2">2
+	<OPTION VALUE="3">3
+	<OPTION VALUE="4">4
+	<OPTION VALUE="5">5
+	<OPTION VALUE="6">6
+	<OPTION VALUE="7">7
+	<OPTION VALUE="8">8
+	<OPTION VALUE="9">9
+	<OPTION VALUE="10">10
+	<OPTION VALUE="11">11
+	<OPTION VALUE="12">12
+	<OPTION VALUE="13">13
+	<OPTION VALUE="14">14
+	<OPTION VALUE="15">15
+	<OPTION VALUE="16">16
+	<OPTION VALUE="17">17
+	<OPTION VALUE="18">18
+	<OPTION VALUE="19">19
+	<OPTION VALUE="20">20
+	<OPTION VALUE="21">21
+	<OPTION VALUE="22">22
+	<OPTION VALUE="23">23
+	<OPTION VALUE="24">24
+	<OPTION VALUE="25">25
+	<OPTION VALUE="26">26
+	<OPTION VALUE="27">27
+	<OPTION VALUE="28">28
+	<OPTION VALUE="29">29
+	<OPTION VALUE="30">30
+	<OPTION VALUE="31">31
+</SELECT>
+<SELECT NAME="start_year">
+	<OPTION VALUE="<?echo $start_year;?>"><?echo $start_year;?>
+	<OPTION VALUE="2009">2009
+	<OPTION VALUE="2010">2010
+	<OPTION VALUE="2011">2011
+	<OPTION VALUE="2012">2012
+	<OPTION VALUE="2013">2013
+	<OPTION VALUE="2015">2014
+	</SELECT>
+	
+ - End Date: <SELECT NAME="end_month">
+	<OPTION VALUE="<?echo $end_month;?>"><?echo $end_month;?>
+	<OPTION VALUE="Jan">January
+	<OPTION VALUE="Feb">February
+	<OPTION VALUE="Mar">March
+	<OPTION VALUE="Apr">April
+	<OPTION VALUE="May">May
+	<OPTION VALUE="Jun">June
+	<OPTION VALUE="Jul">July
+	<OPTION VALUE="Aug">August
+	<OPTION VALUE="Sep">September
+	<OPTION VALUE="Oct">October
+	<OPTION VALUE="Nov">November
+	<OPTION VALUE="Dec">December
+</SELECT>
+<SELECT NAME="end_day">
+	<OPTION VALUE="<?echo $end_day;?>"><?echo $end_day;?>
+	<OPTION VALUE="1">1
+	<OPTION VALUE="2">2
+	<OPTION VALUE="3">3
+	<OPTION VALUE="4">4
+	<OPTION VALUE="5">5
+	<OPTION VALUE="6">6
+	<OPTION VALUE="7">7
+	<OPTION VALUE="8">8
+	<OPTION VALUE="9">9
+	<OPTION VALUE="10">10
+	<OPTION VALUE="11">11
+	<OPTION VALUE="12">12
+	<OPTION VALUE="13">13
+	<OPTION VALUE="14">14
+	<OPTION VALUE="15">15
+	<OPTION VALUE="16">16
+	<OPTION VALUE="17">17
+	<OPTION VALUE="18">18
+	<OPTION VALUE="19">19
+	<OPTION VALUE="20">20
+	<OPTION VALUE="21">21
+	<OPTION VALUE="22">22
+	<OPTION VALUE="23">23
+	<OPTION VALUE="24">24
+	<OPTION VALUE="25">25
+	<OPTION VALUE="26">26
+	<OPTION VALUE="27">27
+	<OPTION VALUE="28">28
+	<OPTION VALUE="29">29
+	<OPTION VALUE="30">30
+	<OPTION VALUE="31">31
+</SELECT>
+<SELECT NAME="end_year">
+	<OPTION VALUE="<?echo $end_year;?>"><?echo $end_year;?></option>
+	<OPTION VALUE="2009">2009
+	<OPTION VALUE="2010">2010
+	<OPTION VALUE="2011">2011
+	<OPTION VALUE="2012">2012
+	<OPTION VALUE="2013">2013
+	<OPTION VALUE="2015">2014
+	</SELECT><br />
+									<br>Do you want to display the event description on registration page? 
+									<?
+									if ($display_desc ==""){
+										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='display_desc' VALUE='N'>No<br>";}
+									if ($display_desc =="Y"){
+										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='display_desc' VALUE='N'>No<br>";}
+									if ($display_desc =="N"){
+										echo "<INPUT TYPE='radio' NAME='display_desc' VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='N'>No<br>";}?>	
+										
+									ATTENDEE LIMIT (leave blank for unlimited)  <input name="reg_limit" size="10" value ="<? echo $reg_limit;?>"><br />
+                                    COST FOR EVENT (leave blank for free events)  <input name="cost" size="10" value ="<? echo $event_cost;?>">     WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select><br><br>
+                                	
 						   			DO YOU WANT THIS EVENT TO BE THE ACTIVE EVENT? <select name="is_active"><option>yes</option><option>no</option></select><br><br> <!-- BHC -->
                                     CUSTOM QUESTION 1: <textarea rows='1' cols='125' name='quest1' ><? echo $question1;?></textarea><br>
                                     CUSTOM QUESTION 2: <textarea rows='1' cols='125' name='quest2' ><? echo $question2;?></textarea><br>
                                     CUSTOM QUESTION 3: <textarea rows='1' cols='125' name='quest3' ><? echo $question3;?></textarea><br>
                                     CUSTOM QUESTION 4: <textarea rows='1' cols='125' name='quest4' ><? echo $question4;?></textarea><br>
+                                    <br /><br>DO YOU WANT TO SEND A CUSTOM CONFIRMATION EMAIL? 
+									<?
+									if ($send_mail ==""){
+										echo "<INPUT TYPE='radio' NAME='send_mail' CHECKED VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='send_mail' VALUE='N'>No<br>";}
+									if ($send_mail =="Y"){
+										echo "<INPUT TYPE='radio' NAME='send_mail' CHECKED VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='send_mail' VALUE='N'>No<br>";}
+									if ($send_mail =="N"){
+										echo "<INPUT TYPE='radio' NAME='send_mail' VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='send_mail' CHECKED VALUE='N'>No<br>";}?><br />CUSTOM CONFIRMATION EMAIL FOR THIS EVENT: <br /><textarea rows='4' cols='125' name='conf_mail' ><? echo $conf_mail;?></textarea><br>
+                                    
 
                                        <?echo "<input type='hidden' name='action' value='update'>";?>
                                         <?echo "<input type='hidden' name='id' value='".$id."'>";?>
@@ -726,13 +1052,26 @@ function event_regis_events(){
 					   			$event_name=$_REQUEST['event'];
 								$ident = $_REQUEST['ident'];
 								$desc=$_REQUEST['desc']; //BHC
+								$display_desc=$_REQUEST['display_desc'];
+								$reg_limit=$_REQUEST['reg_limit'];
 					   			$cost = $_REQUEST['cost'];
 					   			$accept_checks = $_REQUEST['checks'];
 					   			$is_active = $_REQUEST['is_active'];
+					   			$start_month =$_REQUEST['start_month'];
+								$start_day = $_REQUEST['start_day'];
+								$start_year = $_REQUEST['start_year'];
+								$end_month = $_REQUEST['end_month'];
+								$end_day = $_REQUEST['end_day'];
+								$end_year = $_REQUEST['end_year'];
+								$start_time = $_REQUEST['start_time'];
+								$end_time = $_REQUEST['end_time'];
+					   			  			
 					   			$quest1 = $_REQUEST['quest1'];
                                 $quest2 = $_REQUEST['quest2'];
                                 $quest3 = $_REQUEST['quest3'];
                                 $quest4 = $_REQUEST['quest4'];
+                                $conf_mail=$_REQUEST['conf_mail'];
+								$send_mail=$_REQUEST['send_mail'];
 
 
 					   			//When the posted record is set to active, this checks records and deactivates them to set the current record as active
@@ -746,9 +1085,11 @@ function event_regis_events(){
 
 					   			//Post the new event into the database
 
-								/* BHC */ $sql="INSERT INTO $events_detail_tbl (event_name, event_identifier, event_desc, event_cost, allow_checks, is_active, question1, question2,
-                                question3, question4)
-					   			VALUES('$event_name','$ident','$desc','$cost','$accept_checks','$is_active', '$quest1', '$quest2', '$quest3', '$quest4')"; //BHC
+								/* BHC */ $sql="INSERT INTO $events_detail_tbl (event_name, event_identifier, reg_limit, event_desc, display_desc, event_cost, send_mail, allow_checks, is_active, start_month, start_day, start_year, end_month, end_day, end_year, start_time, end_time,
+								question1, question2, question3, question4, conf_mail)
+					   			VALUES('$event_name','$ident', '$reg_limit', '$desc','$display_desc', '$cost',$send_mail, '$accept_checks','$is_active', 
+								   '$start_month', '$start_day', '$start_year', '$end_month', '$end_day', '$end_year', '$start_time', '$end_time,
+								   '$quest1', '$quest2', '$quest3', '$quest4', '$conf_mail)"; //BHC
 
 								$wpdb->query($sql);
 
@@ -760,14 +1101,25 @@ function event_regis_events(){
 					   			$event_name=$_REQUEST['event'];
 								$ident = $_REQUEST['ident'];
 								$desc=$_REQUEST['desc']; //BHC
+								$display_desc = $_REQUEST['display_desc'];
+								$reg_limit=$_REQUEST['reg_limit'];
 					   			$cost = $_REQUEST['cost'];
 					   			$accept_checks = $_REQUEST['checks'];
 					   			$is_active = $_REQUEST['is_active'];
+					   			$start_month =$_REQUEST['start_month'];
+								$start_day = $_REQUEST['start_day'];
+								$start_year = $_REQUEST['start_year'];
+								$end_month = $_REQUEST['end_month'];
+								$end_day = $_REQUEST['end_day'];
+								$end_year = $_REQUEST['end_year'];
+								$start_time = $_REQUEST['start_time'];
+								$end_time = $_REQUEST['end_time'];
 					   			$quest1 = $_REQUEST['quest1'];
                                 $quest2 = $_REQUEST['quest2'];
                                 $quest3 = $_REQUEST['quest3'];
                                 $quest4 = $_REQUEST['quest4'];
-
+                                $conf_mail=$_REQUEST['conf_mail'];
+								$send_mail=$_REQUEST['send_mail'];
 
 					   			//When the posted record is set to active, this checks records and deactivates them to set the current record as active
 					   			update_option("current_event", $event_name);
@@ -780,9 +1132,10 @@ function event_regis_events(){
 
 					   			//Post the new event into the database
 
-								/* BHC */ $sql="UPDATE $events_detail_tbl SET event_name='$event_name', event_identifier='$ident',
-                                event_desc='$desc', event_cost='$cost', allow_checks='$accept_checks', is_active='$is_active', question1='$quest1',
-                                 question2='$quest2', question3='$quest3', question4='$quest4'  WHERE id = $id";
+								/* BHC */ $sql="UPDATE $events_detail_tbl SET event_name='$event_name', event_identifier='$ident', reg_limit='$reg_limit',
+                                event_desc='$desc', display_desc='$display_desc', send_mail='$send_mail', event_cost='$cost', allow_checks='$accept_checks',
+								 is_active='$is_active', start_month='$start_month', start_day='$start_day', start_year='$start_year', end_month='$end_month',
+								 end_day='$end_day', end_year='$end_year', start_time='$start_time', end_time='$end_time', question1='$quest1', question2='$quest2', question3='$quest3', question4='$quest4', conf_mail='$conf_mail'  WHERE id = $id";
 
 								$wpdb->query($sql);
 
@@ -794,14 +1147,138 @@ function event_regis_events(){
 	   			     else {
 					   			?>
 						   			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>"
-									<br><br>EVENT NAME: <input name="event" size="45">      ID FOR EVENT (used for paypal reference)<input name="ident"><br>
+									<br><br>EVENT NAME: <input name="event" size="100">      ID FOR EVENT (used for paypal reference)<input name="ident"><br>
 									<br><br>EVENT DESCRIPTION: <textarea rows='2' cols='125' name='desc' ></textarea><br> <? //BHC ?>
-						   			COST FOR EVENT  $<input name="cost" size="10">     WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select><br><br>
+									<br>Do you want to display the event description on registration page? <?									
+										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='display_desc' VALUE='N'>No<br>";?>	
+									ATTENDEE LIMIT (leave blank for unlimited attendees) <input name="reg_limit" size="15"><br />
+						   			COST FOR EVENT (leave blank for free events) <input name="cost" size="10">     WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select><br><br>
+	Start Date: <SELECT NAME="start_month">
+	<OPTION>
+	<OPTION VALUE="Jan">January</option>
+	<OPTION VALUE="Feb">February</option>
+	<OPTION VALUE="Mar">March</option>
+	<OPTION VALUE="Apr">April</option>
+	<OPTION VALUE="May">May</option>
+	<OPTION VALUE="Jun">June</option>
+	<OPTION VALUE="Jul">July</option>
+	<OPTION VALUE="Aug">August</option>
+	<OPTION VALUE="Sep">September
+	<OPTION VALUE="Oct">October
+	<OPTION VALUE="Nov">November
+	<OPTION VALUE="Dec">December
+</SELECT>
+<SELECT NAME="start_day">
+	<OPTION>
+	<OPTION VALUE="1">1
+	<OPTION VALUE="2">2
+	<OPTION VALUE="3">3
+	<OPTION VALUE="4">4
+	<OPTION VALUE="5">5
+	<OPTION VALUE="6">6
+	<OPTION VALUE="7">7
+	<OPTION VALUE="8">8
+	<OPTION VALUE="9">9
+	<OPTION VALUE="10">10
+	<OPTION VALUE="11">11
+	<OPTION VALUE="12">12
+	<OPTION VALUE="13">13
+	<OPTION VALUE="14">14
+	<OPTION VALUE="15">15
+	<OPTION VALUE="16">16
+	<OPTION VALUE="17">17
+	<OPTION VALUE="18">18
+	<OPTION VALUE="19">19
+	<OPTION VALUE="20">20
+	<OPTION VALUE="21">21
+	<OPTION VALUE="22">22
+	<OPTION VALUE="23">23
+	<OPTION VALUE="24">24
+	<OPTION VALUE="25">25
+	<OPTION VALUE="26">26
+	<OPTION VALUE="27">27
+	<OPTION VALUE="28">28
+	<OPTION VALUE="29">29
+	<OPTION VALUE="30">30
+	<OPTION VALUE="31">31
+</SELECT>
+<SELECT NAME="start_year">
+	<OPTION>
+	<OPTION VALUE="2009">2009
+	<OPTION VALUE="2010">2010
+	<OPTION VALUE="2011">2011
+	<OPTION VALUE="2012">2012
+	<OPTION VALUE="2013">2013
+	<OPTION VALUE="2015">2014
+	</SELECT>
+	
+ - End Date: <SELECT NAME="end_month">
+	<OPTION>
+	<OPTION VALUE="Jan">January
+	<OPTION VALUE="Feb">February
+	<OPTION VALUE="Mar">March
+	<OPTION VALUE="Apr">April
+	<OPTION VALUE="May">May
+	<OPTION VALUE="Jun">June
+	<OPTION VALUE="Jul">July
+	<OPTION VALUE="Aug">August
+	<OPTION VALUE="Sep">September
+	<OPTION VALUE="Oct">October
+	<OPTION VALUE="Nov">November
+	<OPTION VALUE="Dec">December
+</SELECT>
+<SELECT NAME="end_day">
+	<OPTION>
+	<OPTION VALUE="1">1
+	<OPTION VALUE="2">2
+	<OPTION VALUE="3">3
+	<OPTION VALUE="4">4
+	<OPTION VALUE="5">5
+	<OPTION VALUE="6">6
+	<OPTION VALUE="7">7
+	<OPTION VALUE="8">8
+	<OPTION VALUE="9">9
+	<OPTION VALUE="10">10
+	<OPTION VALUE="11">11
+	<OPTION VALUE="12">12
+	<OPTION VALUE="13">13
+	<OPTION VALUE="14">14
+	<OPTION VALUE="15">15
+	<OPTION VALUE="16">16
+	<OPTION VALUE="17">17
+	<OPTION VALUE="18">18
+	<OPTION VALUE="19">19
+	<OPTION VALUE="20">20
+	<OPTION VALUE="21">21
+	<OPTION VALUE="22">22
+	<OPTION VALUE="23">23
+	<OPTION VALUE="24">24
+	<OPTION VALUE="25">25
+	<OPTION VALUE="26">26
+	<OPTION VALUE="27">27
+	<OPTION VALUE="28">28
+	<OPTION VALUE="29">29
+	<OPTION VALUE="30">30
+	<OPTION VALUE="31">31
+</SELECT>
+<SELECT NAME="end_year">
+	<OPTION>
+	<OPTION VALUE="2009">2009
+	<OPTION VALUE="2010">2010
+	<OPTION VALUE="2011">2011
+	<OPTION VALUE="2012">2012
+	<OPTION VALUE="2013">2013
+	<OPTION VALUE="2015">2014
+	</SELECT><br />						   			
 						   			DO YOU WANT THIS EVENT TO BE THE ACTIVE EVENT? <select name="is_active"><option>yes</option><option>no</option></select><br><br> <!-- BHC -->
                                     CUSTOM QUESTION 1: <textarea rows='1' cols='125' name='quest1' ></textarea><br>
                                     CUSTOM QUESTION 2: <textarea rows='1' cols='125' name='quest2' ></textarea><br>
                                     CUSTOM QUESTION 3: <textarea rows='1' cols='125' name='quest3' ></textarea><br>
                                     CUSTOM QUESTION 4: <textarea rows='1' cols='125' name='quest4' ></textarea><br>
+                                    <br>DO YOU WANT TO SEND A CUSTOM CONFIRMATION EMAIL?  <?									
+										echo "<INPUT TYPE='radio' NAME='send_mail' CHECKED VALUE='Y'>Yes";
+										echo "<INPUT TYPE='radio' NAME='send_mail' VALUE='N'>No<br>";?><br />CUSTOM CONFIRMATION EMAIL FOR THIS EVENT: <br /><textarea rows='4' cols='125' name='conf_mail' ></textarea><br>
 
                                        <?echo "<input type='hidden' name='action' value='add'>";?>
 						   			<br><br><input type="submit" name="Submit" value="ADD EVENT"></form>
@@ -846,6 +1323,7 @@ function register_attendees(){
 			$event_id = $row['id'];
 			$event_name = $row['event_name'];
 			$event_desc = $row['event_desc'];
+			$display_desc = $row['display_desc'];
 			$event_description = $row['event_desc'];
 			$identifier = $row['event_identifier'];
 			$event_cost = $row['event_cost'];
@@ -855,11 +1333,14 @@ function register_attendees(){
 			$question2 = $row['question2'];
 			$question3 = $row['question3'];
 			$question4 = $row['question4'];
+			$reg_limit = $row['reg_limit'];
 				}
 
 			update_option("current_event", $event_name);
 			//Query Database for Event Organization Info to email registrant BHC
-			$sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; //BHC NEED TO CHANGE: Table name should be a variable but $events_organization_tbl gave an error as it is undefined at this point.
+			//$sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; 
+			$events_organization_tbl = get_option('events_organization_tbl');
+			$sql  = "SELECT * FROM ". $events_organization_tbl ." WHERE id='1'";
 			$result = mysql_query($sql); //BHC
 
 			while ($row = mysql_fetch_assoc ($result))
@@ -878,14 +1359,33 @@ function register_attendees(){
 				$events_listing_type =$row['events_listing_type'];
 				$message =$row['message'];
 				}
-
-
-			echo "<p align='center'><b>Event Registration for ".$event_name."</p>"; //BHC
+				
+			//get attendee count	
+			$events_attendee_tbl = get_option('events_attendee_tbl');
+			
+				$sql  = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
+				$result = mysql_query($sql);
+				$num_rows = mysql_num_rows($result);
+				
+			if ($reg_limit <="$num_rows"){
+				echo "<br><br><b>We are sorry but this event has reached the maximun number of attendees!<br></b>";
+				echo "<br><br><b>Please check back in the event someone cancels.<br><br></b>";
+				echo "Current Number of Attendees: ".$num_rows."<br>";
+			}
+			else {
+			echo "<p align='center'><b>Event Registration for ".$event_name."</b></p>"; //BHC
 			echo "<table width='100%'><td>"; //BHC
-			echo "<b>Details/Description</b></td><td>".$event_desc."</td>"; //BHC
+			if ($display_desc == "Y"){
+			echo "<td span='2'>".$event_desc."</td>"; //BHC
+			}
 			echo "</table>"; //BHC
 			echo "<table width='500'><td>";	//BHC changed to fit theme.
+			if ($paypal_cur == "USD"){
+				$paypal_cur ="$";
+			}
+			if ($event_cost != ""){			
 			echo "<b>".$event_name." - Cost ".$paypal_cur." ".$event_cost.".00</b></p></p>";
+			}
 			?>
 			<br></td><tr><td>
 			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>" >
@@ -900,7 +1400,7 @@ function register_attendees(){
 			<p align="left"><font face="Arial" size="2"><b>State or Province:<input tabIndex="7" maxLength="30" size="18" name="state"></b><font color="#ff0000">*</font></font></p>
 			<p align="left"><font face="Arial" size="2"><b>Zip:<input tabIndex="8" maxLength="10" size="16" name="zip"></b><font color="#ff0000">*</font><b><br>
 			<br>
-			How did you hear about this event?</b></font><font face="Arial">&nbsp;<select tabIndex="9" size="1" name="hear">
+			How did you hear about this event?</b><br /></font><font face="Arial">&nbsp;<select tabIndex="9" size="1" name="hear">
 			<option value="pick one" selected>pick one</option>
 			<option value="Website">Website</option>
 			<option value="A Friend">A Friend</option>
@@ -908,14 +1408,18 @@ function register_attendees(){
 			<option value="Announcment">An Announcment</option>
 			<option value="Other">Other</option>
 			</select></font></p>
-			<p align="left"><font face="Arial" size="2"><b>How do you plan on paying for
-			your Registration?</b> <select tabIndex="10" size="1" name="payment">
-			<option value="pickone" selected>pickone</option>
-			<option value="Paypal">Credit Card or Paypal</option>
-			<option value="Cash/Check">Cash or Check</option>
-			</select></font></p>
-
 			<?
+            if ($event_cost != ""){ ?>
+			<p align="left"><font face="Arial" size="2"><b>How do you plan on paying for
+			your Registration?</b><br /> <select tabIndex="10" size="1" name="payment">
+			<option value="pickone" selected>pickone</option>
+			<? if ($paypal_id != ""){ ?><option value="Paypal">Credit Card or Paypal</option><? } ?>
+			<option value="Cash">Cash</option>
+			<? if ($checks == "yes"){ ?><option value="Check">Check</option><? } ?>
+			</select></font></p>
+			<? } else { ?><input type="hidden" name="payment" value="free event"><?}
+
+		
             if ($question1 != ""){ ?>
 			<p align="left"><font face="Arial" size="2"><b><?echo $question1; ?><input size="33" name="custom_1"> </b></font></p>
 			<? } else { ?><input type="hidden" name="custom1" value=""><?}
@@ -938,6 +1442,7 @@ function register_attendees(){
 			<p align="center"><input type="submit" name="Submit" value="Submit">
 			<font color="#FF0000"><b>(Only click the Submit Button Once)</b></font></form></td></tr></table></body>
 			<?
+}
 }
 
 function add_attedees_to_db(){
@@ -967,17 +1472,17 @@ function add_attedees_to_db(){
 			   update_option("attendee_email", $email);
 
 
-		  $sql = "INSERT INTO $events_attendee_tbl (lname, fname, address, city, state, zip, email, phone, hear, payment, event_id, custom_1, custom_2, custom_3, custom_4)
-		       VALUES ('$lname', '$fname', '$address', '$city', '$state', '$zip', '$email,'$phone', '$hear','$payment', '$event_id', '$custom_1',
-               '$custom_2', '$custom_3', '$custom_4')";
+$sql = "INSERT INTO ".$events_attendee_tbl." (lname ,fname ,address ,city ,state ,zip ,email ,phone ,hear ,payment, event_id, custom_1, custom_2, custom_3, custom_4 ) VALUES ('$lname', '$fname', '$address', '$city', '$state', '$zip', '$email', '$phone', '$hear', '$payment', '$event_id', '$custom_1', '$custom_2', '$custom_3', '$custom4')"; 
 
-
-
-		$wpdb->query($sql);
+$wpdb->query($sql);
 
 
 	//Query Database for Event Organization Info to email registrant BHC
-			   $sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; //BHC NEED TO CHANGE: Table name should be a variable but $events_organization_tbl gave an error as it is undefined at this point.
+	 $events_organization_tbl = get_option('events_organization_tbl');
+			  $sql  = "SELECT * FROM ". $events_organization_tbl ." WHERE id='1'";
+			  // $sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; 
+			   
+			   //BHC NEED TO CHANGE: Table name should be a variable but $events_organization_tbl gave an error as it is undefined at this point.
 			   $result = mysql_query($sql); //BHC
 			   while ($row = mysql_fetch_assoc ($result))
 				{
@@ -992,27 +1497,121 @@ function add_attedees_to_db(){
  				$registrar = $row['contact_email'];
 				$paypal_id =$row['paypal_id'];
 				$paypal_cur =$row['currency_format'];
+				$return_url = $row['return_url'];
 				$events_listing_type =$row['events_listing_type'];
+				$default_mail=$row['default_mail'];
 				$conf_message =$row['message'];
 				}
 
+$events_detail_tbl = get_option('events_detail_tbl');
 
-			   //list($org_id, $Organization, $Organization_street1, $Organization_street2, $Organization_city, $Organization_state, $Organization_zip, $registrar, $paypal_id ) = mysql_fetch_array($result, MYSQL_NUM); // BHC
-		//Email Confirmation to Registrar
+
+$sql = "SELECT * FROM ". $events_detail_tbl ." WHERE id='".$event_id."'";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_assoc ($result))
+					       		{
+								    $event_name=$row['event_name'];
+								    $event_desc=$row['event_desc']; // BHC
+								    $display_desc=$row['display_desc'];
+					       			$identifier=$row['event_identifier'];
+					       			$reg_limit = $row['reg_limit'];
+					       			$cost=$row['event_cost'];
+					       			$start_month =$row['start_month'];
+									$start_day = $row['start_day'];
+									$start_year = $row['start_year'];
+									$end_month = $row['end_month'];
+									$end_day = $row['end_day'];
+									$end_year = $row['end_year'];
+									$start_time = $row['start_time'];
+									$end_time = $row['end_time'];
+					       			$checks=$row['allow_checks'];
+					       			$active=$row['is_active'];
+					       			$question1= $row['question1'];
+					       			$question2= $row['question2'];
+					       			$question3= $row['question3'];
+					       			$question4= $row['question4'];
+					       			$send_mail= $row['send_mail'];
+					       			$conf_mail= $row['conf_mail'];
+					       			$start_date = $start_month." ".$start_day.", ".$start_year;
+					       			$end_date = $end_month." ".$end_day.", ".$end_year;
+									   }
+
+			   
+		/* Email Confirmation to Registrar
 
 			$event_name = $current_event;
 
 			$distro=$registrar;
 			$message=("I, $fname $lname  have signed up on-line for $event_name.\n\nMy email address is  $email.\n\nMy selected method of payment was $payment.\n\n");
-			wp_mail($distro, $event_name, $message);
+			wp_mail($distro, $event_name, $message); */
+			//Email Confirmation to Attendee
+			$query  = "SELECT * FROM $events_attendee_tbl WHERE fname='$fname' AND lname='$lname' AND email='$email'";
+	   		$result = mysql_query($query) or die('Error : ' . mysql_error());
+	   		while ($row = mysql_fetch_assoc ($result))
+				{
+	  		    	$id = $row['id'];
+				}
 
+           
+$payment_link = $return_url."?id=".$id;
 
 		//Email Confirmation to Attendee
-
+$SearchValues = array(
+		"[fname]",
+		"[lname]",
+		"[phone]",
+		"[event]",
+		"[description]",
+		"[cost]",
+		"[qst1]",
+		"[qst2]",
+		"[qst3]",
+		"[qst4]",
+		"[contact]",
+		"[company]",
+		"[co_add1]",
+		"[co_add2]",
+		"[co_city]",
+		"[co_state]",
+		"[co_zip]",
+		"[payment_url]",
+		"[start_date]",
+		"[start_time]",
+		"[end_date]",
+		"[end_time]");
+		
+		
+$ReplaceValues = array(
+		$fname,
+		$lname,
+		$phone,
+		$event_name,
+		$event_desc,		
+		$cost,
+		$question1,
+		$question2,
+		$question3,
+		$question4,
+		$contact,
+		$Organization,
+		$Organization_street1,
+		$Organization_street2,
+		$Organization_city,
+		$Organization_state,
+		$Organization_zip,
+		$payment_link,
+		$start_date,
+		$start_time,
+		$end_date,
+		$end_time);
+			
+$custom = str_replace($SearchValues, $ReplaceValues, $conf_mail);			
+			
 			$distro="$email";
-			//$message=("**This is an automated response - DO NOT REPLY! A contact email address is listed below.***\n\nThank you, $fname for signing up for $event_name. If you have not done so already, please mail your check today or pay online using our Paypal interface. If you have selected payment by check, you can mail your check to:\n\n==========\n\n$Organization\n$Organization_street1\n$Organization_street2\n$Organization_city\n$Organization_state $Organization_zip\n\n==========\n\nIf you have any questions, you can contact the organizer at $registrar"); //BHC
-
-			wp_mail($distro, $event_name, $conf_message);
+						
+			if ($default_mail =='Y'){ if($send_mail == 'Y'){ wp_mail($distro, $event_name, $custom);}}
+			
+			if ($default_mail =='Y'){ if($send_mail == 'N'){ wp_mail($distro, $event_name, $conf_message);}}
 
 
 		//Get registrars id from the data table and assign to a session variable for PayPal.
@@ -1051,7 +1650,7 @@ function add_attedees_to_db(){
 			echo "Your Registration has been added. Please watch your email for a confirmation of registration.";
 			echo "<br><br>";
 			
-			events_payment_page();
+			events_payment_page($event_id);
 			}
 
 function events_payment_paypal(){
@@ -1060,8 +1659,9 @@ function events_payment_paypal(){
 echo "PayPal Info Here.\n\n"; // BHC
 }
 
-function events_payment_page()
+function events_payment_page($event_id)
 			{
+			
 			global $wpdb;
 			$events_organization_tbl = get_option('events_organization_tbl');
 			$events_detail_tbl = get_option('events_detail_tbl');
@@ -1095,7 +1695,7 @@ while ($row = mysql_fetch_assoc ($result))
 
 
 
-			$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE is_active='yes'";
+			$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE id ='$event_id'";
 
 			$result = mysql_query($sql);
 			while ($row = mysql_fetch_assoc ($result))
@@ -1107,13 +1707,16 @@ while ($row = mysql_fetch_assoc ($result))
 						$identifier = $row['event_identifier'];
 						$event_cost = $row['event_cost'];
 						$allow_checks = $row['allow_checks'];
+						$send_mail = $row['send_mail'];
 						$active = $row['is_active'];
 						$question1 = $row['question1'];
 						$question2 = $row['question2'];
 						$question3 = $row['question3'];
 						$question4 = $row['question4'];
+						$conf_mail = $row['conf_mail'];
 							}
 
+if ($event_cost != ""){
 
 		  	if ($allow_checks == "yes"){
 						echo "<b>PLEASE MAKE CHECKS PAYABLE TO: <u>$Organization</b></u><br></P><br>"; // BHC Changed for clarity.
@@ -1123,12 +1726,15 @@ while ($row = mysql_fetch_assoc ($result))
 						echo "<hr>";
 						}
 
+if ($paypal_id !=""){
 			//Payment Selection with data hidden - forwards to paypal
 			?>
 			<p align="left"><b>Payment By Credit Card, Debit Card or Pay Pal Account<br>(a pay
 			pal account is not required to pay by credit card).</b></p>
 			<p>PayPal Payments will be sent to: <?echo $paypal_id;?></p>
-
+	if ($paypal_cur == "$"){
+				$paypal_cur ="USD";
+			}
 			</p><Br><BR>
 			<table width="500"><tr><td VALIGN='MIDDLE' ALIGN='CENTER'>&nbsp;<br>
 			<B><? echo $event_name." - ".$paypal_cur." ".$event_cost;?>.00</b>&nbsp;</td><td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER' >
@@ -1147,9 +1753,9 @@ while ($row = mysql_fetch_assoc ($result))
 			</font><b><font face="Arial" size="2">&nbsp;<br>
 			<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" align='middle' name="submit"><br>&nbsp; </font></b>
 			</form></td></tr></table>
-<?
+<?}
 }
-
+}
 function event_registration_reports(){
 
 global $wpdb;
@@ -1158,22 +1764,37 @@ $current_event = get_option('current_event');
 $events_attendee_tbl = get_option('events_attendee_tbl');
 define("EVNT_RGR_PLUGINPATH", "/" . plugin_basename( dirname(__FILE__) ) . "/");
 define("EVNT_RGR_PLUGINFULLURL", WP_PLUGIN_URL . EVNT_RGR_PLUGINPATH );
-
-
-
 $url = EVNT_RGR_PLUGINFULLURL;
 
-Echo "<p align='center'><table width = '400'><tr><td>";
-Echo "<b><h3>Current Event Is: ".$current_event."</td></tr><tr><td>";
+
+
+$sql = "SELECT * FROM ". $events_detail_tbl;
+$result = mysql_query ($sql);
+Echo "<p align='center'><p align='left'>SELECT EVENT TO VIEW ATTENDEES:</p><table width = '400'>";
+while ($row = mysql_fetch_assoc ($result))
+	{
+	$event_id = $row['id'];
+	$event_name=$row['event_name'];
+
+	echo "<tr><td width='25'></td><td><form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
+	echo "<input type='hidden' name='display_action' value='view_list'>";
+	echo "<input type='hidden' name='event_id' value='".$row['id']."'>";
+	echo "<INPUT TYPE='SUBMIT' VALUE='".$event_name."'></form></td><tr>";
+	}
+	echo "</table>";
+
+
 
 //Echo "<br><a href='http://".$_SERVER['SERVER_NAME']."/event_registration_export.php?atnd=".$events_attendee_tbl."&id=1'>Export Current Attendee List To Excel</a>";
 
-Echo "</td><tr></table>";
+/*
 ?>
 <button style="background-color:lightgreen" onclick="window.location='<?echo $url."event_registration_export.php?atnd=".$events_attendee_tbl."&id=1";  ?>'" style="width:180; height: 30">Export Current Attendee List To Excel</button>
-<br><br><?
+<br><br><? */
 //view_attendee_list();
+	if ( $_REQUEST['display_action'] == 'view_list' ){
 attendee_display_edit();
+}
 /*
 if ( $run_reports == "" ) {events_reports_menu();}
 if ( $run_reports == "excel_export" ) {event_resigration_export.php}
@@ -1289,9 +1910,10 @@ function event_process_payments(){
 									global $wpdb;
 									$events_detail_tbl = get_option('events_detail_tbl');
 									$events_attendee_tbl = get_option('events_attendee_tbl');
+									$event_id = $_REQUEST['event_id'];
 					
 					
-						$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE is_active='yes'";
+						$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE id='$event_id'";
 							$result = mysql_query($sql);
 							while ($row = mysql_fetch_assoc ($result))
 									{
@@ -1344,6 +1966,7 @@ function event_process_payments(){
 									"</td><td>".$txn_id."</td><td> $".$amt_pd."</td><td>".$date_pd."</td>";
 									echo "<td>";
 									echo "<form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
+									echo "<input type='hidden' name='event_id' value='".$event_id."'>";
 									echo "<input type='hidden' name='form_action' value='payment'>";
 									echo "<input type='hidden' name='id' value='".$id."'>";
 									echo "<INPUT TYPE='SUBMIT' VALUE='ENTER PAYMENT' ONCLICK=\"return confirm('Are you sure you want to enter a payment for 
@@ -1358,11 +1981,13 @@ function event_process_payments(){
 						global $wpdb;
 						$events_detail_tbl = get_option('events_detail_tbl');
 						$events_attendee_tbl = get_option('events_attendee_tbl');
+						$event_id = $_REQUEST['event_id'];
+						$today = date("m-d-Y");
 		
 						if ( $_REQUEST['form_action'] == 'payment' ){
 		
 								if ( $_REQUEST['attendee_action'] == 'post_payment' ){
-									echo $_REQUEST['id'];
+									
 										    $id = $_REQUEST['id'];
 											$paystatus = $_REQUEST['paystatus'];
 											$txn_type = $_REQUEST['txn_type'];
@@ -1374,7 +1999,7 @@ function event_process_payments(){
 									   txn_id = '$txn_id', amount_pd = '$amt_pd', paydate ='$date_pd' WHERE id ='$id'";
 									$wpdb->query($sql);
 				
-									echo "<meta http-equiv='refresh' content='0'>";
+									//echo "<meta http-equiv='refresh' content='0'>";
 				
 									}
 					   			    else {
@@ -1415,9 +2040,13 @@ function event_process_payments(){
 													Transaction Type: <input name="txn_type" size="45" value ="<?echo $txn_type;?>" > <br />
 													Transaction ID: <input name="txn_id" size="45" value ="<?echo $txn_id;?>" > <br />
 													Amount Paid: <input name="amt_pd" size="45" value ="<?echo $amt_pd;?>" > <br />
-													Date Paid: <input name="date_pd" size="45" value ="<?echo $date_pd;?>" > <br />
+													Date Paid: <input name="date_pd" size="45" value ="<?
+													if ($date_pd !=""){echo $date_pd;}
+													if ($date_pd ==""){echo $today;}
+													?>" > <br />
 													<?echo "<input type='hidden' name='id' value='".$id."'>";?>
 													<?echo "<input type='hidden' name='form_action' value='payment'>";?>
+													<?echo "<input type='hidden' name='event_id' value='".$event_id."'>";?>
 													<?echo "<input type='hidden' name='attendee_action' value='post_payment'>";?>
 										   			<br><br><input type="submit" name="Submit" value="POST PAYMENT"></form><hr><hr><br>
 									   			<?
@@ -1427,7 +2056,21 @@ function event_process_payments(){
 			}
 		
 		}
+global $wpdb;
+$events_detail_tbl = get_option('events_detail_tbl');		
+$sql = "SELECT * FROM ". $events_detail_tbl;
+Echo "<p align='center'><p align='left'>SELECT EVENT TO ENTER ATTENDEE PAYMENTS:</p><table width = '400'>";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_assoc ($result))
+	{
+	$event_id = $row['id'];
+	$event_name=$row['event_name'];
 
+	echo "<tr><td width='25'></td><td><form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
+	echo "<input type='hidden' name='event_id' value='".$row['id']."'>";
+	echo "<INPUT TYPE='SUBMIT' VALUE='".$event_name."'></form></td><tr>";
+	}
+	echo "</table>";
 enter_attendee_payments();
 list_attendee_payments();
 }
@@ -1440,9 +2083,13 @@ function attendee_display_edit(){
 									global $wpdb;
 									$events_detail_tbl = get_option('events_detail_tbl');
 									$events_attendee_tbl = get_option('events_attendee_tbl');
+									define("EVNT_RGR_PLUGINPATH", "/" . plugin_basename( dirname(__FILE__) ) . "/");
+									define("EVNT_RGR_PLUGINFULLURL", WP_PLUGIN_URL . EVNT_RGR_PLUGINPATH );
+									$url = EVNT_RGR_PLUGINFULLURL;
+					             if ($_REQUEST['event_id'] !=""){$view_event = $_REQUEST['event_id'];}
+					             if ($_REQUEST['view_event'] !=""){$view_event = $_REQUEST['view_event'];}
 					
-					
-						$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE is_active='yes'";
+						$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE id='$view_event'";
 							$result = mysql_query($sql);
 							while ($row = mysql_fetch_assoc ($result))
 									{
@@ -1460,9 +2107,12 @@ function attendee_display_edit(){
 								$question4 = $row['question4'];
 									}
 					
-						$sql  = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
+						$sql  = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$view_event'";
 						$result = mysql_query($sql);
-						Echo "<br><b>Current Attendee List is from: ".$event_name." - ".$identifier."</b><br><hr>";
+						Echo "<hr><br><b>Current Attendee List is from: ".$event_name." - ".$identifier."     </b>";
+						?>
+						<button style="background-color:lightgreen" onclick="window.location='<?echo $url."event_registration_export.php?id=".$view_event;  ?>'" style="width:180; height: 30">Export Current Attendee List To Excel</button><br><hr>
+						<?
 						echo "<table>";
 						echo "<tr><td width='15'></td><td> ID </td><td> Name </td><td> Email </td><td width='15'>City</td><td>State </td><td> Phone </td>
 						<td></td><td> </td><tr>";
@@ -1494,17 +2144,22 @@ function attendee_display_edit(){
 									".$city."</td><td>".$state."</td><td>".$phone."</td>";
 									echo "<td>";
 									echo "<form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
+									echo "<input type='hidden' name='display_action' value='view_list'>";
+									echo "<input type='hidden' name='view_event' value='".$view_event."'>";
 									echo "<input type='hidden' name='form_action' value='edit_attendee'>";
 									echo "<input type='hidden' name='id' value='".$id."'>";
 									echo "<INPUT TYPE='SUBMIT' style='background-color:yellow' VALUE='EDIT RECORD' ONCLICK=\"return confirm('Are you sure you want to edit record for 
 									".$fname." ".$lname."?')\"></form>";
 									echo "</td><td>";
+									
 									echo "<form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
 										echo "<input type='hidden' name='form_action' value='edit_attendee'>";
+										echo "<input type='hidden' name='display_action' value='view_list'>";
 										echo "<input type='hidden' name='attendee_action' value='delete_attendee'>";
+										echo "<input type='hidden' name='view_event' value='".$view_event."'>";
 										echo "<input type='hidden' name='id' value='".$id."'>";
 										echo "<INPUT TYPE='SUBMIT' style='background-color:pink' VALUE='DELETE' ONCLICK=\"return confirm
-										('Are you sure you want to delete record for ".$fname." ".$lname."?')\"></form>
+										('Are you sure you want to delete record for ".$fname." ".$lname."-ID".$id."?')\"></form>
 									</td></tr>";
 									}
 									echo "</table>";
@@ -1515,14 +2170,17 @@ function attendee_display_edit(){
 						global $wpdb;
 						$events_detail_tbl = get_option('events_detail_tbl');
 						$events_attendee_tbl = get_option('events_attendee_tbl');
+						
+						
+						 if ($_REQUEST['event_id'] !=""){$view_event = $_REQUEST['event_id'];}
+					     if ($_REQUEST['view_event'] !=""){$view_event = $_REQUEST['view_event'];}
 		
 						if ( $_REQUEST['form_action'] == 'edit_attendee' ){
 							
 								if ( $_REQUEST['attendee_action'] == 'delete_attendee' ){
 									$id = $_REQUEST['id'];
-									$sql= " DELETE FROM ". $events_attendee_tbl . "WHERE id ='$id'";
-									echo $sql;
-									//$wpdb->query($sql);
+									$sql= " DELETE FROM ". $events_attendee_tbl . " WHERE id ='$id'";
+									$wpdb->query($sql);
 									//echo "<meta http-equiv='refresh' content='0'>";
 									}
 					
@@ -1551,12 +2209,12 @@ function attendee_display_edit(){
 								   	custom_3='$custom_3', custom_4='$custom_4' WHERE id ='$id'";
 									$wpdb->query($sql);
 				
-									echo "<meta http-equiv='refresh' content='0'>";
+									//echo "<meta http-equiv='refresh' content='0'>";
 				
 									}
 					   			    else {
 					   			     	
-										   		$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE is_active='yes'";
+										   		$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE id='".$view_event."'";
 												$result = mysql_query($sql);
 												while ($row = mysql_fetch_assoc ($result))
 														{
@@ -1627,7 +2285,8 @@ function attendee_display_edit(){
 													<b>How do you plan on paying for your Registration?</b> <select tabIndex="10" size="1" name="payment">
 																<option value="="<?echo $payment;?>" selected><?echo $payment;?></option>
 																<option value="Paypal">Credit Card or Paypal</option>
-																<option value="Cash/Check">Cash or Check</option>
+																<option value="Cash">Cash</option>
+																<option value="Check">Check</option>
 																</select></font><br />
 									
 												<?
@@ -1652,6 +2311,8 @@ function attendee_display_edit(){
 												<? } ?>
 										
 													<?echo "<input type='hidden' name='id' value='".$id."'>";?>
+													<?echo "<input type='hidden' name='display_action' value='view_list'>";?>
+													<?echo "<input type='hidden' name='view_event' value='".$view_event."'>";?>
 													<?echo "<input type='hidden' name='form_action' value='edit_attendee'>";?>
 													<?echo "<input type='hidden' name='attendee_action' value='update_attendee'>";?>
 										   			<br><br><input type="submit" name="Submit" value="UPDATE RECORD"></form><hr></td></tr></table>
@@ -1664,5 +2325,136 @@ function attendee_display_edit(){
 
 edit_attendee_record();
 event_list_attendees();
+}
+
+
+function event_regis_pay(){
+
+		global $wpdb;
+		$events_attendee_tbl = get_option('events_attendee_tbl');
+		$events_detail_tbl = get_option('events_detail_tbl');
+	    $events_organization_tbl = get_option('events_organization_tbl');
+		$paypal_cur = get_option('paypal_cur');
+		$id="";
+		$id=$_GET['id'];
+if ($id ==""){echo "Please check your email for payment information.";}
+else{
+			$query  = "SELECT * FROM $events_attendee_tbl WHERE id='$id'";
+	   		$result = mysql_query($query) or die('Error : ' . mysql_error());
+	   		while ($row = mysql_fetch_assoc ($result))
+				{
+	  		    $attendee_id = $row['id'];
+				$lname = $row['lname'];
+				$fname = $row['fname'];
+				$address = $row['address'];
+				$city = $row['city'];
+				$state = $row['state'];
+				$zip = $row['zip'];
+				$email = $row['email'];
+				$phone = $row['phone'];
+				$date = $row['date'];
+				$paystatus = $row['paystatus'];
+				$txn_type = $row['txn_type'];
+				$amt_pd = $row['amount_pd'];
+				$date_pd = $row['paydate'];
+				$event_id = $row['event_id'];
+				$custom1 = $row['custom_1'];
+				$custom2 = $row['custom_2'];
+				$custom3 = $row['custom_3'];
+				$custom4 = $row['custom_4'];
+				$attendee_name = $fname." ".$lname;
+
+				}
+
+				
+			$sql  = "SELECT * FROM ". $events_organization_tbl . " WHERE id='1'";
+			$result = mysql_query($sql);
+			while ($row = mysql_fetch_assoc ($result))
+				{
+	  			$org_id =$row['id'];
+				$Organization =$row['organization'];
+				$Organization_street1 =$row['organization_street1'];
+				$Organization_street2=$row['organization_street2'];
+				$Organization_city =$row['organization_city'];
+				$Organization_state=$row['organization_state'];
+				$Organization_zip =$row['organization_zip'];
+				$contact =$row['contact_email'];
+ 				$registrar = $row['contact_email'];
+				$paypal_id =$row['paypal_id'];
+				$paypal_cur =$row['currency_format'];
+				$events_listing_type =$row['events_listing_type'];
+				$return_url = $row['return_url'];
+				$message =$row['message'];
+				if ($paypal_cur == "USD"){
+				$paypal_cur ="$";
+			}
+				}
+
+
+			//Query Database for Active event and get variable
+
+			$sql = "SELECT * FROM ". $events_detail_tbl . " WHERE id='$event_id'";
+			$result = mysql_query($sql);
+			while ($row = mysql_fetch_assoc ($result))
+							{
+						//$event_id = $row['id'];
+						$event_name = $row['event_name'];
+						$event_desc = $row['event_desc'];
+						$event_description = $row['event_desc'];
+						$identifier = $row['event_identifier'];
+						$event_cost = $row['event_cost'];
+						$allow_checks = $row['allow_checks'];
+						$active = $row['is_active'];
+						$question1 = $row['question1'];
+						$question2 = $row['question2'];
+						$question3 = $row['question3'];
+						$question4 = $row['question4'];
+							}
+
+			echo "<br><br><B>Thank You ".$fname." ".$lname." for registering for ".$event_name."</b><br><br>";
+		  	
+			  
+if ($amt_pd !=""){echo "<br><b><u><i><font color='red' size='3'>Our records indicate you have paid ".$paypal_cur." ".$amt_pd."</font></u></i></b><br><br>";}
+if ($event_cost != ""){
+
+if ($allow_checks == "yes"){
+						echo "<b>PLEASE MAKE CHECKS PAYABLE TO: <u>$Organization</b></u><br></P>"; // BHC Changed for clarity.
+						echo "<b>IN THE AMOUNT OF <u>$paypal_cur $event_cost</u></b><br><br>";
+						echo $Organization."<br>";
+						echo $Organization_street1." ".$Organization_street2."<br>";
+						echo $Organization_city.", ".$Organization_state."   ".$Organization_zip."<br><br>";
+						echo "<hr>";
+						}
+
+if ($paypal_id !=""){
+			//Payment Selection with data hidden - forwards to paypal
+		
+			?>
+			<p align="left"><b>Payment By Credit Card, Debit Card or Pay Pal Account<br>(a PayPal account is not required to pay by credit card).</b></p>
+			<p>Payment will be in the amount of <?echo $paypal_cur." ".$event_cost;?>.</p>
+			<p>PayPal Payments will be sent to: <?echo $Organization." (".$paypal_id;?>)</p>
+			<?if ($paypal_cur == "$"){
+				$paypal_cur ="USD";
+			}?>
+			</p><Br><BR>
+			<table width="500"><tr><td VALIGN='MIDDLE' ALIGN='CENTER'>&nbsp;<br>
+			<B><? echo $event_name." - ".$paypal_cur." ".$event_cost;?>.00</b>&nbsp;</td><td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER' >
+			<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal" method="post">
+			<font face="Arial">
+			<input type="hidden" name="bn" value="AMPPFPWZ.301" style="font-weight: 700">
+			<input type="hidden" name="cmd" value="_xclick" style="font-weight: 700">
+			<input type="hidden" name="business" value="<?echo $paypal_id;?>" style="font-weight: 700" >
+			<input type="hidden" name="item_name" value="<?echo $event_name." - ".$attendee_id." - ".$attendee_name;?>" style="font-weight: 700">
+			<input type="hidden" name="item_number" value="<?echo $event_identifier;?>" style="font-weight: 700">
+			<input type="hidden" name="amount" value="<? echo $event_cost;?>" style="font-weight: 700">
+			<input type="hidden" name="currency_code" value="<?echo $paypal_cur;?>" style="font-weight: 700">
+			<input type="hidden" name="undefined_quantity" value="0" style="font-weight: 700">
+			<input type="hidden" name="custom" value="<?echo $attendee_id;?>" style="font-weight: 700">
+			<input type="hidden" name="image_url" style="font-weight: 700">
+			</font><b><font face="Arial" size="2">&nbsp;<br>
+			<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" align='middle' name="submit"><br>&nbsp; </font></b>
+			</form></td></tr></table><?
+			}
+}}
 }
 ?>
