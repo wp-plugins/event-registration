@@ -1,4 +1,6 @@
 <?
+// for version 2.9.5
+
 /** Define ABSPATH as the root directory */
 define( 'ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/' );
 
