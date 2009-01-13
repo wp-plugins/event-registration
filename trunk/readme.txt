@@ -4,7 +4,7 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 2.9.5
+Stable tag: 2.9.6
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
@@ -21,25 +21,21 @@ I will be working on this to improve as I have a list of improvements I need rig
 
 Changes:
 
+2.96
+	Fixed SQL code errors.
 2.95
-	Added the ability to send retun link in email for payment - setup a new page and place {EVENTREGPAY}.  Store page link in Organization options in admin panel.  Email link includes page name and attendees unique registration ID.  If payment has already been posted in the payment section, the page will notify attendee of payments previously made.
+ Added the ability to send retun link in email for payment - setup a new page and place {EVENTREGPAY}.  Store page link in Organization options in admin panel.  Email link includes page name and attendees unique registration ID.  If payment has already been posted in the payment section, the page will notify attendee of payments previously made.
 
 2.94
-	Added support to send custom confirmation email for each event or default email for organization or no confirmation mail at all.
-	
-	Paypal ID required to display creditcard/paypal info on payment screen.
-	
-	Modified the Event Report Page to choose which event to view/export from list of all events.
-	
-	Added support to have the event description display or not display on the registration page.  Option on the Event Setup Page.
-	
-	Added support to limit the number of attendees for an event.  Option on the Event Setup Page.
-	
+	Added support to send custom confirmation email for each event or default email for organization or no confirmation mail at all.	
+	Paypal ID required to display creditcard/paypal info on payment screen.	
+	Modified the Event Report Page to choose which event to view/export from list of all events.	
+	Added support to have the event description display or not display on the registration page.  Option on the Event Setup Page.	
+	Added support to limit the number of attendees for an event.  Option on the Event Setup Page.	
 	Added support for free/no cost events.  If the fee is left blank on the event setup page, payment options and cost are not displayed on the reg form and 
 	payment information is not displayed on reg confirmation page.
-
 	Added ability to display attendee list on page or post {EVENTATTENDEES} - displays event name, description and list of attendeeds by order of registration.  
-		To change sort order of attendees change line 399 to  $sql  = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id' ORDER BY lname";
+	To change sort order of attendees change line 399 to  $sql  = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id' ORDER BY lname";
 2.93
 	Resolved potential Mysql error due to database call
 2.92
