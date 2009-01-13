@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.avdude.com/wp
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. Reporting features provide a list of events, list of attendees, and excel export.
-Version: 2.9.5
+Version: 2.9.6
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
@@ -27,6 +27,8 @@ Author URI: http://www.avdude.com
 
 /*
 Changes:
+2.96
+	Fixed SQL coding issues - sorry
 2.95
 	Added the ability to send retun link in email for payment - setup a new page and place {EVENTREGPAY}.  Store page link in Organization options in admin panel.  Email link includes page name and attendees unique registration ID.  If payment has already been posted in the payment section, the page will notify attendee of payments previously made.
 
@@ -80,9 +82,9 @@ Things I still need to do:
 
 //Define the table versions for unique tables required in Events Registration
 
-$events_attendee_tbl_version = "2.95";
-$events_detail_tbl_version = "2.95";
-$events_organization_tbl_version = "2.95";
+$events_attendee_tbl_version = "2.96";
+$events_detail_tbl_version = "2.96";
+$events_organization_tbl_version = "2.96";
 
 
 //Function to install/update data tables in the Wordpress database
@@ -149,7 +151,7 @@ function events_data_tables_install () {
 				  }
 		}
 	// Code here with new database upgrade info/table Must change version number to work.
-		 $events_attendee_tbl_version = "2.95";
+		 $events_attendee_tbl_version = "2.96";
 		 $installed_ver = get_option( "events_attendee_tbl_version" );
 	     if( $installed_ver != $events_attendee_tbl_version ) {
 
@@ -247,7 +249,7 @@ function events_data_tables_install () {
 				    add_option($option_name, $newvalue, $deprecated, $autoload);
 			  }
 			}
-	 $events_detail_tbl_version = "2.95";
+	 $events_detail_tbl_version = "2.96";
      $installed_ver = get_option( "$events_detail_tbl_version" );
      if( $installed_ver != $events_detail_tbl_version ) {
 
@@ -296,27 +298,27 @@ function events_data_tables_install () {
 
 	   if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 			$sql = "CREATE TABLE " . $table_name . " (
-				  id int(10) unsigned NOT NULL AUTO_INCREMENT,
-				  organization VARCHAR(45) DEFAULT NULL,
-				  organization_street1 VARCHAR(45) DEFAULT NULL,
-				  organization_street2 VARCHAR(45) DEFAULT NULL,
-				  organization_city VARCHAR(45) DEFAULT NULL,
-				  organization_state VARCHAR(45) DEFAULT NULL,
-				  organization_zip VARCHAR(45) DEFAULT NULL,
-				  contact_email VARCHAR(55) DEFAULT NULL,
-				  paypal_id VARCHAR(55) DEFAULT NULL,
-				  currency_format VARCHAR(45) DEFAULT NULL,
-				  events_listing_type VARCHAR(45) DEFAULT NULL,
-				  return_url VARCHAR(100) DEFAULT NULL,
-				  default_mail VARCHAR(2) DEEFULT NULL,
-				  message VARCHAR(500) DEFAULT NULL,
+				  id int(10) unsigned NOT NULL auto_increment,
+				  organization varchar(45) default NULL,
+				  organization_street1 varchar(45) default NULL,
+				  organization_street2 varchar(45) default NULL,
+				  organization_city varchar(45) default NULL,
+				  organization_state varchar(45) default NULL,
+				  organization_zip varchar(45) default NULL,
+				  contact_email varchar(55) default NULL,
+				  paypal_id varchar(55) default NULL,
+				  currency_format varchar(45) default NULL,
+				  events_listing_type varchar(45) default NULL,
+				  default_mail varchar(2) default NULL,
+				  message varchar(500) default NULL,
+				  return_url varchar(100) default NULL,
 				  UNIQUE KEY id (id)
 				);";
 
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			dbDelta($sql);
 
-			$message=("Enter your custom confirmation message here."); //BHC
+			$message=("Enter your custom confirmation message here.");
 
 
 			$sql="INSERT into $table_name (organization, default_mail, message) values ('Your Company', 'Y', '".$message."')";
@@ -346,26 +348,26 @@ function events_data_tables_install () {
 }
 
 //Upgrade Info Here
-	$events_organization_tbl_version = "2.95";
+	$events_organization_tbl_version = "2.96";
 
      $installed_ver = get_option( "events_organization_tbl_version" );
      if( $installed_ver != $events_organization_tbl_version ) {
 
 			$sql = "CREATE TABLE " . $table_name . " (
-				  id int(10) unsigned NOT NULL AUTO_INCREMENT,
-				  organization VARCHAR(45) DEFAULT NULL,
-				  organization_street1 VARCHAR(45) DEFAULT NULL,
-				  organization_street2 VARCHAR(45) DEFAULT NULL,
-				  organization_city VARCHAR(45) DEFAULT NULL,
-				  organization_state VARCHAR(45) DEFAULT NULL,
-				  organization_zip VARCHAR(45) DEFAULT NULL,
-				  contact_email VARCHAR(55) DEFAULT NULL,
-				  paypal_id VARCHAR(55) DEFAULT NULL,
-				  currency_format VARCHAR(45) DEFAULT NULL,
-				  events_listing_type VARCHAR(45) DEFAULT NULL,
-				  return_url VARCHAR(100) DEFAULT NULL,
-				  default_mail VARCHAR(2) DEEFULT NULL,
-				  message VARCHAR(500) DEFAULT NULL,
+				  id int(10) unsigned NOT NULL auto_increment,
+				  organization varchar(45) default NULL,
+				  organization_street1 varchar(45) default NULL,
+				  organization_street2 varchar(45) default NULL,
+				  organization_city varchar(45) default NULL,
+				  organization_state varchar(45) default NULL,
+				  organization_zip varchar(45) default NULL,
+				  contact_email varchar(55) default NULL,
+				  paypal_id varchar(55) default NULL,
+				  currency_format varchar(45) default NULL,
+				  events_listing_type varchar(45) default NULL,
+				  default_mail varchar(2) default NULL,
+				  message varchar(500) default NULL,
+				  return_url varchar(100) default NULL,
 				  UNIQUE KEY id (id)
 				);";
 
@@ -373,7 +375,7 @@ function events_data_tables_install () {
       dbDelta($sql);
 
 
-      		$message=("**This is an automated response - DO NOT REPLY! A contact email address is listed below.***\n\nThank you for signing up. Your registration has been recieved.  If you have not already done so, please submit payment.\n\nIf you have any questions, you can contact the organizer at "); //BHC
+      		$message=("**This is an automated response - DO NOT REPLY! A contact email address is listed below.***\n\nThank you for signing up. Your registration has been recieved.  If you have not already done so, please submit payment.\n\nIf you have any questions, you can contact the organizer at "); 
 
 
 			$sql="UPDATE $table_name SET default_mail='Y', message ='".$message."' WHERE id = '1')";
@@ -551,7 +553,10 @@ function event_config_mnu()	{
 					   $default_mail = $_POST['default_mail'];
 					   $message = $_POST['message'];
 
-					   $sql = "UPDATE " . $events_organization_tbl . " SET organization = '$org_name', organization_street1='$org_street1', organization_street2='$org_street2', organization_city='$org_city', organization_state='$org_state', organization_zip='$org_zip', contact_email='$email', paypal_id='$paypal_id', currency_format='$paypal_cur', events_listing_type='$events_listing_type', return_url = '$return_url', default_mail='$default_mail', message='$message' WHERE id ='$org_id'";
+					   $sql = "UPDATE " . $events_organization_tbl . " SET organization='$org_name', organization_street1='$org_street1', organization_street2='$org_street2', 
+					   organization_city='$org_city', organization_state='$org_state', organization_zip='$org_zip', contact_email='$email', paypal_id='$paypal_id', 
+					   currency_format='$paypal_cur', events_listing_type='$events_listing_type', return_url = '$return_url', default_mail='$default_mail', message='$message' WHERE id ='1'";
+					   
 
 
 
@@ -720,7 +725,7 @@ function event_regis_events(){
 					    $result = mysql_query ($sql);
 					  				/* 	echo "<table><tr><td width='60'></td><td><input name='' size='45' value='EVENT NAME'>";
 									echo "<input name='' value='EVENT ID'>";
-									echo "<input name='' size='22' value='DESCRIPTION/DETAILS'>"; //BHC
+									echo "<input name='' size='22' value='DESCRIPTION/DETAILS'>"; 
 								        echo "<input name='' size='10' value='COST'>";
 								        echo "<input name='' value='ALLOW CHECKS?'>";
 								        echo "<input name='' value='IS ACTIVE?'></td><td></td></tr></table><table>"; */
@@ -1050,12 +1055,12 @@ function event_regis_events(){
 				   	if (isset($_POST['Submit'])){
 				   		if ( $_REQUEST['action'] == 'add' ){
 					   			$event_name=$_REQUEST['event'];
-								$ident = $_REQUEST['ident'];
-								$desc=$_REQUEST['desc']; //BHC
+								$event_identifier = $_REQUEST['ident'];
+								$event_desc=$_REQUEST['desc']; 
 								$display_desc=$_REQUEST['display_desc'];
 								$reg_limit=$_REQUEST['reg_limit'];
-					   			$cost = $_REQUEST['cost'];
-					   			$accept_checks = $_REQUEST['checks'];
+					   			$event_cost = $_REQUEST['cost'];
+					   			$allow_checks = $_REQUEST['checks'];
 					   			$is_active = $_REQUEST['is_active'];
 					   			$start_month =$_REQUEST['start_month'];
 								$start_day = $_REQUEST['start_day'];
@@ -1065,11 +1070,10 @@ function event_regis_events(){
 								$end_year = $_REQUEST['end_year'];
 								$start_time = $_REQUEST['start_time'];
 								$end_time = $_REQUEST['end_time'];
-					   			  			
-					   			$quest1 = $_REQUEST['quest1'];
-                                $quest2 = $_REQUEST['quest2'];
-                                $quest3 = $_REQUEST['quest3'];
-                                $quest4 = $_REQUEST['quest4'];
+					   			$question1 = $_REQUEST['quest1'];
+                                $question2 = $_REQUEST['quest2'];
+                                $question3 = $_REQUEST['quest3'];
+                                $question4 = $_REQUEST['quest4'];
                                 $conf_mail=$_REQUEST['conf_mail'];
 								$send_mail=$_REQUEST['send_mail'];
 
@@ -1085,11 +1089,8 @@ function event_regis_events(){
 
 					   			//Post the new event into the database
 
-								/* BHC */ $sql="INSERT INTO $events_detail_tbl (event_name, event_identifier, reg_limit, event_desc, display_desc, event_cost, send_mail, allow_checks, is_active, start_month, start_day, start_year, end_month, end_day, end_year, start_time, end_time,
-								question1, question2, question3, question4, conf_mail)
-					   			VALUES('$event_name','$ident', '$reg_limit', '$desc','$display_desc', '$cost',$send_mail, '$accept_checks','$is_active', 
-								   '$start_month', '$start_day', '$start_year', '$end_month', '$end_day', '$end_year', '$start_time', '$end_time,
-								   '$quest1', '$quest2', '$quest3', '$quest4', '$conf_mail)"; //BHC
+								 $sql="INSERT INTO ".$events_detail_tbl." (event_name, event_desc, display_desc, event_identifier, start_month, start_day, start_year, start_time, end_month, end_day, end_year, end_time, reg_limit, event_cost, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$event_identifier', '$start_month', '$start_day', '$start_year', '$start_time', '$end_month', '$end_day', '$end_year', '$end_time', '$reg_limit', '$event_cost', '$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
+								 
 
 								$wpdb->query($sql);
 
@@ -1100,7 +1101,7 @@ function event_regis_events(){
                                 $id=$_REQUEST['id'];
 					   			$event_name=$_REQUEST['event'];
 								$ident = $_REQUEST['ident'];
-								$desc=$_REQUEST['desc']; //BHC
+								$desc=$_REQUEST['desc']; 
 								$display_desc = $_REQUEST['display_desc'];
 								$reg_limit=$_REQUEST['reg_limit'];
 					   			$cost = $_REQUEST['cost'];
@@ -1148,7 +1149,7 @@ function event_regis_events(){
 					   			?>
 						   			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>"
 									<br><br>EVENT NAME: <input name="event" size="100">      ID FOR EVENT (used for paypal reference)<input name="ident"><br>
-									<br><br>EVENT DESCRIPTION: <textarea rows='2' cols='125' name='desc' ></textarea><br> <? //BHC ?>
+									<br><br>EVENT DESCRIPTION: <textarea rows='2' cols='125' name='desc' ></textarea><br> 
 									<br>Do you want to display the event description on registration page? <?									
 										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='Y'>Yes";
 										echo "<INPUT TYPE='radio' NAME='display_desc' VALUE='N'>No<br>";?>	
@@ -1341,7 +1342,7 @@ function register_attendees(){
 			//$sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; 
 			$events_organization_tbl = get_option('events_organization_tbl');
 			$sql  = "SELECT * FROM ". $events_organization_tbl ." WHERE id='1'";
-			$result = mysql_query($sql); //BHC
+			$result = mysql_query($sql);
 
 			while ($row = mysql_fetch_assoc ($result))
 				{
@@ -1373,13 +1374,13 @@ function register_attendees(){
 				echo "Current Number of Attendees: ".$num_rows."<br>";
 			}
 			else {
-			echo "<p align='center'><b>Event Registration for ".$event_name."</b></p>"; //BHC
-			echo "<table width='100%'><td>"; //BHC
+			echo "<p align='center'><b>Event Registration for ".$event_name."</b></p>";
+			echo "<table width='100%'><td>"; 
 			if ($display_desc == "Y"){
-			echo "<td span='2'>".$event_desc."</td>"; //BHC
+			echo "<td span='2'>".$event_desc."</td>"; 
 			}
-			echo "</table>"; //BHC
-			echo "<table width='500'><td>";	//BHC changed to fit theme.
+			echo "</table>"; 
+			echo "<table width='500'><td>";	
 			if ($paypal_cur == "USD"){
 				$paypal_cur ="$";
 			}
@@ -1482,8 +1483,8 @@ $wpdb->query($sql);
 			  $sql  = "SELECT * FROM ". $events_organization_tbl ." WHERE id='1'";
 			  // $sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; 
 			   
-			   //BHC NEED TO CHANGE: Table name should be a variable but $events_organization_tbl gave an error as it is undefined at this point.
-			   $result = mysql_query($sql); //BHC
+			   
+			   $result = mysql_query($sql); 
 			   while ($row = mysql_fetch_assoc ($result))
 				{
 	  			$org_id =$row['id'];
