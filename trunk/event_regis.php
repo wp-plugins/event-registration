@@ -468,10 +468,6 @@ function event_attendee_list_run(){
 		}
 }
 
-
-
-
-
 function event_regis_run(){
   /*	if ($_REQUEST['regevent_action'] == "post_attendee")
 	{add_attedees_to_db();
@@ -480,8 +476,19 @@ function event_regis_run(){
 	register_attendees();
 	}
 	*/
+	global $wpdb;
+		$events_attendee_tbl = get_option('events_attendee_tbl');
+		$events_detail_tbl = get_option('events_detail_tbl');
+	    $events_organization_tbl = get_option('events_organization_tbl');
 	$events_listing_type = get_option('events_listing_type');
+	$sql  = "SELECT * FROM ". $events_organization_tbl ." WHERE id='1'";
+	$result = mysql_query($sql);
+   	while ($row = mysql_fetch_assoc ($result))
+					{
+		  			$events_listing_type =$row['events_listing_type'];
+					}
 
+	if ($events_listing_type == ""){ echo "<br><br><b>Please setup Organization in the Admin Panel!<br><br></b>";}
 	if ($events_listing_type == 'single'){
 		if ($_REQUEST['regevent_action'] == "post_attendee"){add_attedees_to_db();}
 		else if ($_REQUEST['regevent_action'] == "pay"){event_regis_pay();}
