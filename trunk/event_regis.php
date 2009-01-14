@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.avdude.com/wp
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. Reporting features provide a list of events, list of attendees, and excel export.
-Version: 2.9.6
+Version: 2.9.7
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
@@ -27,6 +27,10 @@ Author URI: http://www.avdude.com
 
 /*
 Changes:
+2.97
+	Enabled registration form validation - checks for data in field only.
+	Commented out "Are you sure"" on entry and edit buttons, left in tact on all "DELETE" buttons
+	Set Default currency to display "$" when set to USD or when it is blank.  Blank currency is set to USD for paypal.
 2.96
 	Fixed SQL coding issues - sorry
 2.95
@@ -82,9 +86,9 @@ Things I still need to do:
 
 //Define the table versions for unique tables required in Events Registration
 
-$events_attendee_tbl_version = "2.96";
-$events_detail_tbl_version = "2.96";
-$events_organization_tbl_version = "2.96";
+$events_attendee_tbl_version = "2.97";
+$events_detail_tbl_version = "2.97";
+$events_organization_tbl_version = "2.97";
 
 
 //Function to install/update data tables in the Wordpress database
@@ -151,7 +155,7 @@ function events_data_tables_install () {
 				  }
 		}
 	// Code here with new database upgrade info/table Must change version number to work.
-		 $events_attendee_tbl_version = "2.96";
+		 $events_attendee_tbl_version = "2.97";
 		 $installed_ver = get_option( "events_attendee_tbl_version" );
 	     if( $installed_ver != $events_attendee_tbl_version ) {
 
@@ -249,7 +253,7 @@ function events_data_tables_install () {
 				    add_option($option_name, $newvalue, $deprecated, $autoload);
 			  }
 			}
-	 $events_detail_tbl_version = "2.96";
+	 $events_detail_tbl_version = "2.97";
      $installed_ver = get_option( "$events_detail_tbl_version" );
      if( $installed_ver != $events_detail_tbl_version ) {
 
@@ -348,7 +352,7 @@ function events_data_tables_install () {
 }
 
 //Upgrade Info Here
-	$events_organization_tbl_version = "2.96";
+	$events_organization_tbl_version = "2.97";
 
      $installed_ver = get_option( "events_organization_tbl_version" );
      if( $installed_ver != $events_organization_tbl_version ) {
@@ -766,7 +770,8 @@ function event_regis_events(){
 					       			    echo "<tr><td></td><td valign='top'><form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
 										echo "<input type='hidden' name='action' value='edit'>";
 										echo "<input type='hidden' name='id' value='".$row['id']."'>";
-										echo "<INPUT TYPE='SUBMIT' VALUE='EDIT' ONCLICK=\"return confirm('Are you sure you want to edit ".$row['event_name']."?')\"></form>";
+										//echo "<INPUT TYPE='SUBMIT' VALUE='EDIT' ONCLICK=\"return confirm('Are you sure you want to edit ".$row['event_name']."?')\"></form>";
+										echo "<INPUT TYPE='SUBMIT' VALUE='EDIT'></form>";
 										echo "<form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
 										echo "<input type='hidden' name='action' value='delete'>";
 										echo "<input type='hidden' name='id' value='".$row['id']."'>";
@@ -779,10 +784,10 @@ function event_regis_events(){
 										echo " <b><i>PLEASE UPDATE THIS EVENT</i></b><br>";
 									    }
 										if ($display_desc =="Y"){
-										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='Y'>Yes<br>";
+										echo "<b> Yes</b><br>";
 									    }
 										if ($display_desc =="N"){
-										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='N'>No<br>";}
+										echo "<b> No</b><br>";}
 
 										echo "Description <b><u>".$event_desc."</b></u><br><br>";
 										
@@ -796,10 +801,10 @@ function event_regis_events(){
 										echo " <b><i>PLEASE UPDATE THIS EVENT</i></b><br>";
 									    }
 										if ($send_mail =="Y"){
-										echo "<INPUT TYPE='radio' NAME='send_mail' CHECKED VALUE='Y'>Yes<br>";
+										echo "<b> Yes</b><br>";
 									    }
 										if ($send_mail =="N"){
-										echo "<INPUT TYPE='radio' NAME='send_mail' CHECKED VALUE='N'>No<br>";}
+										echo "<B>No</b><br>";}
 										echo "Custom Confirmation Mail <b><u>".$conf_mail."</b></u><br>";
 										
                                         echo "<hr></td></tr>";
@@ -1018,9 +1023,9 @@ function event_regis_events(){
 										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='N'>No<br>";}?>	
 										
 									ATTENDEE LIMIT (leave blank for unlimited)  <input name="reg_limit" size="10" value ="<? echo $reg_limit;?>"><br />
-                                    COST FOR EVENT (leave blank for free events)  <input name="cost" size="10" value ="<? echo $event_cost;?>">     WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select><br><br>
+                                    COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00)  <input name="cost" size="10" value ="<? echo $event_cost;?>"><br /><br />     WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select><br><br>
                                 	
-						   			DO YOU WANT THIS EVENT TO BE THE ACTIVE EVENT? <select name="is_active"><option>yes</option><option>no</option></select><br><br> <!-- BHC -->
+						   			<br>DO YOU WANT THIS EVENT TO BE THE ACTIVE EVENT? <select name="is_active"><option>yes</option><option>no</option></select><br><br> <!-- BHC -->
                                     CUSTOM QUESTION 1: <textarea rows='1' cols='125' name='quest1' ><? echo $question1;?></textarea><br>
                                     CUSTOM QUESTION 2: <textarea rows='1' cols='125' name='quest2' ><? echo $question2;?></textarea><br>
                                     CUSTOM QUESTION 3: <textarea rows='1' cols='125' name='quest3' ><? echo $question3;?></textarea><br>
@@ -1161,7 +1166,7 @@ function event_regis_events(){
 										echo "<INPUT TYPE='radio' NAME='display_desc' CHECKED VALUE='Y'>Yes";
 										echo "<INPUT TYPE='radio' NAME='display_desc' VALUE='N'>No<br>";?>	
 									ATTENDEE LIMIT (leave blank for unlimited attendees) <input name="reg_limit" size="15"><br />
-						   			COST FOR EVENT (leave blank for free events) <input name="cost" size="10">     WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select><br><br>
+						   			COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00) <input name="cost" size="10"> <br /><br />    WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select><br><br>
 	Start Date: <SELECT NAME="start_month">
 	<OPTION>
 	<OPTION VALUE="Jan">January</option>
@@ -1279,7 +1284,7 @@ function event_regis_events(){
 	<OPTION VALUE="2013">2013
 	<OPTION VALUE="2015">2014
 	</SELECT><br />						   			
-						   			DO YOU WANT THIS EVENT TO BE THE ACTIVE EVENT? <select name="is_active"><option>yes</option><option>no</option></select><br><br> <!-- BHC -->
+						   			<br>DO YOU WANT THIS EVENT TO BE THE ACTIVE EVENT? <select name="is_active"><option>yes</option><option>no</option></select><br><br> <!-- BHC -->
                                     CUSTOM QUESTION 1: <textarea rows='1' cols='125' name='quest1' ></textarea><br>
                                     CUSTOM QUESTION 2: <textarea rows='1' cols='125' name='quest2' ></textarea><br>
                                     CUSTOM QUESTION 3: <textarea rows='1' cols='125' name='quest3' ></textarea><br>
@@ -1375,12 +1380,7 @@ function register_attendees(){
 				$result = mysql_query($sql);
 				$num_rows = mysql_num_rows($result);
 				
-			if ($reg_limit <="$num_rows"){
-				echo "<br><br><b>We are sorry but this event has reached the maximun number of attendees!<br></b>";
-				echo "<br><br><b>Please check back in the event someone cancels.<br><br></b>";
-				echo "Current Number of Attendees: ".$num_rows."<br>";
-			}
-			else {
+			if ($reg_limit == "" or $reg_limit >= "$num_rows") {
 			echo "<p align='center'><b>Event Registration for ".$event_name."</b></p>";
 			echo "<table width='100%'><td>"; 
 			if ($display_desc == "Y"){
@@ -1388,39 +1388,133 @@ function register_attendees(){
 			}
 			echo "</table>"; 
 			echo "<table width='500'><td>";	
-			if ($paypal_cur == "USD"){
+			if ($paypal_cur == "USD" || $paypal_cur =="" ){
 				$paypal_cur ="$";
 			}
 			if ($event_cost != ""){			
-			echo "<b>".$event_name." - Cost ".$paypal_cur." ".$event_cost.".00</b></p></p>";
+			echo "<b>".$event_name." - Cost ".$paypal_cur." ".$event_cost."</b></p></p>";
 			}
+			
 			?>
+<? //JavaScript for Registration Form Validation ?>			
+<SCRIPT>
+function echeck(str) {
+
+		var at="@"
+		var dot="."
+		var lat=str.indexOf(at)
+		var lstr=str.length
+		var ldot=str.indexOf(dot)
+		if (str.indexOf(at)==-1){
+		   alert("Invalid E-mail ID")
+		   return false
+		}
+
+		if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr){
+		   alert("Invalid E-mail ID")
+		   return false
+		}
+
+		if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr){
+		    alert("Invalid E-mail ID")
+		    return false
+		}
+
+		 if (str.indexOf(at,(lat+1))!=-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+		 if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+		 if (str.indexOf(dot,(lat+2))==-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+		
+		 if (str.indexOf(" ")!=-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+ 		 return true					
+	}
+
+
+function validateForm(form) { 
+
+if (form.fname.value == "") { alert("Please enter your first name."); 
+   		form.fname.focus( ); 
+   		return false; 
+   }
+if (form.lname.value == "") { alert("Please enter your last name."); 
+   		form.lname.focus( ); 
+   		return false; 
+   }
+	
+if ((form.email.value==null)||(form.email.value=="")){
+		alert("Please Enter your Email address")
+		form.email.focus()
+		return false
+	}
+if (echeck(form.email.value)==false){
+		form.email.value=""
+		form.email.focus()
+		return false
+	}
+
+if (form.email.value == "") { alert("Please enter your email address."); 
+   		form.email.focus( ); 
+   		return false; 
+   }
+
+if (form.phone.value == "") { alert("Please enter your phone number."); 
+   		form.phone.focus( ); 
+   		return false; 
+   }
+if (form.address.value == "") { alert("Please enter your address."); 
+   		form.address.focus( ); 
+   		return false; 
+   }
+if (form.city.value == "") { alert("Please enter your city."); 
+   		form.city.focus( ); 
+   		return false; 
+   }   
+if (form.state.value == "") { alert("Please enter your state."); 
+   		form.state.focus( ); 
+   		return false; 
+   }
+if (form.zip.value == "") { alert("Please enter your zip code."); 
+   		form.zip.focus( ); 
+   		return false; 
+   }
+}
+</SCRIPT>
 			<br></td><tr><td>
-			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>" >
-			<p align="left"><font face="Arial" size="2"><b>First Name<input tabIndex="1" maxLength="35" size="47" name="fname"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>Last Name<input tabIndex="2" maxLength="35" size="47" name="lname"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><b><font face="Arial" size="2">Email:<input tabIndex="3" maxLength="37" size="37" name="email"></font></b><font face="Arial">&nbsp;</font><font face="Arial" color="#ff0000" size="2">*<br>
-			</font><b><font face="Arial" size="2"><br>
-			Phone:<input tabIndex="4" maxLength="15" size="28" name="phone"></font></b><font face="Arial" color="#ff0000" size="2">*</font></p>
-			<p align="left"><b><font face="Arial" size="2">Address:&nbsp;<input tabIndex="5" maxLength="35" size="49" name="address"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>City:<input tabIndex="6" maxLength="20" size="33" name="city"> </b>
-			<font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>State or Province:<input tabIndex="7" maxLength="30" size="18" name="state"></b><font color="#ff0000">*</font></font></p>
-			<p align="left"><font face="Arial" size="2"><b>Zip:<input tabIndex="8" maxLength="10" size="16" name="zip"></b><font color="#ff0000">*</font><b><br>
-			<br>
-			How did you hear about this event?</b><br /></font><font face="Arial">&nbsp;<select tabIndex="9" size="1" name="hear">
+			<form method="post" action="<? echo $_SERVER['REQUEST_URI'];?>" onSubmit="return validateForm(this)">
+			<p align="left"><b>First Name:<br /><input tabIndex="1" maxLength="40" size="47" name="fname"></b></p>
+			<p align="left"><b>Last Name:<br /><input tabIndex="2" maxLength="40" size="47" name="lname"></b></p>
+			<p align="left"><b>Email:<br /><input tabIndex="3" maxLength="40" size="47" name="email"></b></p>
+			<p align="left"><b>Phone:<br /><input tabIndex="4" maxLength="20" size="25" name="phone"></b></p>
+			<p align="left"><b>Address:<br /><input tabIndex="5" maxLength="35" size="49" name="address"></b></p>
+			<p align="left"><b>City:<br /><input tabIndex="6" maxLength="25" size="35" name="city"> </b></p>
+			<p align="left"><b>State or Province:<br /><input tabIndex="7" maxLength="20" size="18" name="state"></b></p>
+			<p align="left"><b>Zip:<br /><input tabIndex="8" maxLength="10" size="15" name="zip"></b></p>
+			<p align="left"><b>How did you hear about this event?</b><br /><select tabIndex="9" size="1" name="hear">
 			<option value="pick one" selected>pick one</option>
 			<option value="Website">Website</option>
 			<option value="A Friend">A Friend</option>
 			<option value="Brochure">A Brochure</option>
 			<option value="Announcment">An Announcment</option>
 			<option value="Other">Other</option>
-			</select></font></p>
+			</select></p>
 			<?
             if ($event_cost != ""){ ?>
-			<p align="left"><font face="Arial" size="2"><b>How do you plan on paying for
-			your Registration?</b><br /> <select tabIndex="10" size="1" name="payment">
-			<option value="pickone" selected>pickone</option>
+			<p align="left"><b>How do you plan on paying for your Registration?</b><br /> 
+			<select tabIndex="10" size="1" name="payment"><option value="pickone" selected>pickone</option>
 			<? if ($paypal_id != ""){ ?><option value="Paypal">Credit Card or Paypal</option><? } ?>
 			<option value="Cash">Cash</option>
 			<? if ($checks == "yes"){ ?><option value="Check">Check</option><? } ?>
@@ -1429,19 +1523,19 @@ function register_attendees(){
 
 		
             if ($question1 != ""){ ?>
-			<p align="left"><font face="Arial" size="2"><b><?echo $question1; ?><input size="33" name="custom_1"> </b></font></p>
+			<p align="left"><b><?echo $question1; ?><input size="33" name="custom_1"> </b></p>
 			<? } else { ?><input type="hidden" name="custom1" value=""><?}
 
 			if ($question2 != ""){ ?>
-			<p align="left"><font face="Arial" size="2"><b><?echo $question2; ?><input size="33" name="custom_2"> </b></font></p>
+			<p align="left"><b><?echo $question2; ?><input size="33" name="custom_2"> </b></p>
 			<? } else { ?><input type="hidden" name="custom2" value=""><?}
 
             if ($question3 != ""){ ?>
-			<p align="left"><font face="Arial" size="2"><b><?echo $question3; ?><input size="33" name="custom_3"> </b></font></p>
+			<p align="left"><b><?echo $question3; ?><input size="33" name="custom_3"> </b></p>
 			<? } else { ?><input type="hidden" name="custom3" value=""><?}
 
             if ($question4 != ""){ ?>
-			<p align="left"><font face="Arial" size="2"><b><?echo $question4; ?><input size="33" name="custom_4"> </b></font></p>
+			<p align="left"><b><?echo $question4; ?><input size="33" name="custom_4"> </b></p>
 			<? }  else { ?><input type="hidden" name="custom1" value=""><?}
 			?>
 
@@ -1451,6 +1545,11 @@ function register_attendees(){
 			<font color="#FF0000"><b>(Only click the Submit Button Once)</b></font></form></td></tr></table></body>
 			<?
 }
+else {
+				echo "<br><br><b>We are sorry but this event has reached the maximun number of attendees!<br></b>";
+				echo "<br><br><b>Please check back in the event someone cancels.<br><br></b>";
+				echo "Current Number of Attendees: ".$num_rows."<br>";
+			}
 }
 
 function add_attedees_to_db(){
@@ -1740,12 +1839,12 @@ if ($paypal_id !=""){
 			<p align="left"><b>Payment By Credit Card, Debit Card or Pay Pal Account<br>(a pay
 			pal account is not required to pay by credit card).</b></p>
 			<p>PayPal Payments will be sent to: <?echo $paypal_id;?></p>
-	if ($paypal_cur == "$"){
+	if ($paypal_cur == "$" || $paypal_cur == ""){
 				$paypal_cur ="USD";
 			}
 			</p><Br><BR>
 			<table width="500"><tr><td VALIGN='MIDDLE' ALIGN='CENTER'>&nbsp;<br>
-			<B><? echo $event_name." - ".$paypal_cur." ".$event_cost;?>.00</b>&nbsp;</td><td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER' >
+			<B><? echo $event_name." - ".$paypal_cur." ".$event_cost;?></b>&nbsp;</td><td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER' >
 			<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal" method="post">
 			<font face="Arial">
 			<input type="hidden" name="bn" value="AMPPFPWZ.301" style="font-weight: 700">
@@ -1774,6 +1873,9 @@ define("EVNT_RGR_PLUGINPATH", "/" . plugin_basename( dirname(__FILE__) ) . "/");
 define("EVNT_RGR_PLUGINFULLURL", WP_PLUGIN_URL . EVNT_RGR_PLUGINPATH );
 $url = EVNT_RGR_PLUGINFULLURL;
 
+//$this->wp_content_dir.'/plugins/'.plugin_basename(dirname(__FILE__)); » TO $plugin_path = dirname(__FILE__);
+
+ 
 
 
 $sql = "SELECT * FROM ". $events_detail_tbl;
@@ -1839,11 +1941,12 @@ function display_all_events(){
 					       			    $checks=$row['allow_checks'];
 					       			    $active=$row['is_active'];
 
-								        echo "<tr><td width='400'>".$event_name." - ".$paypal_cur." ".$cost.".00</p><hr></td><td>";
+								        echo "<tr><td width='400'>".$event_name." - ".$paypal_cur." ".$cost."</p><hr></td><td>";
 								        echo "<form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
 								        echo "<input type='hidden' name='regevent_action' value='register'>";
 										echo "<input type='hidden' name='event_id' value='".$row['id']."'>";
-										echo "<INPUT TYPE='SUBMIT' VALUE='REGISTER' ONCLICK=\"return confirm('Are you sure you want to register for ".$row['event_name']."?')\"></form></td></tr>";
+									    echo "<INPUT TYPE='SUBMIT' VALUE='REGISTER'></form></td></tr>";
+										// echo "<INPUT TYPE='SUBMIT' VALUE='REGISTER' ONCLICK=\"return confirm('Are you sure you want to register for ".$row['event_name']."?')\"></form></td></tr>";
 								        }
 							echo "</table>";
 	}
@@ -1905,8 +2008,9 @@ function view_attendee_list(){
 				echo "<form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
 				echo "<input type='hidden' name='attendee_action' value='edit'>";
 				echo "<input type='hidden' name='attendee_id' value='".$id."'>";
-				echo "<INPUT TYPE='SUBMIT' VALUE='EDIT' ONCLICK=\"return confirm('Are you sure you want to edit record for ".$fname." ".$lname."?')\"></form>";
-				echo "</td></tr>";
+				// echo "<INPUT TYPE='SUBMIT' VALUE='EDIT' ONCLICK=\"return confirm('Are you sure you want to edit record for ".$fname." ".$lname."?')\"></form>";
+				echo "<INPUT TYPE='SUBMIT' VALUE='EDIT'></form>";
+			echo "</td></tr>";
 				}
 				echo "</table>";
 }
@@ -1977,8 +2081,9 @@ function event_process_payments(){
 									echo "<input type='hidden' name='event_id' value='".$event_id."'>";
 									echo "<input type='hidden' name='form_action' value='payment'>";
 									echo "<input type='hidden' name='id' value='".$id."'>";
-									echo "<INPUT TYPE='SUBMIT' VALUE='ENTER PAYMENT' ONCLICK=\"return confirm('Are you sure you want to enter a payment for 
-									".$fname." ".$lname."?')\"></form>";
+									// echo "<INPUT TYPE='SUBMIT' VALUE='ENTER PAYMENT' ONCLICK=\"return confirm('Are you sure you want to enter a payment for 	".$fname." ".$lname."?')\"></form>";
+									echo "<INPUT TYPE='SUBMIT' VALUE='ENTER PAYMENT'></form>";
+									
 									echo "</td></tr>";
 									}
 									echo "</table>";
@@ -2119,7 +2224,8 @@ function attendee_display_edit(){
 						$result = mysql_query($sql);
 						Echo "<hr><br><b>Current Attendee List is from: ".$event_name." - ".$identifier."     </b>";
 						?>
-						<button style="background-color:lightgreen" onclick="window.location='<?echo $url."event_registration_export.php?id=".$view_event;  ?>'" style="width:180; height: 30">Export Current Attendee List To Excel</button><br><hr>
+						<button style="background-color:lightgreen" onclick="window.location='<?echo $url."event_registration_export.php?id=".$view_event;  ?>'" style="width:180; height: 30">Export Current Attendee List To Excel</button>
+						<button style="background-color:lightgreen" onclick="window.location='<?echo $url."event_registration_export_csv.php?id=".$view_event;  ?>'" style="width:180; height: 30">Export Current Attendee List To CSV</button><br><hr>
 						<?
 						echo "<table>";
 						echo "<tr><td width='15'></td><td> ID </td><td> Name </td><td> Email </td><td width='15'>City</td><td>State </td><td> Phone </td>
@@ -2156,8 +2262,8 @@ function attendee_display_edit(){
 									echo "<input type='hidden' name='view_event' value='".$view_event."'>";
 									echo "<input type='hidden' name='form_action' value='edit_attendee'>";
 									echo "<input type='hidden' name='id' value='".$id."'>";
-									echo "<INPUT TYPE='SUBMIT' style='background-color:yellow' VALUE='EDIT RECORD' ONCLICK=\"return confirm('Are you sure you want to edit record for 
-									".$fname." ".$lname."?')\"></form>";
+									// echo "<INPUT TYPE='SUBMIT' style='background-color:yellow' VALUE='EDIT RECORD' ONCLICK=\"return confirm('Are you sure you want to edit record for ".$fname." ".$lname."?')\"></form>";
+									echo "<INPUT TYPE='SUBMIT' style='background-color:yellow' VALUE='EDIT RECORD'></form>";
 									echo "</td><td>";
 									
 									echo "<form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
@@ -2393,7 +2499,7 @@ else{
 				$events_listing_type =$row['events_listing_type'];
 				$return_url = $row['return_url'];
 				$message =$row['message'];
-				if ($paypal_cur == "USD"){
+				if ($paypal_cur == "USD" || $paypal_cur == ""){
 				$paypal_cur ="$";
 			}
 				}
@@ -2441,12 +2547,12 @@ if ($paypal_id !=""){
 			<p align="left"><b>Payment By Credit Card, Debit Card or Pay Pal Account<br>(a PayPal account is not required to pay by credit card).</b></p>
 			<p>Payment will be in the amount of <?echo $paypal_cur." ".$event_cost;?>.</p>
 			<p>PayPal Payments will be sent to: <?echo $Organization." (".$paypal_id;?>)</p>
-			<?if ($paypal_cur == "$"){
+			<?if ($paypal_cur == "$" || $paypal_cur == ""){
 				$paypal_cur ="USD";
 			}?>
 			</p><Br><BR>
 			<table width="500"><tr><td VALIGN='MIDDLE' ALIGN='CENTER'>&nbsp;<br>
-			<B><? echo $event_name." - ".$paypal_cur." ".$event_cost;?>.00</b>&nbsp;</td><td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER' >
+			<B><? echo $event_name." - ".$paypal_cur." ".$event_cost;?></b>&nbsp;</td><td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER' >
 			<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal" method="post">
 			<font face="Arial">
 			<input type="hidden" name="bn" value="AMPPFPWZ.301" style="font-weight: 700">

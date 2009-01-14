@@ -2,7 +2,7 @@
 // for version 2.9.5
 
 /** Define ABSPATH as the root directory */
-define( 'ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/' );
+define( 'ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/missions/' );
 
 error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
 
@@ -21,7 +21,7 @@ global $wpdb;
 
 $id= $_REQUEST['id'];
 $events_attendee_tbl = $_REQUEST['atnd'];
-$today = date("m-d-Y_h.iA"); 
+$today = date("m-d-Y_h.iA");
 
 
 
@@ -45,7 +45,8 @@ $header="";
 $data="";
 //starting a loop and extracting all the field names from our database
 for ($i = 0; $i < $fields; $i++) { 
-    $header.=mysql_field_name($export, $i) . "\t"; 
+    $header.=mysql_field_name($export, $i) . ",";
+	//"\t"; 
 } 
 //export the values from the database and write them into the correct columns of spreadsheet
 
@@ -54,10 +55,10 @@ while($row = mysql_fetch_row($export)) {
     $line = ''; 
     foreach($row as $value) {                                             
         if ((!isset($value)) OR ($value == "")) { 
-            $value = "\t"; 
+            $value = ","; 
         } else { 
             $value = str_replace('"', '""', $value); 
-            $value = '"' . $value . '"' . "\t"; 
+            $value =  $value . ","; 
         } 
         $line .= $value; 
     } 
@@ -72,7 +73,7 @@ if ($data == "") {
 //Uses the header() function to tell the browser  a file that needs to be downloaded. 
 //The user will see a pop-up asking them to save the spreadsheet
 header("Content-type: application/x-msdownload"); 
-header("Content-Disposition: attachment; filename=".$event_name."_".$today.".xls"); 
+header("Content-Disposition: attachment; filename=".$event_name."_".$today.".csv"); 
 header("Pragma: no-cache"); 
 header("Expires: 0"); 
 print "$header\n$data";  

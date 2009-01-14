@@ -4,7 +4,7 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 2.9.6
+Stable tag: 2.9.7
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
@@ -21,6 +21,10 @@ I will be working on this to improve as I have a list of improvements I need rig
 
 Changes:
 
+2.97
+	Enabled registration form validation - checks for data in field only.
+	Commented out "Are you sure"" on entry and edit buttons, left in tact on all "DELETE" buttons
+	Set Default currency to display "$" when set to USD or when it is blank.  Blank currency is set to USD for paypal.
 2.96
 	Fixed SQL code errors.
 2.95
