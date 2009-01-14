@@ -1,5 +1,5 @@
 <?
-// for version 2.9.5
+// for version 2.9.8
 
 /** Define ABSPATH as the root directory */
 define( 'ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/missions/' );
