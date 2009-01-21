@@ -4,7 +4,7 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 2.9.8
+Stable tag: 2.9.9
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
@@ -20,6 +20,10 @@ I have added the ability to edit events and to allow single event or event listi
 I will be working on this to improve as I have a list of improvements I need right away, but I thought I would get it out there and see if others liked/could use it.  email questions or comments to consultant@avdude.com.  
 
 Changes:
+2.99
+	Added Ability to add additional form questions to registration.  No limit.  Various types options Text, Textarea, Multiple, Dropdown, etc.
+	Added Export to Excell buttton on payment page.
+2.98
 
 2.97
 	Enabled registration form validation - checks for data in field only.
