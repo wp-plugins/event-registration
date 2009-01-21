@@ -23,6 +23,7 @@ Changes:
 2.99
 	Added Ability to add additional form questions to registration.  No limit.  Various types options Text, Textarea, Multiple, Dropdown, etc.
 	Added Export to Excell buttton on payment page.
+	Changed all php short tags to full tags(resolves issues where short tags are not enabled in PHP configuration on some servers.)
 2.98
 
 2.97
