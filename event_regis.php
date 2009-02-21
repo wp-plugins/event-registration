@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.avdude.com/wp
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. Reporting features provide a list of events, list of attendees, and excel export.
-Version: 2.9.9
+Version: 3.0
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
@@ -27,6 +27,17 @@ Author URI: http://www.avdude.com
 
 /*
 Changes:
+3.0
+	Bug Fixes:
+		Payment confirmation email to send payment link.
+		Fix: Line 905 - check for event id, hide ADD QUESTIONS TO button if no event id (thanks Justin!)
+		DROPDOWN type not working - missing enum type in table creation script - resolved.
+		Default confirmation mail not string replacing keywords - resolved.
+
+
+2.99
+	
+2.98
 2.97
 	Enabled registration form validation - checks for data in field only.
 	Commented out "Are you sure"" on entry and edit buttons, left in tact on all "DELETE" buttons
@@ -86,9 +97,9 @@ Things I still need to do:
 
 //Define the table versions for unique tables required in Events Registration
 
-$events_attendee_tbl_version = "2.98";
-$events_detail_tbl_version = "2.98";
-$events_organization_tbl_version = "2.98";
+$events_attendee_tbl_version = "3.0";
+$events_detail_tbl_version = "3.0";
+$events_organization_tbl_version = "3.0";
 
 
 //Function to install/update data tables in the Wordpress database
@@ -253,7 +264,7 @@ function events_data_tables_install () {
 				    add_option($option_name, $newvalue, $deprecated, $autoload);
 			  }
 			}
-	 $events_detail_tbl_version = "2.98";
+	 $events_detail_tbl_version = "3.0";
      $installed_ver = get_option( "$events_detail_tbl_version" );
      if( $installed_ver != $events_detail_tbl_version ) {
 
@@ -352,7 +363,7 @@ function events_data_tables_install () {
 }
 
 //Upgrade Info Here
-	$events_organization_tbl_version = "2.98";
+	$events_organization_tbl_version = "3.0";
 
      $installed_ver = get_option( "events_organization_tbl_version" );
      if( $installed_ver != $events_organization_tbl_version ) {
@@ -400,7 +411,7 @@ function events_question_tbl_install() {
 			id int(11) unsigned NOT NULL auto_increment,
 			event_id int(11) NOT NULL default '0',
 			sequence int(11) NOT NULL default '0',
-			question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE') NOT NULL default 'TEXT',
+			question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL default 'TEXT',
 			question tinytext NOT NULL,
 			response tinytext NOT NULL,
 			required ENUM( 'Y', 'N' ) NOT NULL DEFAULT 'N',
@@ -434,7 +445,7 @@ function events_question_tbl_install() {
  }
 
 //Upgrade Info Here
-	$events_question_tbl_version = "2.98";
+	$events_question_tbl_version = "3.0";
 
     $installed_ver = get_option( "events_question_tbl_version" );
     if( $installed_ver != $events_question_tbl_version ) {
@@ -442,7 +453,7 @@ function events_question_tbl_install() {
 			id int(11) unsigned NOT NULL auto_increment,
 			event_id int(11) NOT NULL default '0',
 			sequence int(11) NOT NULL default '0',
-			question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE') NOT NULL default 'TEXT',
+			question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL default 'TEXT',
 			question tinytext NOT NULL,
 			response tinytext NOT NULL,
 			required ENUM( 'Y', 'N' ) NOT NULL DEFAULT 'N',
@@ -497,7 +508,7 @@ function events_answer_tbl_install() {
  }
 
 //Upgrade Info Here
-	$events_answer_tbl_version = "2.98";
+	$events_answer_tbl_version = "3.0";
 
     $installed_ver = get_option( "events_answer_tbl_version" );
     if( $installed_ver != $events_answer_tbl_version ) {
@@ -901,12 +912,16 @@ switch ( $form_question_build ){
 					
 					}} 
 				
+				
 				echo "</table><hr />";
+				
+				 if (isset($event_id) && $event_id > 0) { //added isset to hide button if event has not been selected
 				echo "<p><form name='form' method='post' action='".$_SERVER['REQUEST_URI']."'>";
 			    echo "<input type='hidden' name='form_question_build' value='write_question'>";
 			    echo "<input type='hidden' name='event_name' value='".$event_name."'>";
 				echo "<input type='hidden' name='event_id' value='".$event_id."'>";
 				echo "<INPUT TYPE='SUBMIT' style='background-color:lightgreen'VALUE='ADD QUESTIONS TO ".$event_name."'></form></p>";
+				}
 	
 		break;
 }	
@@ -1888,6 +1903,44 @@ if (form.zip.value == "") { alert("Please enter your zip code.");
    		return false; 
    }
    
+function trim(s) {
+	if (s) {
+		return s.replace(/^\s*|\s*$/g,"");
+	}
+	return null;
+}
+
+		//alert("your trying to submit");
+		var inputs = $A(form.getElementsByTagName("input"));
+		var msg = "";
+		var radioChecks = $H();
+		inputs.each( function(e) {
+			var value = e.value ? trim(e.value) : null;
+			if (e.type == "text" && e.title && !value && e.className == "r") {
+				msg += "\n " + e.title;
+			}
+			if ((e.type == "radio" || e.type == "checkbox") && e.className == "r") {
+				var name = e.name;
+				if (e.type == "checkbox") name = name.substr(0, name.lastIndexOf("-"));
+				if (e.checked == false && ((!radioChecks[name]) || (radioChecks[name] && radioChecks[name] != 1))) {
+					radioChecks[name] = e;
+				} else {
+					radioChecks[name] = 1;
+				}
+			}
+		});
+		radioChecks.each( function(e) {
+			if (typeof(e) == "object" && e.value != 1) {
+				msg += "\n " + e.value.title;
+			}
+		});
+		if (msg.length > 0) {
+			msg = "The following fields need to be completed before you can submit.\n\n" + msg;
+			alert(msg);
+			return false;
+		}
+		return true;   
+   
    
 }
 </SCRIPT>
@@ -2184,7 +2237,6 @@ $SearchValues = array(
 		"[end_date]",
 		"[end_time]");
 		
-		
 $ReplaceValues = array(
 		$fname,
 		$lname,
@@ -2209,13 +2261,15 @@ $ReplaceValues = array(
 		$end_date,
 		$end_time);
 			
-$custom = str_replace($SearchValues, $ReplaceValues, $conf_mail);			
+
+$custom = str_replace($SearchValues, $ReplaceValues, $conf_mail);
+$default_replaced = str_replace($SearchValues, $ReplaceValues, $conf_message);			
 			
 			$distro="$email";
 						
 			if ($default_mail =='Y'){ if($send_mail == 'Y'){ wp_mail($distro, $event_name, $custom);}}
 			
-			if ($default_mail =='Y'){ if($send_mail == 'N'){ wp_mail($distro, $event_name, $conf_message);}}
+			if ($default_mail =='Y'){ if($send_mail == 'N'){ wp_mail($distro, $event_name, $default_replaced);}}
 
 
 		//Get registrars id from the data table and assign to a session variable for PayPal.
@@ -2648,10 +2702,19 @@ if ($_REQUEST['send_payment_rec'] == "send_message"){
 			$custom3 = $row['custom_3'];
 			$custom4 = $row['custom_4'];
 			}
-
+			
+$events_organization_tbl = get_option('events_organization_tbl');
+$sql  = "SELECT * FROM ". $events_organization_tbl ." WHERE id='1'";
+			  // $sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; 
+			   $result = mysql_query($sql); 
+			   while ($row = mysql_fetch_assoc ($result))
+				{
+	  			$return_url = $row['return_url'];
+				}
+$payment_link = $return_url."?id=".$id;
 	$subject = "Event Payment Received";
 	$distro=$email;
-	$message=("***This Is An Automated Response***   Thank You $fname $lname.  We have received a payment in the amount of $ $amt_pd for your event registration.");
+	$message=("***This Is An Automated Response***   Thank You $fname $lname.  We have received a payment in the amount of $ $amt_pd for your event registration.  To make payment or view your payment information go to: ".$payment_link);
 	
 	wp_mail($distro, $subject, $message); 
 	
