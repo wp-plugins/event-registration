@@ -1,87 +1,56 @@
 === Event Registration ===
-Contributors: davidfleming
+Contributors: david fleming &  Inna Janssen
 Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 3.0
+Stable tag: 3.03
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
 == Description ==
+
+**I do not recommend upgrading to this version on a site you are currently taking registrations on.**
 
 This plugin provides a way to take online registrations for events such as conference and seminars that are held live.
 This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. 
 Reporting features provide a list of events, list of attendees, and excel export.
 I have added the ability to edit events and to allow single event or event listing on the registration page.
 
+If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
+
 = Support =
 
-I will be working on this to improve as I have a list of improvements I need right away, but I thought I would get it out there and see if others liked/could use it.  email questions or comments to consultant@avdude.com.  
+Thanks for all your suggestions and feedback.  I have begun setting up a dedicated site for the plugin www.edgetechweb.com primarily for support issues.  
 
+Please continue to email questions or comments to consultant@avdude.com.  
 
+If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 Changes:
 
+3.03 Changed Request URI to work with IIS as well as apache servers.
+	Added date sort to only display current/future events when listing all events.
+	Added support for quick tags using a page for single event by ID (you can create different pages for different events at the same time.)
+	Example Use this code in page [Event_Registration_Single id="1"] where id is the event id, instead of {EVENTREGIS} *Note you must have all events enabled in the organization configuration for this to work.
+	
+3.02 Changed table structure: email_conf: varchar 1000 not possible.  changed to text.
+
+3.01 split files to several files to have a better structure. 
+	startet outsourcing the language and providing german and english language. This is done for
+	the registration form the user sees on the webpage
+	changed double-BR to valid XHTML-Style <p>...</p> Tags
+	some small code and html style changes
+
 3.0
-Resolved Default mail not replacing key tags [] with data variables.
-     
-Resolved You can add questions to event 0 by not selection the big event button first
-    
-Resolved DROPDOWN type not working - missing enum type in table creation script (only shows on new install)
+	Resolved Default mail not replacing key tags [] with data variables.
+	Resolved You can add questions to event 0 by not selection the big event button first
+	Resolved DROPDOWN type not working - missing enum type in table creation script (only shows on new install)
 
-2.99
-	Added Ability to add additional form questions to registration.  No limit.  Various types options Text, Textarea, Multiple, Dropdown, etc.
-	Added Export to Excell buttton on payment page.
-	Changed all php short tags to full tags(resolves issues where short tags are not enabled in PHP configuration on some servers.)
-2.98
-
-2.97
-	Enabled registration form validation - checks for data in field only.
-	Commented out "Are you sure"" on entry and edit buttons, left in tact on all "DELETE" buttons
-	Set Default currency to display "$" when set to USD or when it is blank.  Blank currency is set to USD for paypal.
-2.96
-	Fixed SQL code errors.
-2.95
- Added the ability to send retun link in email for payment - setup a new page and place {EVENTREGPAY}.  Store page link in Organization options in admin panel.  Email link includes page name and attendees unique registration ID.  If payment has already been posted in the payment section, the page will notify attendee of payments previously made.
-
-2.94
-	Added support to send custom confirmation email for each event or default email for organization or no confirmation mail at all.	
-	Paypal ID required to display creditcard/paypal info on payment screen.	
-	Modified the Event Report Page to choose which event to view/export from list of all events.	
-	Added support to have the event description display or not display on the registration page.  Option on the Event Setup Page.	
-	Added support to limit the number of attendees for an event.  Option on the Event Setup Page.	
-	Added support for free/no cost events.  If the fee is left blank on the event setup page, payment options and cost are not displayed on the reg form and 
-	payment information is not displayed on reg confirmation page.
-	Added ability to display attendee list on page or post {EVENTATTENDEES} - displays event name, description and list of attendeeds by order of registration.  
-	To change sort order of attendees change line 399 to  $sql  = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id' ORDER BY lname";
-2.93
-	Resolved potential Mysql error due to database call
-2.92
-	Some minor bug fixes
-	changed event name from 45 to 100 characters
-2.91
-	Resolved attendee posting error (no data in attendee datatable)
-	Resolved EVENT ID deletion when editing event	
-2.9
-	Resolved Confirmation mail not sending text
-	Resolved amount not shown on registration page, registration confirmation page, and paypal site
-	Resolved payment paypal & check information display properly
-
-2.6	Changed email confirmation to use wp_mail() (built into wordpress) default instead of smtp plugin.
-	Changed mail header to use registrars email address instead of wordpress default
-	Added funtion for single or multiple event display on registration.
-	Fixed paypal to say PayPal
-	Removed broken image links from PayPal
-	Droped in codeblocks to update tables
-	Change buy now button to PAY NOW
-	Added ability to edit existing events
-	added ability to edit confirmation email sent to registrants
-	Added ability to add 4 custom form questions to registration page - only visible is used.
-	Added description for events  and display description of registration page
+. . . See changelog.txt for more changes
 
 
-If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at www.avdude.com/wp
+
 
 
 == Installation ==
@@ -93,9 +62,11 @@ If you like the plugin and find it useful, your donations would also help me kee
 5. Create a new page (not post) on your site. Put `{EVENTREGIS}` in it on a line by itself.
 6. Note: if you are upgradings from a previous version please backup your data prior to upgrade.
 
+If you would like to put a specific event on a page use `[Event_Registration_Single id="1"]` where 1 is the event id number.  Make sure that you have display all events active in the Configure Organization Tab.  Yes you can still use `{EVENTREGIS}` at the same time!
+
 All done. 
 
-
+If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 = License =
 
 This plugin is provided "as is" and without any warranty or expectation of function. I'll probably try to help you if you ask nicely, but I can't promise anything. You are welcome to use this plugin and modify it however you want, as long as you give credit where it is due. 
@@ -104,8 +75,15 @@ Please feel free to email me your changes and modifications and I will gladly tr
 
 == Screenshots ==
 
-www.avdude.com/wp/events
+www.edgetechweb.com
 
 == Frequently Asked Questions ==
 
-There are none yet!  Please feel free to send them.
+Q: Do you do custom modifications?
+A: Yes, for a resonable fee.
+
+Q: Why does email sent by the plugin say wordpress@yourdomain.com?
+A: This is a default wordpress thing.  There is a great little plugin that resolves that issue. http://wordpress.org/extend/plugins/mail-from/ 
+
+Q: Why doesn't the export to CSV or Excel work?
+A: The plugin was written assuming it would be in the root installation. In the plugin folder there is a file called event_registration export.php you will need to change line 3. Current: 3. define( ‘ABSPATH’, $_SERVER['DOCUMENT_ROOT'] . ‘/’ );  Modified: 3. define( ‘ABSPATH’, $_SERVER['DOCUMENT_ROOT'] . ‘/your_subdirectory_name
