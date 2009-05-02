@@ -46,11 +46,11 @@ Author URI: http://www.avdude.com
 //Define the table versions for unique tables required in Events Registration
 
 
-$events_attendee_tbl_version = "3.03";
-$events_detail_tbl_version = "3.03";
-$events_organization_tbl_version = "3.03";
-$events_answer_tbl_version = "3.03";
-$events_question_tbl_version = "3.03";
+$events_attendee_tbl_version = "3.04";
+$events_detail_tbl_version = "3.04";
+$events_organization_tbl_version = "3.04";
+$events_answer_tbl_version = "3.04";
+$events_question_tbl_version = "3.04";
 
 /** this does not only affect language but also format of date, and which fields are displayes in the form */
 $lang_flag = "en"; //switch to en for changing language and form 
@@ -87,7 +87,7 @@ add_action ( 'admin_menu', 'add_event_registration_menus' );
 add_filter ( 'the_content', 'event_regis_insert' );
 add_filter ( 'the_content', 'event_regis_attendees_insert' );
 add_filter ( 'the_content', 'event_regis_pay_insert' );
-
+add_filter ('the_content','event_paypal_txn_insert');
 
 // Function to deal with loading the events into pages
 
@@ -133,7 +133,14 @@ function event_regis_pay_insert($content) {
 	
 	return $content;
 }
-
+function event_paypal_txn_insert($content)
+		{
+			  if (preg_match('{EVENTPAYPALTXN}',$content))
+			    {
+			      $content = str_replace('{EVENTPAYPALTXN}',event_paypal_txn(),$content);
+			    }
+			  return $content;
+		}
 add_shortcode('Event_Registration_Single', 'event_regis_run');
 
 function event_attendee_list_run() {
@@ -186,31 +193,24 @@ function event_regis_run($event_single_ID) {
 	}
 	if ($events_listing_type == 'single') {
 		$none="";
-		if ($_REQUEST ['regevent_action'] == "post_attendee") {
-			add_attendees_to_db ();
-		} else if ($_REQUEST ['regevent_action'] == "pay") {
-			event_regis_pay ();
-		} else if ($_REQUEST ['regevent_action'] == "register") {
-			register_attendees ();
-		} else if ($regevent_action == "process") {
-		} else {
-			register_attendees ($none);
+		if ($_REQUEST ['regevent_action'] == "post_attendee") {add_attendees_to_db ();}
+		else if ($_REQUEST ['regevent_action'] == "pay") {event_regis_pay ();}
+		else if ($_REQUEST['regevent_action'] == "paypal_txn"){event_regis_paypal_txn();}
+		else if ($_REQUEST ['regevent_action'] == "register") {register_attendees ();}
+		else if ($regevent_action == "process") {} 
+		else {register_attendees ($none);
 		}
 	}
 	
 	if ($events_listing_type == 'all') {
 		$none="";
-		if ($_REQUEST ['regevent_action'] == "post_attendee") {
-			add_attendees_to_db ();
-		} else if ($_REQUEST ['regevent_action'] == "pay") {
-			event_regis_pay ();
-		} else if ($_REQUEST ['regevent_action'] == "register") {
-			register_attendees ($none);
-		} else if ($regevent_action == "process") {
-		} else if ($event_single_ID !=""){register_attendees ($event_single_ID);		
-		} else {
-			display_all_events ();
-		}
+		if ($_REQUEST ['regevent_action'] == "post_attendee") {add_attendees_to_db ();} 
+		else if ($_REQUEST ['regevent_action'] == "pay") {event_regis_pay ();} 
+		else if ($_REQUEST['regevent_action'] == "paypal_txn"){process_paypal_txn();}
+		else if ($_REQUEST ['regevent_action'] == "register") {register_attendees ($none);} 
+		else if ($regevent_action == "process") {} 
+		else if ($event_single_ID !=""){register_attendees ($event_single_ID);} 
+		else {display_all_events ();}
 	}
 }
 
@@ -400,7 +400,7 @@ function event_form_config() {
 			$wpdb->query ( "INSERT INTO $events_question_tbl (`event_id`, `sequence`, `question_type`, `question`, `response`, `required`)" . " values('$event_id', '$sequence', '$question_type', '$question', '$values', '$required')" );
 			
 			//echo "<meta http-equiv='refresh' content='0'>";
-			?>
+	/*		?>
 <META HTTP-EQUIV="refresh"
 	content="0;URL=<?php
 			request_uri();
@@ -408,7 +408,15 @@ function event_form_config() {
 			echo $event_id . "&event_name=" . $event_name;
 			?>">
 <?php
-			break;
+*/
+
+?>
+<META HTTP-EQUIV="refresh"
+	content="0;URL=<?php
+			request_uri();?>admin.php?page=form&event_id=<?php
+			echo $event_id . "&event_name=" . $event_name;
+			?>">
+<?php			break;
 		
 		case "post_edit" :
 			
@@ -427,11 +435,18 @@ function event_form_config() {
 			
 			$wpdb->query ( "UPDATE $events_question_tbl set `question_type` = '$question_type', `question` = '$question_text', " . " `response` = '$values', `required` = '$required' where id = $question_id " );
 			//echo "<meta http-equiv='refresh' content='0'>";
-			?>
+	/*		?>
 <META HTTP-EQUIV="refresh"
 	content="0;URL=<?php
 			request_uri();
 			?>&event_id=<?php
+			echo $event_id . "&event_name=" . $event_name;
+			?>">
+<?php */
+?>
+<META HTTP-EQUIV="refresh"
+	content="0;URL=<?php
+			request_uri();?>admin.php?page=form&event_id=<?php
 			echo $event_id . "&event_name=" . $event_name;
 			?>">
 <?php
@@ -449,11 +464,18 @@ function event_form_config() {
 			
 			$wpdb->query ( "DELETE from $events_question_tbl where id = '$question_id'" );
 			//echo "<meta http-equiv='refresh' content='0 URL=>";
-			?>
+		/*	?>
 <META HTTP-EQUIV="refresh"
 	content="0;URL=<?php
 			request_uri();
 			?>&event_id=<?php
+			echo $event_id . "&event_name=" . $event_name;
+			?>">
+<?php
+*/?>
+<META HTTP-EQUIV="refresh"
+	content="0;URL=<?php
+			request_uri();?>admin.php?page=form&event_id=<?php
 			echo $event_id . "&event_name=" . $event_name;
 			?>">
 <?php
@@ -562,13 +584,16 @@ function event_config_mnu() {
 		$paypal_id = $_POST ['paypal_id'];
 		$paypal_cur = $_POST ['currency_format'];
 		$return_url = $_POST ['return_url'];
+					   $cancel_return = $_POST['cancel_return'];
+					   $notify_url = $_POST['notify_url'];
+					   $return_method = $_POST['return_method'];
+					   $use_sandbox = $_POST['use_sandbox'];
+					   $image_url = $_POST['image_url'];
 		$events_listing_type = $_POST ['events_listing_type'];
 		$default_mail = $_POST ['default_mail'];
 		$message = $_POST ['message'];
 		
-		$sql = "UPDATE " . $events_organization_tbl . " SET organization='$org_name', organization_street1='$org_street1', organization_street2='$org_street2', 
-					   organization_city='$org_city', organization_state='$org_state', organization_zip='$org_zip', contact_email='$email', paypal_id='$paypal_id', 
-					   currency_format='$paypal_cur', events_listing_type='$events_listing_type', return_url = '$return_url', default_mail='$default_mail', message='$message' WHERE id ='1'";
+		$sql = "UPDATE " . $events_organization_tbl . " SET organization='$org_name', organization_street1='$org_street1', organization_street2='$org_street2', organization_city='$org_city', organization_state='$org_state', organization_zip='$org_zip', contact_email='$email', paypal_id='$paypal_id', currency_format='$paypal_cur', events_listing_type='$events_listing_type', return_url = '$return_url', cancel_return = '$cancel_return', notify_url = '$notify_url', return_method = '$return_method', use_sandbox = '$use_sandbox', image_url = '$image_url', default_mail='$default_mail', message='$message' WHERE id ='1'";
 		
 		$wpdb->query ( $sql );
 		
@@ -605,6 +630,57 @@ function event_config_mnu() {
 			add_option ( $option_name, $newvalue, $deprecated, $autoload );
 		}
 		
+		$option_name = 'cancel_return' ;
+					$newvalue = $cancel_return;
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					  
+					$option_name = 'notify_url' ;
+					$newvalue = $notify_url;
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					  
+					$option_name = 'return_method' ;
+					$newvalue = $return_method;
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					  
+					$option_name = 'use_sandbox' ;
+					$newvalue = $use_sandbox;
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+					  
+					$option_name = 'image_url' ;
+					$newvalue = $image_url;
+					  if ( get_option($option_name) ) {
+						    update_option($option_name, $newvalue);
+						  } else {
+						    $deprecated=' ';
+						    $autoload='no';
+						    add_option($option_name, $newvalue, $deprecated, $autoload);
+					  }
+
+
 		//create option for registrar
 		
 
@@ -632,25 +708,30 @@ function event_config_mnu() {
 	
 	$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";
 	
-	$result = mysql_query ( $sql );
-	while ( $row = mysql_fetch_assoc ( $result ) ) {
-		$org_id = $row ['id'];
-		$Organization = $row ['organization'];
-		$Organization_street1 = $row ['organization_street1'];
-		$Organization_street2 = $row ['organization_street2'];
-		$Organization_city = $row ['organization_city'];
-		$Organization_state = $row ['organization_state'];
-		$Organization_zip = $row ['organization_zip'];
-		$contact = $row ['contact_email'];
-		$registrar = $row ['contact_email'];
-		$paypal_id = $row ['paypal_id'];
-		$paypal_cur = $row ['currency_format'];
-		$return_url = $row ['return_url'];
-		$events_listing_type = $row ['events_listing_type'];
-		$default_mail = $row ['default_mail'];
-		$message = $row ['message'];
-	}
-	
+		   		$result = mysql_query($sql);
+		   	while ($row = mysql_fetch_assoc ($result))
+					{
+		  			$org_id =$row['id'];
+					$Organization =$row['organization'];
+					$Organization_street1 =$row['organization_street1'];
+					$Organization_street2=$row['organization_street2'];
+					$Organization_city =$row['organization_city'];
+					$Organization_state=$row['organization_state'];
+					$Organization_zip =$row['organization_zip'];
+					$contact =$row['contact_email'];
+	 				$registrar = $row['contact_email'];
+					$paypal_id =$row['paypal_id'];
+					$paypal_cur =$row['currency_format'];
+					$return_url = $row['return_url'];
+					$cancel_return = $row['cancel_return'];
+					$notify_url = $row['notify_url'];
+					$return_method = $row['return_method'];
+					$use_sandbox = $row['use_sandbox'];
+					$image_url = $row['image_url'];
+					$events_listing_type =$row['events_listing_type'];
+					$default_mail = $row['default_mail'];
+					$message =$row['message'];
+					}
 	echo $lang['defaultmail']. $default_mail;
 	echo "<p align='center'><b>This information is required to provide email confirmations, ";
 	echo "'Make Check Payable' and paypal integration information. All areas marked by  *  must be filled in.</b></p>";
@@ -697,6 +778,37 @@ function event_config_mnu() {
 	echo "<option value='single'>Single Event</option>";
 	echo "<option value='all'>All Events</option></select></p>";
 	echo "<p>Return URL (used for return to make payments): <input name='return_url' size='75' value='" . $return_url . "'></p>";
+/*	echo "Cancel Return URL (used for cancelled payments): <input name='cancel_return' size='75' value='".$cancel_return."'><br /><br />";
+			echo "Notify URL (used to process payments): <input name='notify_url' size='75' value='".$notify_url."'><br /><br />";
+			echo "Return Method: <select name='return_method'>";
+			if ($return_method ==""){
+				echo "<option value='2'>POST</option>";
+				echo "<option value='1'>GET</option>";}
+			if ($return_method =="2"){
+				echo "<option value='2' selected='selected'>POST</option>";
+				echo "<option value='1'>GET</option>";}
+			if ($return_method =="1"){
+				echo "<option value='2'>POST</option>";
+				echo "<option value='1' selected='selected'>GET</option>";}		
+			echo "</select><br /><br />";
+			
+			echo "Use PayPal Sandbox? ";
+			if ($use_sandbox =="1"){
+				echo "<input name='use_sandbox' type='checkbox' value='1' checked='checked' /><br><br />";
+			}else{
+				echo "<input name='use_sandbox' type='checkbox' value='1' /><br><br />";
+				}
+echo "Image URL (used for your personal logo on the PayPal page): <input name='image_url' size='75' value='".$image_url."'><br>";
+*/
+
+
+	echo "<input type='hidden' value='' name='cancel_return'>";	
+	echo "<input type='hidden' value='' name='notify_url'>";
+	echo "<input type='hidden' value='' name='return_method'>";
+	echo "<input type='hidden' value='' name='use_sandbox'>";
+	echo "<input type='hidden' value='' name='image_url'>";	
+										
+			
 	echo "<p>Do You Want To Send Confirmation Emails? (This option must be enable to send custom mails in events)";
 	
 	if ($default_mail == "") {
@@ -850,13 +962,18 @@ $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".date ( 'Y
 		$event_id = $row ['id'];
 		$event_name = $row ['event_name'];
 		$identifier = $row ['event_identifier'];
+		$image = $row ['image_link'];
 		$cost = $row ['event_cost'];
 		$checks = $row ['allow_checks'];
 		$active = $row ['is_active'];
 
 		
 		
-		echo "<tr><td width='400'>" . $event_name . " - " . $paypal_cur . "  " . $cost . "    <b>Event Start Date</b>  ".$row['start_date']."</p><hr></td><td>";
+/*		echo "<tr><td width='400'>" . $event_name . " - " . $paypal_cur . "  " . $cost . "    <b>Event Start Date</b>  ".$row['start_date']."</p><hr></td><td>";
+*/
+		echo "<tr><td width='100'><img src='".$image."' width='75' height='56'></td><td width='300'><b>" . $event_name . " - " . $paypal_cur . "  " . $cost . "   </b></p><p>Start<b>  ".$row['start_date']."</b></p>
+		<p>End<b>  ".$row['end_date']."</b></p>
+		<hr></td><td>";
 		echo "<form name='form' method='post' action='";
 		request_uri();
 		echo "'>";
@@ -881,6 +998,7 @@ function view_attendee_list() {
 		$event_name = $row ['event_name'];
 		$event_desc = $row ['event_desc'];
 		$event_description = $row ['event_desc'];
+		$image = $row ['image_link'];
 		$identifier = $row ['event_identifier'];
 		$cost = $row ['event_cost'];
 		$checks = $row ['allow_checks'];

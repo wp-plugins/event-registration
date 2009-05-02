@@ -34,6 +34,8 @@ function register_attendees($event_single_ID) {
 		$event_name = $row ['event_name'];
 		$event_desc = $row ['event_desc'];
 		$display_desc = $row ['display_desc'];
+		$image = $row ['image_link'];
+		$header = $row ['header_image'];
 		$event_description = $row ['event_desc'];
 		$identifier = $row ['event_identifier'];
 		$event_cost = $row ['event_cost'];
@@ -75,7 +77,7 @@ function register_attendees($event_single_ID) {
 	$sql = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
 	$result = mysql_query ( $sql );
 	$num_rows = mysql_num_rows ( $result );
-	
+	if ($header != ""){echo "<p align='center'><img src='".$header."'  width='450' align='center'></p>";}
 	if ($reg_limit == "" or $reg_limit >= "$num_rows") {
 		echo "<p align='center'><b>".$lang['eventFormHeader'] . $event_name . "</b></p>";
 		echo "<table width='100%'><td>";
@@ -472,6 +474,7 @@ function add_attendees_to_db() {
 		$event_name = $row ['event_name'];
 		$event_desc = $row ['event_desc']; // BHC
 		$display_desc = $row ['display_desc'];
+		$image = $row ['image_link'];
 		$identifier = $row ['event_identifier'];
 		$reg_limit = $row ['reg_limit'];
 		$cost = $row ['event_cost'];
@@ -505,8 +508,6 @@ function add_attendees_to_db() {
 	
 	wp_mail ( $distro, $event_name . " Number: $attnum", $message );
   
-	//TODO IJ TEMPORARY for specific customer ! 
-	wp_mail ( "praetorius@praetorius-unternehmensberatung.de", $event_name . " Number: $attnum", $message );
 	
 	//Email Confirmation to Attendee
 	$query = "SELECT * FROM $events_attendee_tbl WHERE fname='$fname' AND lname='$lname' AND email='$email'";
