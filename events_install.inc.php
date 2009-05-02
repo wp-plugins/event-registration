@@ -17,6 +17,7 @@ function events_data_tables_install () {
 					  city VARCHAR(45) DEFAULT NULL,
 					  state VARCHAR(45) DEFAULT NULL,
 					  zip VARCHAR(45) DEFAULT NULL,
+					  num_people (45) DEFAULT NULL,
 					  email VARCHAR(45) DEFAULT NULL,
 					  phone VARCHAR(45) DEFAULT NULL,
 					  hear VARCHAR(45) DEFAULT NULL,
@@ -74,6 +75,7 @@ function events_data_tables_install () {
 					  city VARCHAR(45) DEFAULT NULL,
 					  state VARCHAR(45) DEFAULT NULL,
 					  zip VARCHAR(45) DEFAULT NULL,
+					  num_people (45) DEFAULT NULL,
 					  email VARCHAR(45) DEFAULT NULL,
 					  phone VARCHAR(45) DEFAULT NULL,
 					  hear VARCHAR(45) DEFAULT NULL,
@@ -112,6 +114,8 @@ function events_data_tables_install () {
 				  event_name VARCHAR(100) DEFAULT NULL,
 				  event_desc VARCHAR(500) DEFAULT NULL,
 				  display_desc VARCHAR (4) DEFAULT NULL,
+				  image_link VARCHAR(100) DEFAULT NULL,
+				  header_image VARCHAR(100) DEFAULT NULL,
 				  event_identifier VARCHAR(45) DEFAULT NULL,
 				  start_month VARCHAR (15) DEFAULT NULL,
 				  start_day VARCHAR (15) DEFAULT NULL,
@@ -125,6 +129,7 @@ function events_data_tables_install () {
 				  end_time VARCHAR (15) DEFAULT NULL,
 				  reg_limit VARCHAR (15) DEFAULT NULL,
 				  event_cost VARCHAR(45) DEFAULT NULL,
+				  multiple VARCHAR(45) DEFAULT NULL,
 				  allow_checks VARCHAR(45) DEFAULT NULL,
 				  send_mail VARCHAR (2) DEFAULT NULL,
 				  is_active VARCHAR(45) DEFAULT NULL,
@@ -161,7 +166,7 @@ function events_data_tables_install () {
 				    add_option($option_name, $newvalue, $deprecated, $autoload);
 			  }
 			}
-	 $events_detail_tbl_version = "3.03";
+	 $events_detail_tbl_version = "3.04";
      $installed_ver = get_option( "$events_detail_tbl_version" );
      if( $installed_ver != $events_detail_tbl_version ) {
 
@@ -170,6 +175,8 @@ function events_data_tables_install () {
 				  event_name VARCHAR(100) DEFAULT NULL,
 				  event_desc VARCHAR(500) DEFAULT NULL,
 				  display_desc VARCHAR (4) DEFAULT NULL,
+				  image_link VARCHAR(100) DEFAULT NULL,
+				  header_image VARCHAR(100) DEFAULT NULL,
 				  event_identifier VARCHAR(45) DEFAULT NULL,
 				  start_month VARCHAR (15) DEFAULT NULL,
 				  start_day VARCHAR (15) DEFAULT NULL,
@@ -183,6 +190,7 @@ function events_data_tables_install () {
 				  end_date DATE DEFAULT NULL,
 				  reg_limit VARCHAR (15) DEFAULT NULL,
 				  event_cost VARCHAR(45) DEFAULT NULL,
+				  multiple VARCHAR(45) DEFAULT NULL,
 				  allow_checks VARCHAR(45) DEFAULT NULL,
 				  send_mail VARCHAR(2) DEFAULT NULL,
 				  is_active VARCHAR(45) DEFAULT NULL,
@@ -226,6 +234,11 @@ function events_data_tables_install () {
 				  default_mail varchar(2) default NULL,
 				  message varchar(500) default NULL,
 				  return_url varchar(100) default NULL,
+				  cancel_return varchar(100) default NULL,
+				  notify_url varchar(100) default NULL,
+				  return_method varchar(100) default NULL,
+				  use_sandbox int(1) default 0,
+				  image_url varchar(100) default NULL,
 				  UNIQUE KEY id (id)
 				);";
 
@@ -262,7 +275,7 @@ function events_data_tables_install () {
 }
 
 //Upgrade Info Here
-	$events_organization_tbl_version = "3.03";
+	$events_organization_tbl_version = "3.04";
 
      $installed_ver = get_option( "events_organization_tbl_version" );
      if( $installed_ver != $events_organization_tbl_version ) {
@@ -282,6 +295,11 @@ function events_data_tables_install () {
 				  default_mail varchar(2) default NULL,
 				  message varchar(500) default NULL,
 				  return_url varchar(100) default NULL,
+				  cancel_return varchar(100) default NULL,
+				  notify_url varchar(100) default NULL,
+				  return_method varchar(100) default NULL,
+				  use_sandbox int(1) default 0,
+				  image_url varchar(100) default NULL,
 				  UNIQUE KEY id (id)
 				);";
 

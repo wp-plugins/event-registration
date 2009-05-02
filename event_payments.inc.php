@@ -325,6 +325,12 @@ function event_regis_pay() {
 			$events_listing_type = $row ['events_listing_type'];
 			$return_url = $row ['return_url'];
 			$message = $row ['message'];
+				$return_url = $row['return_url'];
+				$cancel_return = $row['cancel_return'];
+				$notify_url = $row['notify_url'];
+				$return_method = $row['return_method'];
+				$image_url = $row['image_url'];
+				$use_sandbox = $row['use_sandbox'];
 			if ($paypal_cur == "USD" || $paypal_cur == "") {
 				$paypal_cur = "$";
 			}
@@ -396,6 +402,22 @@ function event_regis_pay() {
 				if ($current_due == $event_cost){$payment = "- Full";}
 				?></b>&nbsp;</td>
 		<td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER'>
+		<? 
+	  if ($use_sandbox == 1){ 
+      		echo "<form action='https://www.sandbox.paypal.com/cgi-bin/webscr' method='post'>";
+       }else{
+      		echo "<form action='https://www.paypal.com/cgi-bin/webscr' method='post'>";
+	   }
+      ?>
+      Additional attendees?
+      <select name="quantity" style="width:70px;margin-top:4px">
+        <option value="1" selected>None</option>
+        <option value="2">1</option>
+        <option value="3">2</option>
+        <option value="4">3</option>
+        <option value="5">4</option>
+        <option value="6">5</option>
+      </select>
 		<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal"
 			method="post"><font face="Arial"> <input type="hidden" name="bn"
 			value="AMPPFPWZ.301" style="font-weight: 700"> <input type="hidden"
@@ -471,6 +493,12 @@ function events_payment_page($event_id) {
 		$paypal_cur = $row ['currency_format'];
 		$events_listing_type = $row ['events_listing_type'];
 		$message = $row ['message'];
+				$return_url = $row['return_url'];
+				$cancel_return = $row['cancel_return'];
+				$notify_url = $row['notify_url'];
+				$return_method = $row['return_method'];
+				$image_url = $row['image_url'];
+				$use_sandbox = $row['use_sandbox'];
 	}
 	
 	//Query Database for Active event and get variable
@@ -520,7 +548,13 @@ function events_payment_page($event_id) {
 </p>
 
 <table width="500">
-	<tr>
+	<tr><? /*
+	  if ($use_sandbox == 1){ 
+      		echo "<form action='https://www.sandbox.paypal.com/cgi-bin/webscr' method='post'>";
+       }else{
+      		echo "<form action='https://www.paypal.com/cgi-bin/webscr' method='post'>";
+	   }*/
+	  ?>
 		<td VALIGN='MIDDLE' ALIGN='CENTER'>&nbsp;<br />
 		<B><?php
 			echo $event_name . " - " . $paypal_cur . " " . $event_cost;
@@ -530,8 +564,43 @@ function events_payment_page($event_id) {
 			if ($paypal_cur == "$" || $paypal_cur == "") {
 				$paypal_cur = "USD";
 			}
-			?>
-			
+	/*		
+			Additional attendees?
+      <select name="quantity" style="width:70px;margin-top:4px">
+        <option value="1" selected>None</option>
+        <option value="2">1</option>
+        <option value="3">2</option>
+        <option value="4">3</option>
+        <option value="5">4</option>
+        <option value="6">5</option>
+      </select>
+      <input type="hidden" name="bn" value="AMPPFPWZ.301">
+      <input type="hidden" name="cmd" value="_ext-enter">
+      <input type="hidden" name="redirect_cmd" value="_xclick">
+      <input type="hidden" name="business" value="<?=$paypal_id;?>" >
+      <input type="hidden" name="item_name" value="<?=$event_name." - ".$attendee_id." - ".$attendee_name;?>">
+      <input type="hidden" name="item_number" value="<?=$event_identifier;?>">
+      <input type="hidden" name="amount" value="<?=$event_cost;?>">
+      <input type="hidden" name="currency_code" value="<?=$paypal_cur;?>">
+      <input type="hidden" name="undefined_quantity" value="0">
+      <input type="hidden" name="custom" value="<?=$attendee_id;?>">
+      <input type="hidden" name="image_url" value="<?=$image_url;?>">
+      <input type="hidden" name="email" value="<?=$attendee_email;?>">
+      <input type="hidden" name="first_name" value="<?=$attendee_first;?>">
+      <input type="hidden" name="last_name" value="<?=$attendee_last;?>">
+      <input type="hidden" name="address1" value="<?=$attendee_address;?>">
+      <input type="hidden" name="address2" value="">
+      <input type="hidden" name="city" value="<?=$attendee_city;?>">
+      <input type="hidden" name="state" value="<?=$attendee_state;?>">
+      <input type="hidden" name="zip" value="<?=$attendee_zip;?>">
+      <input type="hidden" name="return" value="<?=$return_url;?>">
+      <input type="hidden" name="cancel_return" value="<?=$cancel_return;?>">
+      <input type="hidden" name="notify_url" value="<?=$notify_url;?>?id=<?=$attendee_id;?>&event_id=<?=$event_id?>&attendee_action=post_payment&form_action=payment">
+      <input type="hidden" name="rm" value="<?=$return_method?>">
+      <input type="hidden" name="add" value="1">
+      <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" align='middle' name="submit">
+      </form>
+      */ ?>
 			<td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER'>
 		<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal"
 			method="post"><font face="Arial"> <input type="hidden" name="bn"

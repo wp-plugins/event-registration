@@ -26,7 +26,10 @@ function event_regis_events() {
 		while ( $row = mysql_fetch_assoc ( $result ) ) {
 			$event_name = $row ['event_name'];
 			$event_desc = $row ['event_desc']; // BHC
+			$image = $row ['image_link'];
 			$display_desc = $row ['display_desc'];
+			$image_link = $row ['image_link'];
+			$header = $row ['header_image'];
 			$identifier = $row ['event_identifier'];
 			$reg_limit = $row ['reg_limit'];
 			$start_month = $row ['start_month'];
@@ -64,7 +67,9 @@ function event_regis_events() {
 			echo "<input type='hidden' name='id' value='" . $row ['id'] . "'>";
 			echo "<INPUT type='SUBMIT' value='DELETE' ONCLICK=\"return confirm('Are you sure you want to delete " . $row ['event_name'] . "?')\">";
 			echo "</form></td>";
-			
+			echo "<td valign='center'>";
+			if ($image_link != ""){echo "<img src='".$image_link."' width='150' height='112'>";
+			echo "</td>";
 			echo "<td valign='top'>";
 			echo "<p>Custom Identifier <b><u>" . $identifier . "</u></b></td>";
 			echo "<td>Event ID/Name: <b><u>" . $row['id']." - ".$event_name . "</u></b> ";
@@ -83,6 +88,10 @@ function event_regis_events() {
 			}
 			
 			echo "<p>Description <b><u>" . $event_desc . "</u></b></p>";
+			
+			echo "<p>Event Thumbnail URL <u>". $imagle_link. "</u></p>";
+			
+			echo "<p>Event Header Image URL <u>". $header_image . "</u></p>";
 			
 			echo "<p>Accept Checks <b><u>" . $checks . "</u></b> Is This Event Active? <b><u>" . $active . "</u></b></p>";
 			
@@ -157,6 +166,8 @@ function event_regis_events() {
 			$id = $row ['id'];
 			$event_name = $row ['event_name'];
 			$event_desc = $row ['event_desc'];
+			$image = $row ['image_link'];
+			$header = $row ['header_image'];
 			$display_desc = $row ['display_desc'];
 			$event_description = $row ['event_desc'];
 			$identifier = $row ['event_identifier'];
@@ -222,6 +233,8 @@ function event_regis_events() {
 		}
 		?>
 		</p>
+		<p>Thumbnail Image URL (shows on event listing) display size 150 x112 <input name="image_link" size="45" value="<?php echo $image;?>"></p>
+		<p>Event Header Image URL (shows on registration page) width should be 450 <input name="header_image" size="45" value="<?php echo $header; ?>"></p>
 	<p>
 		ATTENDEE LIMIT (leave blank for unlimited)  <input name="reg_limit" size="10" value ="<?php
 		echo $reg_limit;
@@ -289,6 +302,8 @@ function event_regis_events() {
 				$event_name = $_REQUEST ['event'];
 				$event_identifier = $_REQUEST ['ident'];
 				$event_desc = $_REQUEST ['desc'];
+				$image = $_REQUEST ['image_link'];
+				$header = $_REQUEST ['header_image'];
 				$display_desc = $_REQUEST ['display_desc'];
 				$reg_limit = $_REQUEST ['reg_limit'];
 				$event_cost = $_REQUEST ['cost'];
@@ -337,7 +352,7 @@ function event_regis_events() {
 				//Post the new event into the database
 				
 
-				$sql = "INSERT INTO " . $events_detail_tbl . " (event_name, event_desc, display_desc, event_identifier, start_month, start_day, start_year, start_time, start_date, end_month, end_day, end_year, end_time, end_date, reg_limit, event_cost, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$event_identifier', '$start_month', '$start_day', '$start_year', '$start_time', '$start_date','$end_month', '$end_day', '$end_year', '$end_time', '$end_date', '$reg_limit', '$event_cost', '$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
+				$sql = "INSERT INTO " . $events_detail_tbl . " (event_name, event_desc, display_desc, image_link, header_image, event_identifier, start_month, start_day, start_year, start_time, start_date, end_month, end_day, end_year, end_time, end_date, reg_limit, event_cost, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$image', '$header', $event_identifier', '$start_month', '$start_day', '$start_year', '$start_time', '$start_date','$end_month', '$end_day', '$end_year', '$end_time', '$end_date', '$reg_limit', '$event_cost', '$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
 				
 				$wpdb->query ( $sql );
 				
@@ -351,6 +366,8 @@ function event_regis_events() {
 			$ident = $_REQUEST ['ident'];
 			$desc = $_REQUEST ['desc'];
 			$display_desc = $_REQUEST ['display_desc'];
+			$image = $_REQUEST ['image_link'];
+			$header = $REQUEST ['header_image'];
 			$reg_limit = $_REQUEST ['reg_limit'];
 			$cost = $_REQUEST ['cost'];
 			$accept_checks = $_REQUEST ['checks'];
@@ -397,11 +414,12 @@ function event_regis_events() {
 			//Post the new event into the database
 			
 
-			/* BHC */			$sql = "UPDATE $events_detail_tbl SET event_name='$event_name', event_identifier='$ident', reg_limit='$reg_limit',
-                                event_desc='$desc', display_desc='$display_desc', send_mail='$send_mail', event_cost='$cost', allow_checks='$accept_checks',
-								 is_active='$is_active', start_month='$start_month', start_day='$start_day', start_year='$start_year', start_date='$start_date', 
-								 end_month='$end_month', end_day='$end_day', end_year='$end_year', end_date='$end_date', start_time='$start_time', end_time='$end_time', 
-								 question1='$quest1', question2='$quest2', question3='$quest3', question4='$quest4', conf_mail='$conf_mail'  WHERE id = $id";
+			/* BHC */			$sql = "UPDATE $events_detail_tbl SET event_name='$event_name', event_identifier='$ident', image_link='$image', 
+								header_image='$header',	reg_limit='$reg_limit',event_desc='$desc', display_desc='$display_desc', send_mail='$send_mail',
+								event_cost='$cost', allow_checks='$accept_checks', is_active='$is_active', start_month='$start_month', start_day='$start_day',
+								start_year='$start_year', start_date='$start_date', end_month='$end_month', end_day='$end_day', end_year='$end_year', 
+								end_date='$end_date', start_time='$start_time', end_time='$end_time', question1='$quest1', question2='$quest2', 
+								question3='$quest3', question4='$quest4', conf_mail='$conf_mail'  WHERE id = $id";
 			
 			$wpdb->query ( $sql );
 			
@@ -425,6 +443,8 @@ function event_regis_events() {
 			echo "<INPUT TYPE='radio' NAME='display_desc' VALUE='N'>No";
 			?>
 			</p>	
+		<p>Thumbnail Image URL (shows on event listing) display size 150 x112 <input name="image_link" size="45"></p>
+		<p>Event Header Image URL (shows on registration page) width should be 450 <input name="header_image" size="45"></p>
 	<p>ATTENDEE LIMIT (leave blank for unlimited attendees) <input name="reg_limit" size="15"></p>
 	<p>COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00) 
 	<input name="cost" size="10"></p>
@@ -470,5 +490,5 @@ function event_regis_events() {
 	
 	display_event_details ();
 
-}
+}}
 ?>
