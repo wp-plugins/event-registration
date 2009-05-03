@@ -1,6 +1,5 @@
 <?php
 /*
- *  !!!!!!!! IJ TEMPORARY mail send line 506 event_register_attendeess.inc.php DELETE !!!!!
  *  TODO: Wordpress EMAIL FROM
  *  TODO: instead of active Event allow parameter {EVENTREGIX seminarid} 
  *  TODO: Ask more options: including payment
