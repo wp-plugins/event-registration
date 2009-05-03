@@ -99,7 +99,7 @@ function event_regis_events() {
 			if ($send_mail == "") {
 				echo " <b><i>PLEASE UPDATE THIS EVENT</i></b>";
 			}
-			if ($send_mail == "Y") {
+			if ($send_mail == "Y"){
 				echo "<b> Yes</b>";
 			}
 			if ($send_mail == "N") {

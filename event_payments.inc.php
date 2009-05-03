@@ -1,6 +1,6 @@
 <?php
 
-function event_process_payments() {
+function event_process_payments(){
 
 	function list_attendee_payments() {
 		//Displays attendee information from current active event.

@@ -4,13 +4,15 @@ Donate link: http://www.avdude.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 3.03
+Stable tag: 3.04
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
 == Description ==
 
-**I do not recommend upgrading to this version on a site you are currently taking registrations on.**
+**I do not recommend upgrading to this version on a site you are currently taking registrations on.
+
+You will need to edit/save all existing events to update them to the database changes to work properly**
 
 This plugin provides a way to take online registrations for events such as conference and seminars that are held live.
 This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. 
@@ -29,6 +31,9 @@ If you like the plugin and find it useful, your donations would also help me kee
 
 Changes:
 
+3.04 Resolved issue where email sends mail to someone it shouldnt! Sorry for that!
+     Added image support for events you can use a thumbnail for the event listings and a header image on registration page
+    A few other tweeks.
 3.03 Changed Request URI to work with IIS as well as apache servers.
 	Added date sort to only display current/future events when listing all events.
 	Added support for quick tags using a page for single event by ID (you can create different pages for different events at the same time.)
