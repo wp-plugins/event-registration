@@ -292,6 +292,7 @@ function event_regis_pay() {
 			$city = $row ['city'];
 			$state = $row ['state'];
 			$zip = $row ['zip'];
+			$num_people ['num_people'];
 			$email = $row ['email'];
 			$phone = $row ['phone'];
 			$date = $row ['date'];
@@ -362,7 +363,8 @@ function event_regis_pay() {
 			echo "<p><b><u><i><font color='red' size='3'>Our records indicate you have paid " . $paypal_cur . " " . $amt_pd . "</font></u></i></b></p>";
 		}
 		if ($event_cost != "") {
-			$current_due = $event_cost - $amt_pd;
+			$total_cost = $event_cost * $num_people;
+			$current_due = $total_cost - $amt_pd;
 			if ($allow_checks == "yes") {
 				echo "<p><b>PLEASE MAKE CHECKS PAYABLE TO: <u>$Organization</u></b></p>"; // BHC Changed for clarity.
 				echo "<p><b>IN THE AMOUNT OF <u>$paypal_cur $current_due</u></b></p>";
@@ -380,7 +382,8 @@ function event_regis_pay() {
 <p align="left"><b>Payment By Credit Card, Debit Card or Pay Pal Account<br />
 (a PayPal account is not required to pay by credit card).</b></p>
 <p>Payment will be in the amount of <?php
-	$current_due = $event_cost - $amt_pd;
+	$total_cost = $event_cost * $num_people;
+	$current_due = $total_cost - $amt_pd;
 				echo $paypal_cur . " " . $current_due;
 				?>.</p>
 <p>PayPal Payments will be sent to: <?php
@@ -403,21 +406,14 @@ function event_regis_pay() {
 				?></b>&nbsp;</td>
 		<td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER'>
 		<? 
-	  if ($use_sandbox == 1){ 
+/*	  if ($use_sandbox == 1){ 
       		echo "<form action='https://www.sandbox.paypal.com/cgi-bin/webscr' method='post'>";
        }else{
       		echo "<form action='https://www.paypal.com/cgi-bin/webscr' method='post'>";
 	   }
-      ?>
-      Additional attendees?
-      <select name="quantity" style="width:70px;margin-top:4px">
-        <option value="1" selected>None</option>
-        <option value="2">1</option>
-        <option value="3">2</option>
-        <option value="4">3</option>
-        <option value="5">4</option>
-        <option value="6">5</option>
-      </select>
+	   */
+	   ?>
+     
 		<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal"
 			method="post"><font face="Arial"> <input type="hidden" name="bn"
 			value="AMPPFPWZ.301" style="font-weight: 700"> <input type="hidden"
@@ -469,11 +465,38 @@ function events_payment_paypal() {
 function events_payment_page($event_id) {
 	
 	global $wpdb;
+	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 	$events_organization_tbl = get_option ( 'events_organization_tbl' );
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$attendee_id = get_option ( 'attendee_id' );
 	$attendee_name = get_option ( 'attendee_name' );
 	$paypal_cur = get_option ( 'paypal_cur' );
+	
+		$query = "SELECT * FROM $events_attendee_tbl WHERE id='$attendee_id'";
+		$result = mysql_query ( $query ) or die ( 'Error : ' . mysql_error () );
+		while ( $row = mysql_fetch_assoc ( $result ) ) {
+			$attendee_id = $row ['id'];
+			$lname = $row ['lname'];
+			$fname = $row ['fname'];
+			$address = $row ['address'];
+			$city = $row ['city'];
+			$state = $row ['state'];
+			$zip = $row ['zip'];
+			$num_people ['num_people'];
+			$email = $row ['email'];
+			$phone = $row ['phone'];
+			$date = $row ['date'];
+			$paystatus = $row ['paystatus'];
+			$txn_type = $row ['txn_type'];
+			$amt_pd = $row ['amount_pd'];
+			$date_pd = $row ['paydate'];
+			$event_id = $row ['event_id'];
+			$custom1 = $row ['custom_1'];
+			$custom2 = $row ['custom_2'];
+			$custom3 = $row ['custom_3'];
+			$custom4 = $row ['custom_4'];
+			$attendee_name = $fname . " " . $lname;
+		}
 	
 	//query event database for organization information
 	$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";
@@ -525,9 +548,11 @@ function events_payment_page($event_id) {
 	}
 	
 	if ($event_cost != "") {
-		
+		$total_cost = $event_cost * $num_people;
+				
 		if ($allow_checks == "yes") {
-			echo "<p><b>PLEASE MAKE CHECKS PAYABLE TO: <u>$Organization</u></b></p>"; // BHC Changed for clarity.
+			echo "<p><b>PLEASE MAKE CHECKS IN THE AMOUNT OF: <u>$total_cost</u></b></p>";
+			echo  "<p><b>PLEASE MAKE CHECKS PAYABLE TO: <u>$Organization</u></b></p>"; // BHC Changed for clarity.
 			echo "<p>$Organization" . BR;
 			echo $Organization_street1 . " " . $Organization_street2 . BR;
 			echo $Organization_city . ", " . $Organization_state . "   " . $Organization_zip . "</p>";
@@ -557,7 +582,7 @@ function events_payment_page($event_id) {
 	  ?>
 		<td VALIGN='MIDDLE' ALIGN='CENTER'>&nbsp;<br />
 		<B><?php
-			echo $event_name . " - " . $paypal_cur . " " . $event_cost;
+			echo $event_name . " - " . $paypal_cur . " " . $total_cost;
 			?></b>&nbsp;</td>
 			
 			<?php
@@ -619,7 +644,7 @@ function events_payment_page($event_id) {
 			?>"
 			style="font-weight: 700"> <input type="hidden" name="amount"
 			value="<?php
-			echo $event_cost;
+			echo $total_cost;
 			?>" style="font-weight: 700"> <input type="hidden"
 			name="currency_code" value="<?php
 			echo $paypal_cur;

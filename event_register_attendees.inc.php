@@ -36,6 +36,7 @@ function register_attendees($event_single_ID) {
 		$display_desc = $row ['display_desc'];
 		$image = $row ['image_link'];
 		$header = $row ['header_image'];
+		$multiple = $row ['multiple'];
 		$event_description = $row ['event_desc'];
 		$identifier = $row ['event_identifier'];
 		$event_cost = $row ['event_cost'];
@@ -284,7 +285,26 @@ function trim(s) {
 		echo $lang ['zip'];
 		?>:<br />
 	<input tabIndex="8" maxLength="10" size="15" name="zip"></b></p>
-			<?php
+<?php
+if ($multiple == "Y"){?>			
+			
+<p align="left"><b>	Additional attendees?
+      <select name="num_people" style="width:70px;margin-top:4px">
+        <option value="1" selected>None</option>
+        <option value="2">1</option>
+        <option value="3">2</option>
+        <option value="4">3</option>
+        <option value="5">4</option>
+        <option value="6">5</option>
+      </select>		
+      </b></p>
+      
+      <?php
+	  }
+if ($multiple == "N"){?>
+<input type="hidden" name="num_people" value="1"> 
+<?php
+}
 		/*
 			<p align="left"><b>How did you hear about this event?</b><br /><select tabIndex="9" size="1" name="hear">
 			<option value="pick one" selected>pick one</option>
@@ -389,6 +409,7 @@ function add_attendees_to_db() {
 	$phone = $_POST ['phone'];
 	$email = $_POST ['email'];
 	$hear = $_POST ['hear'];
+	$num_people = $_POST ['num_people'];
 	$event_id = $_POST ['event_id'];
 	$payment = $_POST ['payment'];
 	$custom_1 = $_POST ['custom_1'];
@@ -400,7 +421,7 @@ function add_attendees_to_db() {
 	update_option ( "attendee_name", $fname . " " . $lname );
 	update_option ( "attendee_email", $email );
 	
-	$sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,state ,zip ,email ,phone ,hear ,payment, event_id, custom_1, custom_2, custom_3, custom_4 ) VALUES ('$lname', '$fname', '$address', '$city', '$state', '$zip', '$email', '$phone', '$hear', '$payment', '$event_id', '$custom_1', '$custom_2', '$custom_3', '$custom4')";
+	$sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,state ,zip ,email ,phone ,hear ,num_people, payment, event_id, custom_1, custom_2, custom_3, custom_4 ) VALUES ('$lname', '$fname', '$address', '$city', '$state', '$zip', '$email', '$phone', '$hear', '$num_people', '$payment', '$event_id', '$custom_1', '$custom_2', '$custom_3', '$custom4')";
 	
 	$wpdb->query ( $sql );
 	
@@ -481,6 +502,7 @@ function add_attendees_to_db() {
 		$start_month = $row ['start_month'];
 		$start_day = $row ['start_day'];
 		$start_year = $row ['start_year'];
+		$multiple = $row ['multiple'];
 		$end_month = $row ['end_month'];
 		$end_day = $row ['end_day'];
 		$end_year = $row ['end_year'];
@@ -518,9 +540,9 @@ function add_attendees_to_db() {
 	$payment_link = $return_url . "?id=" . $id;
 	
 	//Email Confirmation to Attendee
-	$SearchValues = array ("[fname]", "[lname]", "[phone]", "[event]", "[description]", "[cost]", "[qst1]", "[qst2]", "[qst3]", "[qst4]", "[contact]", "[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]", "[co_zip]", "[payment_url]", "[start_date]", "[start_time]", "[end_date]", "[end_time]","[snum]" );
+	$SearchValues = array ("[fname]", "[lname]", "[phone]", "[event]", "[description]", "[cost]", "[qst1]", "[qst2]", "[qst3]", "[qst4]", "[contact]", "[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]", "[co_zip]", "[payment_url]", "[start_date]", "[start_time]", "[end_date]", "[end_time]","[snum]", "[num_people]" );
 	
-	$ReplaceValues = array ($fname, $lname, $phone, $event_name, $event_desc, $cost, $question1, $question2, $question3, $question4, $contact, $Organization, $Organization_street1, $Organization_street2, $Organization_city, $Organization_state, $Organization_zip, $payment_link, $start_date, $start_time, $end_date, $end_time, $attnum);
+	$ReplaceValues = array ($fname, $lname, $phone, $event_name, $event_desc, $cost, $question1, $question2, $question3, $question4, $contact, $Organization, $Organization_street1, $Organization_street2, $Organization_city, $Organization_state, $Organization_zip, $payment_link, $start_date, $start_time, $end_date, $end_time, $attnum, $num_people);
 	
 	$custom = str_replace ( $SearchValues, $ReplaceValues, $conf_mail );
 	$default_replaced = str_replace ( $SearchValues, $ReplaceValues, $conf_message );
@@ -553,6 +575,7 @@ function add_attendees_to_db() {
 		$state = $row ['state'];
 		$zip = $row ['zip'];
 		$email = $row ['email'];
+		$num_people = $row ['num_people'];
 		$phone = $row ['phone'];
 		$date = $row ['date'];
 		$paystatus = $row ['paystatus'];
