@@ -62,7 +62,7 @@ function events_data_tables_install () {
 				  }
 		}
 	// Code here with new database upgrade info/table Must change version number to work.
-		 $events_attendee_tbl_version = "3.03";
+		 $events_attendee_tbl_version = "3.04";
 		 $installed_ver = get_option( "events_attendee_tbl_version" );
 	     if( $installed_ver != $events_attendee_tbl_version ) {
 
@@ -441,11 +441,6 @@ function events_answer_tbl_install() {
     update_option( "events_answer_tbl_version", $events_answer_tbl_version );
     }
 	}
-
-
-
-
-
 
 
 events_attendee_tbl_install();

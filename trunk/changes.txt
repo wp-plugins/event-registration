@@ -1,5 +1,8 @@
 Changes:
 =========
+3.04 by David  Removed email sent issue (left by custom job - sorry!)
+	 	Added image support on event list and event registration page
+
 
 3.03 by David:  Changed Request URI to work with IIS as well as Apache
 		Added date filter for viewing all events by startdate 

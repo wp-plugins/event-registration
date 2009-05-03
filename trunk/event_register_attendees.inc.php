@@ -500,7 +500,6 @@ function add_attendees_to_db() {
 	
 	// Email Confirmation to Registrar
 	
-
 	$event_name = $current_event;
 	
 	$distro = $registrar;

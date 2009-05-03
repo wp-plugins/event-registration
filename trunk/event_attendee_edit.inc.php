@@ -44,7 +44,7 @@ function attendee_display_edit() {
 	style="width:180; height: 30">Export Current Attendee List To Excel</button>
 <button style="background-color: lightgreen"
 	onclick="window.location='<?php
-		echo $url . "event_registration_export.php?id=" . $view_event . "&action=csv";
+		echo $url . "event_registration_export.php?id=" . $view_event. "&action=csv";
 		?>'"
 	style="width:180; height: 30">Export Current Attendee List To CSV</button>
 <br>
