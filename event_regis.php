@@ -13,7 +13,7 @@ persons contact information to a database and provides an association to an
 events database. It provides the ability to send the register to your 
 paypal payment site for online collection of event fees. Reporting features 
 provide a list of events, list of attendees, and excel export.
-Version: 3.041
+Version: 3.042
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
