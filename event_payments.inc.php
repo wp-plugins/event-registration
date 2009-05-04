@@ -482,7 +482,7 @@ function events_payment_page($event_id) {
 			$city = $row ['city'];
 			$state = $row ['state'];
 			$zip = $row ['zip'];
-			$num_people ['num_people'];
+			$num_people = $row ['num_people'];
 			$email = $row ['email'];
 			$phone = $row ['phone'];
 			$date = $row ['date'];
@@ -548,6 +548,7 @@ function events_payment_page($event_id) {
 	}
 	
 	if ($event_cost != "") {
+	
 		$total_cost = $event_cost * $num_people;
 				
 		if ($allow_checks == "yes") {
@@ -626,40 +627,25 @@ function events_payment_page($event_id) {
       <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" align='middle' name="submit">
       </form>
       */ ?>
-			<td WIDTH="150" VALIGN='MIDDLE' ALIGN='CENTER'>
-		<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal"
-			method="post"><font face="Arial"> <input type="hidden" name="bn"
-			value="AMPPFPWZ.301" style="font-weight: 700"> <input type="hidden"
-			name="cmd" value="_xclick" style="font-weight: 700"> <input
-			type="hidden" name="business"
-			value="<?php
-			echo $paypal_id;
-			?>" style="font-weight: 700"> <input type="hidden" name="item_name"
-			value="<?php
-			echo $event_name . " - " . $attendee_id . " - " . $attendee_name;
-			?>"
-			style="font-weight: 700"> <input type="hidden" name="item_number"
-			value="<?php
-			echo $event_identifier;
-			?>"
-			style="font-weight: 700"> <input type="hidden" name="amount"
-			value="<?php
-			echo $total_cost;
-			?>" style="font-weight: 700"> <input type="hidden"
-			name="currency_code" value="<?php
-			echo $paypal_cur;
-			?>"
-			style="font-weight: 700"> <input type="hidden"
-			name="undefined_quantity" value="0" style="font-weight: 700"> <input
-			type="hidden" name="custom"
-			value="<?php
-			echo $attendee_id;
-			?>" style="font-weight: 700"> <input type="hidden" name="image_url"
-			style="font-weight: 700"> </font><b><font face="Arial" size="2">&nbsp;<br />
-			<p><input type="image"
-			src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif"
-			border="0" align='middle' name="submit"></p>
-		&nbsp; </font></b></form>
+		<td WIDTH="150" VALIGN="MIDDLE" ALIGN="CENTER">
+		<form action="https://www.paypal.com/cgi-bin/webscr" target="paypal" method="post">
+		<font face="Arial"> 
+		<input type="hidden" name="bn" value="AMPPFPWZ.301" style="font-weight: 700"> 
+		<input type="hidden" name="cmd" value="_xclick" style="font-weight: 700"> 
+		<input type="hidden" name="business" value="<?php echo $paypal_id;?>" style="font-weight: 700"> 
+		<input type="hidden" name="item_name" value="<?php echo $event_name . " - " . $attendee_id . " - " . $attendee_name." - ";
+		if ($num_people > '1'){echo $num_people.' people';}
+		?>"	style="font-weight: 700">
+		<input type="hidden" name="item_number" value="<?php echo $event_identifier;?>"	style="font-weight: 700"> 
+		<input type="hidden" name="amount" value="<?php echo $total_cost;?>" style="font-weight: 700"> 
+		<input type="hidden" name="currency_code" value="<?php echo $paypal_cur;?>"	style="font-weight: 700"> 
+		<input type="hidden" name="undefined_quantity" value="0" style="font-weight: 700"> 
+		<input type="hidden" name="custom" value="<?php echo $attendee_id;?>" style="font-weight: 700"> 
+		<input type="hidden" name="image_url" style="font-weight: 700"> 
+		</font><b><font face="Arial" size="2">&nbsp;<br />
+		<p><input type="image" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif"	border="0" align='middle' name="submit"></p>
+		</font></b>
+		</form>
 		</td>
 	</tr>
 </table>
