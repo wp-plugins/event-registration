@@ -9,7 +9,7 @@ function event_regis_events() {
 		$events_detail_tbl = get_option ( 'events_detail_tbl' );
 		$curdate = date ( "Y-m-d" );
 		$sql = "SELECT * FROM " . $events_detail_tbl;
-		echo "Test";
+		
 		$result = mysql_query ( $sql );
 		/* 	echo "<table><tr><td width='60'></td><td><input name='' size='45' value='EVENT NAME'>";
 									echo "<input name='' value='EVENT ID'>";
@@ -65,7 +65,7 @@ function event_regis_events() {
 			echo "<INPUT type='SUBMIT' value='DELETE' ONCLICK=\"return confirm('Are you sure you want to delete " . $row ['event_name'] . "?')\">";
 			echo "</form></td>";
 			echo "<td valign='center'>";
-			if ($image_link != ""){echo "<img src='".$image_link."' width='150' height='112'>";
+			if ($image_link != ""){echo "<img src='".$image_link."' width='150' height='112'>";}
 			echo "</td>";
 			echo "<td valign='top'>";
 			echo "<p>Custom Identifier <b><u>" . $identifier . "</u></b></td>";
@@ -142,7 +142,7 @@ function event_regis_events() {
 */
 		}
 		echo "</table>";
-	}}
+	}
 
 	//function to delete event
 	function delete_event() {
