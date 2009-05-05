@@ -425,11 +425,7 @@ function add_attendees_to_db() {
 	
 	$wpdb->query ( $sql );
 	
-	//Added by IJ: get the attendee-number and add to subject of email for having a unique attendee-number
-	$sql = "select max(id) as attnum from $events_attendee_tbl ";
-	$result = mysql_query ( $sql );
-	$row = mysql_fetch_array ( $result );
-	$attnum = $row ['attnum'];
+
 	
 	// Insert Extra From Post Here
 	$events_question_tbl = get_option ( 'events_question_tbl' );
@@ -442,6 +438,11 @@ function add_attendees_to_db() {
 			switch ($question->question_type) {
 				case "TEXT" :
 				case "TEXTAREA" :
+				case "DROPDOWN" :
+					$post_val = $_POST [$question->question_type . '-' . $question->id];
+					$wpdb->query ( "INSERT into `$events_answer_tbl` (registration_id, question_id, answer)
+					values ('$reg_id', '$question->id', '$post_val')" );
+					break;
 				case "SINGLE" :
 					$post_val = $_POST [$question->question_type . '-' . $question->id];
 					$wpdb->query ( "INSERT into `$events_answer_tbl` (registration_id, question_id, answer)
@@ -461,6 +462,14 @@ function add_attendees_to_db() {
 			}
 		}
 	}
+	
+	
+	//Added by IJ: get the attendee-number and add to subject of email for having a unique attendee-number
+	$sql = "select max(id) as attnum from $events_attendee_tbl ";
+	$result = mysql_query ( $sql );
+	$row = mysql_fetch_array ( $result );
+	$attnum = $row ['attnum'];	
+	
 	
 	//Query Database for Event Organization Info to email registrant BHC
 	$events_organization_tbl = get_option ( 'events_organization_tbl' );

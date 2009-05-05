@@ -1,10 +1,10 @@
 === Event Registration ===
-Contributors: david fleming &  Inna Janssen
-Donate link: http://www.avdude.com/
+Contributors: David Fleming
+Donate link: http://www.edgetechweb.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 3.045
+Stable tag: 3.046
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
@@ -29,26 +29,14 @@ If you like the plugin and find it useful, your donations would also help me kee
 
 Changes:
 
-3.04 Resolved issue where email sends mail to someone it shouldnt! Sorry for that!
-     Added image support for events you can use a thumbnail for the event listings and a header image on registration page
-    A few other tweeks.
-3.03 Changed Request URI to work with IIS as well as apache servers.
-	Added date sort to only display current/future events when listing all events.
-	Added support for quick tags using a page for single event by ID (you can create different pages for different events at the same time.)
-	Example Use this code in page [Event_Registration_Single id="1"] where id is the event id, instead of {EVENTREGIS} *Note you must have all events enabled in the organization configuration for this to work.
-	
-3.02 Changed table structure: email_conf: varchar 1000 not possible.  changed to text.
-
-3.01 split files to several files to have a better structure. 
-	startet outsourcing the language and providing german and english language. This is done for
-	the registration form the user sees on the webpage
-	changed double-BR to valid XHTML-Style <p>...</p> Tags
-	some small code and html style changes
-
-3.0
-	Resolved Default mail not replacing key tags [] with data variables.
-	Resolved You can add questions to event 0 by not selection the big event button first
-	Resolved DROPDOWN type not working - missing enum type in table creation script (only shows on new install)
+3.046 - Fixed issue with dropdown questions not posting to database
+3.045 - Fixed bug with Adding Events & Database Installation
+3.044 - Bug Fix
+3.043 - Bug Fix
+3.042 - Bug Fix
+3.041 - Fixed email issue where sending out extra mail
+3.04 - Added support to use thumbnail and header images on registration page
+3.03 - Added shortcode support for using single events on a custom page
 
 . . . See changelog.txt for more changes
 
