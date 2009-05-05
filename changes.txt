@@ -1,6 +1,6 @@
 Changes:
 =========
-3.044 - Resolved bugs with event setup page, adding new events.
+3.045 - Resolved bugs with event setup page, adding new events.
 		Fixed bug in Data base installation
 
 3.043 - Resolved bugs
