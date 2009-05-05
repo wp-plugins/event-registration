@@ -1,7 +1,5 @@
 <?php
-
 //Event Registration Subpage 2 - Add/Delete/Edit Events
-
 
 function event_regis_events() {
 
@@ -9,9 +7,7 @@ function event_regis_events() {
 	function display_event_details($all = 0) {
 		global $wpdb;
 		$events_detail_tbl = get_option ( 'events_detail_tbl' );
-		
 		$curdate = date ( "Y-m-d" );
-		
 		$sql = "SELECT * FROM " . $events_detail_tbl;
 		
 		$result = mysql_query ( $sql );
@@ -24,12 +20,13 @@ function event_regis_events() {
 		echo "<table><tr><b>EVENTS LISTING:</b></tr>";
 		
 		while ( $row = mysql_fetch_assoc ( $result ) ) {
+			
 			$event_name = $row ['event_name'];
 			$event_desc = $row ['event_desc']; // BHC
 			$image = $row ['image_link'];
 			$display_desc = $row ['display_desc'];
 			$image_link = $row ['image_link'];
-			$header = $row ['header_image'];
+			$header_image = $row ['header_image'];
 			$identifier = $row ['event_identifier'];
 			$reg_limit = $row ['reg_limit'];
 			$start_month = $row ['start_month'];
@@ -41,6 +38,7 @@ function event_regis_events() {
 			$start_time = $row ['start_time'];
 			$end_time = $row ['end_time'];
 			$cost = $row ['event_cost'];
+			$multiple = $row ['multiple'];
 			$checks = $row ['allow_checks'];
 			$active = $row ['is_active'];
 			$question1 = $row ['question1'];
@@ -68,7 +66,7 @@ function event_regis_events() {
 			echo "<INPUT type='SUBMIT' value='DELETE' ONCLICK=\"return confirm('Are you sure you want to delete " . $row ['event_name'] . "?')\">";
 			echo "</form></td>";
 			echo "<td valign='center'>";
-			if ($image_link != ""){echo "<img src='".$image_link."' width='150' height='112'>";
+			if ($image_link != ""){echo "<img src='".$image_link."' width='150' height='112'>";}
 			echo "</td>";
 			echo "<td valign='top'>";
 			echo "<p>Custom Identifier <b><u>" . $identifier . "</u></b></td>";
@@ -89,9 +87,20 @@ function event_regis_events() {
 			
 			echo "<p>Description <b><u>" . $event_desc . "</u></b></p>";
 			
-			echo "<p>Event Thumbnail URL <u>". $imagle_link. "</u></p>";
+			echo "<p>Event Thumbnail URL <u>". $image_link. "</u></p>";
 			
 			echo "<p>Event Header Image URL <u>". $header_image . "</u></p>";
+			
+			echo "<p>ALLOW PAYMENT FOR MORE THAN ONE PERSON AT A TIME (max # people 5)? ";
+            if ($multiple == "") {
+				echo " <b><i>PLEASE UPDATE THIS EVENT</i></b>" . BR;
+			}
+			if ($multiple == "Y") {
+				echo "<b> Yes</b>" . BR;
+			}
+			if ($multiple == "N") {
+				echo "<b> No</b>" . BR;
+			}
 			
 			echo "<p>Accept Checks <b><u>" . $checks . "</u></b> Is This Event Active? <b><u>" . $active . "</u></b></p>";
 			
@@ -149,7 +158,7 @@ function event_regis_events() {
 			?><META HTTP-EQUIV="refresh"
 	content="0;URL=<?php
 			request_uri();
-			?>"><?
+			?>"><?php
 		}
 	}
 
@@ -167,7 +176,7 @@ function event_regis_events() {
 			$event_name = $row ['event_name'];
 			$event_desc = $row ['event_desc'];
 			$image = $row ['image_link'];
-			$header = $row ['header_image'];
+			$header_image = $row ['header_image'];
 			$display_desc = $row ['display_desc'];
 			$event_description = $row ['event_desc'];
 			$identifier = $row ['event_identifier'];
@@ -180,6 +189,7 @@ function event_regis_events() {
 			$start_time = $row ['start_time'];
 			$end_time = $row ['end_time'];
 			$reg_limit = $row ['reg_limit'];
+			$multiple = $row ['multiple'];
 			$event_cost = $row ['event_cost'];
 			$checks = $row ['allow_checks'];
       //TODO IJ change table structure... 
@@ -234,9 +244,28 @@ function event_regis_events() {
 		?>
 		</p>
 		<p>Thumbnail Image URL (shows on event listing) display size 150 x112 <input name="image_link" size="45" value="<?php echo $image;?>"></p>
-		<p>Event Header Image URL (shows on registration page) width should be 450 <input name="header_image" size="45" value="<?php echo $header; ?>"></p>
+		<p>Event Header Image URL (shows on registration page) width should be 450 <input name="header_image" size="45" value="<?php echo $header_image; ?>"></p>
 	<p>
-		ATTENDEE LIMIT (leave blank for unlimited)  <input name="reg_limit" size="10" value ="<?php
+	
+	<p>ALLOW PAYMENT FOR MORE THAN ONE PERSON AT A TIME (max # people 5)?
+			<?php
+		if ($multiple == "") {
+			echo " <INPUT TYPE='radio' NAME='multiple' CHECKED VALUE='Y'>Yes";
+			echo " <INPUT TYPE='radio' NAME='multiple' VALUE='N'>No";
+		}
+		if ($multiple == "Y") {
+			echo " <INPUT TYPE='radio' NAME='multiple' CHECKED VALUE='Y'>Yes";
+			echo " <INPUT TYPE='radio' NAME='multiple' VALUE='N'>No";
+		}
+		if ($display_desc == "N") {
+			echo " <INPUT TYPE='radio' NAME='multiple' VALUE='Y'>Yes";
+			echo " <INPUT TYPE='radio' NAME='multiple' CHECKED VALUE='N'>No";
+		}
+		?>
+		</p>
+	
+	
+	<p>	ATTENDEE LIMIT (leave blank for unlimited)  <input name="reg_limit" size="10" value ="<?php
 		echo $reg_limit;
 		?>">
 		</p>
@@ -303,10 +332,11 @@ function event_regis_events() {
 				$event_identifier = $_REQUEST ['ident'];
 				$event_desc = $_REQUEST ['desc'];
 				$image = $_REQUEST ['image_link'];
-				$header = $_REQUEST ['header_image'];
+				$header_image = $_REQUEST ['header_image'];
 				$display_desc = $_REQUEST ['display_desc'];
 				$reg_limit = $_REQUEST ['reg_limit'];
 				$event_cost = $_REQUEST ['cost'];
+				$multiple = $_REQUEST ['multiple'];
 				$allow_checks = $_REQUEST ['checks'];
 				$is_active = $_REQUEST ['is_active'];
 				$start_month = $_REQUEST ['start_month'];
@@ -337,8 +367,19 @@ function event_regis_events() {
 				if ($start_month == "Dec"){$month_no = '12';}
 				
 				$start_date = $start_year."-".$month_no."-".$start_day;
-				
-				$end_date = $end_year."-".$end_month."-".$end_day;
+				if ($end_month == "Jan"){$end_month_no = '01';}
+				if ($end_month == "Feb"){$end_month_no = '02';}
+				if ($end_month == "Mar"){$end_month_no = '03';}
+				if ($end_month == "Apr"){$end_month_no = '04';}
+				if ($end_month == "May"){$end_month_no = '05';}
+				if ($end_month == "Jun"){$end_month_no = '06';}
+				if ($end_month == "Jul"){$end_month_no = '07';}
+				if ($end_month == "Aug"){$end_month_no = '08';}
+				if ($end_month == "Sep"){$end_month_no = '09';}
+				if ($end_month == "Oct"){$end_month_no = '10';}
+				if ($end_month == "Nov"){$end_month_no = '11';}
+				if ($end_month == "Dec"){$end_month_no = '12';}
+				$end_date = $end_year."-".$end_month_no."-".$end_day;
 				
 				//When the posted record is set to active, this checks records and deactivates them to set the current record as active
 				update_option ( "current_event", $event_name );
@@ -352,11 +393,13 @@ function event_regis_events() {
 				//Post the new event into the database
 				
 
-				$sql = "INSERT INTO " . $events_detail_tbl . " (event_name, event_desc, display_desc, image_link, header_image, event_identifier, start_month, start_day, start_year, start_time, start_date, end_month, end_day, end_year, end_time, end_date, reg_limit, event_cost, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$image', '$header', $event_identifier', '$start_month', '$start_day', '$start_year', '$start_time', '$start_date','$end_month', '$end_day', '$end_year', '$end_time', '$end_date', '$reg_limit', '$event_cost', '$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
+				$sql = "INSERT INTO " . $events_detail_tbl . " (event_name, event_desc, display_desc, image_link, header_image, event_identifier, start_month, start_day, start_year, start_time, start_date, end_month, end_day, end_year, end_time, end_date, reg_limit, event_cost, multiple, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$image', '$header_image', '$event_identifier', '$start_month', '$start_day', '$start_year', '$start_time', '$start_date','$end_month', '$end_day', '$end_year', '$end_time', '$end_date', '$reg_limit', '$event_cost', '$multiple','$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
 				
+		
+			
 				$wpdb->query ( $sql );
 				
-				echo "<meta http-equiv='refresh' content='0'>";
+			echo "<meta http-equiv='refresh' content='0'>";
 			}
 		
 		}
@@ -367,9 +410,10 @@ function event_regis_events() {
 			$desc = $_REQUEST ['desc'];
 			$display_desc = $_REQUEST ['display_desc'];
 			$image = $_REQUEST ['image_link'];
-			$header = $REQUEST ['header_image'];
+			$header_image = $_REQUEST ['header_image'];
 			$reg_limit = $_REQUEST ['reg_limit'];
 			$cost = $_REQUEST ['cost'];
+			$multiple = $_REQUEST ['multiple'];
 			$accept_checks = $_REQUEST ['checks'];
 			$is_active = $_REQUEST ['is_active'];
 			$start_month = $_REQUEST ['start_month'];
@@ -400,7 +444,21 @@ function event_regis_events() {
 				if ($start_month == "Dec"){$month_no = '12';}
 				
 				$start_date = $start_year."-".$month_no."-".$start_day;
-				$end_date = $end_year."-".$end_month."-".$end_day;
+				
+								if ($end_month == "Jan"){$end_month_no = '01';}
+				if ($end_month == "Feb"){$end_month_no = '02';}
+				if ($end_month == "Mar"){$end_month_no = '03';}
+				if ($end_month == "Apr"){$end_month_no = '04';}
+				if ($end_month == "May"){$end_month_no = '05';}
+				if ($end_month == "Jun"){$end_month_no = '06';}
+				if ($end_month == "Jul"){$end_month_no = '07';}
+				if ($end_month == "Aug"){$end_month_no = '08';}
+				if ($end_month == "Sep"){$end_month_no = '09';}
+				if ($end_month == "Oct"){$end_month_no = '10';}
+				if ($end_month == "Nov"){$end_month_no = '11';}
+				if ($end_month == "Dec"){$end_month_no = '12';}
+				$end_date = $end_year."-".$end_month_no."-".$end_day;
+
 			
 			//When the posted record is set to active, this checks records and deactivates them to set the current record as active
 			update_option ( "current_event", $event_name );
@@ -415,8 +473,8 @@ function event_regis_events() {
 			
 
 			/* BHC */			$sql = "UPDATE $events_detail_tbl SET event_name='$event_name', event_identifier='$ident', image_link='$image', 
-								header_image='$header',	reg_limit='$reg_limit',event_desc='$desc', display_desc='$display_desc', send_mail='$send_mail',
-								event_cost='$cost', allow_checks='$accept_checks', is_active='$is_active', start_month='$start_month', start_day='$start_day',
+								header_image='$header_image',	reg_limit='$reg_limit',event_desc='$desc', display_desc='$display_desc', send_mail='$send_mail',
+								event_cost='$cost', multiple='$multiple', allow_checks='$accept_checks', is_active='$is_active', start_month='$start_month', start_day='$start_day',
 								start_year='$start_year', start_date='$start_date', end_month='$end_month', end_day='$end_day', end_year='$end_year', 
 								end_date='$end_date', start_time='$start_time', end_time='$end_time', question1='$quest1', question2='$quest2', 
 								question3='$quest3', question4='$quest4', conf_mail='$conf_mail'  WHERE id = $id";
@@ -449,6 +507,14 @@ function event_regis_events() {
 	<p>COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00) 
 	<input name="cost" size="10"></p>
 	<p>WILL YOU ACCEPT CHECKS? <select name="checks"><option>yes</option><option>no</option></select></p>
+    <p>ALLOW PAYMENT FOR MORE THAN ONE PERSON AT A TIME (max # people 5)?
+			<?php
+  			echo " <INPUT TYPE='radio' NAME='multiple' CHECKED VALUE='Y'>Yes";
+			echo " <INPUT TYPE='radio' NAME='multiple' VALUE='N'>No";
+    		?>
+		</p>
+
+
 
 	<?php
 			displaySelectionBox ();
@@ -490,5 +556,5 @@ function event_regis_events() {
 	
 	display_event_details ();
 
-}}
+}
 ?>

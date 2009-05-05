@@ -1,5 +1,16 @@
 Changes:
 =========
+3.046 - Fixed issue with dropdown questions answer not posting
+
+3.045 - Resolved bugs with event setup page, adding new events.
+		Fixed bug in Data base installation
+
+3.043 - Resolved bugs
+
+3.042 - Resovled bugs 
+3.041 - Removed Email Bug
+
+
 3.04 by David  Removed email sent issue (left by custom job - sorry!)
 	 	Added image support on event list and event registration page
 

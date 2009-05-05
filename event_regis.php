@@ -13,8 +13,8 @@ persons contact information to a database and provides an association to an
 events database. It provides the ability to send the register to your 
 paypal payment site for online collection of event fees. Reporting features 
 provide a list of events, list of attendees, and excel export.
-Version: 3.03
-Author: David Fleming - Edge Technology Consulting, Inna Janssen - Janssen-Webservice
+Version: 3.046
+Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
 /*  Copyright 2008  DAVID_FLEMING  (email : CONSULTANT@AVDUDE.COM)
@@ -45,11 +45,11 @@ Author URI: http://www.avdude.com
 //Define the table versions for unique tables required in Events Registration
 
 
-$events_attendee_tbl_version = "3.04";
-$events_detail_tbl_version = "3.04";
-$events_organization_tbl_version = "3.04";
-$events_answer_tbl_version = "3.04";
-$events_question_tbl_version = "3.04";
+$events_attendee_tbl_version = "3.046";
+$events_detail_tbl_version = "3.046";
+$events_organization_tbl_version = "3.046";
+$events_answer_tbl_version = "3.046";
+$events_question_tbl_version = "3.046";
 
 /** this does not only affect language but also format of date, and which fields are displayes in the form */
 $lang_flag = "en"; //switch to en for changing language and form 
@@ -872,11 +872,12 @@ function event_form_build(&$question, $answer = "") {
 		
 		case "DROPDOWN" :
 			$values = explode ( ",", $question->response );
-			$answers = $answer;
-			echo "<select name=\"DROPDOWN-$question->id-$key\" id=\"DROPDOWN-$question->id-$key\" title=\"$question->question\" />".BR;
+			$answers = explode ( ",", $answer );
+			echo "<select name=\"DROPDOWN-$question->id\" id=\"DROPDOWN-$question->id\" title=\"$question->question\" />".BR;
+			echo "<option value=''>Select One </option><br/>";
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " selected =\" selected\"" : "";
-				echo "<option value=\"$value\" selected=\"$checked\" /> $value</option><br/>\n";
+				echo "<option value=\"$value\" /> $value</option><br/>\n";
 			}
 			echo "</select>";
 			break;
