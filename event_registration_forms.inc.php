@@ -20,6 +20,7 @@ function event_regis_events() {
 		echo "<table><tr><b>EVENTS LISTING:</b></tr>";
 		
 		while ( $row = mysql_fetch_assoc ( $result ) ) {
+			
 			$event_name = $row ['event_name'];
 			$event_desc = $row ['event_desc']; // BHC
 			$image = $row ['image_link'];
@@ -90,7 +91,7 @@ function event_regis_events() {
 			
 			echo "<p>Event Header Image URL <u>". $header_image . "</u></p>";
 			
-			echo "<p>DALLOW PAYMENT FOR MORE THAN ONE PERSON AT A TIME (max # people 5)? ";
+			echo "<p>ALLOW PAYMENT FOR MORE THAN ONE PERSON AT A TIME (max # people 5)? ";
             if ($multiple == "") {
 				echo " <b><i>PLEASE UPDATE THIS EVENT</i></b>" . BR;
 			}
@@ -392,11 +393,13 @@ function event_regis_events() {
 				//Post the new event into the database
 				
 
-				$sql = "INSERT INTO " . $events_detail_tbl . " (event_name, event_desc, display_desc, image_link, header_image, event_identifier, start_month, start_day, start_year, start_time, start_date, end_month, end_day, end_year, end_time, end_date, reg_limit, event_cost, multiple, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$image', '$header_image', $event_identifier', '$start_month', '$start_day', '$start_year', '$start_time', '$start_date','$end_month', '$end_day', '$end_year', '$end_time', '$end_date', '$reg_limit', '$event_cost', '$multiple','$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
+				$sql = "INSERT INTO " . $events_detail_tbl . " (event_name, event_desc, display_desc, image_link, header_image, event_identifier, start_month, start_day, start_year, start_time, start_date, end_month, end_day, end_year, end_time, end_date, reg_limit, event_cost, multiple, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$image', '$header_image', '$event_identifier', '$start_month', '$start_day', '$start_year', '$start_time', '$start_date','$end_month', '$end_day', '$end_year', '$end_time', '$end_date', '$reg_limit', '$event_cost', '$multiple','$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
 				
+		
+			
 				$wpdb->query ( $sql );
 				
-				echo "<meta http-equiv='refresh' content='0'>";
+			echo "<meta http-equiv='refresh' content='0'>";
 			}
 		
 		}
@@ -499,7 +502,7 @@ function event_regis_events() {
 			?>
 			</p>	
 		<p>Thumbnail Image URL (shows on event listing) display size 150 x112 <input name="image_link" size="45"></p>
-		<p>Event Header Image URL (shows on registration page) width should be 450 <input name="header" size="45"></p>
+		<p>Event Header Image URL (shows on registration page) width should be 450 <input name="header_image" size="45"></p>
 	<p>ATTENDEE LIMIT (leave blank for unlimited attendees) <input name="reg_limit" size="15"></p>
 	<p>COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00) 
 	<input name="cost" size="10"></p>
