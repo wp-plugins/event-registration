@@ -52,7 +52,7 @@ $lang['submitHint'] ="(Only click the Submit Button Once)";
 
 $lang['maxAttendeesInfo'] = "
 <p><b>
-We are sorry but this event has reached the maximun number of attendees!</b></p>
+We are sorry but this event has reached the maximum number of attendees!</b></p>
 <p><b>Please check back in the event someone cancels.</b></p>";
 
 $lang['registrationConfirm'] = "<p>Your Registration has been added. Please watch your email for a confirmation of registration.</p>";

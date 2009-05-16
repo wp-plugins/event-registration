@@ -257,7 +257,7 @@ function event_regis_events() {
 			echo " <INPUT TYPE='radio' NAME='multiple' CHECKED VALUE='Y'>Yes";
 			echo " <INPUT TYPE='radio' NAME='multiple' VALUE='N'>No";
 		}
-		if ($display_desc == "N") {
+		if ($multiple == "N") {
 			echo " <INPUT TYPE='radio' NAME='multiple' VALUE='Y'>Yes";
 			echo " <INPUT TYPE='radio' NAME='multiple' CHECKED VALUE='N'>No";
 		}
@@ -282,11 +282,25 @@ function event_regis_events() {
 */
     ?>
 	<p>WILL YOU ACCEPT CHECKS? 
-		<select name="checks"><option>yes</option><option>no</option></select>
+		<select name="checks">
+		<?php 
+		if ($checks == "yes"){echo "<option>yes</option>";}
+		if ($checks == "no") {echo "<option>no</option>";}
+		?>
+		<option>yes</option>
+		<option>no</option>
+		</select>
 		</p>
 	<p>DO YOU WANT THIS EVENT TO BE THE ACTIVE EVENT? 
-		<select name="is_active"><option>yes</option><option>no</option></select>
-		</p><!-- BHC -->
+		<select name="is_active">
+		<?php 
+		if ($active == "yes"){echo "<option>yes</option>";}
+		if ($active == "no") {echo "<option>no</option>";}
+		?>
+		<option>yes</option>
+		<option>no</option>
+		</select>
+		</p>
 
 <p>DO YOU WANT TO SEND A CUSTOM CONFIRMATION EMAIL? 
 		<?php
