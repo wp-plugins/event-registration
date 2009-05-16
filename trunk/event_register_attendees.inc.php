@@ -6,7 +6,8 @@ function register_attendees($event_single_ID) {
 	$paypal_cur = get_option ( 'paypal_cur' );
 	if ($event_single_ID == ""){$event_id = $_REQUEST ['event_id'];}
 	if ($event_single_ID != ""){
-		extract( shortcode_atts( array('event_id' => 'id'), $event_single_ID ) );}
+		extract( shortcode_atts( array('event_id' => 'id'), $event_single_ID ) );
+		echo $event_single_ID;}
 	$events_listing_type = get_option ( 'events_listing_type' );
 	
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
@@ -79,7 +80,7 @@ function register_attendees($event_single_ID) {
 	$result = mysql_query ( $sql );
 	$num_rows = mysql_num_rows ( $result );
 	if ($header != ""){echo "<p align='center'><img src='".$header."'  width='450' align='center'></p>";}
-	if ($reg_limit == "" or $reg_limit >= "$num_rows") {
+	if ($reg_limit == "" or $reg_limit > "$num_rows") {
 		echo "<p align='center'><b>".$lang['eventFormHeader'] . $event_name . "</b></p>";
 		echo "<table width='100%'><td>";
 		if ($display_desc == "Y") {
@@ -102,8 +103,9 @@ function register_attendees($event_single_ID) {
 
 		?>
 <SCRIPT>
-function echeck(str) {
+//FUNCTION TO VALIDATE EMAIL ADDRESS IN REGARDS TO FORMAT
 
+function echeck(str) {
 		var at="@"
 		var dot="."
 		var lat=str.indexOf(at)
@@ -131,21 +133,21 @@ function echeck(str) {
 
 		 if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
 		    alert("Invalid E-mail ID")
-		    return false
+		    return false;
 		 }
 
 		 if (str.indexOf(dot,(lat+2))==-1){
 		    alert("Invalid E-mail ID")
-		    return false
+		    return false;
 		 }
 		
 		 if (str.indexOf(" ")!=-1){
 		    alert("Invalid E-mail ID")
-		    return false
+		    return false;
 		 }
 
- 		 return true					
-	}
+ 		 return true;					
+}
 
 
 function validateForm(form) { 
@@ -197,46 +199,42 @@ if (form.zip.value == "") { alert("Please enter your zip code.");
    		return false; 
    }
    
-function trim(s) {
-	if (s) {
-		return s.replace(/^\s*|\s*$/g,"");
-	}
-	return null;
+
+
+//FORM VALIDATION FOR ADDED FORM FIELDS
+
+function trim(s) {if (s) {return s.replace(/^\s*|\s*$/g,"");}
+				return null;}
+				
+var inputs = form.getElementsByTagName("input");		
+var msg = "";
+var radioChecks = new Array();
+var e;
+for( var i = 0, e; e = inputs[i]; i++ ) 
+	{
+	var value = e.value ? trim(e.value) : null;
+	if (e.type == "text" && e.title && !value && e.className == "r") {msg += "\n " + e.title;}
+	if ((e.type == "radio" || e.type == "checkbox") && e.className == "r") 
+		{
+		var name = e.name;
+		if (e.type == "checkbox") name = name.substr(0, name.lastIndexOf("-"));
+		if (e.checked == false && ((!radioChecks[name]) || (radioChecks[name] && radioChecks[name] != 1))) {radioChecks[name] = e;} 
+		else {radioChecks[name] = 1;}
+		}
+	for (var name in radioChecks) 
+		{
+		var e = radioChecks[name];                       
+		if (typeof(e) == "object" && e != 1) {msg += "\n " + e.title;
+		}
+	if (msg.length > 0) 
+		{
+		msg = "The following fields need to be completed before you can submit.\n\n" + msg;
+		alert(msg);
+		return false;
+		}
+	return true;   
 }
 
-		//alert("your trying to submit");
-		var inputs = $A(form.getElementsByTagName("input"));
-		var msg = "";
-		var radioChecks = $H();
-		inputs.each( function(e) {
-			var value = e.value ? trim(e.value) : null;
-			if (e.type == "text" && e.title && !value && e.className == "r") {
-				msg += "\n " + e.title;
-			}
-			if ((e.type == "radio" || e.type == "checkbox") && e.className == "r") {
-				var name = e.name;
-				if (e.type == "checkbox") name = name.substr(0, name.lastIndexOf("-"));
-				if (e.checked == false && ((!radioChecks[name]) || (radioChecks[name] && radioChecks[name] != 1))) {
-					radioChecks[name] = e;
-				} else {
-					radioChecks[name] = 1;
-				}
-			}
-		});
-		radioChecks.each( function(e) {
-			if (typeof(e) == "object" && e.value != 1) {
-				msg += "\n " + e.value.title;
-			}
-		});
-		if (msg.length > 0) {
-			msg = "The following fields need to be completed before you can submit.\n\n" + msg;
-			alert(msg);
-			return false;
-		}
-		return true;   
-   
-   
-}
 </SCRIPT>
 
 </td>
