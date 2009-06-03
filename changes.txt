@@ -1,5 +1,8 @@
 Changes:
 =========
+3.048 - Fixed Bug in SQL command for organization
+		Minor Tweaks and fixes
+
 3.047 - Fixed form validation issue
 		Fixed issue where checks always shows yes on edit
 		Fixed issues where allow multiple always shows yes on edit

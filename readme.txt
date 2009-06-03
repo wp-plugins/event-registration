@@ -3,19 +3,14 @@ Contributors: David Fleming
 Donate link: http://www.edgetechweb.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
-Tested up to: 2.7
-Stable tag: 3.047
+Tested up to: 2.71
+Stable tag: 3.048
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
 == Description ==
 
-**I do not recommend upgrading to this version on a site you are currently taking registrations on. You will need to edit/save all existing events to update them to the database changes to work properly.  My apolgies for the number of bugs in the recent releases.  I think I have fixed them all.**
-
-This plugin provides a way to take online registrations for events such as conference and seminars that are held live.
-This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to your paypal payment site for online collection of event fees. 
-Reporting features provide a list of events, list of attendees, and excel export.
-I have added the ability to edit events and to allow single event or event listing on the registration page.
+*
 
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
@@ -29,17 +24,12 @@ If you like the plugin and find it useful, your donations would also help me kee
 
 Changes:
 
+3.048 - Sql Bug fix when changing organization details
+		Adjusted table format when no image is assigned to event
+		Added additional Admin panel to provide support feedback about database and also link to online documentation
 3.047 - Fixed issue where checks always shows yes on edit
 	Fixed issues where allow multiple always shows yes on edit
 	Fixed validation issue on regform where added fields wouldnt validate
-3.046 - Fixed issue with dropdown questions not posting to database
-3.045 - Fixed bug with Adding Events & Database Installation
-3.044 - Bug Fix
-3.043 - Bug Fix
-3.042 - Bug Fix
-3.041 - Fixed email issue where sending out extra mail
-3.04 - Added support to use thumbnail and header images on registration page
-3.03 - Added shortcode support for using single events on a custom page
 
 . . . See changelog.txt for more changes
 
