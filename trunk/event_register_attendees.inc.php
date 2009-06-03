@@ -233,7 +233,8 @@ for( var i = 0, e; e = inputs[i]; i++ )
 		return false;
 		}
 	return true;   
-}
+	}
+}}
 
 </SCRIPT>
 
@@ -437,12 +438,12 @@ function add_attendees_to_db() {
 				case "TEXT" :
 				case "TEXTAREA" :
 				case "DROPDOWN" :
-					$post_val = $_POST [$question->question_type . '-' . $question->id];
+					$post_val = $_POST [$question->question_type . '_' . $question->id];
 					$wpdb->query ( "INSERT into `$events_answer_tbl` (registration_id, question_id, answer)
 					values ('$reg_id', '$question->id', '$post_val')" );
 					break;
 				case "SINGLE" :
-					$post_val = $_POST [$question->question_type . '-' . $question->id];
+					$post_val = $_POST [$question->question_type . '_' . $question->id];
 					$wpdb->query ( "INSERT into `$events_answer_tbl` (registration_id, question_id, answer)
 					values ('$reg_id', '$question->id', '$post_val')" );
 					break;
@@ -450,7 +451,7 @@ function add_attendees_to_db() {
 					$values = explode ( ",", $question->response );
 					$value_string = '';
 					foreach ( $values as $key => $value ) {
-						$post_val = $_POST [$question->question_type . '-' . $question->id . '-' . $key];
+						$post_val = $_POST [$question->question_type . '_' . $question->id . '_' . $key];
 						if ($key > 0 && ! empty ( $post_val )) $value_string .= ',';
 						$value_string .= $post_val;
 					}
