@@ -1,6 +1,7 @@
 Changes:
 =========
-3.049 - Fixed Error related to event_config_info.inc.php on line 93
+3.049 - Fixed Error related to event_config_info.inc.php on line 93.
+
 3.048 - Fixed Bug in SQL command for organization
 		Minor Tweaks and fixes
 
