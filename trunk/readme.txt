@@ -4,13 +4,13 @@ Donate link: http://www.edgetechweb.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.71
-Stable tag: 3.048
+Stable tag: 3.049
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
 
 == Description ==
 
-*
+Allows you to register people online for events.
 
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
