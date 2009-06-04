@@ -27,7 +27,7 @@ echo '<div style="float:right;">';
 	<br />
 </form>
  
-<?
+<?php
 echo '</div>';
 echo '<div><a href="'. get_bloginfo('wpurl') .'/wp-content/plugins/event-registration/guide.htm" target="_blank">Documentation</a> | <a href="http://www.edgetechweb.com/">'.__('Event Registration Homepage', 'Event Registration').'</a></div>';
 echo '</div>';
