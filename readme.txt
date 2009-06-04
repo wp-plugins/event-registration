@@ -10,7 +10,7 @@ Provides the ability to setup event list and accept online registrations for eve
 
 == Description ==
 
-Allows you to register people online for events.
+Allows you to register people online for events. Very flexible.
 
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
