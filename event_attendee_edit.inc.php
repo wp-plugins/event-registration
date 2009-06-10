@@ -63,6 +63,7 @@ function attendee_display_edit() {
 			$zip = $row ['zip'];
 			$email = $row ['email'];
 			$phone = $row ['phone'];
+			$num_people = $row ['num_people'];
 			$date = $row ['date'];
 			$paystatus = $row ['paystatus'];
 			$txn_type = $row ['txn_type'];
@@ -101,7 +102,7 @@ function attendee_display_edit() {
 	}
 
 	function edit_attendee_record() {
-		global $wpdb;
+		global $wpdb,$lang, $lang_flag;
 		$events_detail_tbl = get_option ( 'events_detail_tbl' );
 		$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 		
@@ -135,6 +136,7 @@ function attendee_display_edit() {
 				$phone = $_POST ['phone'];
 				$email = $_POST ['email'];
 				$hear = $_POST ['hear'];
+				$num_people = $_POST ['num_people'];
 				$event_id = $_POST ['event_id'];
 				$payment = $_POST ['payment'];
 				$custom_1 = $_POST ['custom_1'];
@@ -144,14 +146,14 @@ function attendee_display_edit() {
 				
 				$sql = "UPDATE " . $events_attendee_tbl . " SET fname='$fname', lname='$lname', address='$address', city='$city', state='$state',
 								   	zip='$zip', phone='$phone', email='$email', payment='$payment', hear='$hear', custom_1='$custom_1', custom_2='$custom_2',
-								   	custom_3='$custom_3', custom_4='$custom_4' WHERE id ='$id'";
+								   	custom_3='$custom_3', custom_4='$custom_4', num_people='$num_people' WHERE id ='$id'";
 				$wpdb->query ( $sql );
 				echo "<p>basic is added </p>";
 				//echo "<meta http-equiv='refresh' content='0'>";
 				
 
-				// Insert Extra From Post Here
-				$events_question_tbl = get_option ( 'events_question_tbl' );
+	/*			// Insert Extra From Post Here
+			$events_question_tbl = get_option ( 'events_question_tbl' );
 				$events_answer_tbl = get_option ( 'events_answer_tbl' );
 				$reg_id = $id;
 				$wpdb->query ( "DELETE FROM $events_answer_tbl where registration_id = '$reg_id'" );
@@ -184,6 +186,51 @@ function attendee_display_edit() {
 					}
 				}
 			
+			*/
+			
+			// Insert Extra From Post Here
+	$events_question_tbl = get_option ( 'events_question_tbl' );
+	$events_answer_tbl = get_option ( 'events_answer_tbl' );
+	$reg_id = $id;
+	
+	$questions = $wpdb->get_results ( "SELECT * from `$events_question_tbl` where event_id = '$event_id'" );
+	if ($questions) {
+		foreach ( $questions as $question ) {
+			switch ($question->question_type) {
+				case "TEXT" :
+				case "TEXTAREA" :
+				case "DROPDOWN" :
+					$post_val = $_POST [$question->question_type . '_' . $question->id];
+					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$post_val' WHERE registration_id = '$reg_id' AND question_id ='$question->id'";
+					$wpdb->query ($sql);
+					break;
+				case "SINGLE" :
+					$post_val = $_POST [$question->question_type . '_' . $question->id];
+					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$post_val' WHERE registration_id = '$reg_id' AND question_id ='$question->id'";
+					$wpdb->query ($sql);
+					break;
+				case "MULTIPLE" :
+					$value_string = '';
+					for ($i=0; $i<count($_POST[$question->question_type.'_'.$question->id]); $i++){ 
+					//$value_string = $value_string +","+ ($_POST[$question->question_type.'_'.$question->id][$i]); 
+					$value_string .= $_POST[$question->question_type.'_'.$question->id][$i].","; 
+					}
+					echo "Value String - ".$value_string;
+					/*$values = explode ( ",", $question->response );
+					$value_string = '';
+					foreach ( $values as $key => $value ) {
+						$post_val = $_POST [$question->question_type . '_' . $question->id . '_' . $key];
+						if ($key > 0 && ! empty ( $post_val )) $value_string .= ',';
+						$value_string .= $post_val;
+					}*/
+					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$value_string' WHERE registration_id = '$reg_id' AND question_id ='$question->id'";
+					$wpdb->query ($sql);
+					
+					break;
+			}
+		}
+	}
+			
 			} else {
 				
 				$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE id='" . $view_event . "'";
@@ -215,6 +262,7 @@ function attendee_display_edit() {
 					$city = $row ['city'];
 					$state = $row ['state'];
 					$zip = $row ['zip'];
+					$num_people = $row ['num_people'];
 					$email = $row ['email'];
 					$hear = $row ['hear'];
 					$payment = $row ['payment'];
@@ -234,33 +282,35 @@ function attendee_display_edit() {
 				
 				echo "<table><tr><td width='25'></td><td align='left'><hr>";
 				echo "<form method='post' action='" . $_SERVER ['REQUEST_URI'] . "'>";
-				
-				echo "<p><b>$lang[firstName] ";
+				echo "<p><b>".$lang['firstName'].":";
 				echo "<input tabIndex=\"1\" maxLength=\"45\" size=\"47\" name=\"fname\" value=\"$fname\"></b>";
-				echo "<b>$lang[lasttName] ";
+				echo "<b>".$lang['lastName'].":";
 				echo "<input tabIndex=\"2\" maxLength=\"45\" size=\"47\" name=\"lname\" value=\"$lname\"></b></p>";
 				
-				echo "<b>$lang[address]:&nbsp;";
+				echo "<b>".$lang['address'].":";
 				echo "<input tabIndex=\"5\" maxLength=\"45\" size=\"49\" name=\"address\" value=\"$address\"></b>" . BR;
 				
-				echo "<b>$lang[city]:";
+				echo "<b>".$lang['city'].":";
 				echo "<input tabIndex=\"6\" maxLength=\"20\" size=\"33\" name=\"city\" value=\"$city\"></b>";
 				
 				if ($lang_flag!='de')
 				{
-					echo "<b>$lang[state]:";
+					echo "<b>".$lang['state'].":";
 					echo "<input tabIndex=\"7\" maxLength=\"30\" size=\"18\" name=\"state\"	value=\"$state\"></b>";
 				}
-				echo "<b>$lang[zip]:";
+				echo "<b>".$lang['zip'].":";
 				echo "<input tabIndex=\"8\" maxLength=\"10\" size=\"16\" name=\"zip\" value=\"$zip\"></b>" . BR;
 				
-				echo "<b>$lang[email]:";
+				echo "<b>".$lang['email'].":";
 				echo "<input tabIndex=\"3\" maxLength=\"37\" size=\"37\" name=\"email\" value=\"$email\"></b>" . BR;
 				
-				echo "<b>$lang[phone]:";
+				echo "<b>".$lang['phone'].":";
 				
 				echo "<input tabIndex=\"4\" maxLength=\"15\" size=\"28\" name=\"phone\" value=\"$phone\"></b>" . BR;
+						
+				echo "<b>".$lang['people'].":";
 				
+				echo "<input tabIndex=\"5\" maxLength=\"15\" size=\"4\" name=\"num_people\" value=\"$num_people\"></b>" . BR;	
 				/* <b>How did you hear about this event?</b></font><font face="Arial">&nbsp;
 												<select tabIndex="9" size="1" name="hear">
 																<option value ="<?php echo $hear;?>" selected><?php echo $hear;?></option>
@@ -270,7 +320,7 @@ function attendee_display_edit() {
 																<option value="Announcment">An Announcment</option>
 																<option value="Other">Other</option>
 																</select></font><br />
-																*/
+																
         if ($lang_flag!='de')
         {
   				echo "<b>$lang[payPlan]</b>";
@@ -289,7 +339,7 @@ function attendee_display_edit() {
 </font>
 <br />
 
-<?php /*
+<?php 
 									            if ($question1 != ""){ ?>
 												<p align="left"><b>
 												<?php echo $question1; ?><input  tabIndex="11" size="33" name="custom_1" value="<?php echo $custom_1;?>"> </b></p>
@@ -315,26 +365,20 @@ function attendee_display_edit() {
 				$events_answer_tbl = get_option ( 'events_answer_tbl' );
 				
 				$questions = $wpdb->get_results ( "SELECT * from `$events_question_tbl` where event_id = '$event_id' order by sequence" );
-				
-				/* $answers = $wpdb->get_results("SELECT a.answer from $events_answer_tbl a " 
-				. "inner join $events_question_tbl q on a.question_id = q.id " 
-				. "where a.registration_id = $registration_id " 
-				. "order by q.sequence"); 
-*/
-				
+			
 				if ($questions) {
 					for($i = 0; $i < count ( $questions ); $i ++) {
 						
-						echo "<p><b>" . $questions [$i]->question . "</b>".BR;
+						echo "<p><b>" . $questions [$i]->question . "</b>";
 						
 						$question_id = $questions [$i]->id;
 						$query = "SELECT * FROM $events_answer_tbl WHERE registration_id = '$id' AND question_id = '$question_id'";
 						$result = mysql_query ( $query ) or die ( 'Error : ' . mysql_error () );
 						while ( $row = mysql_fetch_assoc ( $result ) ) {
 							$answers = $row ['answer'];
+							
 						}
-						
-						event_form_build ( $questions [$i], $answers );
+						event_form_build_edit ( $questions [$i], $answers );
 						echo "</p>";
 					
 					}

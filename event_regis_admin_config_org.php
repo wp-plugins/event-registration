@@ -14,6 +14,7 @@ function event_config_mnu() {
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$events_organization_tbl = get_option ( 'events_organization_tbl' );
+	$show_thumb = get_option ('show_thumb');
 	
 	if (isset ( $_POST ['Submit'] )) {
 		
@@ -25,6 +26,7 @@ function event_config_mnu() {
 		$org_state = $_POST ['org_state'];
 		$org_zip = $_POST ['org_zip'];
 		$email = $_POST ['email'];
+		$show_thumb = $_POST['show_thumb'];
 		$paypal_id = $_POST ['paypal_id'];
 		$paypal_cur = $_POST ['currency_format'];
 		$return_url = $_POST ['return_url'];
@@ -48,6 +50,17 @@ $sql = "UPDATE " . $events_organization_tbl . " SET organization='$org_name', or
 
 		$option_name = 'paypal_id';
 		$newvalue = $paypal_id;
+		if (get_option ( $option_name )) {
+			update_option ( $option_name, $newvalue );
+		} else {
+			$deprecated = ' ';
+			$autoload = 'no';
+			add_option ( $option_name, $newvalue, $deprecated, $autoload );
+		}
+		
+		
+		$option_name = 'show_thumb';
+		$newvalue = $show_thumb;
 		if (get_option ( $option_name )) {
 			update_option ( $option_name, $newvalue );
 		} else {
@@ -223,6 +236,21 @@ $sql = "UPDATE " . $events_organization_tbl . " SET organization='$org_name', or
 	echo "<select name='events_listing_type'><option value='" . $events_listing_type . "'>" . $events_listing_type . "</option>";
 	echo "<option value='single'>Single Event</option>";
 	echo "<option value='all'>All Events</option></select></p>";
+	echo "<p>Do you want to show thumbnails on the Event Listing Page? ";
+	if ($show_thumb == "") {
+		echo "<input type='radio' NAME='show_thumb' value='Y'>Yes";
+		echo "<input type='radio' NAME='show_thumb' value='N'>No";
+	}
+	if ($show_thumb == "Y") {
+		echo "<input type='radio' NAME='show_thumb' CHECKED value='Y'>Yes";
+		echo "<input type='radio' NAME='show_thumb' value='N'>No";
+	}
+	if ($show_thumb == "N") {
+		echo "<input type='radio' NAME='show_thumb' value='Y'>Yes";
+		echo "<input type='radio' NAME='show_thumb' CHECKED value='N'>No";
+	}
+	
+	echo "</p>";
 	echo "<p>Return URL (used for return to make payments): <input name='return_url' size='75' value='" . $return_url . "'></p>";
 /*	echo "Cancel Return URL (used for cancelled payments): <input name='cancel_return' size='75' value='".$cancel_return."'><br /><br />";
 			echo "Notify URL (used to process payments): <input name='notify_url' size='75' value='".$notify_url."'><br /><br />";

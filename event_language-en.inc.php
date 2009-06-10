@@ -41,7 +41,7 @@ $lang['address'] = "Street";
 $lang['city'] = "City";
 $lang['state'] = "State or province";
 $lang['zip'] = "Zip";
-
+$lang['people'] = "Number of people that are being paid for ";
 $lang['payPlan'] = "How do you plan on paying for your Registration?";
 $lang['pickone'] = "Pick one";
 $lang['cash'] = "Cash";

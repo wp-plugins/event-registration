@@ -26,6 +26,8 @@ function event_regis_events() {
 			$image = $row ['image_link'];
 			$display_desc = $row ['display_desc'];
 			$image_link = $row ['image_link'];
+			$event_locaion = $row ['event_location'];
+			$more_info = $row ['more_info'];
 			$header_image = $row ['header_image'];
 			$identifier = $row ['event_identifier'];
 			$reg_limit = $row ['reg_limit'];
@@ -47,6 +49,9 @@ function event_regis_events() {
 			$question4 = $row ['question4'];
 			$send_mail = $row ['send_mail'];
 			$conf_mail = $row ['conf_mail'];
+			$event_location = $row ['event_location'];
+			$more_info = $row ['more_info'];
+			$custom_cur = $row ['custom_cur'];
 			
 			echo "<tr><td></td><td valign='top'>";
 			echo "<form name='form' method='post' action='";
@@ -55,9 +60,18 @@ function event_regis_events() {
 			echo "<input type='hidden' name='action' value='edit'>";
 			echo "<input type='hidden' name='id' value='" . $row ['id'] . "'>";
 			//echo "<INPUT TYPE='SUBMIT' VALUE='EDIT' ONCLICK=\"return confirm('Are you sure you want to edit ".$row['event_name']."?')\"></form>";
+			echo "<input type='SUBMIT' value='COPY'>";
+			echo "</form>";
+			echo "<form name='form' method='post' action='";
+			request_uri();
+			echo "'>";
+			echo "<input type='hidden' name='action' value='copy'>";
+			echo "<input type='hidden' name='id' value='" . $row ['id'] . "'>";
+			echo "<INPUT TYPE='SUBMIT' VALUE='EDIT' ONCLICK=\"return confirm('Are you sure you want to copy the event ".$row['event_name']."?')\"></form>";
+			
+			
 			echo "<input type='SUBMIT' value='EDIT'>";
 			echo "</form>";
-			
 			echo "<form name='form' method='post' action='";
 			request_uri();
 			echo "'>";
@@ -73,6 +87,9 @@ function event_regis_events() {
 			echo "<td>Event ID/Name: <b><u>" . $row['id']." - ".$event_name . "</u></b> ";
 			echo "Cost:  <b><u>" . $cost . "</u></b></p>";
 			echo "<p>Start Date:<b><u>" . $start_month . " " . $start_day . ", " . $start_year . "</u></b>  Start Time:<b><u>" . $start_time . "</u></b>  End Date: <b><u>" . $end_month . " " . $end_day . ", " . $end_year . "</u></b>  End Time:<b><u>" . $end_time . "</u></b></p>";
+			
+			echo "<p>Event Location  <b><u>" . $event_location . "</u></b>" . BR;
+			echo "<p>More Info  <b><u>" . $more_info . "</u></b>" . BR;			
 			echo "<p>Registration Limit  <b><u>" . $reg_limit . "</u></b>" . BR;
 			echo "Do you want to display the event description on registration page?";
 			if ($display_desc == "") {
@@ -179,6 +196,8 @@ function event_regis_events() {
 			$header_image = $row ['header_image'];
 			$display_desc = $row ['display_desc'];
 			$event_description = $row ['event_desc'];
+			$event_locaion = $row ['event_location'];
+			$more_info = $row ['more_info'];
 			$identifier = $row ['event_identifier'];
 			$start_month = $row ['start_month'];
 			$start_day = $row ['start_day'];
@@ -201,6 +220,9 @@ function event_regis_events() {
 			$question4 = $row ['question4'];
 			$conf_mail = $row ['conf_mail'];
 			$send_mail = $row ['send_mail'];
+			$event_location = $row ['event_location'];
+			$more_info = $row ['more_info'];
+			$custom_cur = $row ['custom_cur'];
 		}
 		
 		update_option ( "current_event", $event_name );
@@ -264,16 +286,10 @@ function event_regis_events() {
 		?>
 		</p>
 	
-	
-	<p>	ATTENDEE LIMIT (leave blank for unlimited)  <input name="reg_limit" size="10" value ="<?php
-		echo $reg_limit;
-		?>">
-		</p>
-	<p>COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00)  
-        <input name="cost" size="10" value ="<?php
-		echo $event_cost;
-		?>">
-		</p>
+	<p> EVENT LOCATION <b><u><input name="event_location" size="25" value ="<?php echo $event_location;?>"></p>
+	<p> MORE INFO <b><u><input name="more_info" size="25" value ="<?php echo $more_info;?>"></p>
+	<p>	ATTENDEE LIMIT (leave blank for unlimited)  <input name="reg_limit" size="10" value ="<?php	echo $reg_limit;?>"></p>
+	<p>COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00) <input name="cost" size="10" value ="<?php	echo $event_cost;?>"></p>
   <?php
   /* TODO IJ add... 
   <p>Do you want to display payment information?
@@ -348,6 +364,8 @@ function event_regis_events() {
 				$image = $_REQUEST ['image_link'];
 				$header_image = $_REQUEST ['header_image'];
 				$display_desc = $_REQUEST ['display_desc'];
+				$event_locaion = $_REQUEST ['event_location'];
+				$more_info = $_REQUEST ['more_info'];
 				$reg_limit = $_REQUEST ['reg_limit'];
 				$event_cost = $_REQUEST ['cost'];
 				$multiple = $_REQUEST ['multiple'];
@@ -367,6 +385,9 @@ function event_regis_events() {
 				$question4 = $_REQUEST ['quest4'];
 				$conf_mail = $_REQUEST ['conf_mail'];
 				$send_mail = $_REQUEST ['send_mail'];
+				$event_location = $_REQUEST ['event_location'];
+				$more_info = $_REQUEST ['more_info'];
+				$custom_cur = $_REQUEST ['custom_cur'];
 				if ($start_month == "Jan"){$month_no = '01';}
 				if ($start_month == "Feb"){$month_no = '02';}
 				if ($start_month == "Mar"){$month_no = '03';}
@@ -407,7 +428,8 @@ function event_regis_events() {
 				//Post the new event into the database
 				
 
-				$sql = "INSERT INTO " . $events_detail_tbl . " (event_name, event_desc, display_desc, image_link, header_image, event_identifier, start_month, start_day, start_year, start_time, start_date, end_month, end_day, end_year, end_time, end_date, reg_limit, event_cost, multiple, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$image', '$header_image', '$event_identifier', '$start_month', '$start_day', '$start_year', '$start_time', '$start_date','$end_month', '$end_day', '$end_year', '$end_time', '$end_date', '$reg_limit', '$event_cost', '$multiple','$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
+				$sql = "INSERT INTO " . $events_detail_tbl . " (event_name, event_desc, display_desc, image_link, header_image, event_identifier, event_location, more_info, start_month, start_day, start_year, start_time, start_date, end_month, end_day, end_year, end_time, end_date, reg_limit, event_cost, multiple, allow_checks, send_mail, is_active, question1, question2, question3, question4, conf_mail) VALUES('$event_name', '$event_desc', '$display_desc', '$image', '$header_image', '$event_identifier', '$event_location',
+ '$more_info','$start_month', '$start_day', '$start_year', '$start_time', '$start_date','$end_month', '$end_day', '$end_year', '$end_time', '$end_date', '$reg_limit', '$event_cost', '$multiple','$allow_checks', '$send_mail', '$is_active', '$question1', '$question2', '$question3', '$question4', '$conf_mail')";
 				
 		
 			
@@ -423,6 +445,8 @@ function event_regis_events() {
 			$ident = $_REQUEST ['ident'];
 			$desc = $_REQUEST ['desc'];
 			$display_desc = $_REQUEST ['display_desc'];
+			$event_locaion = $_REQUEST ['event_location'];
+			$more_info = $_REQUEST ['more_info'];
 			$image = $_REQUEST ['image_link'];
 			$header_image = $_REQUEST ['header_image'];
 			$reg_limit = $_REQUEST ['reg_limit'];
@@ -444,6 +468,9 @@ function event_regis_events() {
 			$quest4 = $_REQUEST ['quest4'];
 			$conf_mail = $_REQUEST ['conf_mail'];
 			$send_mail = $_REQUEST ['send_mail'];
+			$event_location = $_REQUEST ['event_location'];
+			$more_info = $_REQUEST ['more_info'];
+			$custom_cur = $_REQUEST ['custom_cur'];
 				if ($start_month == "Jan"){$month_no = '01';}
 				if ($start_month == "Feb"){$month_no = '02';}
 				if ($start_month == "Mar"){$month_no = '03';}
@@ -486,12 +513,15 @@ function event_regis_events() {
 			//Post the new event into the database
 			
 
-			/* BHC */			$sql = "UPDATE $events_detail_tbl SET event_name='$event_name', event_identifier='$ident', image_link='$image', 
-								header_image='$header_image',	reg_limit='$reg_limit',event_desc='$desc', display_desc='$display_desc', send_mail='$send_mail',
-								event_cost='$cost', multiple='$multiple', allow_checks='$accept_checks', is_active='$is_active', start_month='$start_month', start_day='$start_day',
-								start_year='$start_year', start_date='$start_date', end_month='$end_month', end_day='$end_day', end_year='$end_year', 
-								end_date='$end_date', start_time='$start_time', end_time='$end_time', question1='$quest1', question2='$quest2', 
-								question3='$quest3', question4='$quest4', conf_mail='$conf_mail'  WHERE id = $id";
+			/* BHC */			
+			$sql = "UPDATE $events_detail_tbl SET event_name='$event_name', event_identifier='$ident', image_link='$image',
+					header_image='$header_image',	reg_limit='$reg_limit',event_desc='$desc', display_desc='$display_desc',
+					event_location='$event_location', more_info='$more_info', 
+					send_mail='$send_mail',	event_cost='$cost', multiple='$multiple', allow_checks='$accept_checks', 
+					is_active='$is_active', start_month='$start_month', start_day='$start_day', start_year='$start_year', 
+					start_date='$start_date', end_month='$end_month', end_day='$end_day', end_year='$end_year',
+					end_date='$end_date', start_time='$start_time', end_time='$end_time', question1='$quest1', question2='$quest2',
+					question3='$quest3', question4='$quest4', conf_mail='$conf_mail'  WHERE id = $id";
 			
 			$wpdb->query ( $sql );
 			
@@ -517,6 +547,8 @@ function event_regis_events() {
 			</p>	
 		<p>Thumbnail Image URL (shows on event listing) display size 150 x112 <input name="image_link" size="45"></p>
 		<p>Event Header Image URL (shows on registration page) width should be 450 <input name="header_image" size="45"></p>
+	<p>EVENT LOCATION <input name="event_location" size="25"></p>
+	<p>MORE INFO (hyperlink to another page or site) <input name="more_info" size="25"></p>	
 	<p>ATTENDEE LIMIT (leave blank for unlimited attendees) <input name="reg_limit" size="15"></p>
 	<p>COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00) 
 	<input name="cost" size="10"></p>
