@@ -1,20 +1,21 @@
 <?
-/** Define ABSPATH as the root directory */
-define( 'ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/' );
+
 
 error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
+ 
+/*
+define( 'ABSPATH', '../../../' );
 
 if ( file_exists( ABSPATH . 'wp-config.php') ) {
 
-	/** The config file resides in ABSPATH */
-	require_once( ABSPATH . 'wp-config.php' );
+require_once( ABSPATH . 'wp-config.php' );}
+*/
+	
+if ( file_exists( '../../../wp-config.php') ) {
 
-} elseif ( file_exists( dirname(ABSPATH) . '/wp-config.php' ) ) {
-
-	/** The config file resides one level below ABSPATH */
-	require_once( dirname(ABSPATH) . '/wp-config.php' );
-} 
-
+require_once( '../../../wp-config.php'); 
+	
+	
 global $wpdb;
 
 $id= $_REQUEST['id'];
@@ -196,5 +197,8 @@ switch ($_REQUEST['action']) {
 	default:
 	echo "This Is Not A Valid Selection!";
 }
+}
+
+else {echo "Report Folder configuration is not correct, please email consultant@avdude.com for configuration assistance.";}
 
 ?>

@@ -62,7 +62,7 @@ function events_data_tables_install () {
 				  }
 		}
 	// Code here with new database upgrade info/table Must change version number to work.
-		 $events_attendee_tbl_version = "3.049";
+		 $events_attendee_tbl_version = "3.05";
 		 $installed_ver = get_option( "events_attendee_tbl_version" );
 	     if( $installed_ver != $events_attendee_tbl_version ) {
 
@@ -110,25 +110,28 @@ function events_data_tables_install () {
 
 	   if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 			   $sql = "CREATE TABLE " . $table_name . " (
-				  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+				  	id int(10) unsigned NOT NULL AUTO_INCREMENT,
 				  event_name VARCHAR(100) DEFAULT NULL,
 				  event_desc VARCHAR(500) DEFAULT NULL,
+				  event_location VARCHAR(100) DEFAULT NULL,
 				  display_desc VARCHAR (4) DEFAULT NULL,
 				  image_link VARCHAR(100) DEFAULT NULL,
 				  header_image VARCHAR(100) DEFAULT NULL,
 				  event_identifier VARCHAR(45) DEFAULT NULL,
+				  more_info VARCHAR(100) DEFAULT NULL,
 				  start_month VARCHAR (15) DEFAULT NULL,
 				  start_day VARCHAR (15) DEFAULT NULL,
 				  start_year VARCHAR (15) DEFAULT NULL,
 				  start_time VARCHAR (15) DEFAULT NULL,
-				  start_date DATE (25) DEFAULT NULL,
+				  start_date DATE DEFAULT NULL,
 				  end_month VARCHAR (15) DEFAULT NULL,
 				  end_day VARCHAR (15) DEFAULT NULL,
 				  end_year VARCHAR (15) DEFAULT NULL,
-				  end_date DATE (25) DEFAULT NULL,
+				  end_date DATE DEFAULT NULL,
 				  end_time VARCHAR (15) DEFAULT NULL,
 				  reg_limit VARCHAR (15) DEFAULT NULL,
 				  event_cost VARCHAR(45) DEFAULT NULL,
+				  custom_cur VARCHAR(10) DEFAULT NULL,
 				  multiple VARCHAR(45) DEFAULT NULL,
 				  allow_checks VARCHAR(45) DEFAULT NULL,
 				  send_mail VARCHAR (2) DEFAULT NULL,
@@ -166,40 +169,43 @@ function events_data_tables_install () {
 				    add_option($option_name, $newvalue, $deprecated, $autoload);
 			  }
 			}
-	 $events_detail_tbl_version = "3.049";
+	 $events_detail_tbl_version = "3.05";
      $installed_ver = get_option( "$events_detail_tbl_version" );
      if( $installed_ver != $events_detail_tbl_version ) {
 
  			   $sql = "CREATE TABLE " . $table_name . " (
-				  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+				  		  id int(10) unsigned NOT NULL AUTO_INCREMENT,
 				  event_name VARCHAR(100) DEFAULT NULL,
 				  event_desc VARCHAR(500) DEFAULT NULL,
+				  event_location VARCHAR(100) DEFAULT NULL,
 				  display_desc VARCHAR (4) DEFAULT NULL,
 				  image_link VARCHAR(100) DEFAULT NULL,
 				  header_image VARCHAR(100) DEFAULT NULL,
 				  event_identifier VARCHAR(45) DEFAULT NULL,
+				  more_info VARCHAR(100) DEFAULT NULL,
 				  start_month VARCHAR (15) DEFAULT NULL,
 				  start_day VARCHAR (15) DEFAULT NULL,
 				  start_year VARCHAR (15) DEFAULT NULL,
-				  start_date DATE DEFAULT NULL,
 				  start_time VARCHAR (15) DEFAULT NULL,
+				  start_date DATE DEFAULT NULL,
 				  end_month VARCHAR (15) DEFAULT NULL,
 				  end_day VARCHAR (15) DEFAULT NULL,
 				  end_year VARCHAR (15) DEFAULT NULL,
-				  end_time VARCHAR (15) DEFAULT NULL,
 				  end_date DATE DEFAULT NULL,
+				  end_time VARCHAR (15) DEFAULT NULL,
 				  reg_limit VARCHAR (15) DEFAULT NULL,
 				  event_cost VARCHAR(45) DEFAULT NULL,
+				  custom_cur VARCHAR(10) DEFAULT NULL,
 				  multiple VARCHAR(45) DEFAULT NULL,
 				  allow_checks VARCHAR(45) DEFAULT NULL,
-				  send_mail VARCHAR(2) DEFAULT NULL,
+				  send_mail VARCHAR (2) DEFAULT NULL,
 				  is_active VARCHAR(45) DEFAULT NULL,
 				  question1 VARCHAR(200) DEFAULT NULL,
 				  question2 VARCHAR(200) DEFAULT NULL,
 				  question3 VARCHAR(200) DEFAULT NULL,
 				  question4 VARCHAR(200) DEFAULT NULL,
-				  conf_mail text  DEFAULT NULL,
-				  				  UNIQUE KEY id (id)
+				  conf_mail text DEFAULT NULL,
+				   UNIQUE KEY id (id)
 				);";
 
       require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -275,7 +281,7 @@ function events_data_tables_install () {
 }
 
 //Upgrade Info Here
-	$events_organization_tbl_version = "3.049";
+	$events_organization_tbl_version = "3.05";
 
      $installed_ver = get_option( "events_organization_tbl_version" );
      if( $installed_ver != $events_organization_tbl_version ) {

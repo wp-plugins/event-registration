@@ -6,24 +6,49 @@ Requires at least: 2.0.2
 Tested up to: 2.71
 Stable tag: 3.049
 
-Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal
+Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal.
+Provides the ability to upload events via CSV format.
+Provides the ability to have a single event or multiple events.
 
 == Description ==
 
-Allows you to register people online for events. Very flexible.
+Allows you to register people online for events. Very flexible. Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal. Provides the ability to upload events via CSV format. Provides the ability to have a single event or multiple events.
 
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
+Also if you could rate the plugin that would also be helpful.
+
 = Support =
 
-Thanks for all your suggestions and feedback.  I have begun setting up a dedicated site for the plugin www.edgetechweb.com primarily for support issues.  
+Thanks for all your suggestions and feedback.  I have begun setting up a dedicated site for the plugin www.edgetechweb.com primarily for support issues.  There is a page with installation directions  
+
+Documentation included in the document (link on first tab of plugin Admin Panel) as well as http://edgetechweb.com/instructions/
 
 Please continue to email questions or comments to consultant@avdude.com.  
 
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 Changes:
+3.05 - Fixed Issue with ShortCode not calling correct event
+	   Fixed Issue with Order of Events in listing - now list by start date
+	   Fixed Issue with Edit Attendee Records and Extra Questions Erasing/Not updating
+	   Fixed Issue with Folder location on Export Reports - no longer requires custom configs for subdirectory installations
+	   Fixed Issue with Events Table Installation - Date format
+	   Fixed Issue with Registration Form Validation on Extra Questions
+	   Fixed Issue with blank image on Events list when no image was identified
+	   Fixed Issue where # of registered attendees also includes additional people on a persons registration.
+	   Added Admin Page with inline documenation and support	   
+	   Added Admin Page for Uploading Events via CSV file.
+	   Added support for start & end times
+	   Added support for event location
+	   Added support to display # of open registrations left
+	   Added support for More Info link to link to another page.
+	   Added support to select currency format per event (still have default currency if none selected at event level)
+	   Added support to copy an event in the system so duplicates dont have to be re-entered
+	   Added confirmation popup when select edit, copy or delete an event.
+	   Changed layout of Events list
 
+	   
 3.048 - Sql Bug fix when changing organization details
 		Adjusted table format when no image is assigned to event
 		Added additional Admin panel to provide support feedback about database and also link to online documentation

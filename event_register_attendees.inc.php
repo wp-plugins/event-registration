@@ -6,10 +6,12 @@ function register_attendees($event_single_ID) {
 	$paypal_cur = get_option ( 'paypal_cur' );
 	if ($event_single_ID == ""){$event_id = $_REQUEST ['event_id'];}
 	if ($event_single_ID != ""){
-		extract( shortcode_atts( array('event_id' => 'id'), $event_single_ID ) );
-		echo $event_single_ID;}
-	$events_listing_type = get_option ( 'events_listing_type' );
+		extract( shortcode_atts( array('id' => '0'), $event_single_ID ) );
+		echo $event_single_ID['id'];
+		$event_id = $event_single_ID['id'];
+		}
 	
+	$events_listing_type = get_option ( 'events_listing_type' );
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$events_organization_tbl = get_option ( 'events_organization_tbl' );
@@ -41,6 +43,9 @@ function register_attendees($event_single_ID) {
 		$event_description = $row ['event_desc'];
 		$identifier = $row ['event_identifier'];
 		$event_cost = $row ['event_cost'];
+		$event_location = $row ['event_location'];
+		$more_info = $row ['more_info'];
+		$custom_cur = $row ['custom_cur'];
 		$checks = $row ['allow_checks'];
 		$active = $row ['is_active'];
 		$question1 = $row ['question1'];
@@ -75,12 +80,15 @@ function register_attendees($event_single_ID) {
 	
 	//get attendee count	
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
+
+	$sql= "SELECT SUM(num_people) FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
+	$result = mysql_query($sql);
+	while($row = mysql_fetch_array($result)){
+		$num =  $row['SUM(num_people)'];
+		};
 	
-	$sql = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
-	$result = mysql_query ( $sql );
-	$num_rows = mysql_num_rows ( $result );
 	if ($header != ""){echo "<p align='center'><img src='".$header."'  width='450' align='center'></p>";}
-	if ($reg_limit == "" or $reg_limit > "$num_rows") {
+	if ( $reg_limit > "$num" || $reg_limit == "") {
 		echo "<p align='center'><b>".$lang['eventFormHeader'] . $event_name . "</b></p>";
 		echo "<table width='100%'><td>";
 		if ($display_desc == "Y") {
@@ -88,61 +96,58 @@ function register_attendees($event_single_ID) {
 		}
 		echo "</table>";
 		echo "<table width='500'><td>";
-		if ($paypal_cur == "USD" || $paypal_cur == "") {
-			$paypal_cur = "$";
-		}
-		if ($event_cost != "") {
-			if ($lang_flag=='de')
-			  echo "<b>" . $event_name . " - Kosten " .$event_cost . " " .  $paypal_cur . "</b></p></p>";
-      else
-			  echo "<b>" . $event_name . " - Cost " . $paypal_cur . " " . $event_cost . "</b></p></p>";
-		}
+		if ($custom_cur == ""){if ($paypal_cur == "USD" || $paypal_cur == "") {$paypal_cur = "$";}			}
+		if ($custom_cur != "" || $custom_cur != "USD"){$paypal_cur = $custom_cur;}
+		if ($custom_cur == "USD") {$paypal_cur = "$";}
+			
+			
+		if ($event_cost != "") {if ($lang_flag=='de')
+				echo "<b>" . $event_name . " - Kosten " .$event_cost . " " .  $paypal_cur . "</b></p></p>";
+      		else
+			  	echo "<b>" . $event_name . " - Cost " . $paypal_cur . " " . $event_cost . "</b></p></p>";
+			}
 		
 		?>
 <?php //JavaScript for Registration Form Validation 
 
 		?>
 <SCRIPT>
-//FUNCTION TO VALIDATE EMAIL ADDRESS IN REGARDS TO FORMAT
+
+
 
 function echeck(str) {
 		var at="@"
 		var dot="."
+		var em = ""
 		var lat=str.indexOf(at)
 		var lstr=str.length
 		var ldot=str.indexOf(dot)
 		if (str.indexOf(at)==-1){
-		   alert("Invalid E-mail ID")
-		   return false
-		}
+		    return false;
+		    }
 
 		if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr){
-		   alert("Invalid E-mail ID")
-		   return false
+		    return false;
+		    
 		}
 
 		if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr){
-		    alert("Invalid E-mail ID")
-		    return false
+		     return false;
 		}
 
 		 if (str.indexOf(at,(lat+1))!=-1){
-		    alert("Invalid E-mail ID")
-		    return false
+		      return false;
 		 }
 
 		 if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
-		    alert("Invalid E-mail ID")
-		    return false;
+		     return false;
 		 }
 
 		 if (str.indexOf(dot,(lat+2))==-1){
-		    alert("Invalid E-mail ID")
 		    return false;
 		 }
 		
 		 if (str.indexOf(" ")!=-1){
-		    alert("Invalid E-mail ID")
 		    return false;
 		 }
 
@@ -151,90 +156,100 @@ function echeck(str) {
 
 
 function validateForm(form) { 
-
-if (form.fname.value == "") { alert("Please enter your first name."); 
-   		form.fname.focus( ); 
-   		return false; 
-   }
-if (form.lname.value == "") { alert("Please enter your last name."); 
-   		form.lname.focus( ); 
-   		return false; 
-   }
 	
-if ((form.email.value==null)||(form.email.value=="")){
-		alert("Please Enter your Email address")
-		form.email.focus()
-		return false
-	}
-if (echeck(form.email.value)==false){
-		form.email.value=""
-		form.email.focus()
-		return false
-	}
-
-if (form.email.value == "") { alert("Please enter your email address."); 
-   		form.email.focus( ); 
-   		return false; 
-   }
-
-if (form.phone.value == "") { alert("Please enter your phone number."); 
-   		form.phone.focus( ); 
-   		return false; 
-   }
-if (form.address.value == "") { alert("Please enter your address."); 
-   		form.address.focus( ); 
-   		return false; 
-   }
-if (form.city.value == "") { alert("Please enter your city."); 
-   		form.city.focus( ); 
-   		return false; 
-   }  
- 
-if (form.state.value == "") { alert("Please enter your state."); 
-   		form.state.focus( ); 
-   		return false; 
-   }
-if (form.zip.value == "") { alert("Please enter your zip code."); 
-   		form.zip.focus( ); 
-   		return false; 
-   }
-   
-
-
-//FORM VALIDATION FOR ADDED FORM FIELDS
-
-function trim(s) {if (s) {return s.replace(/^\s*|\s*$/g,"");}
-				return null;}
-				
-var inputs = form.getElementsByTagName("input");		
 var msg = "";
-var radioChecks = new Array();
-var e;
-for( var i = 0, e; e = inputs[i]; i++ ) 
+
+if (form.fname.value == "") {  msg += "\n " +"Please enter your first name."; 
+   		form.fname.focus( ); 
+   	 }
+if (form.lname.value == "") {  msg += "\n " +"Please enter your last name."; 
+   		form.lname.focus( ); 
+   		}
+	
+if (echeck(form.email.value)==false){
+		msg += "\n " + "Email format not correct!";
+		}
+		
+if (form.phone.value == "") {  msg += "\n " +"Please enter your phone number."; 
+   		form.phone.focus( ); 
+   		}
+if (form.address.value == "") {  msg += "\n " +"Please enter your address."; 
+   		form.address.focus( ); 
+   		}
+if (form.city.value == "") {  msg += "\n " +"Please enter your city."; 
+   		form.city.focus( ); 
+   		}  
+ 
+if (form.state.value == "") { msg += "\n " + "Please enter your state."; 
+   		form.state.focus( ); 
+   	 }
+if (form.zip.value == "") {  msg += "\n " +"Please enter your zip code."; 
+   		form.zip.focus( ); 
+   		 }
+    
+//Validate Extra Questions
+function trim(s) {if (s) {return s.replace(/^\s*|\s*$/g,"");} return null;}
+				
+	var inputs = form.getElementsByTagName("input");
+	var e;
+
+//Start Extra Questions Check
+	for( var i = 0, e; e = inputs[i]; i++ )
 	{
-	var value = e.value ? trim(e.value) : null;
-	if (e.type == "text" && e.title && !value && e.className == "r") {msg += "\n " + e.title;}
-	if ((e.type == "radio" || e.type == "checkbox") && e.className == "r") 
-		{
-		var name = e.name;
-		if (e.type == "checkbox") name = name.substr(0, name.lastIndexOf("-"));
-		if (e.checked == false && ((!radioChecks[name]) || (radioChecks[name] && radioChecks[name] != 1))) {radioChecks[name] = e;} 
-		else {radioChecks[name] = 1;}
-		}
-	for (var name in radioChecks) 
-		{
-		var e = radioChecks[name];                       
-		if (typeof(e) == "object" && e != 1) {msg += "\n " + e.title;
-		}
-	if (msg.length > 0) 
-		{
-		msg = "The following fields need to be completed before you can submit.\n\n" + msg;
-		alert(msg);
-		return false;
-		}
-	return true;   
+		var value = e.value ? trim(e.value) : null;
+	
+		if (e.type == "text" && e.title && !value && e.className == "r")
+		{msg += "\n " + e.title;}
+		
+	
+	if ((e.type == "radio" || e.type == "checkbox") && e.className == "r") {
+				var rd =""
+				var controls = form.elements;
+				function getSelectedControl(group) 
+					{
+					for (var i = 0, n = group.length; i < n; ++i)
+						if (group[i].checked) return group[i];
+						return null;
+					}
+				if (!getSelectedControl(controls[e.name]))
+								{msg += "\n " + e.title;}
+			} 
+			
+
 	}
-}}
+
+	var inputs = form.getElementsByTagName("textarea");
+	var e;
+	
+	//Start Extra TextArea Questions Check
+	for( var i = 0, e; e = inputs[i]; i++ )
+	{
+		var value = e.value ? trim(e.value) : null;
+		if (!value && e.className == "r")
+		{msg += "\n " + e.title;}
+	}
+	var inputs = form.getElementsByTagName("select");
+	var e;
+	
+	//Start Extra TextArea Questions Check
+	for( var i = 0, e; e = inputs[i]; i++ )
+	{
+		var value = e.value ? trim(e.value) : null;
+		if ((!value || value =='') && e.className == "r")
+		{msg += "\n " + e.title;}
+	}
+
+if (msg.length > 0) {
+			msg = "The following fields need to be completed before you can submit.\n\n" + msg;
+			alert(msg);
+			return false;
+		}
+	
+	return true;   
+
+}
+
+
 
 </SCRIPT>
 
@@ -389,7 +404,7 @@ if ($multiple == "N"){?>
 <?php
 	} else {
 		echo $lang ['maxAttendeesInfo'];
-		echo "<p>Current Number of Attendees: " . $num_rows . "</p>";
+		echo "<p>Current Number of Attendees: " . $num . "</p>";
 	}
 }
 
@@ -448,13 +463,19 @@ function add_attendees_to_db() {
 					values ('$reg_id', '$question->id', '$post_val')" );
 					break;
 				case "MULTIPLE" :
-					$values = explode ( ",", $question->response );
+					$value_string = '';
+					for ($i=0; $i<count($_POST[$question->question_type.'_'.$question->id]); $i++){ 
+					//$value_string = $value_string +","+ ($_POST[$question->question_type.'_'.$question->id][$i]); 
+					$value_string .= $_POST[$question->question_type.'_'.$question->id][$i].","; 
+					}
+					echo "Value String - ".$value_string;
+					/*$values = explode ( ",", $question->response );
 					$value_string = '';
 					foreach ( $values as $key => $value ) {
 						$post_val = $_POST [$question->question_type . '_' . $question->id . '_' . $key];
 						if ($key > 0 && ! empty ( $post_val )) $value_string .= ',';
 						$value_string .= $post_val;
-					}
+					}*/
 					$wpdb->query ( "INSERT into `$events_answer_tbl` (registration_id, question_id, answer)
 					values ('$reg_id', '$question->id', '$value_string')" );
 					break;
@@ -524,6 +545,9 @@ function add_attendees_to_db() {
 		$question4 = $row ['question4'];
 		$send_mail = $row ['send_mail'];
 		$conf_mail = $row ['conf_mail'];
+				$event_location = $row ['event_location'];
+		$more_info = $row ['more_info'];
+		$custom_cur = $row ['custom_cur'];
 		$start_date = $start_month . " " . $start_day . ", " . $start_year;
 		$end_date = $end_month . " " . $end_day . ", " . $end_year;
 	}
@@ -548,9 +572,9 @@ function add_attendees_to_db() {
 	$payment_link = $return_url . "?id=" . $id;
 	
 	//Email Confirmation to Attendee
-	$SearchValues = array ("[fname]", "[lname]", "[phone]", "[event]", "[description]", "[cost]", "[qst1]", "[qst2]", "[qst3]", "[qst4]", "[contact]", "[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]", "[co_zip]", "[payment_url]", "[start_date]", "[start_time]", "[end_date]", "[end_time]","[snum]", "[num_people]" );
+	$SearchValues = array ("[fname]", "[lname]", "[phone]", "[event]", "[description]", "[cost]", "[currency]", "[qst1]", "[qst2]", "[qst3]", "[qst4]", "[contact]", "[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]", "[co_zip]", "[payment_url]", "[start_date]", "[start_time]", "[end_date]", "[end_time]","[snum]", "[num_people]" );
 	
-	$ReplaceValues = array ($fname, $lname, $phone, $event_name, $event_desc, $cost, $question1, $question2, $question3, $question4, $contact, $Organization, $Organization_street1, $Organization_street2, $Organization_city, $Organization_state, $Organization_zip, $payment_link, $start_date, $start_time, $end_date, $end_time, $attnum, $num_people);
+	$ReplaceValues = array ($fname, $lname, $phone, $event_name, $event_desc, $cost, $custom_cur, $question1, $question2, $question3, $question4, $contact, $Organization, $Organization_street1, $Organization_street2, $Organization_city, $Organization_state, $Organization_zip, $payment_link, $start_date, $start_time, $end_date, $end_time, $attnum, $num_people);
 	
 	$custom = str_replace ( $SearchValues, $ReplaceValues, $conf_mail );
 	$default_replaced = str_replace ( $SearchValues, $ReplaceValues, $conf_message );

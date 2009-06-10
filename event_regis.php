@@ -8,7 +8,7 @@ persons contact information to a database and provides an association to an
 events database. It provides the ability to send the register to your 
 paypal payment site for online collection of event fees. Reporting features 
 provide a list of events, list of attendees, and excel export.
-Version: 3.049
+Version: 3.05
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.avdude.com
 */
@@ -31,6 +31,18 @@ Author URI: http://www.avdude.com
 /* this does not only affect language but also format of date, and which fields are displayes in the form */
 $lang_flag = "en"; //switch to en for changing language and form 
 
+
+function Mod_addslashes ( $string ) 
+	{if (get_magic_quotes_gpc()==1) 
+		{
+		return ( $string );
+		}
+		else 
+		{ 
+		return ( addslashes ( $string ) );
+		} 
+	}
+
 //Define the table versions for unique tables required in Events Registration
 require_once ("event_regis_config.php");
 
@@ -50,7 +62,9 @@ require_once ("event_config_info.inc.php");
 require_once ("event_regis_admin_config_org.php");
 
 //Event Registration Subpage 3 - Add/Edit/Delete Events
-require_once ('event_registration_forms.inc.php');
+//require_once ('event_registration_forms.inc.php');
+require_once ('er_forms.inc.php');
+require_once ('csv_import.php');
 require_once ('event_register_attendees.inc.php');
 require_once ('event_payments.inc.php');
 require_once ('event_attendee_edit.inc.php');
@@ -58,21 +72,24 @@ require_once ('event_attendee_edit.inc.php');
 //Event Registration Subpage 4 - Add Extra Questions
 require_once ("event_regis_admin_questions.php");
 
-
+require_once ("er_widget.inc.php");
 //Install/Update Tables when plugin is activated
 register_activation_hook ( __FILE__, 'events_data_tables_install' );
 
 //ADMIN MENU
 add_action ( 'admin_menu', 'add_event_registration_menus' );
+add_action ("plugins_loaded", "init_er_widget");
 
 // Enable the ability for the event_funct to be loaded from pages
 add_filter ( 'the_content', 'event_regis_insert' );
 add_filter ( 'the_content', 'event_regis_attendees_insert' );
 add_filter ( 'the_content', 'event_regis_pay_insert' );
 add_filter ('the_content','event_paypal_txn_insert');
+add_filter ('the_content','er_widget_insert');
 
 //Enable the ability to use single event call for a page
 add_shortcode('Event_Registration_Single', 'event_regis_run');
+add_shortcode('ER_Widget_View', 'events_regis_widget');
 
 
 //Function to make compatible with Windows Servers as well as Apache
@@ -99,15 +116,24 @@ function request_uri() {
 // Function to deal with loading the events into pages
 function event_regis_insert($content) {
 	if (preg_match ( '{EVENTREGIS}', $content )) { //[(.*)]
-		$content = str_replace ( '{EVENTREGIS}', event_regis_run ($event_single_ID), $content );
+	$content = str_replace ( '{EVENTREGIS}', event_regis_run ($event_single_ID), $content );
+		
 	}
 	return $content;
 }
+
 
 // Function to deal with loading the current event attendee list into pages or text widget
 function event_regis_attendees_insert($content) {
 	if (preg_match ( '{EVENTATTENDEES}', $content )) {
 		$content = str_replace ( '{EVENTATTENDEES}', event_attendee_list_run (), $content );
+	}
+	return $content;
+}
+
+function er_widget_insert($content) {
+	if (preg_match ( '{ER_WIDGET}', $content )) {
+		$content = str_replace ( '{ER_WIDGET}', events_regis_widget (), $content );
 	}
 	return $content;
 }
@@ -157,6 +183,8 @@ function event_attendee_list_run() {
 		echo $fname . " " . $lname . "<br />";
 	}
 }
+
+
 
 // Main Function for Script - selects what action to be taken when EVENTREGIS is run
 function event_regis_run($event_single_ID) {
@@ -216,10 +244,12 @@ function add_event_registration_menus() {
 	
 	add_submenu_page ( __FILE__, 'Configure Organization', 'Configure Organization', 8, 'organization', 'event_config_mnu' );
 	
-	add_submenu_page ( __FILE__, 'Event Setup', 'Event Setup', 8, 'events', 'event_regis_events' );
+	add_submenu_page ( __FILE__, 'Event Setup', 'Event Setup', 8, 'events', 'events_management_process' );
 	
 	add_submenu_page ( __FILE__, 'Regform Setup', 'Regform Setup', 8, 'form', 'event_form_config' );
 	
+	add_submenu_page ( __FILE__, 'Event Import', 'Event_Import', 8, 'import', 'events_import' );
+		
 	add_submenu_page ( __FILE__, 'Process Payments', 'Process Payments', 8, 'attendee', 'event_process_payments' );
 }
 
@@ -301,16 +331,16 @@ if ( $run_reports == "current_attendees" ) {events_reports_current_attendee();}
 function display_all_events() {
 	global $wpdb,$lang;
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
+	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 	$curdate = date ( "Y-m-j" );
 	$month = date ('M');
 	$day = date('j');
 	$year = date('Y');
 	$paypal_cur = get_option ( 'paypal_cur' );
+	$showthumb = get_option ('show_thumb');
 
 	
-$sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".date ( 'Y-m-j' )."'";
-		
-
+	$sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".date ( 'Y-m-j' )."' ORDER BY start_date";
 		
 	$result = mysql_query ( $sql );
 	
@@ -320,26 +350,74 @@ $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".date ( 'Y
 		$event_name = $row ['event_name'];
 		$identifier = $row ['event_identifier'];
 		$image = $row ['image_link'];
+		$event_location = $row ['event_location'];
+		$more_info = $row ['more_info'];
+		$start_date = $row ['start_date'];
+		$end_date = $row ['end_date'];
+		$start_time = $row ['start_time'];
+		$end_time = $row ['end_time'];
 		$cost = $row ['event_cost'];
+		$custom_cur = $row ['custom_cur'];
 		$checks = $row ['allow_checks'];
 		$active = $row ['is_active'];
+		$reg_limit = $row ['reg_limit'];
+		$timestamp = strtotime($start_date);
+		$new_start_date = date("M d, Y", $timestamp);
+		;
+ 
+		
+		if ($cost == ""){$cost = "FREE";}
+		
+	    
+		$sql2= "SELECT SUM(num_people) FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
+		
+		
+		$result2 = mysql_query($sql2);
 
+		while($row = mysql_fetch_array($result2)){
+		$num =  $row['SUM(num_people)'];
+		};
 		
-		
+				
+		if ($custom_cur == ""){if ($paypal_cur == "USD" || $paypal_cur == "") {$paypal_cur = "$";}			}
+		if ($custom_cur != "" || $custom_cur != "USD"){$paypal_cur = $custom_cur;}
+		if ($custom_cur == "USD") {$paypal_cur = "$";}
+		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
+	    if ($reg_limit == ""){$available_spaces = "Unlimited";}
 /*		echo "<tr><td width='400'>" . $event_name . " - " . $paypal_cur . "  " . $cost . "    <b>Event Start Date</b>  ".$row['start_date']."</p><hr></td><td>";
 */
-	if ($image == ""){	echo "<tr><td width='400'><b>" . $event_name . " - " . $paypal_cur . "  " . $cost . "   </b></p><p>Start<b>  ".$row['start_date']."</b></p>
-		<p>End<b>  ".$row['end_date']."</b></p>
-		<hr></td><td>";}
-	else {	echo "<tr><td width='100'><img src='".$image."' width='75' height='56'></td><td width='300'><b>" . $event_name . " - " . $paypal_cur . "  " . $cost . "   </b></p><p>Start<b>  ".$row['start_date']."</b></p>
-		<p>End<b>  ".$row['end_date']."</b></p>
-		<hr></td><td>";}
-		
-		echo "<form name='form' method='post' action='";
-		request_uri();
-		echo "'>";
+	if ($image == ""){
+		echo "<tr><td></td><td><br><b>" . $event_name . "   </b><br>";
+		echo "Location:<b>  ".$event_location."</b><br>";
+		echo "Start Date:<b>  ".$new_start_date."</b><br>";
+		echo "Start Time:<b>  ".$start_time."</b><br>";
+		echo "Price:<b>  ";
+		if ($cost != "FREE"){echo $paypal_cur;}
+		echo " ".$cost."</b><br>";
+		echo "Spaces Available:<b>  ".$available_spaces."</b><br>";
+		if ($more_info != ""){
+			echo '<a href="'.$more_info.'"> More Info...</a>';
+		}
+		echo "<hr></td><td>";}
+	else {	
+		//uncomment this line to use images on event list screen
+		if ($showthumb == "Y"){echo "<tr><td width='80'><img src='".$image."' width='75' height='56'></td>";}
+		else {echo "<tr><td></td>";}
+		echo "<td><br><b>" . $event_name . "   </b><br>";
+		echo "Location:<b>  ".$event_location."</b><br>";
+		echo "Start Date:<b>  ".$new_start_date."</b><br>";
+		echo "Start Time:<b>  ".$start_time."</b><br>";
+		echo "Price:<b>  ";
+		if ($cost != "FREE"){echo $paypal_cur;}
+		echo " ".$cost."</b><br>";
+		echo "Spaces Available:<b>  ".$available_spaces."</b><br>";
+			if ($more_info != ""){
+			echo '<a href="'.$more_info.'"> More Info...</a>';
+		}
+		echo "<hr></td><td>";}
+		echo "<form name='form' method='post' action='".request_uri()."'>";
 		echo "<input type='hidden' name='regevent_action' value='register'>";
-		echo "<input type='hidden' name='event_id' value='" . $row ['id'] . "'>";
+		echo "<input type='hidden' name='event_id' value='" . $event_id . "'>";
 		echo "<input type='SUBMIT' value='$lang[register]'></form></td></tr>";
 		// echo "<input type='SUBMIT' value='REGISTER' ONCLICK=\"return confirm('Are you sure you want to register for ".$row['event_name']."?')\"></form></td></tr>";
 	}
