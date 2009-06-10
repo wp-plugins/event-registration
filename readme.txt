@@ -4,7 +4,7 @@ Donate link: http://www.edgetechweb.com/
 Tags: event management, event registration
 Requires at least: 2.0.2
 Tested up to: 2.71
-Stable tag: 3.049
+Stable tag: 4.0
 
 Provides the ability to setup event list and accept online registrations for events and administer them via WordPress. Supports paypal and international currency via paypal.
 Provides the ability to upload events via CSV format.
@@ -29,6 +29,7 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 Changes:
+4.0 - Fixed Tagging Issue with SVN
 3.05 - Fixed Issue with ShortCode not calling correct event
 	   Fixed Issue with Order of Events in listing - now list by start date
 	   Fixed Issue with Edit Attendee Records and Extra Questions Erasing/Not updating
