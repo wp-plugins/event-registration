@@ -29,24 +29,40 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 Changes:
-4.0 - Fixed Tagging Issue with SVN
-3.05 - Fixed Issue with ShortCode not calling correct event
+4.0 -  Fixed Issue with ShortCode not calling correct event
+
 	   Fixed Issue with Order of Events in listing - now list by start date
+	   
 	   Fixed Issue with Edit Attendee Records and Extra Questions Erasing/Not updating
+	   
 	   Fixed Issue with Folder location on Export Reports - no longer requires custom configs for subdirectory installations
+	   
 	   Fixed Issue with Events Table Installation - Date format
+	   
 	   Fixed Issue with Registration Form Validation on Extra Questions
+	   
 	   Fixed Issue with blank image on Events list when no image was identified
+	   
 	   Fixed Issue where # of registered attendees also includes additional people on a persons registration.
-	   Added Admin Page with inline documenation and support	   
+	   
+	   Added Admin Page with inline documenation and support
+	   	   
 	   Added Admin Page for Uploading Events via CSV file.
+	   
 	   Added support for start & end times
+	   
 	   Added support for event location
+	   
 	   Added support to display # of open registrations left
+	   
 	   Added support for More Info link to link to another page.
+	   
 	   Added support to select currency format per event (still have default currency if none selected at event level)
+	   
 	   Added support to copy an event in the system so duplicates dont have to be re-entered
+	   
 	   Added confirmation popup when select edit, copy or delete an event.
+	   
 	   Changed layout of Events list
 
 	   
