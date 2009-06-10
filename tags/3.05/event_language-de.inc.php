@@ -2,8 +2,9 @@
 
 //language inside options:
 
-$lang['enterConfirmMessage']= "Enter your custom confirmation message here.";
-$lang['autoResponse'] = "**This is an automated response - DO NOT REPLY! A contact email address is listed below.***\n\nThank you for signing up. Your registration has been recieved.  If you have not already done so, please submit payment.\n\nIf you have any questions, you can contact the organizer at ";
+$lang['enterConfirmMessage']= "Bitte hier Ihre Best&auml;tigungsnachricht eingeben.";
+$lang['autoResponse'] = "**Dies ist eine automatische Antwort. Danke f&uuml;r das Anmelden. Ihre Registrierung wurde 
+aufgenommen.  Wenn Sie Fragen haben, kontaktieren Sie bitte den Veranstalter: ";
 
 $lang['addQuestionDesc'] = "
 			<p>Add New Question</p>
@@ -33,37 +34,39 @@ $lang['eventQuestions'] = "Event Questions";
 
 //language displaying registration form:
 
-$lang['firstName'] = "First Name";
-$lang['lastName'] = "Last Name";
+$lang['firstName'] = "Vorname";
+$lang['lastName'] = "Nachname";
 $lang['email'] = "E-Mail";
-$lang['phone'] = "Phone";
-$lang['address'] = "Street";
-$lang['city'] = "City";
-$lang['state'] = "State or province";
-$lang['zip'] = "Zip";
-$lang['people'] = "Number of people that are being paid for ";
-$lang['payPlan'] = "How do you plan on paying for your Registration?";
-$lang['pickone'] = "Pick one";
-$lang['cash'] = "Cash";
-$lang['check'] = "Check";
-$lang['creditcard'] = "Creditcard";
+$lang['phone'] = "Telefon/Mobil";
+$lang['address'] = "Stra&szlig;e";
+$lang['city'] = "Stadt";
+$lang['state'] = "Bundesland";
+$lang['zip'] = "PLZ";
+
+$lang['payPlan'] = "Wie m&ouml;chten Sie bezahlen?";
+$lang['pickone'] = "Bitte ausw&auml;hlen";
+$lang['cash'] = "Bar vor Ort";
+$lang['check'] = "Scheck";
+
+$lang['creditcard'] = "Kreditkarte";
 $lang['paypal'] = "Paypal";
-$lang['submitHint'] ="(Only click the Submit Button Once)";
+$lang['submitHint'] ="(Bitte nur einmal auf Anmelden klicken)";
 
 $lang['maxAttendeesInfo'] = "
-<p><b>
-We are sorry but this event has reached the maximum number of attendees!</b></p>
-<p><b>Please check back in the event someone cancels.</b></p>";
+<br /><br /><b>
+Tut uns leid, aber diese Veranstaltung ist bereits ausgebucht!</b>";
 
-$lang['registrationConfirm'] = "<p>Your Registration has been added. Please watch your email for a confirmation of registration.</p>";
-$lang['payingPlan'] = "How do you plan on paying for your Registration?";
+$lang['registrationConfirm'] = "<p>Vielen Dank!</p><p>Deine Registrierung wurde aufgenommen. Bitte schau in dein
+E-Mail Posftach f&uuml;r deine Registrierungsbest&auml;tigung.</p>";
+$lang['payingPlan'] = "Wie werden Sie das Event bezahlen?";
 
 //config form
-$lang['defaultmail'] = "default mail is: "; 
+$lang['defaultmail'] = "Die Standard-E-Mail lautet: ";
 
-$lang['eventFormHeader'] = "Event Registration for ";
+$lang['eventFormHeader'] = "Seminar-Registrierung f&uuml;r das Seminar "; 
 
-$lang['submit'] = "Submit";
-$lang['register'] = "REGISTER";
+$lang['submit'] = "Registrieren";
+$lang['register'] = "Registrieren";
+
 
 ?>
