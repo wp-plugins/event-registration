@@ -1,5 +1,6 @@
 Changes:
 =========
+3.1	-  Re-Issue for SVN issues
 3.05 - Fixed Issue with ShortCode not calling correct event
 	   Fixed Issue with Order of Events in listing - now list by start date
 	   Fixed Issue with Edit Attendee Records and Extra Questions Erasing/Not updating
