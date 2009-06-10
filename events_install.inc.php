@@ -62,7 +62,7 @@ function events_data_tables_install () {
 				  }
 		}
 	// Code here with new database upgrade info/table Must change version number to work.
-		 $events_attendee_tbl_version = "3.05";
+		 $events_attendee_tbl_version = "3.1";
 		 $installed_ver = get_option( "events_attendee_tbl_version" );
 	     if( $installed_ver != $events_attendee_tbl_version ) {
 
@@ -169,7 +169,7 @@ function events_data_tables_install () {
 				    add_option($option_name, $newvalue, $deprecated, $autoload);
 			  }
 			}
-	 $events_detail_tbl_version = "3.05";
+	 $events_detail_tbl_version = "3.1";
      $installed_ver = get_option( "$events_detail_tbl_version" );
      if( $installed_ver != $events_detail_tbl_version ) {
 
@@ -281,7 +281,7 @@ function events_data_tables_install () {
 }
 
 //Upgrade Info Here
-	$events_organization_tbl_version = "3.05";
+	$events_organization_tbl_version = "3.1";
 
      $installed_ver = get_option( "events_organization_tbl_version" );
      if( $installed_ver != $events_organization_tbl_version ) {
