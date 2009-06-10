@@ -29,6 +29,7 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 Changes:
+4.0 - Fixed Tagging Issue with SVN
 3.05 - Fixed Issue with ShortCode not calling correct event
 	   Fixed Issue with Order of Events in listing - now list by start date
 	   Fixed Issue with Edit Attendee Records and Extra Questions Erasing/Not updating
