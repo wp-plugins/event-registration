@@ -1,239 +1,96 @@
 <?php
 function attendee_display_edit() {
+er_plugin_menu();
+    $er_attendee_action = $_REQUEST ['action'];
+    global $wpdb, $lang,$lang_flag;
+    $events_detail_tbl = get_option ( 'events_detail_tbl' );
+    $events_attendee_tbl = get_option ( 'events_attendee_tbl' );
+  ?>  
+<div id="event_reg_theme" class="wrap">
+<h2>Manage Attendees</h2>
 
-	function event_list_attendees() {
-		//Displays attendee information from current active event.
-		global $wpdb, $lang,$lang_flag;
-		$events_detail_tbl = get_option ( 'events_detail_tbl' );
-		$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
-		define ( "EVNT_RGR_PLUGINPATH", "/" . plugin_basename ( dirname ( __FILE__ ) ) . "/" );
-		define ( "EVNT_RGR_PLUGINFULLURL", WP_PLUGIN_URL . EVNT_RGR_PLUGINPATH );
-		$url = EVNT_RGR_PLUGINFULLURL;
-		if ($_REQUEST ['event_id'] != "") {
-			$view_event = $_REQUEST ['event_id'];
-		}
-		if ($_REQUEST ['view_event'] != "") {
-			$view_event = $_REQUEST ['view_event'];
-		}
-		
-		$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE id='$view_event'";
-		$result = mysql_query ( $sql );
-		while ( $row = mysql_fetch_assoc ( $result ) ) {
-			$event_id = $row ['id'];
-			$event_name = $row ['event_name'];
-			$event_desc = $row ['event_desc'];
-			$event_description = $row ['event_desc'];
-			$identifier = $row ['event_identifier'];
-			$cost = $row ['event_cost'];
-			$checks = $row ['allow_checks'];
-			$active = $row ['is_active'];
-			$question1 = $row ['question1'];
-			$question2 = $row ['question2'];
-			$question3 = $row ['question3'];
-			$question4 = $row ['question4'];
-		}
-		
-		$sql = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$view_event'";
-		$result = mysql_query ( $sql );
-		echo "<hr><p><b>Current Attendee List is from: " . $event_name . " - " . $identifier . "</b></p>";
-		?>
-<button style="background-color: lightgreen"
-	onclick="window.location='<?php
-		echo $url . "event_registration_export.php?id=" . $view_event . "&action=excel";
-		?>'"
-	style="width:180; height: 30">Export Current Attendee List To Excel</button>
-<button style="background-color: lightgreen"
-	onclick="window.location='<?php
-		echo $url . "event_registration_export.php?id=" . $view_event. "&action=csv";
-		?>'"
-	style="width:180; height: 30">Export Current Attendee List To CSV</button>
-<br>
-<hr>
+<div style="float:left; margin-right:20px;">
+  <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"];?>">
+    <input type="hidden" name="action" value="">
+    <input class="button-primary" type="submit" name="Submit" value="SELECT EVENT"/>
+  </form>
+</div> 
+<div style="clear:both;"></div><hr /><div style="clear:both;">
+    <?php
+    
+    switch ($er_attendee_action){
+        case "view":
+            $event_id = $_REQUEST['event'];
+            $sql = "SELECT * FROM " . $events_detail_tbl . " WHERE id='$event_id'";
+    		$result = mysql_query ( $sql );
+    		while ( $row = mysql_fetch_assoc ( $result ) ) {
+    		     $event_id = $row ['id'];
+			     $event_name = $row ['event_name'];
+			     $event_desc = $row ['event_desc'];
+                 $reg_limit = $row ['reg_limit'];
+                 if ($reg_limit == ''){$reg_limit = 999;}
+                 if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "Unlimited";}
+                 }
+  		$sql2= "SELECT SUM(num_people) FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
+		$result2 = mysql_query($sql2);
+		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(num_people)'];};
+           ?>   <h3>Attendee Listing For <?php echo $event_name;?>  - <?php 
+           if ($num !=""){echo "<font color='green'>".$num."/".$available_spaces." Attendees</font>";}
+           else {echo "<font color='red'>No Attendees</font>";}
+           ?>
+     </h3>
+                <table class="widefat">
+                <thead>
+                <tr><th># People</th><th>Name </th><th>Email</th><th>Phone</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                <?php
+
+            $sql = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
+            $result = mysql_query ( $sql );
+            while ( $row = mysql_fetch_assoc ( $result ) ) {
+    			$id = $row ['id'];
+    			$lname = $row ['lname'];
+    			$fname = $row ['fname'];
+    			$address = $row ['address'];
+    			$city = $row ['city'];
+    			$state = $row ['state'];
+    			$zip = $row ['zip'];
+    			$email = $row ['email'];
+    			$phone = $row ['phone'];
+    			$num_people = $row ['num_people'];
+    			$date = $row ['date'];
+    			$paystatus = $row ['paystatus'];
+    			$txn_type = $row ['txn_type'];
+    			$txn_id = $row ['txn_id'];
+    			$amt_pd = $row ['amount_pd'];
+    			$date_pd = $row ['paydate'];
+    			$event_id = $row ['event_id'];
+    			$custom1 = $row ['custom_1'];
+    			$custom2 = $row ['custom_2'];
+    			$custom3 = $row ['custom_3'];
+    			$custom4 = $row ['custom_4'];
+		        echo "<tr><td>".$num_people."</td><td align='left'>" . $lname . ", " . $fname . "</td><td>" . $email . "</td><td>" . $phone . "</td>";
+		        echo "<td>";
+                ?>
+                <a href="<?php echo request_uri()."&action=edit&event=".$event_id."&attendee=".$id; ?>">EDIT</a>  |
+                <a href="<?php echo request_uri()."&action=delete&event=".$event_id."&attendee=".$id; ?>" 
+                ONCLICK="return confirm('Are you sure you want to delete attendee <?php echo $fname." ".$lname;?>?')">DELETE</a></td> </tr>
+                <?php   }  
+            echo "</table>";
+            ?>
+            
+            <br />
+            <div style="clear:both;"></div>
+            <button style="background-color: lightgreen"  onclick="window.location='<?php echo ER_PLUGINFULLURL . "event_registration_export.php?id=" . $event_id . "&action=excel";?>'">Export Excel</button>
+            <button style="background-color: lightgreen" onclick="window.location='<?php echo ER_PLUGINFULLURL . "event_registration_export.php?id=" . $event_id. "&action=csv";?>'" style="width:180; height: 30">Export CSV</button>            
 <?php
-		echo "<table>";
-		echo "<tr><td width='15'></td><td> ID </td><td> Name </td><td> Email </td><td width='15'>City</td><td>State </td><td> Phone </td>
-						<td></td><td> </td><tr>";
-		while ( $row = mysql_fetch_assoc ( $result ) ) {
-			$id = $row ['id'];
-			$lname = $row ['lname'];
-			$fname = $row ['fname'];
-			$address = $row ['address'];
-			$city = $row ['city'];
-			$state = $row ['state'];
-			$zip = $row ['zip'];
-			$email = $row ['email'];
-			$phone = $row ['phone'];
-			$num_people = $row ['num_people'];
-			$date = $row ['date'];
-			$paystatus = $row ['paystatus'];
-			$txn_type = $row ['txn_type'];
-			$txn_id = $row ['txn_id'];
-			$amt_pd = $row ['amount_pd'];
-			$date_pd = $row ['paydate'];
-			$event_id = $row ['event_id'];
-			$custom1 = $row ['custom_1'];
-			$custom2 = $row ['custom_2'];
-			$custom3 = $row ['custom_3'];
-			$custom4 = $row ['custom_4'];
-			
-			echo "<tr><td width='15'></td><td>" . $id . "</td><td align='left'>" . $lname . ", " . $fname . "</td><td>" . $email . "</td><td width='15'>
-									" . $city . "</td><td>" . $state . "</td><td>" . $phone . "</td>";
-			echo "<td>";
-			echo "<form name='form' method='post' action='" . $_SERVER ['REQUEST_URI'] . "'>";
-			echo "<input type='hidden' name='display_action' value='view_list'>";
-			echo "<input type='hidden' name='view_event' value='" . $view_event . "'>";
-			echo "<input type='hidden' name='form_action' value='edit_attendee'>";
-			echo "<input type='hidden' name='id' value='" . $id . "'>";
-			// echo "<input type='SUBMIT' style='background-color:yellow' value='EDIT RECORD' ONCLICK=\"return confirm('Are you sure you want to edit record for ".$fname." ".$lname."?')\"></form>";
-			echo "<input type='SUBMIT' style='background-color:yellow' value='EDIT RECORD'></form>";
-			echo "</td><td>";
-			
-			echo "<form name='form' method='post' action='" . $_SERVER ['REQUEST_URI'] . "'>";
-			echo "<input type='hidden' name='form_action' value='edit_attendee'>";
-			echo "<input type='hidden' name='display_action' value='view_list'>";
-			echo "<input type='hidden' name='attendee_action' value='delete_attendee'>";
-			echo "<input type='hidden' name='view_event' value='" . $view_event . "'>";
-			echo "<input type='hidden' name='id' value='" . $id . "'>";
-			echo "<input type='SUBMIT' style='background-color:pink' value='DELETE' ONCLICK=\"return confirm
-										('Are you sure you want to delete record for " . $fname . " " . $lname . "-ID" . $id . "?')\"></form>
-									</td></tr>";
-		}
-		echo "</table>";
-	}
-
-	function edit_attendee_record() {
-		global $wpdb,$lang, $lang_flag;
-		$events_detail_tbl = get_option ( 'events_detail_tbl' );
-		$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
-		
-		if ($_REQUEST ['event_id'] != "") {
-			$view_event = $_REQUEST ['event_id'];
-		}
-		if ($_REQUEST ['view_event'] != "") {
-			$view_event = $_REQUEST ['view_event'];
-		}
-		
-		if ($_REQUEST ['form_action'] == 'edit_attendee') {
-			
-			if ($_REQUEST ['attendee_action'] == 'delete_attendee') {
-				$id = $_REQUEST ['id'];
-				$sql = " DELETE FROM " . $events_attendee_tbl . " WHERE id ='$id'";
-				$wpdb->query ( $sql );
-				//echo "<meta http-equiv='refresh' content='0'>";
-			} 
-
-			else if ($_REQUEST ['attendee_action'] == 'update_attendee') {
-				
-				$id = $_REQUEST ['id'];
-				
-				$regisration_id = $row ['id'];
-				$fname = $_POST ['fname'];
-				$lname = $_POST ['lname'];
-				$address = $_POST ['address'];
-				$city = $_POST ['city'];
-				$state = $_POST ['state'];
-				$zip = $_POST ['zip'];
-				$phone = $_POST ['phone'];
-				$email = $_POST ['email'];
-				$hear = $_POST ['hear'];
-				$num_people = $_POST ['num_people'];
-				$event_id = $_POST ['event_id'];
-				$payment = $_POST ['payment'];
-				$custom_1 = $_POST ['custom_1'];
-				$custom_2 = $_POST ['custom_2'];
-				$custom_3 = $_POST ['custom_3'];
-				$custom_4 = $_POST ['custom_4'];
-				
-				$sql = "UPDATE " . $events_attendee_tbl . " SET fname='$fname', lname='$lname', address='$address', city='$city', state='$state',
-								   	zip='$zip', phone='$phone', email='$email', payment='$payment', hear='$hear', custom_1='$custom_1', custom_2='$custom_2',
-								   	custom_3='$custom_3', custom_4='$custom_4', num_people='$num_people' WHERE id ='$id'";
-				$wpdb->query ( $sql );
-				echo "<p>basic is added </p>";
-				//echo "<meta http-equiv='refresh' content='0'>";
-				
-
-	/*			// Insert Extra From Post Here
-			$events_question_tbl = get_option ( 'events_question_tbl' );
-				$events_answer_tbl = get_option ( 'events_answer_tbl' );
-				$reg_id = $id;
-				$wpdb->query ( "DELETE FROM $events_answer_tbl where registration_id = '$reg_id'" );
-				
-				$questions = $wpdb->get_results ( "SELECT * from `$events_question_tbl` where event_id = '$event_id'" );
-				
-				if ($questions) {
-					foreach ( $questions as $question ) {
-						switch ($question->question_type) {
-							case "TEXT" :
-							case "TEXTAREA" :
-							case "SINGLE" :
-								$post_val = $_POST [$question->question_type . '-' . $question->id];
-								$wpdb->query ( "INSERT into $events_answer_tbl (registration_id, question_id, answer)
-					values ('$reg_id', '$question->id', '$post_val')" );
-								break;
-							case "MULTIPLE" :
-								$values = explode ( ",", $question->response );
-								$value_string = '';
-								foreach ( $values as $key => $value ) {
-									$post_val = $_POST [$question->question_type . '-' . $question->id . '-' . $key];
-									if ($key > 0 && ! empty ( $post_val )) $value_string .= ',';
-									$value_string .= $post_val;
-								}
-								$wpdb->query ( "INSERT into $events_answer_tbl (registration_id, question_id, answer)
-					values ('$reg_id', '$question->id', '$value_string')" );
-								
-								break;
-						}
-					}
-				}
-			
-			*/
-			
-			// Insert Extra From Post Here
-	$events_question_tbl = get_option ( 'events_question_tbl' );
-	$events_answer_tbl = get_option ( 'events_answer_tbl' );
-	$reg_id = $id;
-	
-	$questions = $wpdb->get_results ( "SELECT * from `$events_question_tbl` where event_id = '$event_id'" );
-	if ($questions) {
-		foreach ( $questions as $question ) {
-			switch ($question->question_type) {
-				case "TEXT" :
-				case "TEXTAREA" :
-				case "DROPDOWN" :
-					$post_val = $_POST [$question->question_type . '_' . $question->id];
-					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$post_val' WHERE registration_id = '$reg_id' AND question_id ='$question->id'";
-					$wpdb->query ($sql);
-					break;
-				case "SINGLE" :
-					$post_val = $_POST [$question->question_type . '_' . $question->id];
-					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$post_val' WHERE registration_id = '$reg_id' AND question_id ='$question->id'";
-					$wpdb->query ($sql);
-					break;
-				case "MULTIPLE" :
-					$value_string = '';
-					for ($i=0; $i<count($_POST[$question->question_type.'_'.$question->id]); $i++){ 
-					//$value_string = $value_string +","+ ($_POST[$question->question_type.'_'.$question->id][$i]); 
-					$value_string .= $_POST[$question->question_type.'_'.$question->id][$i].","; 
-					}
-					echo "Value String - ".$value_string;
-					/*$values = explode ( ",", $question->response );
-					$value_string = '';
-					foreach ( $values as $key => $value ) {
-						$post_val = $_POST [$question->question_type . '_' . $question->id . '_' . $key];
-						if ($key > 0 && ! empty ( $post_val )) $value_string .= ',';
-						$value_string .= $post_val;
-					}*/
-					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$value_string' WHERE registration_id = '$reg_id' AND question_id ='$question->id'";
-					$wpdb->query ($sql);
-					
-					break;
-			}
-		}
-	}
-			
-			} else {
-				
-				$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE id='" . $view_event . "'";
+    	
+        break;
+        
+        case "edit":
+        		$event_id = $_REQUEST['event'];
+				$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE id='" . $event_id . "'";
 				$result = mysql_query ( $sql );
 				while ( $row = mysql_fetch_assoc ( $result ) ) {
 					$event_id = $row ['id'];
@@ -250,8 +107,8 @@ function attendee_display_edit() {
 					$question4 = $row ['question4'];
 				}
 				
-				$id = $_REQUEST ['id'];
-				$sql = "SELECT * FROM " . $events_attendee_tbl . " WHERE id ='$id'";
+				$attendee_id = $_REQUEST ['attendee'];
+				$sql = "SELECT * FROM " . $events_attendee_tbl . " WHERE id ='$attendee_id'";
 				$result = mysql_query ( $sql );
 				while ( $row = mysql_fetch_assoc ( $result ) ) {
 					$id = $row ['id'];
@@ -279,7 +136,16 @@ function attendee_display_edit() {
 					$custom_3 = $row ['custom_3'];
 					$custom_4 = $row ['custom_4'];
 				}
-				
+				?>
+                <div class="metabox-holder">
+                <div class="postbox">
+                <h3>Edit Attendee Information: <?php echo $fname." ".$lname; ?></h3>
+                <form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+                <input type="hidden" name="event" value="<?php echo $event_id; ?>">
+                <input type="hidden" name="attendee" value="<?php echo $attendee_id; ?>">
+                <input type="hidden" name="action" value="post">
+                <ul>
+                <?php
 				echo "<table><tr><td width='25'></td><td align='left'><hr>";
 				echo "<form method='post' action='" . $_SERVER ['REQUEST_URI'] . "'>";
 				echo "<p><b>".$lang['firstName'].":";
@@ -396,15 +262,144 @@ function attendee_display_edit() {
 <hr />
 </td>
 </tr>
-</table>
+</table></ul></div><div>
 <?php
 			
-			}
-		}
+		
+        
+        
+        break;
+        
+        case "post";
+				$id = $_POST ['attendee'];
+                $event_id = $_POST['event'];
+				
+				$fname = $_POST ['fname'];
+				$lname = $_POST ['lname'];
+				$address = $_POST ['address'];
+				$city = $_POST ['city'];
+				$state = $_POST ['state'];
+				$zip = $_POST ['zip'];
+				$phone = $_POST ['phone'];
+				$email = $_POST ['email'];
+				$hear = $_POST ['hear'];
+				$num_people = $_POST ['num_people'];
+				$event_id = $_POST ['event_id'];
+				$payment = $_POST ['payment'];
+				
+				$sql = "UPDATE " . $events_attendee_tbl . " SET fname='$fname', lname='$lname', address='$address', city='$city', 
+                state='$state', zip='$zip', phone='$phone', email='$email', payment='$payment', hear='$hear', 
+                num_people='$num_people' WHERE id ='$id'";
+				$wpdb->query ( $sql );
+                echo "<div id='message' class='updated fade'><p><strong>
+                The basic attendee information has been successfully updated.  Now updating additional question information.</strong></p></div>";
+                
+ 			// Insert Extra From Post Here
+            	$events_question_tbl = get_option ( 'events_question_tbl' );
+            	$events_answer_tbl = get_option ( 'events_answer_tbl' );
+            	$reg_id = $id;
+            	
+            	$questions = $wpdb->get_results ( "SELECT * from `$events_question_tbl` where event_id = '$event_id'" );
+            	if ($questions) {
+            		foreach ( $questions as $question ) {
+            			switch ($question->question_type) {
+            				case "TEXT" :
+            				case "TEXTAREA" :
+            				case "DROPDOWN" :
+            					$post_val = $_POST [$question->question_type . '_' . $question->id];
+            					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$post_val' WHERE registration_id = '$reg_id' 
+                                AND question_id ='$question->id'";
+            					$wpdb->query ($sql);
+            					break;
+            				case "SINGLE" :
+            					$post_val = $_POST [$question->question_type . '_' . $question->id];
+            					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$post_val' WHERE registration_id = '$reg_id' 
+                                AND question_id ='$question->id'";
+            					$wpdb->query ($sql);
+            					break;
+            				case "MULTIPLE" :
+            					$value_string = '';
+            					for ($i=0; $i<count($_POST[$question->question_type.'_'.$question->id]); $i++){ 
+            					//$value_string = $value_string +","+ ($_POST[$question->question_type.'_'.$question->id][$i]); 
+            					$value_string .= $_POST[$question->question_type.'_'.$question->id][$i].","; 
+            					}
+            					echo "Value String - ".$value_string;
+            					/*$values = explode ( ",", $question->response );
+            					$value_string = '';
+            					foreach ( $values as $key => $value ) {
+            						$post_val = $_POST [$question->question_type . '_' . $question->id . '_' . $key];
+            						if ($key > 0 && ! empty ( $post_val )) $value_string .= ',';
+            						$value_string .= $post_val;
+            					}*/
+            					$sql = "UPDATE " . $events_answer_tbl . " SET answer='$value_string' WHERE registration_id = '$reg_id' 
+                                AND question_id ='$question->id'";
+            					$wpdb->query ($sql);
+            					
+            					break;
+            			}
+            		}
+            	}
+                echo "<div id='message' class='updated fade'><p><strong>
+                The attendee information has been successfully updated.</strong></p></div>";
+                echo "<META HTTP-EQUIV='refresh' content='2;URL=admin.php?page=attendees&action=view&event=".$event_id."'>";
+   
+        break;
+        
+        
+        case "delete":
+            	$attendee = $_REQUEST ['attendee'];
+                $event = $_REQUEST['event'];
+				$sql = " DELETE FROM " . $events_attendee_tbl . " WHERE id ='$attendee'";
+				$wpdb->query ( $sql );
+                echo "<div id='message' class='updated fade'><p><strong>
+                The attendee information has been successfully deleted from the event.</strong></p></div>";
+                echo "<META HTTP-EQUIV='refresh' content='2;URL=admin.php?page=attendees&action=view&event=".$event."'>";
+			
+		 
+        break;
+        default:
+        
+        	global $wpdb;
+	$events_detail_tbl = get_option ( 'events_detail_tbl' );
+	$current_event = get_option ( 'current_event' );
+	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
+	define ( "EVNT_RGR_PLUGINPATH", "/" . plugin_basename ( dirname ( __FILE__ ) ) . "/" );
+	define ( "EVNT_RGR_PLUGINFULLURL", WP_PLUGIN_URL . EVNT_RGR_PLUGINPATH );
+	$url = EVNT_RGR_PLUGINFULLURL;
 	
+	//$this->wp_content_dir.'/plugins/'.plugin_basename(dirname(__FILE__)); » TO $plugin_path = dirname(__FILE__);
+	?>   <h3>Event Listing</h3>
+                <table class="widefat">
+                <thead>
+                <tr><th>Event</th><th>Attendees</th><th>Identifier</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                <?php
+
+	$sql = "SELECT * FROM " . $events_detail_tbl;
+	$result = mysql_query ( $sql );
+	while ( $row = mysql_fetch_assoc ( $result ) ) {
+		$event_id = $row ['id'];
+		$event_name = $row ['event_name'];
+        $event_desc = $row['event_desc'];
+        $reg_limit = $row ['reg_limit'];
+        if ($reg_limit == ''){$reg_limit = 999;}
+        if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "Unlimited";}
+                 
+  		$sql2= "SELECT SUM(num_people) FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
+		$result2 = mysql_query($sql2);
+		while($row2 = mysql_fetch_array($result2)){$num =  $row2['SUM(num_people)'];}
+		echo "<tr><td><a href='".request_uri()."&action=view&event=".$event_id."'>".$event_name."</a></td><td>";
+        if ($num !=""){echo "<font color='green'>".$num."/".$available_spaces." Attendees</font>";}
+           else {echo "<font color='red'>No Attendees</font>";}
+        echo "</td><td>".$event_identifier."</td><td>".$event_desc."</td></tr>";
+        
+        
+       
 	}
-	
-	edit_attendee_record ();
-	event_list_attendees ();
+	echo "</table>";
+        break;
+}
+
 }
 ?>

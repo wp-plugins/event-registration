@@ -2,17 +2,12 @@
 /*
 Plugin Name: Events Registration
 Plugin URI: http://www.edgetechweb.com
-Description: This wordpress plugin is designed to run on a Wordpress webpage 
-and provide registration for an event. It allows you to capture the registering 
-persons contact information to a database and provides an association to an 
-events database. It provides the ability to send the register to your 
-paypal payment site for online collection of event fees. Reporting features 
-provide a list of events, list of attendees, and excel export.
-Version: 4.0
+Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees..  Additionally it allows support for checks and cash payments.  Detailed payment management system to track and record event payments.  Reporting features provide a list of events, list of attendees, and excel export.  Events can be created in an Excel spreadsheet and uploaded via the event upload tool.  Dashboard widget allows for quick reference to events from the dashboard.  Inline menu navigation allows for ease of use.
+Version: 5.0
 Author: David Fleming - Edge Technology Consulting
-Author URI: http://www.avdude.com
+Author URI: http://www.edgetechweb.com
 */
-/*  Copyright 2008  DAVID_FLEMING  (email : CONSULTANT@AVDUDE.COM)
+/*  Copyright 2010  DAVID_FLEMING  (email : CONSULTANT@AVDUDE.COM)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,9 +25,14 @@ Author URI: http://www.avdude.com
 */
 /* this does not only affect language but also format of date, and which fields are displayes in the form */
 
+
+define ( "EVNT_RGR_PLUGINPATH", "/" . plugin_basename ( dirname ( __FILE__ ) ) . "/" );
+define ( "EVNT_RGR_PLUGINFULLURL", WP_PLUGIN_URL . EVNT_RGR_PLUGINPATH );
+$url = EVNT_RGR_PLUGINFULLURL;
+
 $lang_flag = "en"; //switch to en for changing language and form 
 
-
+/*
 function Mod_addslashes ( $string ) 
 	{if (get_magic_quotes_gpc()==1) 
 		{
@@ -43,54 +43,71 @@ function Mod_addslashes ( $string )
 		return ( addslashes ( $string ) );
 		} 
 	}
+ */   
+function er_plugin_menu(){
+    ?>
+ <ul id="eventsnav">
+  <li><a href="admin.php?page=config">Configure Organization</a></li>
+  <li><a href="admin.php?page=attendees">Attendees</a></li>
+  <li><a href="admin.php?page=events">Events</a></li>
+  <li><a href="admin.php?page=import">Import Events</a></li>
+  <li><a href="admin.php?page=event_categories">Categories</a></li>
+  <li><a href="admin.php?page=form">Custom Questions</a></li>
+  <li><a href="admin.php?page=attendee">Payments</a></li>
+  <li><a href="admin.php?page=sample">Samples</a></li>
+  <li><a href="admin.php?page=support">Support</a></li>
+</ul>
+<?php 
+}   
 
-//Define the table versions for unique tables required in Events Registration
-require_once ("event_regis_config.php");
-
-//Calls language file
-require_once ("event_language-$lang_flag.inc.php");
-
-//Function to install/update data tables in the Wordpress database
-require_once ("events_install.inc.php");
-
-
-
-//Event Registration Subpage 1 - Reports
-require_once ("event_config_info.inc.php");
-
-
-//Event Registration Subpage 2 - Configure Organization
-require_once ("event_regis_admin_config_org.php");
-
-//Event Registration Subpage 3 - Add/Edit/Delete Events
-//require_once ('event_registration_forms.inc.php');
+require_once ('admin_header.php');
+require_once ('event_regis_config.php');
+require_once ('er_calendar.php');
+require_once ('er_sample_page.php');
+require_once ('er_dashboad_widget.php');
+require_once ('attendee_list_page_view.php');
+require_once ('event_language-en.inc.php');
+require_once ('events_install.inc.php');
+require_once ('er_drop_tables.php');
+require_once ('event_config_info.inc.php');
+require_once ('er_admin_event_categories.php');
+require_once ('event_regis_admin_config_org.php');
 require_once ('er_forms.inc.php');
 require_once ('csv_import.php');
 require_once ('event_register_attendees.inc.php');
 require_once ('event_payments.inc.php');
 require_once ('event_attendee_edit.inc.php');
+require_once ('event_regis_form_build.inc.php');
+require_once ('event_regis_admin_questions.php');
+require_once ('er_widget.inc.php');
+require_once ('er_core_functions.php');
+//require_once ('event_registration_forms.inc.php');
+//require_once ("er_payment_functions.php");
 
-//Event Registration Subpage 4 - Add Extra Questions
-require_once ("event_regis_admin_questions.php");
-
-require_once ("er_widget.inc.php");
 //Install/Update Tables when plugin is activated
 register_activation_hook ( __FILE__, 'events_data_tables_install' );
+//register_deactivation_hook( __FILE__, 'er_pluginUninstall' );
 
 //ADMIN MENU
-add_action ( 'admin_menu', 'add_event_registration_menus' );
-add_action ("plugins_loaded", "init_er_widget");
+add_action ('admin_head', 'admin_register_head');
+add_action ('admin_menu', 'add_event_registration_menus' );
+add_action ('plugins_loaded', 'init_er_widget');
 
 // Enable the ability for the event_funct to be loaded from pages
-add_filter ( 'the_content', 'event_regis_insert' );
-add_filter ( 'the_content', 'event_regis_attendees_insert' );
-add_filter ( 'the_content', 'event_regis_pay_insert' );
-add_filter ('the_content','event_paypal_txn_insert');
-add_filter ('the_content','er_widget_insert');
+add_filter ('the_content', 'event_regis_insert');
+add_filter ('the_content', 'er_widget_insert');
+add_filter ('the_content', 'event_regis_pay_insert');
+add_filter ('the_content', 'event_pay_txn_insert');
 
-//Enable the ability to use single event call for a page
-add_shortcode('Event_Registration_Single', 'event_regis_run');
-add_shortcode('ER_Widget_View', 'events_regis_widget');
+
+add_shortcode ('Event_Registration_Single', 'display_single_event');
+add_shortcode ('EVENT_REGIS_CATEGORY', 'display_events_by_category');
+add_shortcode ('ER_Widget_View', 'events_regis_widget');
+add_shortcode ('Event_Registraiton_Calendar', 'er_calendar_display');
+
+
+
+
 
 
 //Function to make compatible with Windows Servers as well as Apache
@@ -114,51 +131,11 @@ function request_uri() {
 }
 
 
-// Function to deal with loading the events into pages
-function event_regis_insert($content) {
-	if (preg_match ( '{EVENTREGIS}', $content )) { //[(.*)]
-	$content = str_replace ( '{EVENTREGIS}', event_regis_run ($event_single_ID), $content );
-		
-	}
-	return $content;
-}
-
-
-// Function to deal with loading the current event attendee list into pages or text widget
-function event_regis_attendees_insert($content) {
-	if (preg_match ( '{EVENTATTENDEES}', $content )) {
-		$content = str_replace ( '{EVENTATTENDEES}', event_attendee_list_run (), $content );
-	}
-	return $content;
-}
-
-function er_widget_insert($content) {
-	if (preg_match ( '{ER_WIDGET}', $content )) {
-		$content = str_replace ( '{ER_WIDGET}', events_regis_widget (), $content );
-	}
-	return $content;
-}
-
-// Function to deal with loading the payment options on a page for return payment link
-function event_regis_pay_insert($content) {
-	if (preg_match ( '{EVENTREGPAY}', $content )) {
-		$content = str_replace ( '{EVENTREGPAY}', event_regis_pay (), $content );
-	}
-	
-	return $content;
-}
-
-
-function event_paypal_txn_insert($content)
-		{
-			  if (preg_match('{EVENTPAYPALTXN}',$content))
-			    {
-			      $content = str_replace('{EVENTPAYPALTXN}',event_paypal_txn(),$content);
-			    }
-			  return $content;
-		}
 
 // Function for Attendee List for Active Event
+
+
+
 
 function event_attendee_list_run() {
 	global $wpdb;
@@ -188,20 +165,14 @@ function event_attendee_list_run() {
 
 
 // Main Function for Script - selects what action to be taken when EVENTREGIS is run
-function event_regis_run($event_single_ID) {
-	/*	if ($_REQUEST['regevent_action'] == "post_attendee")
-	{add_attendees_to_db();
-	}
-	else {
-	register_attendees();
-	}
-	*/
+function event_regis_run($id) {
+
 	global $wpdb;
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$events_organization_tbl = get_option ( 'events_organization_tbl' );
 	$events_listing_type = get_option ( 'events_listing_type' );
-	
+	$event_id = $id;
 	$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";
 	$result = mysql_query ( $sql );
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
@@ -211,47 +182,56 @@ function event_regis_run($event_single_ID) {
 	if ($events_listing_type == "") {
 		echo "<p><b>Please setup Organization in the Admin Panel!</b></p>";
 	}
-	if ($events_listing_type == 'single') {
-		$none="";
-		if ($_REQUEST ['regevent_action'] == "post_attendee") {add_attendees_to_db ();}
-		else if ($_REQUEST ['regevent_action'] == "pay") {event_regis_pay ();}
-		else if ($_REQUEST['regevent_action'] == "paypal_txn"){event_regis_paypal_txn();}
-		else if ($_REQUEST ['regevent_action'] == "register") {register_attendees ();}
-		else if ($regevent_action == "process") {} 
-		else {register_attendees ($none);
-		}
-	}
-	
-	if ($events_listing_type == 'all') {
-		$none="";
-		if ($_REQUEST ['regevent_action'] == "post_attendee") {add_attendees_to_db ();} 
-		else if ($_REQUEST ['regevent_action'] == "pay") {event_regis_pay ();} 
-		else if ($_REQUEST['regevent_action'] == "paypal_txn"){process_paypal_txn();}
-		else if ($_REQUEST ['regevent_action'] == "register") {register_attendees ($none);} 
-		else if ($regevent_action == "process") {} 
-		else if ($event_single_ID !=""){register_attendees ($event_single_ID);} 
-		else {display_all_events ();}
-	}
+    
+         $regevent_action = $_REQUEST ['regevent_action'];
+         switch ($regevent_action) {
+        	
+            case "post_attendee":
+                add_attendees_to_db ();
+            break;
+            
+            case "pay":
+                event_regis_pay ();
+            break;
+            
+            case "paypal_txn":
+                event_regis_paypal_txn();
+            break;
+            
+            case "register":
+               register_attendees ($event_id);
+            break;
+            
+            case "process":
+            break;
+            
+            default:
+            $none="";
+            if ($event_id != ""){register_attendees($event_id);}
+            else if ($events_listing_type == 'single') {register_attendees ($none);}
+                else {display_all_events($none);} 
+            break;
+            }
+
 }
 
 //ADD EVENT_REGIS PLUGIN - ACTIVATED
 
 
+
 function add_event_registration_menus() {
 	
-	add_menu_page ( 'Event Registration', 'Event Registration', 8, __FILE__, 'event_config_info' );
-	
-	add_submenu_page ( __FILE__, 'Event Reports', 'Event Reports', 8, 'reports', 'event_regis_main_mnu' );
-	
-	add_submenu_page ( __FILE__, 'Configure Organization', 'Configure Organization', 8, 'organization', 'event_config_mnu' );
-	
-	add_submenu_page ( __FILE__, 'Event Setup', 'Event Setup', 8, 'events', 'events_management_process' );
-	
-	add_submenu_page ( __FILE__, 'Regform Setup', 'Regform Setup', 8, 'form', 'event_form_config' );
-	
-	add_submenu_page ( __FILE__, 'Event Import', 'Event_Import', 8, 'import', 'events_import' );
-		
-	add_submenu_page ( __FILE__, 'Process Payments', 'Process Payments', 8, 'attendee', 'event_process_payments' );
+	add_menu_page ( 'Event Registration', 'Event Registration', 8, __FILE__ ,'event_main' );
+	add_submenu_page ( __FILE__, 'Configure Org', 'Organization', 8, 'config', 'event_config_mnu' );
+    add_submenu_page ( __FILE__, 'Event Reports', 'Attendees', 8, 'attendees', 'attendee_display_edit' );
+	add_submenu_page ( __FILE__, 'Manage Events', 'Events', 8, 'events', 'events_management_process' );
+	add_submenu_page ( __FILE__, 'Manage Event Categories', 'Categories', 8, 'event_categories', 'event_categories_config' );
+    add_submenu_page ( __FILE__, 'Add Questions', 'Add Questions', 8, 'form', 'event_form_config' );
+	add_submenu_page ( __FILE__, 'Event Import', 'Import Events', 8, 'import', 'events_import' );
+    add_submenu_page ( __FILE__, 'Manage Payments', 'Manage Payments', 8, 'attendee', 'event_process_payments' );
+    add_submenu_page ( __FILE__, 'Sample Events', 'Sample Events', 8, 'sample', 'create_events_sample_page' );
+    add_submenu_page ( __FILE__, 'Support', 'Support', 8, 'support', 'event_config_info' );
+
 }
 
 //Event Registration Main Admin Page
@@ -266,14 +246,21 @@ function event_regis_main_mnu() {
 }
 
 
+//http://www.avdude.com/wp-content/plugins/events_registration/Images/ER_logo.png
+//http://www.avdude.com/wp-content/plugins/events_registration/images/ER_logo.png
 
-//Event Registration
+function event_main(){
+    $url = EVNT_RGR_PLUGINFULLURL;
+    er_plugin_menu();
+    echo "<a href='http://www.edgetechweb.com'><img src='".$url."Images/ER_logo.png' /></a>";
+}
 
-//how to add global variables  add_option("events_attendee_tbl_version", $events_attendee_tbl_version);
-//how to call global variables   global $events_attendee_tbl_version;
+function event_regis_drop_tables() {
+    require_once ("er_drop_tables.php");
+}
 
 
-include_once ("event_regis_form_build.inc.php");
+
 
 function event_registration_reports() {
 	
@@ -281,13 +268,7 @@ function event_registration_reports() {
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$current_event = get_option ( 'current_event' );
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
-	define ( "EVNT_RGR_PLUGINPATH", "/" . plugin_basename ( dirname ( __FILE__ ) ) . "/" );
-	define ( "EVNT_RGR_PLUGINFULLURL", WP_PLUGIN_URL . EVNT_RGR_PLUGINPATH );
 	$url = EVNT_RGR_PLUGINFULLURL;
-	
-	//$this->wp_content_dir.'/plugins/'.plugin_basename(dirname(__FILE__)); » TO $plugin_path = dirname(__FILE__);
-	
-
 	$sql = "SELECT * FROM " . $events_detail_tbl;
 	$result = mysql_query ( $sql );
 	Echo "<p align='center'><p align='left'>SELECT EVENT TO VIEW ATTENDEES:</p><table width = '400'>";
@@ -298,103 +279,152 @@ function event_registration_reports() {
 		echo "<tr><td width='25'></td><td><form name='form' method='post' action='";
 		request_uri();
 		echo "'>";
-		echo "<input type='hidden' name='display_action' value='view_list'>";
-		echo "<input type='hidden' name='event_id' value='" . $row ['id'] . "'>";
+		echo "<input type='hidden' name='action' value='view'>";
+		echo "<input type='hidden' name='event' value='" . $row ['id'] . "'>";
 		echo "<input type='SUBMIT' value='" . $event_name . "'></form></td><tr>";
 	}
 	echo "</table>";
-	
-	//Echo "<br /><a href='http://".$_SERVER['SERVER_NAME']."/event_registration_export.php?atnd=".$events_attendee_tbl."&id=1'>Export Current Attendee List To Excel</a>";
-	
 
-	/*
-?>
-<button style="background-color:lightgreen" onclick="window.location='<?php echo $url."event_registration_export.php?atnd=".$events_attendee_tbl."&id=1";  ?>'" style="width:180; height: 30">Export Current Attendee List To Excel</button>
-<?php */
-	//view_attendee_list();
-	if ($_REQUEST ['display_action'] == 'view_list') {
+	if ($_REQUEST ['action'] == 'view_list') {
 		attendee_display_edit ();
 	}
-	/*
-if ( $run_reports == "" ) {events_reports_menu();}
-if ( $run_reports == "excel_export" ) {event_resigration_export.php}
-if ( $run_reports == "events_list" ) {events_reports_listing();}
-if ( $run_reports == "current_attendees" ) {events_reports_current_attendee();}
-			else {
-
-
-			}
-
-*/
-
 }
 
-function display_all_events() {
-	global $wpdb,$lang;
+function display_all_events($event_category_id) {
+	
+   
+    global $wpdb,$lang;
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
-	$curdate = date ( "Y-m-j" );
+    $events_cat_detail_tbl = get_option('events_cat_detail_tbl');
 	$month = date ('M');
 	$day = date('j');
 	$year = date('Y');
-	$paypal_cur = get_option ( 'paypal_cur' );
+    $curdate = date ( "Y-m-j" );
+
+	$currency_format = get_option ( 'currency_format' );
 	$showthumb = get_option ('show_thumb');
 
-	
-	$sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".date ( 'Y-m-j' )."' ORDER BY start_date";
-		
+		if ($event_category_id != ""){
+		   			$sql2  = "SELECT * FROM " . $events_cat_detail_tbl . " WHERE category_identifier = '".$event_category_id."'";
+					$result = mysql_query($sql2);
+					while ($row = mysql_fetch_assoc ($result)){
+					$category_id= $row['id'];
+                	$category_name=$row['category_name'];
+                	$category_identifier=$row['category_identifier'];
+                	$category_desc=$row['category_desc'];
+                	$display_category_desc=$row['display_desc'];
+					echo "<p><b>".$category_name."</b><br>".$category_desc."</p>";
+                    }
+      $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE category_id LIKE '%\"$category_id\"%' AND start_date >= '".$curdate."' ORDER BY start_date"; 
+ //      $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE category_id LIKE '%".$category_id."%' AND start_date >= '".$curdate."' ORDER BY start_date";  
+            
+        }
+    else {
+        $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".$curdate."' ORDER BY start_date";}
 	$result = mysql_query ( $sql );
 	
 	echo "<table width = '450'>";
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
-		$event_id = $row ['id'];
-		$event_name = $row ['event_name'];
-		$identifier = $row ['event_identifier'];
-		$image = $row ['image_link'];
-		$event_location = $row ['event_location'];
-		$more_info = $row ['more_info'];
-		$start_date = $row ['start_date'];
-		$end_date = $row ['end_date'];
-		$start_time = $row ['start_time'];
-		$end_time = $row ['end_time'];
-		$cost = $row ['event_cost'];
-		$custom_cur = $row ['custom_cur'];
-		$checks = $row ['allow_checks'];
-		$active = $row ['is_active'];
-		$reg_limit = $row ['reg_limit'];
-		$timestamp = strtotime($start_date);
-		$new_start_date = date("M d, Y", $timestamp);
-		;
- 
-		
-		if ($cost == ""){$cost = "FREE";}
-		
+		            $event_id= $row['id'];
+			        $event_name =  stripslashes($row ['event_name']);
+					$event_identifier =  stripslashes($row ['event_identifier']);
+					$event_desc =  stripslashes($row ['event_desc']);
+					$image_link = $row ['image_link'];
+					$header_image = $row ['header_image'];
+					$display_desc = $row ['display_desc'];
+					$event_location =  stripslashes($row ['event_location']);
+					$more_info = $row ['more_info'];
+					$reg_limit = $row ['reg_limit'];
+					$event_cost = $row ['event_cost'];
+					$custom_cur = $row ['custom_cur'];
+					$multiple = $row ['multiple'];
+					$allow_checks = $row ['allow_checks'];
+					$is_active = $row ['is_active'];
+					$start_month = $row ['start_month'];
+					$start_day = $row ['start_day'];
+					$start_year = $row ['start_year'];
+					$end_month = $row ['end_month'];
+					$end_day = $row ['end_day'];
+					$end_year = $row ['end_year'];
+					$start_time = $row ['start_time'];
+					$end_time = $row ['end_time'];
+					$conf_mail = stripslashes($row ['conf_mail']);
+					$send_mail = $row ['send_mail'];
+                    $use_coupon=$row ['use_coupon'];
+            		$coupon_code=$row ['coupon_code'];
+            		$coupon_code_price=$row ['coupon_code_price'];
+            		$use_percentage=$row ['use_percentage'];
+            		$event_category =  unserialize($row ['category_id']);
+                    if ($row['start_date'] ==""){
+						if ($start_month == "Jan"){$month_no = '01';}
+						if ($start_month == "Feb"){$month_no = '02';}
+						if ($start_month == "Mar"){$month_no = '03';}
+						if ($start_month == "Apr"){$month_no = '04';}
+						if ($start_month == "May"){$month_no = '05';}
+						if ($start_month == "Jun"){$month_no = '06';}
+						if ($start_month == "Jul"){$month_no = '07';}
+						if ($start_month == "Aug"){$month_no = '08';}
+						if ($start_month == "Sep"){$month_no = '09';}
+						if ($start_month == "Oct"){$month_no = '10';}
+						if ($start_month == "Nov"){$month_no = '11';}
+						if ($start_month == "Dec"){$month_no = '12';}
+					$start_date = $start_year."-".$month_no."-".$start_day;
+                    } else {$start_date = $row['start_date'];}
+                    
+                    if ($row['end_date']==""){
+						if ($end_month == "Jan"){$end_month_no = '01';}
+						if ($end_month == "Feb"){$end_month_no = '02';}
+						if ($end_month == "Mar"){$end_month_no = '03';}
+						if ($end_month == "Apr"){$end_month_no = '04';}
+						if ($end_month == "May"){$end_month_no = '05';}
+						if ($end_month == "Jun"){$end_month_no = '06';}
+						if ($end_month == "Jul"){$end_month_no = '07';}
+						if ($end_month == "Aug"){$end_month_no = '08';}
+						if ($end_month == "Sep"){$end_month_no = '09';}
+						if ($end_month == "Oct"){$end_month_no = '10';}
+						if ($end_month == "Nov"){$end_month_no = '11';}
+						if ($end_month == "Dec"){$end_month_no = '12';}
+					$end_date = $end_year."-".$end_month_no."-".$end_day;
+                    } else {$end_date = $row['end_date'];}
+                    $reg_form_defaults = unserialize($row['reg_form_defaults']);
+                    
+                    if ($reg_form_defaults !=""){
+                        if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
+                        if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
+                        if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
+                        if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
+                        if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+                        }
+   		            if ($reg_limit == ''){$reg_limit = 999;}
+                    if ($event_cost == ''){$event_cost= 0;}
+                    if ($coupon_code_price == ''){$coupon_code_price = 0;}
+				
+		          if ($event_cost == ""||$event_cost =="0"||$event_cost=="0.00"){$event_cost = "FREE";}
+		          
 	    
 		$sql2= "SELECT SUM(num_people) FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
-		
-		
 		$result2 = mysql_query($sql2);
-
-		while($row = mysql_fetch_array($result2)){
-		$num =  $row['SUM(num_people)'];
-		};
-		
-				
-		if ($custom_cur == ""){if ($paypal_cur == "USD" || $paypal_cur == "") {$paypal_cur = "$";}			}
-		if ($custom_cur != "" || $custom_cur != "USD"){$paypal_cur = $custom_cur;}
-		if ($custom_cur == "USD") {$paypal_cur = "$";}
+		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(num_people)'];};
+        
+          
+        
+						
+		if ($custom_cur == ""){if ($currency_format == "USD" || $currency_format == "") {$currency_format = "$";}			}
+		if ($custom_cur != "" || $custom_cur != "USD"){$currency_format = $custom_cur;}
+		if ($custom_cur == "USD") {$currency_format = "$";}
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
-	    if ($reg_limit == ""){$available_spaces = "Unlimited";}
-/*		echo "<tr><td width='400'>" . $event_name . " - " . $paypal_cur . "  " . $cost . "    <b>Event Start Date</b>  ".$row['start_date']."</p><hr></td><td>";
+	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "Unlimited";}
+/*		echo "<tr><td width='400'>" . $event_name . " - " . $currency_format . "  " . $cost . "    <b>Event Start Date</b>  ".$row['start_date']."</p><hr></td><td>";
 */
-	if ($image == ""){
+	if ($image_link == ""){
 		echo "<tr><td></td><td><br><b>" . $event_name . "   </b><br>";
 		echo "Location:<b>  ".$event_location."</b><br>";
-		echo "Start Date:<b>  ".$new_start_date."</b><br>";
+		echo "Start Date:<b>  ".$start_date."</b><br>";
 		echo "Start Time:<b>  ".$start_time."</b><br>";
 		echo "Price:<b>  ";
-		if ($cost != "FREE"){echo $paypal_cur;}
-		echo " ".$cost."</b><br>";
+		if ($event_cost != "FREE"){echo $currency_format;}
+		echo " ".$event_cost."</b><br>";
 		echo "Spaces Available:<b>  ".$available_spaces."</b><br>";
 		if ($more_info != ""){
 			echo '<a href="'.$more_info.'"> More Info...</a>';
@@ -402,27 +432,33 @@ function display_all_events() {
 		echo "<hr></td><td>";}
 	else {	
 		//uncomment this line to use images on event list screen
-		if ($showthumb == "Y"){echo "<tr><td width='80'><img src='".$image."' width='75' height='56'></td>";}
+		if ($showthumb == "Y"){echo "<tr><td width='80'><img src='".$image_link."' width='75' height='56'></td>";}
 		else {echo "<tr><td></td>";}
-		echo "<td><br><b>" . $event_name . "   </b><br>";
+	//	echo "<td><br><b>" . $event_name . "   </b><br>";
+        echo "<td>";
+        echo "<p align=left><b><a href='".request_uri()."&regevent_action=register&event_id=".$event_id.
+        "&name_of_event=".$event_name."'>".$event_name."</a></b></p>";
 		echo "Location:<b>  ".$event_location."</b><br>";
-		echo "Start Date:<b>  ".$new_start_date."</b><br>";
+		echo "Start Date:<b>  ".$start_date."</b><br>";
 		echo "Start Time:<b>  ".$start_time."</b><br>";
 		echo "Price:<b>  ";
-		if ($cost != "FREE"){echo $paypal_cur;}
-		echo " ".$cost."</b><br>";
+		if ($event_cost != "FREE"){echo $currency_format;}
+		echo " ".$event_cost."</b><br>";
 		echo "Spaces Available:<b>  ".$available_spaces."</b><br>";
 			if ($more_info != ""){
 			echo '<a href="'.$more_info.'"> More Info...</a>';
 		}
-		echo "<hr></td><td>";}
+		echo "<hr></td><td>";} 
+     
 		echo "<form name='form' method='post' action='".request_uri()."'>";
 		echo "<input type='hidden' name='regevent_action' value='register'>";
-		echo "<input type='hidden' name='event_id' value='" . $event_id . "'>";
-		echo "<input type='SUBMIT' value='$lang[register]'></form></td></tr>";
-		// echo "<input type='SUBMIT' value='REGISTER' ONCLICK=\"return confirm('Are you sure you want to register for ".$row['event_name']."?')\"></form></td></tr>";
+       	echo "<input type='hidden' name='event_id' value='" . $event_id . "'>";
+        echo "<input type='SUBMIT' value='$lang[register]'></form></td></tr>";
+		// echo "<input type='SUBMIT' value='REGISTER' ONCLICK=\"return confirm('Are you sure you want to register for ".$event_name."?')\"></form>";
 	}
 	echo "</table>";
+    
+    
 }
 
 function view_attendee_list() {
@@ -488,5 +524,5 @@ function view_attendee_list() {
 	echo "</table>";
 }
 
-include_once("event_regis_selections.inc.php");
+require_once("event_regis_selections.inc.php");
 ?>

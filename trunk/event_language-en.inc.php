@@ -5,14 +5,13 @@
 $lang['enterConfirmMessage']= "Enter your custom confirmation message here.";
 $lang['autoResponse'] = "**This is an automated response - DO NOT REPLY! A contact email address is listed below.***\n\nThank you for signing up. Your registration has been recieved.  If you have not already done so, please submit payment.\n\nIf you have any questions, you can contact the organizer at ";
 
-$lang['addQuestionDesc'] = "
-			<p>Add New Question</p>
-			<p>Enter a new question below.  The type refers to the way a participant can respond to the question.
-			<li>Text will allow a single line of text to be entered</li>
-			<li>Text area will allow multiple lines of text to be entered</li>
-			<li>Single will prompt the participant with choices, only allowing a single response</li>
-			<li>Multiple will prompt the participant with choices, allowing multiple responses</li>
-			When using single or multiple, enter the possible values in the value box separated by commas.</p>";
+$lang['addQuestionDesc'] = "<ul id='event_regis-support'><i>
+			<li><b>Text</b> will allow a single line of text to be entered</li>
+			<li><b>Text Area</b> will allow multiple lines of text to be entered</li>
+			<li><b>Single</b> will prompt the participant with choices, only allowing a single response</li>
+			<li><b>Multiple</b> will prompt the participant with choices, allowing multiple responses</li>
+            <li><b>Dropdown</b> will allow the participant to choose from a drop list</li>
+			<li>When using single, multiple or dropdown, enter the possible values in the <u>Selections</u> box separated by commas.</li></i></ul>";
 
 $lang['editQuestionDesc'] = "
 			<p>Edit Question</p>
@@ -23,7 +22,7 @@ $lang['editQuestionDesc'] = "
 			<li>Multiple will prompt the participant with choices, allowing multiple responses</li>
 			When using single or multiple, enter the possible values in the value box separated by commas.</p>";
 
-$lang['selectEvent'] = "<h2><i>Please select event to Add/Edit/Delete Registration Questions:</i></h2>";	
+$lang['selectEvent'] = "<h3>Please select event to Add/Edit/Delete Registration Questions:</h3>";	
 
 $lang['addQuestionsBelowDesc'] = "
 				<p>Add additional questions to the registration form below.  By default all participants will be

@@ -1,16 +1,13 @@
 <?php
+  
+function register_attendees($event_single_id) {
+    
 
-function register_attendees($event_single_ID) {
+    
 	global $wpdb, $lang,$lang_flag;
-	
 	$paypal_cur = get_option ( 'paypal_cur' );
-	if ($event_single_ID == ""){$event_id = $_REQUEST ['event_id'];}
-	if ($event_single_ID != ""){
-		extract( shortcode_atts( array('id' => '0'), $event_single_ID ) );
-		echo $event_single_ID['id'];
-		$event_id = $event_single_ID['id'];
-		}
-	
+	if ($event_single_id == ""){$event_id = $_REQUEST ['event_id'];}
+	if ($event_single_id != ""){$event_id = $event_single_id;}	
 	$events_listing_type = get_option ( 'events_listing_type' );
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
@@ -26,34 +23,97 @@ function register_attendees($event_single_ID) {
 	//Query Database for Active event and get variable
 	
 
-	if ($events_listing_type == 'single') {
+	if ($event_id == "") {
 		$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE is_active='yes'";
 	} else {
 		$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE id = $event_id";
 	}
 	$result = mysql_query ( $sql );
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
-		$event_id = $row ['id'];
-		$event_name = $row ['event_name'];
-		$event_desc = $row ['event_desc'];
-		$display_desc = $row ['display_desc'];
-		$image = $row ['image_link'];
-		$header = $row ['header_image'];
-		$multiple = $row ['multiple'];
-		$event_description = $row ['event_desc'];
-		$identifier = $row ['event_identifier'];
-		$event_cost = $row ['event_cost'];
-		$event_location = $row ['event_location'];
-		$more_info = $row ['more_info'];
-		$custom_cur = $row ['custom_cur'];
-		$checks = $row ['allow_checks'];
-		$active = $row ['is_active'];
-		$question1 = $row ['question1'];
-		$question2 = $row ['question2'];
-		$question3 = $row ['question3'];
-		$question4 = $row ['question4'];
-		$reg_limit = $row ['reg_limit'];
-	}
+	                $event_id= $row['id'];
+			        $event_name =  stripslashes($row ['event_name']);
+					$event_identifier =  stripslashes($row ['event_identifier']);
+					$event_desc =  stripslashes($row ['event_desc']);
+					$image_link = $row ['image_link'];
+					$header_image = $row ['header_image'];
+					$display_desc = $row ['display_desc'];
+					$event_location =  stripslashes($row ['event_location']);
+					$more_info = $row ['more_info'];
+					$reg_limit = $row ['reg_limit'];
+					$event_cost = $row ['event_cost'];
+					$custom_cur = $row ['custom_cur'];
+					$multiple = $row ['multiple'];
+					$allow_checks = $row ['allow_checks'];
+					$is_active = $row ['is_active'];
+					$start_month = $row ['start_month'];
+					$start_day = $row ['start_day'];
+					$start_year = $row ['start_year'];
+					$end_month = $row ['end_month'];
+					$end_day = $row ['end_day'];
+					$end_year = $row ['end_year'];
+					$start_time = $row ['start_time'];
+					$end_time = $row ['end_time'];
+					$conf_mail = stripslashes($row ['conf_mail']);
+					$send_mail = $row ['send_mail'];
+                    $use_coupon=$row ['use_coupon'];
+            		$coupon_code=$row ['coupon_code'];
+            		$coupon_code_price=$row ['coupon_code_price'];
+            		$use_percentage=$row ['use_percentage'];
+            		$event_category =  $row ['event_category'];
+						if ($start_month == "Jan"){$month_no = '01';}
+						if ($start_month == "Feb"){$month_no = '02';}
+						if ($start_month == "Mar"){$month_no = '03';}
+						if ($start_month == "Apr"){$month_no = '04';}
+						if ($start_month == "May"){$month_no = '05';}
+						if ($start_month == "Jun"){$month_no = '06';}
+						if ($start_month == "Jul"){$month_no = '07';}
+						if ($start_month == "Aug"){$month_no = '08';}
+						if ($start_month == "Sep"){$month_no = '09';}
+						if ($start_month == "Oct"){$month_no = '10';}
+						if ($start_month == "Nov"){$month_no = '11';}
+						if ($start_month == "Dec"){$month_no = '12';}
+					$start_date = $start_year."-".$month_no."-".$start_day;
+						if ($end_month == "Jan"){$end_month_no = '01';}
+						if ($end_month == "Feb"){$end_month_no = '02';}
+						if ($end_month == "Mar"){$end_month_no = '03';}
+						if ($end_month == "Apr"){$end_month_no = '04';}
+						if ($end_month == "May"){$end_month_no = '05';}
+						if ($end_month == "Jun"){$end_month_no = '06';}
+						if ($end_month == "Jul"){$end_month_no = '07';}
+						if ($end_month == "Aug"){$end_month_no = '08';}
+						if ($end_month == "Sep"){$end_month_no = '09';}
+						if ($end_month == "Oct"){$end_month_no = '10';}
+						if ($end_month == "Nov"){$end_month_no = '11';}
+						if ($end_month == "Dec"){$end_month_no = '12';}
+					$end_date = $end_year."-".$end_month_no."-".$end_day;
+                    $reg_form_defaults = unserialize($row['reg_form_defaults']);
+                    if ($reg_form_defaults !=""){
+                        if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
+                        if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
+                        if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
+                        if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
+                        if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+                        }
+   		            if ($reg_limit == ''){$reg_limit = 999;}
+                    if ($event_cost == ''){$event_cost= 0;}
+                    if ($coupon_code_price == ''){$coupon_code_price = 0;}
+             }
+			
+            	$sql2= "SELECT SUM(num_people) FROM " . get_option('events_attendee_tbl') . " WHERE event_id='$event_id'";
+				$result2 = mysql_query($sql2);
+	
+				while($row = mysql_fetch_array($result2)){
+					$number_attendees =  $row['SUM(num_people)'];
+				}
+				
+				if ($number_attendees == '' || $number_attendees == 0){
+					$number_attendees = '0';
+				}
+				
+			/*	if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){
+					$reg_limit = "&#8734;";
+				}
+	       */
 	
 	update_option ( "current_event", $event_name );
 	//Query Database for Event Organization Info to email registrant BHC
@@ -72,8 +132,8 @@ function register_attendees($event_single_ID) {
 		$Organization_zip = $row ['organization_zip'];
 		$contact = $row ['contact_email'];
 		$registrar = $row ['contact_email'];
-		$paypal_id = $row ['paypal_id'];
-		$paypal_cur = $row ['currency_format'];
+		$payment_vendor_id = $row ['payment_vendor_id'];
+		$currency_format = $row ['currency_format'];
 		$events_listing_type = $row ['events_listing_type'];
 		$message = $row ['message'];
 	}
@@ -87,25 +147,7 @@ function register_attendees($event_single_ID) {
 		$num =  $row['SUM(num_people)'];
 		};
 	
-	if ($header != ""){echo "<p align='center'><img src='".$header."'  width='450' align='center'></p>";}
-	if ( $reg_limit > "$num" || $reg_limit == "") {
-		echo "<p align='center'><b>".$lang['eventFormHeader'] . $event_name . "</b></p>";
-		echo "<table width='100%'><td>";
-		if ($display_desc == "Y") {
-			echo "<td span='2'>" . $event_desc . "</td>";
-		}
-		echo "</table>";
-		echo "<table width='500'><td>";
-		if ($custom_cur == ""){if ($paypal_cur == "USD" || $paypal_cur == "") {$paypal_cur = "$";}			}
-		if ($custom_cur != "" || $custom_cur != "USD"){$paypal_cur = $custom_cur;}
-		if ($custom_cur == "USD") {$paypal_cur = "$";}
-			
-			
-		if ($event_cost != "") {if ($lang_flag=='de')
-				echo "<b>" . $event_name . " - Kosten " .$event_cost . " " .  $paypal_cur . "</b></p></p>";
-      		else
-			  	echo "<b>" . $event_name . " - Cost " . $paypal_cur . " " . $event_cost . "</b></p></p>";
-			}
+	
 		
 		?>
 <?php //JavaScript for Registration Form Validation 
@@ -113,7 +155,67 @@ function register_attendees($event_single_ID) {
 		?>
 <SCRIPT>
 
+function checkInternationalPhone(strPhone){
 
+// Declaring required variables
+var digits = "0123456789";
+// non-digit characters which are allowed in phone numbers
+var phoneNumberDelimiters = "()- ";
+// characters which are allowed in international phone numbers
+// (a leading + is OK)
+var validWorldPhoneChars = phoneNumberDelimiters + "+";
+// Minimum no of digits in an international phone no.
+var minDigitsInIPhoneNumber = 10;
+
+function isInteger(s)
+{   var i;
+    for (i = 0; i < s.length; i++)
+    {   
+        // Check that current character is number.
+        var c = s.charAt(i);
+        if (((c < "0") || (c > "9"))) return false;
+    }
+    // All characters are numbers.
+    return true;
+}
+function trim(s)
+{   var i;
+    var returnString = "";
+    // Search through string's characters one by one.
+    // If character is not a whitespace, append to returnString.
+    for (i = 0; i < s.length; i++)
+    {   
+        // Check that current character isn't whitespace.
+        var c = s.charAt(i);
+        if (c != " ") returnString += c;
+    }
+    return returnString;
+}
+function stripCharsInBag(s, bag)
+{   var i;
+    var returnString = "";
+    // Search through string's characters one by one.
+    // If character is not in bag, append to returnString.
+    for (i = 0; i < s.length; i++)
+    {   
+        // Check that current character isn't whitespace.
+        var c = s.charAt(i);
+        if (bag.indexOf(c) == -1) returnString += c;
+    }
+    return returnString;
+}
+
+var bracket=3
+strPhone=trim(strPhone)
+if(strPhone.indexOf("+")>1) return false
+if(strPhone.indexOf("-")!=-1)bracket=bracket+1
+if(strPhone.indexOf("(")!=-1 && strPhone.indexOf("(")>bracket)return false
+var brchr=strPhone.indexOf("(")
+if(strPhone.indexOf("(")!=-1 && strPhone.charAt(brchr+2)!=")")return false
+if(strPhone.indexOf("(")==-1 && strPhone.indexOf(")")!=-1)return false
+s=stripCharsInBag(strPhone,validWorldPhoneChars);
+return (isInteger(s) && s.length >= minDigitsInIPhoneNumber);
+}
 
 function echeck(str) {
 		var at="@"
@@ -154,6 +256,12 @@ function echeck(str) {
  		 return true;					
 }
 
+function testIsValidObject(objToTest) {
+if (objToTest == null || objToTest == undefined) {
+return false;
+}
+return true;
+}
 
 function validateForm(form) { 
 	
@@ -169,23 +277,38 @@ if (form.lname.value == "") {  msg += "\n " +"Please enter your last name.";
 if (echeck(form.email.value)==false){
 		msg += "\n " + "Email format not correct!";
 		}
-		
-if (form.phone.value == "") {  msg += "\n " +"Please enter your phone number."; 
+
+if(form.phone) {
+	if (form.phone.value == "" || form.phone.value==null) {  msg += "\n " +"Please enter your phone number."; 
    		form.phone.focus( ); 
    		}
+    if (checkInternationalPhone(form.phone.value)==false){
+		msg += "\n " +"Please use correct format for your phone number."; 
+		form.value=""
+		form.phone.focus()
+        }
+}
+	
+if(form.address) {
 if (form.address.value == "") {  msg += "\n " +"Please enter your address."; 
    		form.address.focus( ); 
    		}
+        }
+if(form.city) {
 if (form.city.value == "") {  msg += "\n " +"Please enter your city."; 
    		form.city.focus( ); 
-   		}  
- 
+   		}  }
+if(form.state) {
 if (form.state.value == "") { msg += "\n " + "Please enter your state."; 
    		form.state.focus( ); 
    	 }
+     }
+
+if(form.zip) {   	    
 if (form.zip.value == "") {  msg += "\n " +"Please enter your zip code."; 
    		form.zip.focus( ); 
    		 }
+         }
     
 //Validate Extra Questions
 function trim(s) {if (s) {return s.replace(/^\s*|\s*$/g,"");} return null;}
@@ -252,6 +375,33 @@ if (msg.length > 0) {
 
 
 </SCRIPT>
+<?php 
+	
+if ($event_cost == ""||$event_cost =="0"||$event_cost=="0.00"){$event_cost = "FREE";}
+
+if ($header_image != ""){echo "<p align='center'><img src='".$header_image."'  width='450' align='center'></p>";}
+    	if ( $reg_limit > "$num" || $reg_limit == "") {
+		echo "<p align='center'><b>".$lang['eventFormHeader'] . $event_name .  " - ".$event_identifier."</b></p>";
+		echo "<table width='100%'><td>";
+		if ($display_desc == "Y") {
+			echo "<td span='2'>" . $event_desc ."</td>";
+		}
+		echo "</table>";
+		echo "<table width='500'><td>";
+		if ($custom_cur == ""){if ($currency_format == "USD" || $currency_format == "") {$currency_format = "$";}			}
+		if ($custom_cur != "" || $custom_cur != "USD"){$currency_format = $custom_cur;}
+		if ($custom_cur == "USD") {$currency_format = "$";}
+			
+		if ($event_cost == "FREE"){
+		  echo "<b>" . $event_name . " - FREE EVENT </b></p></p>";
+          }
+          else if ($event_cost != "") {if ($lang_flag=='de')
+				echo "<b>" . $event_name . " - Kosten " .$event_cost . " " .  $currency_format . "</b></p></p>";
+      		else
+			  	echo "<b>" . $event_name . " - Cost " . $currency_format . " " . $event_cost . "</b></p></p>";
+			}
+            
+?>
 
 </td>
 <tr>
@@ -273,33 +423,41 @@ if (msg.length > 0) {
 		echo $lang ['email'];
 		?>:<br />
 	<input tabIndex="3" maxLength="40" size="47" name="email"></b></p>
+	
+        
+<?php if ($inc_phone == "Y"){ ?>
 	<p align="left"><b><?php
 		echo $lang ['phone'];
 		?>:<br />
-	<input tabIndex="4" maxLength="20" size="25" name="phone"></b></p>
-	<p align="left"><b><?php
-		echo $lang ['address'];
-		?>:<br />
-	<input tabIndex="5" maxLength="35" size="49" name="address"></b></p>
-	<p align="left"><b><?php
-		echo $lang ['city'];
-		?>:<br />
-	<input tabIndex="6" maxLength="25" size="35" name="city"> </b></p>
-<?php
-  //no state necessary in germany
-  if ($lang_flag!="de")
-  { 
-  ?><p align="left"><b><?php
- echo $lang ['state'];
-		?>:<br />
-	<input tabIndex="7" maxLength="20" size="18" name="state"></b></p>
- <?php } ?>
-	
-	<p align="left"><b><?php
-		echo $lang ['zip'];
-		?>:<br />
+  <input tabIndex="4" maxLength="20" size="25" name="phone"></b></p>
+<?php } 
+if ($inc_address == "Y"){  ?> 
+        <p align="left"><b>
+     <?php  echo $lang ['address'];	?>:<br />
+       	<input tabIndex="5" maxLength="35" size="49" name="address"></b></p>
+<?php } 
+
+if ($inc_city == "Y"){ ?>
+        <p align="left"><b>
+    <?php echo $lang ['city'];?>:<br />
+        <input tabIndex="6" maxLength="25" size="35" name="city"> </b></p>
+<?php } 
+
+if ($inc_state == "Y"){ ?>
+    <?php //no state necessary in germany
+      if ($lang_flag!="de")
+      {  ?>  
+      <p align="left"><b>
+    <?php  echo $lang ['state'];}	?>:<br />
+    	<input tabIndex="7" maxLength="20" size="18" name="state"></b></p>
+<?php } 
+
+if ($inc_zip == "Y"){	?>
+	<p align="left"><b>
+<?php echo $lang ['zip'];?>:<br />
 	<input tabIndex="8" maxLength="10" size="15" name="zip"></b></p>
-<?php
+<?php } 
+
 if ($multiple == "Y"){?>			
 			
 <p align="left"><b>	Additional attendees?
@@ -338,7 +496,7 @@ if ($multiple == "N"){?>
 	    <select tabIndex="10" size="1" name="payment">
 		  <option value="pickone" selected><?php echo $lang['pickone']; ?></option>
 			<?php
-			if ($paypal_id != "") {
+			if ($payment_vendor_id != "") {
 				echo "<option value=\"Paypal\">$lang[paypal]</option>";
 			}
 			
@@ -354,27 +512,11 @@ if ($multiple == "N"){?>
 			?><input type="hidden" name="payment" value="free event"><?
 		}
 */
-		/*
-		
-            if ($question1 != ""){ ?>
-			<p align="left"><b><?php echo $question1; ?><input size="33" name="custom_1"> </b></p>
-			<?php } else { ?><input type="hidden" name="custom1" value=""><?}
-
-			if ($question2 != ""){ ?>
-			<p align="left"><b><?php echo $question2; ?><input size="33" name="custom_2"> </b></p>
-			<?php } else { ?><input type="hidden" name="custom2" value=""><?}
-
-            if ($question3 != ""){ ?>
-			<p align="left"><b><?php echo $question3; ?><input size="33" name="custom_3"> </b></p>
-			<?php } else { ?><input type="hidden" name="custom3" value=""><?}
-
-            if ($question4 != ""){ ?>
-			<p align="left"><b><?php echo $question4; ?><input size="33" name="custom_4"> </b></p>
-			<?php }  else { ?><input type="hidden" name="custom1" value=""><?}
-			*/
-		//This in the Form
-		
-
+			
+if ($use_coupon =="Y"){
+    echo "<p align='left'><b>Please enter coupon code for discount?".
+    	"<input maxLength='10' size='12' name='coupon'></b></p>";
+}
 		$events_question_tbl = get_option ( 'events_question_tbl' );
 		$questions = $wpdb->get_results ( "SELECT * from `$events_question_tbl` where event_id = '$event_id' order by sequence" );
 		if ($questions) {
@@ -406,6 +548,8 @@ if ($multiple == "N"){?>
 		echo $lang ['maxAttendeesInfo'];
 		echo "<p>Current Number of Attendees: " . $num . "</p>";
 	}
+
+
 }
 
 function add_attendees_to_db() {
@@ -424,6 +568,7 @@ function add_attendees_to_db() {
 	$email = $_POST ['email'];
 	$hear = $_POST ['hear'];
 	$num_people = $_POST ['num_people'];
+    $coupon = $_POST['coupon'];
 	$event_id = $_POST ['event_id'];
 	$payment = $_POST ['payment'];
 	$custom_1 = $_POST ['custom_1'];
@@ -435,8 +580,8 @@ function add_attendees_to_db() {
 	update_option ( "attendee_name", $fname . " " . $lname );
 	update_option ( "attendee_email", $email );
 	
-	$sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,state ,zip ,email ,phone ,hear ,num_people, payment, event_id, custom_1, custom_2, custom_3, custom_4 ) VALUES ('$lname', '$fname', '$address', '$city', '$state', '$zip', '$email', '$phone', '$hear', '$num_people', '$payment', '$event_id', '$custom_1', '$custom_2', '$custom_3', '$custom4')";
-	
+$sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,state ,zip ,email ,phone ,hear ,coupon,num_people, payment, event_id) VALUES ('$lname', '$fname', '$address', '$city', '$state', '$zip', '$email', '$phone', '$hear', '$coupon','$num_people', '$payment', '$event_id')";
+
 	$wpdb->query ( $sql );
 	
 
@@ -508,10 +653,10 @@ function add_attendees_to_db() {
 		$Organization_zip = $row ['organization_zip'];
 		$contact = $row ['contact_email'];
 		$registrar = $row ['contact_email'];
-		$paypal_id = $row ['paypal_id'];
-		$paypal_cur = $row ['currency_format'];
+		$payment_vendor_id = $row ['payment_vendor_id'];
+		$currency_format = $row ['currency_format'];
 		$return_url = $row ['return_url'];
-		$events_listing_type = $row ['events_listing_type'];
+        $events_listing_type = $row ['events_listing_type'];
 		$default_mail = $row ['default_mail'];
 		$conf_message = $row ['message'];
 	}
@@ -593,7 +738,7 @@ function add_attendees_to_db() {
 		}
 	}
 	
-	//Get registrars id from the data table and assign to a session variable for PayPal.
+	//Get registrars id from the data table .
 	
 
 	$query = "SELECT * FROM $events_attendee_tbl WHERE fname='$fname' AND lname='$lname' AND email='$email'";
