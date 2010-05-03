@@ -236,7 +236,7 @@ function event_regis_events() {
 		echo $event_name;
 		?>">      
 	</p>
-	<p>CUSTOM IDENTIFIER FOR EVENT (used for paypal reference)<input name="ident" value ="<?php
+	<p>CUSTOM IDENTIFIER FOR EVENT (used for online payment reference)<input name="ident" value ="<?php
 		echo $identifier;
 		?>">
 	</p>
@@ -536,7 +536,7 @@ function event_regis_events() {
 			request_uri();
 			?>"
 	<p>EVENT NAME: <input name="event" size="100"></p>
-	<p>ID FOR EVENT (used for paypal reference)
+	<p>ID FOR EVENT (used for online payment reference)
 	<input name="ident"></p>
 	<p>EVENT DESCRIPTION: <textarea rows='2' cols='125' name='desc' ></textarea></p>
 	<p>Do you want to display the event description on registration page? 

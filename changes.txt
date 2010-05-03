@@ -1,5 +1,14 @@
 Changes:
 =========
+5.0  -  Fixed issue where shortcodes always at the top of content, now returns where typed.
+        Added CSS throughout Admin Panels
+        Added Additional fields to data tables
+        Modified payment management section
+        Added deletion of data tables when deactivated
+        - changed format of Organization Setup Tab
+        Fixed bug in CSV import file
+        Split data table installs in to smaller files for easier editing
+        
 4.0  - Re-Issue for SVN Issue on Wordpress Site
 3.1	-  Re-Issue for SVN issues
 3.05 - Fixed Issue with ShortCode not calling correct event

@@ -14,11 +14,9 @@ The Attendee data can be viewed and edited online in the admin panel or exported
 
 The plugin can display one event at a time (in the organization setup page - set to single event) or if you need to display more than one event, there is an option in the admin panel to display all events (in the organization setup page - set to multiple events)so that when a person clicks on your registration page, instead of seeing the form they get a list to choose from what event they want to register. When displaying all the events, the list will only show events that are in the future (start date is later than today).
 
-Additionally you can set a specific event to display on a page by using a short code: [Event_Registration_Single id="?"] ( the ? should be your event ID number issued by the plugin)
+Additionally you can set a specific event to display on a page by using a short code as listed under the event. Each event has a unique shortcode.
 
-To use, create a new page with only {EVENTREGIS}.  Only on a Page!
-
-To display list of attendees of an active event use {EVENTATTENDEES} on a page, post or textwidget.
+To use, create a new page with only {EVENTREGIS}.  Only on a Page!  It will display all events that are scheduled to happen. Not events with past dates will not display.
 
 For URL linkback to payment page use  {EVENTREGPAY} on a new page. Only on a Page!
 

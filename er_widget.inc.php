@@ -14,7 +14,7 @@ function events_view_widget() {
 	$month = date ('M');
 	$day = date('j');
 	$year = date('Y');
-	$paypal_cur = get_option ( 'paypal_cur' );
+	$currency_format = get_option ( 'currency_format' );
 
 	
 	$sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".date ( 'Y-m-j' )."' ORDER BY start_date";
@@ -50,9 +50,9 @@ function events_view_widget() {
 		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(num_people)'];}
 		
 				
-		if ($custom_cur == ""){if ($paypal_cur == "USD" || $paypal_cur == "") {$paypal_cur = "$";}}
-		if ($custom_cur != "" || $custom_cur != "USD"){$paypal_cur = $custom_cur;}
-		if ($custom_cur == "USD") {$paypal_cur = "$";}
+		if ($custom_cur == ""){if ($currency_format == "USD" || $currency_format == "") {$currency_format = "$";}}
+		if ($custom_cur != "" || $custom_cur != "USD"){$currency_format = $custom_cur;}
+		if ($custom_cur == "USD") {$currency_format = "$";}
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
 	    if ($reg_limit == ""){$available_spaces = "Unlimited";}
 
@@ -62,7 +62,7 @@ function events_view_widget() {
 		echo "Start Date:<b>  ".$new_start_date."</b><br>";
 	//	echo "Start Time:<b>  ".$start_time."</b><br>";
 	/*	echo "Price:<b>  ";
-		if ($cost != "FREE"){echo $paypal_cur;}
+		if ($cost != "FREE"){echo $currency_format;}
 		echo " ".$cost."</b><br>";
 	*/	
 	//	echo "Spaces Available:<b>  ".$available_spaces."</b><br>";

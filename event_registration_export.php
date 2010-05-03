@@ -1,4 +1,4 @@
-<?
+<?php
 
 
 error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
@@ -27,6 +27,8 @@ $events_question_tbl = get_option('events_question_tbl');
 $events_detail_tbl = get_option('events_detail_tbl');
 $current_event = get_option('current_event');
 $events_attendee_tbl = get_option('events_attendee_tbl');
+$events_payment_tbl = get_option ('events_payment_transactions_tbl');
+
 $sql  = "SELECT * FROM " . $events_detail_tbl . " WHERE id='$id'";
 $result = mysql_query($sql);
 list($event_id, $event_name, $event_description, $event_identifier, $event_cost, $allow_checks, $is_active) = mysql_fetch_array($result, MYSQL_NUM);
@@ -42,8 +44,7 @@ switch ($_REQUEST['action']) {
 					'City', 'State', 'Zip', 'Phone', 'Payment Method', 'Reg Date');
 			$question_sequence = array();
 			
-	//	$questions = $wpdb->get_results("SELECT * from `$events_question_tbl` where event_id = '$event_id' order by sequence");
-			$questions = $wpdb->get_results("select question, sequence from ".$events_question_tbl." where event_id = '$event_id' order by sequence");
+				$questions = $wpdb->get_results("select question, sequence from ".$events_question_tbl." where event_id = '$event_id' order by sequence");
 			foreach ($questions as $question) {
 				array_push($basic_header, $question->question);
 				array_push($question_sequence, $question->sequence);
@@ -151,14 +152,11 @@ switch ($_REQUEST['action']) {
 			$et = "\t";
 			$s = $et . $st;
 			
-			
-	
-			$basic_header = array('Reg ID', 'Last Name', 'First Name', 'Email', 'Phone', 'Payment Method', 'Reg Date', 'Pay Status', 'Type of Payment', 'Transaction ID', 'Payment', 'Date Paid' );
-			$question_sequence = array();
-			
-
-			$participants = $wpdb->get_results("SELECT * from $events_attendee_tbl where event_id = '$event_id'");
 			$filename = $event_name."-Payments_". $today . ".xls";
+            $participants = $wpdb->get_results("SELECT * from $events_attendee_tbl where event_id = '$event_id' ORDER BY lname DESC");
+	
+			$basic_header = array('Participant ID', 'Name (Last, First)', 'Email', 'Payment Type', 'Payment Method', 'Payment Amount',  'Transaction ID', 'Date Paid' );
+			
 		
 		  header("Content-Disposition: attachment; filename=\"$filename\"");
 		  header("Content-Type: application/vnd.ms-excel");
@@ -168,28 +166,74 @@ switch ($_REQUEST['action']) {
 			//echo header
 			echo implode($s, $basic_header) . $et . "\r\n";
 
-			//echo data
-			if ($participants) {
-				foreach ($participants as $participant) {
-					echo $participant->id
-					. $s . $participant->lname
-					. $s . $participant->fname
-					. $s . $participant->email
-					. $s . $participant->phone
-					. $s . $participant->payment
-					. $s . $participant->date
-					. $s . $participant->paystatus
-					. $s . $participant->txn_type
-					. $s . $participant->txn_id
-					. $s . $participant->amount_pd
-					. $s . $participant->paydate
-					;
-						
-					echo $et . "\r\n";
-				}
-			} else {
-				echo "<tr><td>No participant data has been collected.</td></tr>";
-			}
+        if ($participants) {
+				 foreach ($participants as $participant) 
+                 {
+    				$participant_id = $participant->id;
+                    $first_name =$participant->fname;
+                    $last_name =$participant->lname;
+                    $name = $last_name.", ".$first_name;
+                    $email = $participant->email;
+                    $num_people = $participant->num_people;
+                  
+                    
+                    
+                  
+                     $sql2= "SELECT SUM(mc_gross) FROM $events_payment_tbl WHERE payer_id='$participant_id'";
+                    				$result2 = mysql_query($sql2);
+                    	
+                    				while($row = mysql_fetch_array($result2)){
+                    					$total_paid =  $row['SUM(mc_gross)'];
+                                       	}
+                         
+                         if ($cost >"0"){$balance = (($cost*$num_people)-$total_paid);
+                         $balance = moneyFormat($balance);}  
+                         
+                          			
+                    //$sql = "SELECT * from $events_payment_tbl WHERE payer_id = '$participant_id' AND item_number = '$event_id'";
+        			$payments = $wpdb->get_results("SELECT * from $events_payment_tbl WHERE payer_id = '$participant_id' AND item_number = '$event_id'");
+                    //$result = mysql_query($sql);
+                    //while ($row = mysql_fetch_assoc ($result))
+        			if ($payments) 
+                    {
+                        foreach ($payments as $payment) 
+                     {
+     						
+                               echo $participant_id
+            					. $s . $name
+            					. $s . $email
+                                . $s . $payment->payment_type
+                                . $s . $payment->txn_type
+                                . $s . moneyFormat($payment->mc_gross)
+                                . $s . $payment->txn_id
+                                . $s . $payment->payment_date;
+            					echo $et . "\r\n"; 
+                                                          
+                                }
+					}
+                    else {
+                        echo $participant_id
+            					. $s . $name
+            					. $s . $email
+                                . $s . ""
+                                . $s . ""
+                                . $s . "No Payments Received"
+                                . $s . ""
+                                . $s . "";
+            					echo $et . "\r\n"; 
+                    }
+                    
+                }
+                                        
+            }
+                              
+            
+              
+              else 
+              {
+				echo "No Attendees Have Registered";
+              }
+              
 			exit;
 	break;
 	

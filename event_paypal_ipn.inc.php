@@ -2,7 +2,7 @@
 
 function event_paypal_txn(){
 //you can load your paypal IPN processing script here
-	$id="";
+/*	$id="";
 	$id=$_REQUEST['id'];
 	if ($id ==""){echo "ID not supplied.";}
 	else{
@@ -52,6 +52,6 @@ function event_paypal_txn(){
 						}
 	}
 }
-
+*/
 
 ?>

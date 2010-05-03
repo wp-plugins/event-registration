@@ -7,41 +7,55 @@
 
  
 function events_import(){
+
+ er_plugin_menu();   
+ 
 ?>
-<h3>Event Import</h3>
-<br />
-<br />
+<div id="event_reg_theme" class="wrap">
+<h2>Import Events</h2>
+<ul id="event_regis-sortables">
+
+			<li>
+				<div class="box-mid-head">
+					<h2 class="events_reg f-wrench">Importing Events Directions</h2>
+				</div>
+
+				<div class="box-mid-body" id="toggle2">
+					<div class="padding">
 
 <p>This page is for importing your events from a comma seperated file (CSV) directly into the the events database.  The limitation of this upload is that it does not support the extra questions, only the core event configuration. Please remember if your field has any commas you must include quotation marks on each side of the field. Do not use double or single quotation marks in any of your fields.  Please do not input any data in the columns question1 - question4.</p>
+<ol><ul>
+<li>Please use Y where you want to say Yes and N where you want No. (Two exceptions 'is_active' & 'allow_checks' should be lower case full word - yes or no </li>
+<li>Months should be 3 letter abbreviations, started with capital (Jan, Feb, Mar, etc.).</li>   
+<li>Custom Currency codes should be 3 digit all caps (USD, AUD, etc.) </li>
+<li>Dates should be formatted YYYY-MM-DD (2009-07-04).  </li>
+<li>Event cost should be 0 if free.
+<li>Time should be military  hours:minutes witout leading zeros ( 8:00,  17:00, 23:59).</li> 
+</ul></ol>
+<p><b>A template file <a href="<?php echo ER_PLUGINFULLURL.'events.csv';?>">here</a> that I recommend you download and use.  It is very easy to work with it in excel, just remember to save it as a csv and not excel sheet.</b></p>
 
-<ul><li>Please use Y where you want to say Yes and N where you want No. (Two exceptions 'is_active' & 'allow_checks' should be lower case full word - yes or no </ul></li> 
-<ul><li>Months should be 3 letter abbreviations, started with capital (Jan, Feb, Mar, etc.). </ul></li>  
-<ul><li>Custom Currency codes should be 3 digit all caps (USD, AUD, etc.)  </ul></li> 
-<ul><li>Dates should be formatted YYYY-MM-DD (2009-07-04).</ul></li>   
-<ul><li>Time should be military  hours:minutes witout leading zeros ( 8:00,  17:00, 23:59).</ul></li> 
+<p><i>One final note, you will see that the header row, fist column has a 0 while other rows have a 1.  This tells the upload to ignore rows that have the 0 identifier and only use rows with the 1.</i></p>
+</div></div></li></ul>
+<ul id="event_regis-sortables">
 
-<p>I have included a template file <a href="events.csv">here</a> that I recommend you download and use.  It is very easy to work with it in excel, just remember to save it as a csv and not excel sheet.</p>
+			<li>
+				<div class="box-mid-head">
+					<h2 class="events_reg f-wrench">Events Upload Tool</h2>
+				</div>
 
-<p>One final note, you will see that the header row, fist column has a 0 while other rows have a 1.  This tells the upload to ignore rows that have the 0 identifier and only use rows with the 1.</p>
-
-<p>This is the first pass at the uploader, but for those of you who have alot of events, particularly events that are similar in setup, this will be a time saver.</p>
-
-<p>As always, email me at consultant@avdude.com with comments, questions and if possible, please donate!</p>
-
-<br />
-<br />
-<hr />
-<br />
-<br />
-<?	
+				<div class="box-mid-body" id="toggle2">
+					<div class="padding">
+<?php	
 
 uploader();
 load_events_to_db();
-
+?>
+</div></div></li></ul></div>
+<?php
 }
+define("ER_UPLOADURL", WP_CONTENT_DIR . '/uploads/' );
 
-
-function uploader($num_of_uploads=1, $file_types_array=array("csv"), $max_file_size=1048576, $upload_dir="../../wp-content/uploads/"){ 
+function uploader($num_of_uploads=1, $file_types_array=array("csv"), $max_file_size=1048576, $upload_dir= ER_UPLOADURL){ 
   if(!is_numeric($max_file_size)){ 
     $max_file_size = 1048576; 
   } 
@@ -79,18 +93,17 @@ function uploader($num_of_uploads=1, $file_types_array=array("csv"), $max_file_s
           if($file_ext_allow){ 
             if($_FILES["file"]["size"][$key]<$max_file_size){ 
               if(move_uploaded_file($_FILES["file"]["tmp_name"][$key], $upload_dir.$filename)){ 
-                echo("<br>File uploaded successfully. - <a href='".$upload_dir.$filename."' target='_blank'>".$filename."</a><br />"); 
+                echo("<div id='message' class='updated fade'><p><strong>File uploaded successfully. - ".$filename."</strong></p></div>"); 
               }else{ 
-                echo($origfilename." was not successfully uploaded<br />"); 
+                echo("<div id='message' class='error'><p><strong>".$origfilename." was not successfully uploaded</strong></p></div>"); 
               } 
             }else{ 
-              echo($origfilename." was too big, not uploaded<br />"); 
+              echo("<div id='message' class='error'><p><strong>".$origfilename." was too big, not uploaded</strong></p></div>"); 
             } 
           }else{ 
-            echo($origfilename." had an invalid file extension, not uploaded<br />"); 
-          } 
+            echo("<div id='message' class='error'><p><strong>".$origfilename." had an invalid file extension, not uploaded</strong></p></div>");           } 
         }else{ 
-          echo($origfilename." was not successfully uploaded<br />"); 
+          echo("<div id='message' class='error'><p><strong>".$origfilename." was not successfully uploaded</strong></p></div>"); 
         } 
       } 
     } 
@@ -120,9 +133,9 @@ $year = date('Y');
 
 $fieldseparator = ",";
 $lineseparator = "\n";
-$csvfile = "../../wp-content/uploads/events.csv";
+$csvfile = ER_UPLOADURL."events.csv";
 
-
+ 
 
   function getCSVValues($string, $separator=",")
     {
@@ -160,27 +173,28 @@ $csvfile = "../../wp-content/uploads/events.csv";
     }
     
 if(!file_exists($csvfile)) {
-	echo "File not found. Make sure you specified the correct path.\n";
+	echo "<div id='message' class='error'><p><strong>Import Error: File not found. Make sure you specified the correct path.</strong></p></div>";
 	exit;
 }
 
 $file = fopen($csvfile,"r");
 
 if(!$file) {
-	echo "Error opening data file.\n";
+	echo "<div id='message' class='error'><p><strong>Import Error: Error opening data file.</strong></p></div>";
 	exit;
 }
 
 $size = filesize($csvfile);
 
 if(!$size) {
-	echo "File is empty.\n";
+	echo "<div id='message' class='error'><p><strong>Import Error: File is empty.</strong></p></div>";
 	exit;
 }
    
 
     
     $file = file_get_contents($csvfile);
+    $file = str_replace("'","\'",$file);
     $dataStrings = explode("\r", $file);
     
     $i = 0;
@@ -203,8 +217,10 @@ if(!$size) {
 				'$strings[8]','$strings[9]', '$strings[10]', '$strings[11]', '$strings[12]', '$strings[13]','$strings[14]', '$strings[15]',
 			'$strings[16]', '$strings[17]', '$strings[18]', '$strings[19]', '$strings[20]', '$strings[21]','$strings[22]', '$strings[23]', '$strings[24]', '$strings[25]',				'$strings[30]')";
 				
-				
+       		
 			$wpdb->query ( $sql );
+            
+            print mysql_error();
 		
 		}}
 
@@ -216,11 +232,11 @@ if(!$size) {
 
 unlink($csvfile);
 if(!file_exists($csvfile)) {
-	echo "<br>Upload file has been deleted.<br>";
+	echo "<div id='message' class='updated fade'><p><strong>Successful Import: Upload file has been deleted.</strong></p></div>";
 
 }
 $tot_records = $i - "2";
-echo "Added a total of $tot_records events to the database.<br>";
+echo "<div id='message' class='updated fade'><p><strong>Successful Import: Added a total of $tot_records events to the database.</strong></p></div>";
 
 }
 
