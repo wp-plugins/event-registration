@@ -351,6 +351,9 @@ function er_load_samples(){
                    er_create_events_calendar_page();
                    er_create_all_events_page();
                    er_create_single_event_page($cat_id);
+                   ?>
+<META HTTP-EQUIV="refresh" content="0;URL=admin.php?page=sample">
+<?php
                     
 }   
 
