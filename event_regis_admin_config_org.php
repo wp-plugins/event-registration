@@ -301,6 +301,7 @@ $sql = "UPDATE " . $events_organization_tbl .
  <!-- All the hidden HTML goes right here-->
  <p><b>Online Payment Vendor</b> If you want to accept payments online you will need to provide an online vendor for collection of payments.  This plugin currently supports: PAYPAL, GOOGLE, AUTHORIZE.NET and the ability to add your own custom payment button.</p>
  <p><b>Online Payment ID</b> The online payment id will be your email address you use to setup your paypal account or your Google account ID number or your authorize.net ID.</p>
+ <p><a href="https://ems.authorize.net/oap/home.aspx?SalesRepID=98&ResellerID=16334"><img src="http://www.authorize.net/images/reseller/oap_sign_up.gif" height="38" width="135" border="0" /></a></p>
  <p><b>Transaction Key</b> Authorized.Net Accounts require a unique transaction key that was given when you created your account.
  <p><b>Currency Format </b>  Is uesed by all payment methods for determining the local currency for transactions.</p>
  <p><b>Accept Donations</b> If you would like to take online donations for free events, select yes and the online payment links will be displayed in the registration confirmation page.</p>
@@ -316,7 +317,8 @@ $sql = "UPDATE " . $events_organization_tbl .
 </div>
 <div class="box-mid-body" id="toggle2">
 	<div class="padding">
-   <ul><?php
+   <ul>
+  <?php
    
 	echo "<li>Online Payment Vendor: <select name='payment_vendor'>";
     echo "<option value='" . $payment_vendor . "'>" . $payment_vendor . "</option>";
@@ -325,10 +327,12 @@ $sql = "UPDATE " . $events_organization_tbl .
 		  <option value='PAYPAL'>PAYPAL</option>
           <option value='AUTHORIZE.NET'>AUTHORIZE.NET</option>
           <option value='CUSTOM'>CUSTOM</option>
-		  </select></li>";
+		  </select> 
+     <a href='https://ems.authorize.net/oap/home.aspx?SalesRepID=98&ResellerID=16334'><img src='http://www.authorize.net/images/reseller/oap_sign_up.gif' height='38' width='135' border='0' /></a>
+    </li>";
 	echo "<li>Online Payment ID(typically payment@yourdomain.com for paypal - leave blank if you are not accepting online payments):";
 	echo "<input name='payment_vendor_id' size='45' value='" . $payment_vendor_id . "'></li>";
-    echo "<li>Transaction Key (for Authorized.Net Accounts):";
+     echo "<li>Transaction Key (for Authorized.Net Accounts):";
     echo "<input name='txn_key' size='45' value='" . $txn_key . "'></li>";
 	echo "<li>Currency Format: <select name = 'currency_format'>";
 	echo "<option value='" . $currency_format . "'>" . $currency_format . "</option>";

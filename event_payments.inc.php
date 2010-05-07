@@ -695,6 +695,7 @@ function event_regis_pay() {
 					$registrar = $row ['contact_email'];
                     $payment_vendor = $row['payment_vendor'];
 					$payment_vendor_id = $row ['payment_vendor_id'];
+                    $txn_key = $row['txn_key'];
 					$currency_format = $row ['currency_format'];
 					$events_listing_type = $row ['events_listing_type'];
 					$return_url = $row ['return_url'];
@@ -790,7 +791,8 @@ function event_regis_pay() {
                             else if ($payment_vendor == "AUTHORIZE.NET"){
                                 
                                 er_authorize_pay(
-                                 $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }
+                                 $payment_vendor_id, $txn_key,  $currency_format, $item_name, $event_name, $num_people,
+                                  $adjusted_price); }
                             else if ($payment_vendor == "CUSTOM"){
                                  er_custom_pay(
                                   $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }
