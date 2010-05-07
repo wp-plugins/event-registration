@@ -102,7 +102,7 @@ else { ?>
 }
 
 function er_authorize_pay(
-$payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $price){
+$payment_vendor_id,$txn_key, $currency_format, $item_name, $event_name, $num_people, $price){
 
 //Authorize.Net Payment 
 // This sample code requires the mhash library for PHP versions older than
@@ -110,8 +110,8 @@ $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $pric
 	
 // the parameters for the payment can be configured here
 // the API Login ID and Transaction Key must be replaced with valid values
-$loginID		= "API_LOGIN_ID";
-$transactionKey = "TRANSACTION_KEY";
+$loginID		= $payment_vendor_id;
+$transactionKey = $txn_key;
 $amount 		= $price;
 $description 	= $item_name;
 $label 			= "Submit Payment"; // The is the label on the 'submit' button
