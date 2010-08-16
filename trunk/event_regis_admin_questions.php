@@ -10,7 +10,7 @@
 function event_form_config() {
     er_plugin_menu();
 	
-	global $lang;
+	global $events_lang;
 	$form_question_build = $_REQUEST ['form_question_build'];
     $action = $_REQUEST['action'];
     
@@ -127,7 +127,7 @@ function event_form_config() {
 	</tr>
 	
 	</table>
-    <?php echo $lang ['addQuestionDesc'];?>
+    <?php echo $events_lang ['addQuestionDesc'];?>
 				
 	<?php		echo "<p><form name='form' method='post' action='admin.php?page=form'>";
 				echo "<input type='hidden' name='form_question_build' value='post_new_question'>";
@@ -156,7 +156,7 @@ function event_form_config() {
 			
 			if ($questions) {
 				foreach ( $questions as $question ) {
-					echo $lang ['editQuestionDesc'];
+					echo $events_lang ['editQuestionDesc'];
 					?>
 <form name="newquestion" method="post"
 	action="admin.php?page=form"><input type="hidden"
@@ -305,7 +305,7 @@ function event_form_config() {
             <thead><tr><th>Event</th><th>Description</th><th>Custom Questions</th></tr></thead>
             <tbody>
             <?php			
-			echo $lang ['selectEvent']."<br>";
+			echo $events_lang ['selectEvent']."<br>";
 			
 			$sql = "SELECT * FROM " . $events_detail_tbl;
 			$result = mysql_query ( $sql );

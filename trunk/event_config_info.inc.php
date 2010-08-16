@@ -112,7 +112,12 @@ events_admin_page_footer();
 </div>
 <div class="box-mid-body" id="toggle3">
 					<div class="padding">
-<?include "guide.htm";?>                   
+<?php
+
+$help = EVNT_RGR_PLUGINFULLURL."guide.htm";
+echo "<a href='http://edgetechweb.com/wp-content/uploads/EVENTREGIS-USER-GUIDE1.pdf' target='_blank'>USER GUIDE</a>";
+
+?>                   
                     </div>
 </div></div>
 <?php	

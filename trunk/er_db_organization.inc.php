@@ -11,7 +11,7 @@ function events_organization_tbl_install () {
         global $events_organization_tbl_version;
 //Create new variables for this function 
         $table_name = $wpdb->prefix . "events_organization";
-        $events_organization_tbl_version = "5.0";
+        $events_organization_tbl_version = "5.1";
 //check the SQL database for the existence of the Event Attendee Database - if it does not exist create it. 
 	   if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 			$sql = "CREATE TABLE " . $table_name . " (
@@ -122,16 +122,23 @@ function events_organization_tbl_install () {
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			dbDelta($sql);
 //Create variables to add default organization data to table
-			$message=("Enter your custom confirmation message here.");
+		/*	$message=("Enter your custom confirmation message here.");
             $your_company = get_bloginfo('name');
             $your_email = get_bloginfo('admin_email');
             $message=("Enter your custom confirmation message here.");
             $payment_subj =("Payment Received");
             $payment_message = ("<p>***This is an automated response - Do Not Reply***</p> <p>Thank you [fname] [lname] for registering for [event].</p> <p> We hope that you will find this event both informative and enjoyable. Should have any questions, please contact [contact].</p> <p>If you have not done so already, please submit your payment in the amount of [cost].</p> <p>Click here to reveiw your payment information [payment_url].</p><p>Thank You.</p>");
+*/
 
-			$sql="INSERT into $table_name (organization, contact_email, default_mail, message, payment_subj, payment_message) values 
-                ('".$your_company."', '".$your_email."','Y', '".$message."','".$payment_subj."', '".$payment_message."')";
+            //Get paypal id and update vendor id and set to paypal
+            $sql="SELECT paypal_id FROM $table_name WHERE id = '1'";
+            $result = mysql_query($sql);
+		   	while ($row = mysql_fetch_assoc ($result)){$paypal_id = $row['paypal_id'];}
+
+            if ($paypal_id != ""){
+			$sql="UPDATE $table_name set payment_vendor_id = '$paypal_id', payment_vendor = 'PAYPAL' WHERE id = 1";
 			$wpdb->query($sql);
+            }
 //update the table version number to match the updated sql
       update_option( "events_organization_tbl_version", $events_organization_tbl_version );
       }

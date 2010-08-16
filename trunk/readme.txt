@@ -4,7 +4,7 @@ Donate link: http://www.edgetechweb.com/
 Tags: event management, event registration, events managment, events registration, event calendar, events calendar, events, event
 Requires at least: 2.0.2
 Tested up to: 2.9.2
-Stable tag: 5.0
+Stable tag: 5.1
 
 This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.
 
@@ -29,6 +29,13 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 Changes:
+5.10 Fixed issue with Calendar
+     Resolved Authorize.net validation issue
+     Resolved database upgrade from 4.0 issue
+     Resolved extra numbers at bottom of the Month select/option drop-down combo box
+     Resolved misspelling for Event Calendar shortcode
+
+
 5.0 - Revised look and usability of admin panels by CSS
       Fixed bug in CSV import file
       Revised admin accounting features

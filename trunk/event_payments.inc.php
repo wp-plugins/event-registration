@@ -837,7 +837,7 @@ function event_regis_pay() {
                             else if ($payment_vendor == "AUTHORIZE.NET"){
                                  echo "<p>The process is safe, simple, and secure and your bank or debit card information is used by Authorize.Net for the sole purpose of processing this transaction and never shared with us. To start, enter your donation amount below and click on the Donate button. You will be forwarded to Authorize.Net's secure website where you will enter your information and complete the transaction.</p>";
                                 er_authorize_pay(
-                                 $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $balance); }
+                                 $payment_vendor_id,$txn_key,$currency_format, $item_name, $event_name, $num_people, $balance); }
                             else if ($payment_vendor == "CUSTOM"){
                                  er_custom_pay(
                                   $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $balance); }
@@ -900,6 +900,8 @@ function events_payment_page($event_id) {
 					$registrar = $row ['contact_email'];
                     $payment_vendor = $row['payment_vendor'];
 					$payment_vendor_id = $row ['payment_vendor_id'];
+					 $txn_key = $row['txn_key'];
+
 					$currency_format = $row ['currency_format'];
 					$events_listing_type = $row ['events_listing_type'];
 					$return_url = $row ['return_url'];
@@ -1006,7 +1008,7 @@ function events_payment_page($event_id) {
                             else if ($payment_vendor == "AUTHORIZE.NET"){
                                 
                                 er_authorize_pay(
-                                 $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }
+                                 $payment_vendor_id,$txn_key,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }
                             else if ($payment_vendor == "CUSTOM"){
                                  er_custom_pay(
                                   $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }
@@ -1052,7 +1054,7 @@ function events_payment_page($event_id) {
                             else if ($payment_vendor == "AUTHORIZE.NET"){
                                  echo "<p>The process is safe, simple, and secure and your bank or debit card information is used by Authorize.Net for the sole purpose of processing this transaction and never shared with us. To start, enter your donation amount below and click on the Donate button. You will be forwarded to Authorize.Net's secure website where you will enter your information and complete the transaction.</p>";
                                 er_authorize_pay(
-                                 $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $balance); }
+                                 $payment_vendor_id,$txn_key,$currency_format, $item_name, $event_name, $num_people, $balance); }
                             else if ($payment_vendor == "CUSTOM"){
                                  er_custom_pay(
                                   $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $balance); }

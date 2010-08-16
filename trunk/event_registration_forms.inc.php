@@ -286,8 +286,8 @@ function event_regis_events() {
 		?>
 		</p>
 	
-	<p> EVENT LOCATION <b><u><input name="event_location" size="25" value ="<?php echo $event_location;?>"></p>
-	<p> MORE INFO <b><u><input name="more_info" size="25" value ="<?php echo $more_info;?>"></p>
+	<p> EVENT LOCATION <b><input name="event_location" size="25" value ="<?php echo $event_location;?>"></p>
+	<p> MORE INFO <b><input name="more_info" size="25" value ="<?php echo $more_info;?>"></p>
 	<p>	ATTENDEE LIMIT (leave blank for unlimited)  <input name="reg_limit" size="10" value ="<?php	echo $reg_limit;?>"></p>
 	<p>COST FOR EVENT (leave blank for free events, enter 2 place decimal i.e. 7.00) <input name="cost" size="10" value ="<?php	echo $event_cost;?>"></p>
   <?php

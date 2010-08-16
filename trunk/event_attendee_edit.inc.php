@@ -2,7 +2,7 @@
 function attendee_display_edit() {
 er_plugin_menu();
     $er_attendee_action = $_REQUEST ['action'];
-    global $wpdb, $lang,$lang_flag;
+    global $wpdb, $events_lang,$events_lang_flag;
     $events_detail_tbl = get_option ( 'events_detail_tbl' );
     $events_attendee_tbl = get_option ( 'events_attendee_tbl' );
   ?>  
@@ -148,33 +148,33 @@ er_plugin_menu();
                 <?php
 				echo "<table><tr><td width='25'></td><td align='left'><hr>";
 				echo "<form method='post' action='" . $_SERVER ['REQUEST_URI'] . "'>";
-				echo "<p><b>".$lang['firstName'].":";
+				echo "<p><b>".$events_lang['firstName'].":";
 				echo "<input tabIndex=\"1\" maxLength=\"45\" size=\"47\" name=\"fname\" value=\"$fname\"></b>";
-				echo "<b>".$lang['lastName'].":";
+				echo "<b>".$events_lang['lastName'].":";
 				echo "<input tabIndex=\"2\" maxLength=\"45\" size=\"47\" name=\"lname\" value=\"$lname\"></b></p>";
 				
-				echo "<b>".$lang['address'].":";
+				echo "<b>".$events_lang['address'].":";
 				echo "<input tabIndex=\"5\" maxLength=\"45\" size=\"49\" name=\"address\" value=\"$address\"></b>" . BR;
 				
-				echo "<b>".$lang['city'].":";
+				echo "<b>".$events_lang['city'].":";
 				echo "<input tabIndex=\"6\" maxLength=\"20\" size=\"33\" name=\"city\" value=\"$city\"></b>";
 				
-				if ($lang_flag!='de')
+				if ($events_lang_flag!='de')
 				{
-					echo "<b>".$lang['state'].":";
+					echo "<b>".$events_lang['state'].":";
 					echo "<input tabIndex=\"7\" maxLength=\"30\" size=\"18\" name=\"state\"	value=\"$state\"></b>";
 				}
-				echo "<b>".$lang['zip'].":";
+				echo "<b>".$events_lang['zip'].":";
 				echo "<input tabIndex=\"8\" maxLength=\"10\" size=\"16\" name=\"zip\" value=\"$zip\"></b>" . BR;
 				
-				echo "<b>".$lang['email'].":";
+				echo "<b>".$events_lang['email'].":";
 				echo "<input tabIndex=\"3\" maxLength=\"37\" size=\"37\" name=\"email\" value=\"$email\"></b>" . BR;
 				
-				echo "<b>".$lang['phone'].":";
+				echo "<b>".$events_lang['phone'].":";
 				
 				echo "<input tabIndex=\"4\" maxLength=\"15\" size=\"28\" name=\"phone\" value=\"$phone\"></b>" . BR;
 						
-				echo "<b>".$lang['people'].":";
+				echo "<b>".$events_lang['people'].":";
 				
 				echo "<input tabIndex=\"5\" maxLength=\"15\" size=\"4\" name=\"num_people\" value=\"$num_people\"></b>" . BR;	
 				/* <b>How did you hear about this event?</b></font><font face="Arial">&nbsp;
@@ -187,9 +187,9 @@ er_plugin_menu();
 																<option value="Other">Other</option>
 																</select></font><br />
 																
-        if ($lang_flag!='de')
+        if ($events_lang_flag!='de')
         {
-  				echo "<b>$lang[payPlan]</b>";
+  				echo "<b>$events_lang[payPlan]</b>";
         }
 				?>
 <select tabIndex="10" size="1" name="payment">

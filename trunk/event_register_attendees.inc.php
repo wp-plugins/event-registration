@@ -4,7 +4,7 @@ function register_attendees($event_single_id) {
     
 
     
-	global $wpdb, $lang,$lang_flag;
+	global $wpdb, $events_lang,$events_lang_flag;
 	$paypal_cur = get_option ( 'paypal_cur' );
 	if ($event_single_id == ""){$event_id = $_REQUEST ['event_id'];}
 	if ($event_single_id != ""){$event_id = $event_single_id;}	
@@ -381,7 +381,7 @@ if ($event_cost == ""||$event_cost =="0"||$event_cost=="0.00"){$event_cost = "FR
 
 if ($header_image != ""){echo "<p align='center'><img src='".$header_image."'  width='450' align='center'></p>";}
     	if ( $reg_limit > "$num" || $reg_limit == "") {
-		echo "<p align='center'><b>".$lang['eventFormHeader'] . $event_name .  " - ".$event_identifier."</b></p>";
+		echo "<p align='center'><b>".$events_lang['eventFormHeader'] . $event_name .  " - ".$event_identifier."</b></p>";
 		echo "<table width='100%'><td>";
 		if ($display_desc == "Y") {
 			echo "<td span='2'>" . $event_desc ."</td>";
@@ -395,7 +395,7 @@ if ($header_image != ""){echo "<p align='center'><img src='".$header_image."'  w
 		if ($event_cost == "FREE"){
 		  echo "<b>" . $event_name . " - FREE EVENT </b></p></p>";
           }
-          else if ($event_cost != "") {if ($lang_flag=='de')
+          else if ($event_cost != "") {if ($events_lang_flag=='de')
 				echo "<b>" . $event_name . " - Kosten " .$event_cost . " " .  $currency_format . "</b></p></p>";
       		else
 			  	echo "<b>" . $event_name . " - Cost " . $currency_format . " " . $event_cost . "</b></p></p>";
@@ -412,49 +412,49 @@ if ($header_image != ""){echo "<p align='center'><img src='".$header_image."'  w
 		?>"
 		onSubmit="return validateForm(this)">
 	<p align="left"><b><?php
-		echo $lang ['firstName'];
+		echo $events_lang ['firstName'];
 		?>: <br />
 	<input tabIndex="1" maxLength="40" size="47" name="fname"></b></p>
 	<p align="left"><b><?php
-		echo $lang ['lastName'];
+		echo $events_lang ['lastName'];
 		?>:<br />
 	<input tabIndex="2" maxLength="40" size="47" name="lname"></b></p>
 	<p align="left"><b><?php
-		echo $lang ['email'];
+		echo $events_lang ['email'];
 		?>:<br />
 	<input tabIndex="3" maxLength="40" size="47" name="email"></b></p>
 	
         
 <?php if ($inc_phone == "Y"){ ?>
 	<p align="left"><b><?php
-		echo $lang ['phone'];
+		echo $events_lang ['phone'];
 		?>:<br />
   <input tabIndex="4" maxLength="20" size="25" name="phone"></b></p>
 <?php } 
 if ($inc_address == "Y"){  ?> 
         <p align="left"><b>
-     <?php  echo $lang ['address'];	?>:<br />
+     <?php  echo $events_lang ['address'];	?>:<br />
        	<input tabIndex="5" maxLength="35" size="49" name="address"></b></p>
 <?php } 
 
 if ($inc_city == "Y"){ ?>
         <p align="left"><b>
-    <?php echo $lang ['city'];?>:<br />
+    <?php echo $events_lang ['city'];?>:<br />
         <input tabIndex="6" maxLength="25" size="35" name="city"> </b></p>
 <?php } 
 
 if ($inc_state == "Y"){ ?>
     <?php //no state necessary in germany
-      if ($lang_flag!="de")
+      if ($events_lang_flag!="de")
       {  ?>  
       <p align="left"><b>
-    <?php  echo $lang ['state'];}	?>:<br />
+    <?php  echo $events_lang ['state'];}	?>:<br />
     	<input tabIndex="7" maxLength="20" size="18" name="state"></b></p>
 <?php } 
 
 if ($inc_zip == "Y"){	?>
 	<p align="left"><b>
-<?php echo $lang ['zip'];?>:<br />
+<?php echo $events_lang ['zip'];?>:<br />
 	<input tabIndex="8" maxLength="10" size="15" name="zip"></b></p>
 <?php } 
 
@@ -492,18 +492,18 @@ if ($multiple == "N"){?>
 			if ($event_cost != "") {
 			?>
 			<p align="left">
-			<b><?php echo $lang['payingPlan'];?></b><br />
+			<b><?php echo $events_lang['payingPlan'];?></b><br />
 	    <select tabIndex="10" size="1" name="payment">
-		  <option value="pickone" selected><?php echo $lang['pickone']; ?></option>
+		  <option value="pickone" selected><?php echo $events_lang['pickone']; ?></option>
 			<?php
 			if ($payment_vendor_id != "") {
-				echo "<option value=\"Paypal\">$lang[paypal]</option>";
+				echo "<option value=\"Paypal\">$events_lang[paypal]</option>";
 			}
 			
-			echo "<option value=\"Cash\">$lang[cash]</option>";
+			echo "<option value=\"Cash\">$events_lang[cash]</option>";
 			
-			if ($checks == "yes" && $lang_flag!='de') {  //very unusual in germany
-        echo "<option value=\"Check\">$lang[check]</option>";
+			if ($checks == "yes" && $events_lang_flag!='de') {  //very unusual in germany
+        echo "<option value=\"Check\">$events_lang[check]</option>";
 			}
 			?>
 			</select></font></p>
@@ -535,8 +535,8 @@ if ($use_coupon =="Y"){
 		type="hidden" name="event_id" value="<?php
 		echo $event_id;
 		?>">
-	<p align="center"><input type="submit" name="Submit" value="<?php echo $lang['submit']; ?>"> <font
-		color="#FF0000"><b><?php echo $lang['submitHint'];?></b></font>
+	<p align="center"><input type="submit" name="Submit" value="<?php echo $events_lang['submit']; ?>"> <font
+		color="#FF0000"><b><?php echo $events_lang['submitHint'];?></b></font>
 	
 	</form>
 	</td>
@@ -545,7 +545,7 @@ if ($use_coupon =="Y"){
 </body>
 <?php
 	} else {
-		echo $lang ['maxAttendeesInfo'];
+		echo $events_lang ['maxAttendeesInfo'];
 		echo "<p>Current Number of Attendees: " . $num . "</p>";
 	}
 
@@ -553,7 +553,7 @@ if ($use_coupon =="Y"){
 }
 
 function add_attendees_to_db() {
-	global $wpdb, $lang;
+	global $wpdb, $events_lang;
 	$current_event = get_option ( 'current_event' );
 	$registrar = get_option ( 'registrar' );
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
@@ -771,7 +771,7 @@ $sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,s
 	//Send screen confirmation & forward to paypal if selected.
 	
 
-	echo $lang ['registrationConfirm'];
+	echo $events_lang ['registrationConfirm'];
 	
 	events_payment_page ( $event_id );
 }

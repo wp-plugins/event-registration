@@ -120,7 +120,7 @@ $testMode		= "false";
 // developer accounts: https://test.authorize.net/gateway/transact.dll
 // for real accounts (even in test mode), please make sure that you are
 // posting to: https://secure.authorize.net/gateway/transact.dll
-$url			= "https://test.authorize.net/gateway/transact.dll";
+$url			= "https://secure.authorize.net/gateway/transact.dll";
 
 // If an amount or description were posted to this page, the defaults are overidden
 if ($_REQUEST["amount"])

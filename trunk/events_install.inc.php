@@ -18,7 +18,7 @@ function add_non_existent_column($db, $column, $column_attr = "VARCHAR( 255 ) NU
 //Function to install/update data tables
 
 function events_data_tables_install () {
-    require_once ('er_alter_tables.php');
+ 
     require_once ('er_db_attendee.inc.php');
     require_once ('er_db_event.inc.php');
     require_once ('er_db_organization.inc.php');
@@ -26,7 +26,8 @@ function events_data_tables_install () {
     require_once ('er_db_categories.inc.php');
     require_once ('er_db_payment_txn.inc.php');
 
-alter_event_regis_tables();
+
+
 events_cat_detail_tbl_install();
 events_attendee_tbl_install();
 events_detail_tbl_install();
