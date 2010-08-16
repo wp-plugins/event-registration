@@ -7,7 +7,7 @@
 
 function events_view_widget() {
 
-	global $wpdb,$lang;
+	global $wpdb,$events_lang;
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 	$curdate = date ( "Y-m-j" );
@@ -70,7 +70,7 @@ function events_view_widget() {
 	/*	echo "<form name='form' method='post' action='".request_uri()."'>";
 		echo "<input type='hidden' name='regevent_action' value='register'>";
 		echo "<input type='hidden' name='event_id' value='" . $event_id . "'>";
-		echo "<input type='SUBMIT' value='$lang[register]'></form><br>";
+		echo "<input type='SUBMIT' value='$events_lang[register]'></form><br>";
 		*/
 		echo "<br>----------------<br>";
 

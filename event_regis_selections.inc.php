@@ -26,18 +26,18 @@ function displayMonths() {
 function displaySelectionBox($start_month = '', $start_day = '', $start_year = '', $end_month = '', $end_day = '', $end_year = '') {
 
 	$currentyear = date ( 'Y' );
-	
+
 	?>Start Date:
-<SELECT NAME="start_month">
+<select name="start_month">
     <?php
 	if ($start_month != '') {
 		echo "<option value=\"$start_month\">$start_month</option>";
 	}
 	displayMonths ();
 	?>
-	</SELECT>
+	</select>
 
-<SELECT NAME="start_day">
+<select name="start_day">
     <?php
 	if ($start_day != '') {
 		echo "<option value=\"$start_day\">$start_day</option>";
@@ -46,9 +46,9 @@ function displaySelectionBox($start_month = '', $start_day = '', $start_year = '
 		echo "<option value=\"$i\">$i</option>";
 	}
 	?>
-	</SELECT>
+	</select>
 
-<SELECT NAME="start_year">
+<select name="start_year">
     <?php
 	if ($start_year != '') {
 		echo "<option value=\"$start_year\">$start_year</option>";
@@ -57,22 +57,21 @@ function displaySelectionBox($start_month = '', $start_day = '', $start_year = '
 		echo "<option value=\"$i\">$i</option>";
 	}
 	?>
-	</SELECT>
+	</select>
 
 - End Date:
-<SELECT NAME="end_month">
+<select name="end_month">
      <?php
-	if ($end_month != '') {
-		echo "<option value=\"$end_month\">$end_month</option>";
+	if ($end_month !== '') { //PPAY
+            ?>
+            <option value="<?php echo $end_month; ?>"><?php echo $end_month; ?></option>
+            <?php
 	}
 	displayMonths ();
 	?>
-	for($i = $currentyear; $i <= $currentyear + 5; $i ++) {
-		echo "<option value=\"$i\">$i</option>
-	"; }
-</SELECT>
+</select>
 
-<SELECT NAME="end_day">
+<select name="end_day">
     <?php
 	if ($end_day != '') {
 		echo "<option value=\"$end_day\">$end_day</option>";
@@ -81,9 +80,9 @@ function displaySelectionBox($start_month = '', $start_day = '', $start_year = '
 		echo "<option value=\"$i\">$i</option>";
 	}
 	?>
-	</SELECT>
+	</select>
 
-<SELECT NAME="end_year">
+<select name="end_year">
     <?php
 	if ($end_year != '') {
 		echo "<option value=\"$end_year\">$end_year</option>";
@@ -92,7 +91,7 @@ function displaySelectionBox($start_month = '', $start_day = '', $start_year = '
 		echo "<option value=\"$i\">$i</option>";
 	}
 	?>
-	</SELECT>
+	</select>
 <?php
 }
 

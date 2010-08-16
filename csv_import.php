@@ -124,7 +124,7 @@ upload_dir = The directory to upload to, make sure this ends with a /
 function load_events_to_db(){
 
 
-global $wpdb,$lang;
+global $wpdb,$events_lang;
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$curdate = date ( "Y-m-j" );
 	$month = date ('M');

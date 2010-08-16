@@ -32,10 +32,6 @@ if(isset($_POST['submit'])){
             case "load_samples":
               er_load_samples(); 
             break;
-            
-            case "wipe_records":
-                er_wipe_all_posts();
-            break;
        
             default:
             echo "nothing selected";
@@ -103,25 +99,12 @@ if(isset($_POST['submit'])){
 function er_create_all_events_page(){        
         global $wpdb;
         global $post;
-
-	$ver = (float)$wp_version;
-	
-	$tp = $wpdb->prefix;
-
-      
-       //Sample Page Content        
-        $post_author = "1";
-        $post_date = "current_date_time";
-        $post_date_gmt = "current_date_time";
         $post_content = addslashes("{EVENTREGIS}");
         $post_title="Sample Page - All Events";
         $post_status ="publish";
         $comment_status="closed";
         $ping_status="closed";
         $post_name="events";
-        $post_modified = "current_date_time";
-        $post_modifieed_gmt = "current_date_time";
-        $comment_count="0";
         $post_type="page";
         
         
@@ -134,12 +117,12 @@ $sql = array(
   'post_title' => $post_title, //The title of your post. 
   'post_type' => $post_type //Sometimes you want to post a page. 
   );   
-$prepost = getdate();
  
 // Insert the post into the database 
 if (wp_insert_post( $sql )){ 
                 $sql1 = "SELECT * FROM wp_posts WHERE post_title='".$post_title."'";
                 $result = mysql_query ($sql1);
+                $page_id = null;    
                 while ($row = mysql_fetch_assoc ($result)){
                     $page_id = $row['ID'];
                 }echo "<div id='message' class='updated fade'><p><strong>Successful Sample All Events Listing Page Creation</strong></p>";
@@ -176,10 +159,11 @@ if (wp_insert_post( $sql )){
 
 
 function  er_create_single_event_page($cat_id){
+   global $display_desc, $header_image, $more_info, $end_month, $end_day, $end_year, $end_date, $end_time, $reg_limit, $custom_cur, $reg_form_defaults, $allow_checks, $send_mail, $is_active, $conf_mail, $use_coupon, $coupon_code, $use_percentage;   //PPAY
 
 //Load Sample Event Into Event Database 
         global $wpdb;
-        $events_detail_tbl = get_option ( 'events_detail_tbl' );
+        $events_detail_tbl = get_option ( 'events_detail_tbl' );    
         $event_name = "Sample Event";
         $event_identifier= "SAMPLE";
         $event_desc="This is a sample event";
@@ -190,14 +174,13 @@ function  er_create_single_event_page($cat_id){
         $start_year = "2010";
         $start_time = "17:00";
         $event_cost = "0.00";
-        $coupon_code_price="0.00";
+       $coupon_code_price="0.00";   
         $image_link="";
         $cat_id_pre = "".$_SESSION['cat_id']."";
         $multiple = "Y";
         $category_id = array($cat_id_pre);
         $category_id = serialize($category_id);
       
-        
         $sql=array('event_name'=>$event_name, 'event_desc'=>$event_desc, 'event_location'=>$event_location, 'display_desc'=>$display_desc, 
 'image_link'=>$image_link, 'header_image'=>$header_image,'event_identifier'=>$event_identifier,  'more_info'=>$more_info, 
 'start_month'=>$start_month, 'start_day'=>$start_day, 'start_year'=>$start_year, 'start_time'=>$start_time, 'start_date'=>$start_date,
@@ -215,25 +198,17 @@ function  er_create_single_event_page($cat_id){
                 The event was not saved!';
                 print mysql_error(); 
                 }
-	       	//	echo "<meta http-equiv='refresh' content='2'>";
-
-        $event_id = mysql_insert_id();   
+	        $event_id = mysql_insert_id();   
 
 //Create Sample Single Event Page
       
        //Sample Page Content        
-        $post_author = "1";
-        $post_date = "current_date_time";
-        $post_date_gmt = "current_date_time";
         $post_content = addslashes('[Event_Registration_Single event_id="'.$event_id.'"]');
         $post_title="Sample Page - Single Event";
         $post_status ="publish";
         $comment_status="closed";
         $ping_status="closed";
         $post_name="sample single event";
-        $post_modified = "current_date_time";
-        $post_modifieed_gmt = "current_date_time";
-        $comment_count="0";
         $post_type="page";
         
         
@@ -252,6 +227,7 @@ if (wp_insert_post( $post )){;
            
         $sql1 = "SELECT * FROM wp_posts WHERE post_title='".$post_title."'";
         $result = mysql_query ($sql1);
+        $page_id = null;    
         while ($row = mysql_fetch_assoc ($result)){
                     $page_id = $row['ID'];
                     }
@@ -296,8 +272,7 @@ function er_create_category_page(){
                     <?php echo htmlentities2($_REQUEST['category_name']);?> was not saved. <?php print mysql_error() ?>.</strong></p></div>
                 <?php
                 }
-           //     echo "<META HTTP-EQUIV='refresh' content='2;URL=admin.php?page=event_categories'>";
-      
+             
       
       
       
@@ -320,6 +295,7 @@ if (wp_insert_post( $post )){;
   
         $sql1 = "SELECT * FROM wp_posts WHERE post_title='".$post_title."'";
         $result = mysql_query ($sql1);
+        $page_id = null;    //PPAY
         while ($row = mysql_fetch_assoc ($result)){
                     $page_id = $row['ID'];
                     }
@@ -350,7 +326,7 @@ function er_load_samples(){
                    er_create_category_page();
                    er_create_events_calendar_page();
                    er_create_all_events_page();
-                   er_create_single_event_page($cat_id);
+                   er_create_single_event_page($cat_id);    //PPAY should $cat_id be declared global?
                    ?>
 <META HTTP-EQUIV="refresh" content="0;URL=admin.php?page=sample">
 <?php
@@ -361,24 +337,15 @@ function er_create_events_calendar_page(){
         global $wpdb;
         global $post;
 
-	$ver = (float)$wp_version;
-	
-	$tp = $wpdb->prefix;
-
-      
+     
        //Sample Page Content        
-        $post_author = "1";
-        $post_date = "current_date_time";
-        $post_date_gmt = "current_date_time";
-        $post_content = addslashes("[Event_Registraiton_Calendar]");
+
+        $post_content = addslashes("[Event_Registration_Calendar]"); 
         $post_title="Sample Page - Events Calendar";
         $post_status ="publish";
         $comment_status="closed";
         $ping_status="closed";
         $post_name="events";
-        $post_modified = "current_date_time";
-        $post_modifieed_gmt = "current_date_time";
-        $comment_count="0";
         $post_type="page";
         
         
@@ -391,12 +358,12 @@ $sql = array(
   'post_title' => $post_title, //The title of your post. 
   'post_type' => $post_type //Sometimes you want to post a page. 
   );   
-$prepost = getdate();
  
 // Insert the post into the database 
 if (wp_insert_post( $sql )){ 
                 $sql1 = "SELECT * FROM wp_posts WHERE post_title='".$post_title."'";
                 $result = mysql_query ($sql1);
+                $page_id = null;  
                 while ($row = mysql_fetch_assoc ($result)){
                     $page_id = $row['ID'];
                 }echo "<div id='message' class='updated fade'><p><strong>Successful Sample Events Calendar Page Creation</strong></p>";

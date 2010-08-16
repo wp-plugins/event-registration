@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.edgetechweb.com
 Description: I have made some changes to the database and the plugin.  I recommend you try this on a test site before going live and that you backup all your data and the old version of the plugin you are using before upgrading.  This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees..  Additionally it allows support for checks and cash payments.  Detailed payment management system to track and record event payments.  Reporting features provide a list of events, list of attendees, and excel export.  Events can be created in an Excel spreadsheet and uploaded via the event upload tool.  Dashboard widget allows for quick reference to events from the dashboard.  Inline menu navigation allows for ease of use.  
-Version: 5.0
+Version: 5.10
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.edgetechweb.com
 */
@@ -30,7 +30,7 @@ define ( "EVNT_RGR_PLUGINPATH", "/" . plugin_basename ( dirname ( __FILE__ ) ) .
 define ( "EVNT_RGR_PLUGINFULLURL", WP_PLUGIN_URL . EVNT_RGR_PLUGINPATH );
 $url = EVNT_RGR_PLUGINFULLURL;
 
-$lang_flag = "en"; //switch to en for changing language and form 
+$events_lang_flag = "en"; //switch to en for changing language and form 
 
 /*
 function Mod_addslashes ( $string ) 
@@ -103,16 +103,15 @@ add_filter ('the_content', 'event_pay_txn_insert');
 add_shortcode ('Event_Registration_Single', 'display_single_event');
 add_shortcode ('EVENT_REGIS_CATEGORY', 'display_events_by_category');
 add_shortcode ('ER_Widget_View', 'events_regis_widget');
-add_shortcode ('Event_Registraiton_Calendar', 'er_calendar_display');
-
-
-
-
+add_shortcode ('Event_Registration_Calendar', 'er_calendar_display');   // also fix database
+//UPDATE `wp`.`wp_posts` SET `post_content` =  '[Event_Registration_Calendar]'  WHERE `wp_posts`.`post_content` = '[Event_Registraiton_Calendar]';
+//UPDATE `wp`.`wp_posts` SET `post_content` = '[Event_Registration_Calendar] <hr /> {EVENTREGIS} ' WHERE `wp_posts`.`post_content` = '[Event_Registraiton_Calendar]\r\n<hr />\r\n{EVENTREGIS}\r\n';
 
 
 //Function to make compatible with Windows Servers as well as Apache
 
 function request_uri() {
+    $uri = null;    //PPAY
 		  if (isset($_SERVER['REQUEST_URI'])) {
     			$uri = $_SERVER['REQUEST_URI'];
   				}
@@ -144,6 +143,7 @@ function event_attendee_list_run() {
 	
 	$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE is_active='yes'";
 	$result = mysql_query ( $sql );
+        $event_id = null;   //PPAY
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
 		$event_id = $row ['id'];
 		$event_name = $row ['event_name'];
@@ -155,7 +155,7 @@ function event_attendee_list_run() {
 	$sql = "SELECT * FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
 	$result = mysql_query ( $sql );
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
-		$id = $row ['id'];
+		//$id = $row ['id'];    //PPAY: unused
 		$lname = $row ['lname'];
 		$fname = $row ['fname'];
 		echo $fname . " " . $lname . "<br />";
@@ -168,8 +168,8 @@ function event_attendee_list_run() {
 function event_regis_run($id) {
 
 	global $wpdb;
-	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
-	$events_detail_tbl = get_option ( 'events_detail_tbl' );
+	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );  
+	$events_detail_tbl = get_option ( 'events_detail_tbl' );    
 	$events_organization_tbl = get_option ( 'events_organization_tbl' );
 	$events_listing_type = get_option ( 'events_listing_type' );
 	$event_id = $id;
@@ -193,9 +193,11 @@ function event_regis_run($id) {
             case "pay":
                 event_regis_pay ();
             break;
-            
+
+            //PPAY: undefined. Check ~/events_registration/er_payment_functions.php:er_paypal_pay()
             case "paypal_txn":
-                event_regis_paypal_txn();
+                //event_regis_paypal_txn();            //PPAY: undefined.
+                event_paypal_txn();     //from event_paypal_ipn.inc.php or er_core_functions.php
             break;
             
             case "register":
@@ -246,8 +248,6 @@ function event_regis_main_mnu() {
 }
 
 
-//http://www.avdude.com/wp-content/plugins/events_registration/Images/ER_logo.png
-//http://www.avdude.com/wp-content/plugins/events_registration/images/ER_logo.png
 
 function event_main(){
     $url = EVNT_RGR_PLUGINFULLURL;
@@ -266,14 +266,14 @@ function event_registration_reports() {
 	
 	global $wpdb;
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
-	$current_event = get_option ( 'current_event' );
-	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
-	$url = EVNT_RGR_PLUGINFULLURL;
+	$current_event = get_option ( 'current_event' );    
+	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );    
+	$url = EVNT_RGR_PLUGINFULLURL;    //PPAY: unused
 	$sql = "SELECT * FROM " . $events_detail_tbl;
 	$result = mysql_query ( $sql );
 	Echo "<p align='center'><p align='left'>SELECT EVENT TO VIEW ATTENDEES:</p><table width = '400'>";
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
-		$event_id = $row ['id'];
+		$event_id = $row ['id'];    
 		$event_name = $row ['event_name'];
 		
 		echo "<tr><td width='25'></td><td><form name='form' method='post' action='";
@@ -297,14 +297,12 @@ function display_all_events($event_category_id) {
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
     $events_cat_detail_tbl = get_option('events_cat_detail_tbl');
-	$month = date ('M');
-	$day = date('j');
-	$year = date('Y');
     $curdate = date ( "Y-m-j" );
 
 	$currency_format = get_option ( 'currency_format' );
 	$showthumb = get_option ('show_thumb');
-
+        $category_id = null;    
+        $sql = null;    
 		if ($event_category_id != ""){
 		   			$sql2  = "SELECT * FROM " . $events_cat_detail_tbl . " WHERE category_identifier = '".$event_category_id."'";
 					$result = mysql_query($sql2);
@@ -313,34 +311,36 @@ function display_all_events($event_category_id) {
                 	$category_name=$row['category_name'];
                 	$category_identifier=$row['category_identifier'];
                 	$category_desc=$row['category_desc'];
-                	$display_category_desc=$row['display_desc'];
+                	$display_category_desc=$row['display_desc']; 
 					echo "<p><b>".$category_name."</b><br>".$category_desc."</p>";
                     }
-      $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE category_id LIKE '%\"$category_id\"%' AND start_date >= '".$curdate."' ORDER BY start_date"; 
- //      $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE category_id LIKE '%".$category_id."%' AND start_date >= '".$curdate."' ORDER BY start_date";  
-            
+      $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE category_id LIKE '%\"$category_id\"%' AND start_date >= '".$curdate."' ORDER BY start_date";
+           
         }
     else {
-        $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".$curdate."' ORDER BY start_date";}
+        $sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".$curdate."' ORDER BY start_date";
+        }
 	$result = mysql_query ( $sql );
 	
 	echo "<table width = '450'>";
+        $month_no = $end_month_no = '01';  
+        $start_date = $end_date = '';
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
 		            $event_id= $row['id'];
 			        $event_name =  stripslashes($row ['event_name']);
-					$event_identifier =  stripslashes($row ['event_identifier']);
-					$event_desc =  stripslashes($row ['event_desc']);
+					$event_identifier =  stripslashes($row ['event_identifier']); 
+					$event_desc =  stripslashes($row ['event_desc']);  
 					$image_link = $row ['image_link'];
-					$header_image = $row ['header_image'];
-					$display_desc = $row ['display_desc'];
+					$header_image = $row ['header_image'];  
+					$display_desc = $row ['display_desc']; 
 					$event_location =  stripslashes($row ['event_location']);
 					$more_info = $row ['more_info'];
 					$reg_limit = $row ['reg_limit'];
 					$event_cost = $row ['event_cost'];
 					$custom_cur = $row ['custom_cur'];
-					$multiple = $row ['multiple'];
-					$allow_checks = $row ['allow_checks'];
-					$is_active = $row ['is_active'];
+					$multiple = $row ['multiple'];  
+					$allow_checks = $row ['allow_checks'];  
+					$is_active = $row ['is_active'];  
 					$start_month = $row ['start_month'];
 					$start_day = $row ['start_day'];
 					$start_year = $row ['start_year'];
@@ -348,14 +348,14 @@ function display_all_events($event_category_id) {
 					$end_day = $row ['end_day'];
 					$end_year = $row ['end_year'];
 					$start_time = $row ['start_time'];
-					$end_time = $row ['end_time'];
-					$conf_mail = stripslashes($row ['conf_mail']);
-					$send_mail = $row ['send_mail'];
-                    $use_coupon=$row ['use_coupon'];
-            		$coupon_code=$row ['coupon_code'];
+					$end_time = $row ['end_time'];  
+					$conf_mail = stripslashes($row ['conf_mail']); 
+					$send_mail = $row ['send_mail'];  
+                    $use_coupon=$row ['use_coupon'];  
+               		$coupon_code=$row ['coupon_code'];  
             		$coupon_code_price=$row ['coupon_code_price'];
-            		$use_percentage=$row ['use_percentage'];
-            		$event_category =  unserialize($row ['category_id']);
+              		$use_percentage=$row ['use_percentage'];  
+              		$event_category =  unserialize($row ['category_id']);  
                     if ($row['start_date'] ==""){
 						if ($start_month == "Jan"){$month_no = '01';}
 						if ($start_month == "Feb"){$month_no = '02';}
@@ -387,13 +387,13 @@ function display_all_events($event_category_id) {
 						if ($end_month == "Dec"){$end_month_no = '12';}
 					$end_date = $end_year."-".$end_month_no."-".$end_day;
                     } else {$end_date = $row['end_date'];}
-                    $reg_form_defaults = unserialize($row['reg_form_defaults']);
+                   $reg_form_defaults = unserialize($row['reg_form_defaults']);
                     
-                    if ($reg_form_defaults !=""){
+                    if ($reg_form_defaults !=""){ 
                         if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
-                        if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
-                        if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
-                        if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
+                       if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
+                      if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
+                      if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
                         if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
                         }
    		            if ($reg_limit == ''){$reg_limit = 999;}
@@ -405,6 +405,7 @@ function display_all_events($event_category_id) {
 	    
 		$sql2= "SELECT SUM(num_people) FROM " . $events_attendee_tbl . " WHERE event_id='$event_id'";
 		$result2 = mysql_query($sql2);
+                $num = 0;   
 		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(num_people)'];};
         
           
@@ -413,10 +414,10 @@ function display_all_events($event_category_id) {
 		if ($custom_cur == ""){if ($currency_format == "USD" || $currency_format == "") {$currency_format = "$";}			}
 		if ($custom_cur != "" || $custom_cur != "USD"){$currency_format = $custom_cur;}
 		if ($custom_cur == "USD") {$currency_format = "$";}
+                $available_spaces = 0;  
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
 	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "Unlimited";}
-/*		echo "<tr><td width='400'>" . $event_name . " - " . $currency_format . "  " . $cost . "    <b>Event Start Date</b>  ".$row['start_date']."</p><hr></td><td>";
-*/
+
 	if ($image_link == ""){
 		echo "<tr><td></td><td><br><b>" . $event_name . "   </b><br>";
 		echo "Location:<b>  ".$event_location."</b><br>";
@@ -449,11 +450,11 @@ function display_all_events($event_category_id) {
 			echo '<a href="'.$more_info.'"> More Info...</a>';
 		}
 		echo "<hr></td><td>";} 
-     
+     echo $events_lang['register'];
 		echo "<form name='form' method='post' action='".request_uri()."'>";
 		echo "<input type='hidden' name='regevent_action' value='register'>";
        	echo "<input type='hidden' name='event_id' value='" . $event_id . "'>";
-        echo "<input type='SUBMIT' value='$lang[register]'></form></td></tr>";
+        echo "<input type='SUBMIT' value='REGISTER'></form></td></tr>";
 		// echo "<input type='SUBMIT' value='REGISTER' ONCLICK=\"return confirm('Are you sure you want to register for ".$event_name."?')\"></form>";
 	}
 	echo "</table>";
@@ -469,6 +470,7 @@ function view_attendee_list() {
 	
 	$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE is_active='yes'";
 	$result = mysql_query ( $sql );
+        $event_id = $event_name = $event_desc = $event_description = $image = $identifier = $cost = $checks = $active = $question1 = $question2 = $question3 = $question4 = null;   
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
 		$event_id = $row ['id'];
 		$event_name = $row ['event_name'];
@@ -489,6 +491,7 @@ function view_attendee_list() {
 	$result = mysql_query ( $sql );
 	
 	echo "<table>";
+        $address = $city = $state = $zip = $date = $paystatus = $txn_type = $amt_pd = $date_pd = $custom1 = $custom2 = $custom3 = $custom4 = null;   
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
 		$id = $row ['id'];
 		$lname = $row ['lname'];
