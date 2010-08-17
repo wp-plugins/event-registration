@@ -1,5 +1,14 @@
 Changes:
 =========
+5.11 - Resolved shortcode displaying wrong on event page for single event shortcode
+        Resolved broken links when using images on event listings
+        Resolved broken month links in calendar
+        Resolved missing images on Calendar
+        Fixed events to display for current day autoomatically on Calendar
+        Resolved broken links on event listings in Calendar
+        
+        
+
 5.0  -  Fixed issue where shortcodes always at the top of content, now returns where typed.
         Added CSS throughout Admin Panels
         Added Additional fields to data tables

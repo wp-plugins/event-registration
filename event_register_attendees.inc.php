@@ -1,10 +1,6 @@
 <?php
-  
 function register_attendees($event_single_id) {
-    
-
-    
-	global $wpdb, $events_lang,$events_lang_flag;
+ 	global $wpdb, $events_lang,$events_lang_flag;
 	$paypal_cur = get_option ( 'paypal_cur' );
 	if ($event_single_id == ""){$event_id = $_REQUEST ['event_id'];}
 	if ($event_single_id != ""){$event_id = $event_single_id;}	
@@ -13,16 +9,12 @@ function register_attendees($event_single_id) {
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$events_organization_tbl = get_option ( 'events_organization_tbl' );
 	$events_listing_type = get_option ( 'events_listing_type' );
-	
 	$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";
 	$result = mysql_query ( $sql );
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
 		$events_listing_type = $row ['events_listing_type'];
 	}
-	
 	//Query Database for Active event and get variable
-	
-
 	if ($event_id == "") {
 		$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE is_active='yes'";
 	} else {
@@ -775,5 +767,4 @@ $sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,s
 	
 	events_payment_page ( $event_id );
 }
-
 ?>

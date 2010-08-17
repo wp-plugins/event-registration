@@ -240,7 +240,7 @@ echo $event_name." | Start Date: ".$start_date." ".$start_time." | End Date: ".$
   <div id="col-left">
   <div style=" border:#999 1px solid; background:#00FF7F; padding:10px; margin:10px 0;"> 
 
-<p><strong>Shortcode for displaying this event only:</strong><br />[Event_Registration_Single id="<?php echo $event_id?>"]</p>
+<p><strong>Shortcode for displaying this event only:</strong><br />[Event_Registration_Single event_id="<?php echo $event_id?>"]</p>
 </div>
   
   <p><strong>Event Identifier:</strong> <?php echo $event_identifier?></p>

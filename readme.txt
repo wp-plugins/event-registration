@@ -29,6 +29,13 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 Changes:
+5.11  - Resolved shortcode displaying wrong on event page for single event shortcode.
+        Resolved broken links when using images on event listings.
+        Resolved broken month links in calendar.
+        Resolved missing images on Calendar.
+        Fixed events to display for current day autoomatically on Calendar.
+        Resolved broken links on event listings in Calendar.
+
 5.10 Fixed issue with Calendar
      Resolved Authorize.net validation issue
      Resolved database upgrade from 4.0 issue
