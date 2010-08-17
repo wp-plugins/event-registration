@@ -437,8 +437,10 @@ function display_all_events($event_category_id) {
 		else {echo "<tr><td></td>";}
 	//	echo "<td><br><b>" . $event_name . "   </b><br>";
         echo "<td>";
-        echo "<p align=left><b><a href='".request_uri()."&regevent_action=register&event_id=".$event_id.
-        "&name_of_event=".$event_name."'>".$event_name."</a></b></p>";
+        //$link = add_query_arg('regevent_action=register', '=.','name_of_event=$event_name', request_uri());
+        $arr_params = array ('regevent_action' => 'register', 'event_id' => $event_id, 'name_of_event'=>$event_name);
+        $link =  add_query_arg($arr_params);
+        echo "<p align=left><b><a href='".$link."'>".$event_name."</a></b></p>";
 		echo "Location:<b>  ".$event_location."</b><br>";
 		echo "Start Date:<b>  ".$start_date."</b><br>";
 		echo "Start Time:<b>  ".$start_time."</b><br>";

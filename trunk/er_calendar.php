@@ -1,50 +1,39 @@
 <?php
+
+//Known issue - calendar will not forward or reverse past current year!
+
 function er_show_calendar(){
-    $url = EVNT_RGR_PLUGINFULLURL;
+global $wpdb;
+$events_detail_tbl = get_option ( 'events_detail_tbl' );
+$events_calendar_url = get_option ( 'er_calendar_url');
+$url = EVNT_RGR_PLUGINFULLURL;
 ?>
 <script type="text/javascript">
 
 function goLastMonth(month, year){
 	// If the month is January, decrement the year
-	if(month == 1){
-		--year;
-		month = 13;
-	}
-	document.location.href = '<?php echo get_page_link();?>&month='+(month-1)+'&year='+year;
-}
-//next function
+	if(month == 1){	
+	   --year;	
+       month = 13;
+       }
+    <?php  
+    $link = add_query_arg('d', '1',get_page_link()); 
+    ?>
+    //link for previous month
+	document.location.href = '<?php echo $link;?>&month='+(month-1)+'&year='+year;
+    }
+
 
 function goNextMonth(month, year){
 	// If the month is December, increment the year
 	if(month == 12){
-	++year;
-	month = 0;
-	}
-	document.location.href = '<?php echo get_page_link();?>&month='+(month+1)+'&year='+year;
-}  
-
-function remChars(txtControl, txtCount, intMaxLength)
-{
-if(txtControl.value.length > intMaxLength)
-	txtControl.value = txtControl.value.substring(0, (intMaxLength-1));
-else
-	txtCount.value = intMaxLength - txtControl.value.length;
-}
-
-function checkFilled() {
-var filled = 0
-var x = document.form1.calName.value;
-if (x.length > 0) {filled ++}
-
-var y = document.form1.calDesc.value;
-if (y.length > 0) {filled ++}
-
-if (filled == 2) {
-document.getElementById("Submit").disabled = false;
-}
-else {document.getElementById("Submit").disabled = true}  // in case a field is filled then erased
-
-}
+	   ++year;	
+       month = 0;
+       }
+   <?php $link = add_query_arg('d', '1',get_page_link());  ?>
+   //link for next month
+	document.location.href = '<?php echo $link;?>&month='+(month+1)+'&year='+year;
+    }  
 
 </script>
 
@@ -57,7 +46,7 @@ body{
 .today{
 	/*background-color:#00CCCC;*/
 	font-weight:bold;
-	background-image:url(<?php echo $url; ?>images/calBg.jpg);
+	background-image:url(<?php echo $url; ?>Images/calBg.jpg);
 	background-repeat:no-repeat;
 	background-position:center;
 	position:relative;
@@ -82,7 +71,7 @@ background-color: #C00000;
 .event {
 /*	background-color: #C6D1DC; */
     font-weight:bold;
-    background-image:url(<?php echo $url; ?>images/events_icon_32.png);
+    background-image:url(<?php echo $url; ?>Images/events_icon_32.png);
     background-repeat:no-repeat;
 	background-position:center;
     border:3px solid #ffffff;
@@ -149,21 +138,21 @@ h5{margin:0;}
 <hr />
 <div id="legend"> 
 
-<img alt="event" src="<?php echo EVNT_RGR_PLUGINFULLURL;?>images/events_icon_32.png" height="17"/> Scheduled Events
+<img alt="event" src="<?php echo EVNT_RGR_PLUGINFULLURL;?>Images/events_icon_32.png" height="17"/> Scheduled Events
 <br />
-<img alt="background" src="<?php echo EVNT_RGR_PLUGINFULLURL;?>images/calBg.jpg" height="10"/> Todays Date</div>
+<img alt="background" src="<?php echo EVNT_RGR_PLUGINFULLURL;?>Images/calBg.jpg" height="10"/> Todays Date</div>
+
 <?php
 
 
-global $wpdb;
-$events_detail_tbl = get_option ( 'events_detail_tbl' );
-$events_calendar_url = get_option ( 'er_calendar_url');
-$url = EVNT_RGR_PLUGINFULLURL;
-	// Get values from query string
-	$day = (isset($_GET["day"])) ? $_GET['day'] : "";
+	
+// Get values from query string
+//	$day = (isset($_GET["day"])) ? $_GET['day'] : "";
+    $day = (isset($_GET["d"])) ? $_GET['d'] : "";
+    $d  = (isset($_GET["d"])) ? $_GET['d'] : "";
 	$month = (isset($_GET["month"])) ? $_GET['month'] : "";
 	$year = (isset($_GET["year"])) ? $_GET['year'] : "";
-	if(empty($day)){ $day = date("j"); }
+	if(empty($d)){ $d = date("j"); }
 	if(empty($month)){ $month = date("n"); }
 	if(empty($year)){ $year = date("Y"); } 
 	//set up vars for calendar etc
@@ -171,6 +160,7 @@ $url = EVNT_RGR_PLUGINFULLURL;
 	$monthName = date("F", $currentTimeStamp);
 	$numDays = date("t", $currentTimeStamp);
 	$counter = 0;
+    $t = date("j");
 
 	//run a selec statement to hi-light the days
 
@@ -178,6 +168,7 @@ function hiLightEvt($eMonth,$eDay,$eYear){
     global $wpdb;
     $events_detail_tbl = get_option ( 'events_detail_tbl' );
     $today = date("j"); 
+    $t = date("j");
     $thisMonth = date("n"); 
 	$thisYear = date("Y"); 
         $aClass = 'normal';
@@ -255,16 +246,21 @@ function hiLightEvt($eMonth,$eDay,$eYear){
 			</tr><tr>
         <?php
 		}
+        $day=strval($i);
+        $arr_params = array ('month' => $month, 'd' => $i, 'year'=>$year, 'v'=>'1');
+        $link =  add_query_arg($arr_params, get_page_link());
+        //echo get_page_link() . '&month='. $month . '&day=' . $i . '&year=' . $year;
+        
 		?>
-        <!--right here--><td width="50" <?php hiLightEvt($month,$i,$year);?>><a href="<?php echo get_page_link() . '&month='. $month . '&day=' . $i . '&year=' . $year;?>&v=1"><?php echo $i;?></a></td> 
+        <!--right here--><td width="50" <?php hiLightEvt($month,$i,$year);?>><a href="<?php echo $link; ?>"><?php echo $i;?></a></td> 
     <?php
 	}
 ?>
 </table>
 
 <?php
-  $month_name = ''; 
-  if(isset($_GET['v'])){  
+$month_name = ''; 
+//if((isset($_GET['v']))||($t == $today)){  //Removed if clause to allow events to list when calendar first comes up for that day.
                         $month_no = $month;
                         if($month_no =="1"){$month_name ="Jan";}
                         if($month_no =="2"){$month_name ="Feb";}
@@ -279,50 +275,61 @@ function hiLightEvt($eMonth,$eDay,$eYear){
                         if($month_no =="11"){$month_name ="Nov";}
                         if($month_no =="12"){$month_name ="Dec";}
 
-$sql="select * from ".$events_detail_tbl." where start_month = '" . $month_name ."' AND start_day ='".$day. "' AND start_year = '".$year."'" ;
-$result = mysql_query($sql);
-$numRows = mysql_num_rows($result);
-
-if($numRows == 0 ){
-	echo '<h3>No Events Scheduled For '.$month_name.' '.$day.'</h3>';
-}else{
-
-echo '<h3>Events Scheduled For '.$month_name.' '.$day.'</h3>';
-echo '';
-	while($row = mysql_fetch_array($result)){
-?>
-<div class="output">
-	<?php 
-        global $event_cost, $more_info, $lang;
-        if ($events_calendar_url != "")
-        {echo "<p align=left><b><u><a href='".$events_calendar_url."&regevent_action=register&event_id=".$row['id'].
-        "&name_of_event=".$row['event_name']."'>".$row['event_name']."</a></u></b></p>";}
-        else {echo "<p align=left><b><u>".$row['event_name']."</u></b></p>";}
-        
-		echo "Location:<b>  ".$row['event_location']."</b><br>";
-		echo "Start Date:<b>  ".$row['start_date']."</b><br>";
-		echo "Price:<b>  ";
-		if ($event_cost != "0" || $event_cost != ""||$event_cost != "FREE" ||$event_cost != "0.00" ){echo $row['currency_format'];
-		echo " ".$row['event_cost'];}
-        else {echo "Free Event";}
-        echo "</b><br>";
-		if ($more_info != ""){
-			echo '<a href="'.$row['more_info'].'"> More Info...</a>';
-		}
-		 
-     if ($events_calendar_url != ""){
-		echo "<form name='form' method='post' action='".$events_calendar_url."'>";
-		echo "<input type='hidden' name='regevent_action' value='register'>";
-       	echo "<input type='hidden' name='event_id' value='" . $row['id'] . "'>";
-        echo "<input type='SUBMIT' value='$events_lang[register]'></form></td></tr>"; }
-?>
-    </div>
-
-<?php
-}
-
-  }
-}
+            $sql="select * from ".$events_detail_tbl." where start_month = '" . $month_name ."' AND start_day ='".$d. "' AND start_year = '".$year."'" ;
+            $result = mysql_query($sql);
+            $numRows = mysql_num_rows($result);
+            
+            if($numRows == 0 ){
+            	echo '<h3>No Events Scheduled For '.$month_name.' '.$d.'</h3>';
+                }
+                else{
+            
+                    echo '<h3>Events Scheduled For '.$month_name.' '.$d.'</h3>';
+                    echo '';
+                    	while($row = mysql_fetch_array($result)){
+                                    ?>
+                                    <div class="output">
+                                    	<?php 
+                                            global $event_cost, $more_info;
+                                            $events_calendar_url = get_option ( 'er_link_for_calendar_url');
+                                            $arr_params = array ('regevent_action'=>'register', 'event_id' => $row['id'], 'name_of_event'=> $row['event_name']);
+                                            $link =  add_query_arg($arr_params, $events_calendar_url);
+                                            
+                                            if ($events_calendar_url != ""){
+                                                    echo "<p align=left><b><u><a href='".$link."'>".$row['event_name']."</a></u></b></p>";
+                                                    }
+                                                else {
+                                                    echo "<p align=left><b><u>".$row['event_name']."</u></b></p>";
+                                                    }
+                                            
+                                    		echo "Location:<b>  ".$row['event_location']."</b><br>";
+                                    		echo "Start Date:<b>  ".$row['start_date']."</b><br>";
+                                    		echo "Price:<b>  ";
+                                    		if ($event_cost != "0" || $event_cost != ""||$event_cost != "FREE" ||$event_cost != "0.00" ){
+                                    		      echo $row['currency_format'];
+                                    		      echo " ".$row['event_cost'];
+                                                  }
+                                                  else {
+                                                    echo "Free Event";
+                                                    }
+                                            echo "</b><br>";
+                                    		if ($more_info != ""){
+                                    			 echo '<a href="'.$row['more_info'].'"> More Info...</a>';
+                                    		     }
+                                    		 
+                                         if ($events_calendar_url != ""){
+                                    		echo "<form name='form' method='post' action='".$events_calendar_url."'>";
+                                    		echo "<input type='hidden' name='regevent_action' value='register'>";
+                                           	echo "<input type='hidden' name='event_id' value='" . $row['id'] . "'>";
+                                            echo "<input type='SUBMIT' value='REGISTER'></form></td></tr>"; 
+                                            }
+                                    ?>
+                                    </div>
+                                    
+                                    <?php
+                                }
+                     }
+    //}
 echo "<hr />";
 }
 ?>
