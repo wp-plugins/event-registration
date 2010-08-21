@@ -1,7 +1,7 @@
 === Event Registration ===
 Contributors: David Fleming
 Donate link: http://www.edgetechweb.com/
-Tags: event management, event registration, events managment, events registration, event calendar, events calendar, events, event
+Tags: calendar, class, event management, event registration, events managment, events registration, event calendar, events calendar, events, event, class registration, class schedule, classes
 Requires at least: 2.0.2
 Tested up to: 3.0.1
 Stable tag: 5.11
