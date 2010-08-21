@@ -56,6 +56,10 @@ Changes:
 . . . See changelog.txt for more changes
 
 
+== Upgrading ==
+
+If you are upgrading from a version prior to 5.0, I have made some major changes to the database and depending on your configuration, it may or may not upgrade the first attempt.  I recommend activating and deactivating the new version several times.
+You can look under the support tab and if it does not say 5.xx then you need to activate and reactivate the upgrade.  Please email me if this does not resolve your issues.  consultant@avdude.com
 
 
 
