@@ -29,7 +29,7 @@ If you like the plugin and find it useful, your donations would also help me kee
 == Change Log ==
 
 = 5.20 =
-Fixed issue for custom currency to allow different currency formats per event
+-Fixed issue for custom currency to allow different currency formats per event
 Fixed issue where code displaying on registration confirmation page
 Fixed Currency display issue on events listing page
 Fixed mail send issue to use Organization name/email for outbound confirmations
