@@ -605,6 +605,233 @@ $sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,s
 					//$value_string = $value_string +","+ ($_POST[$question->question_type.'_'.$question->id][$i]); 
 					$value_string .= $_POST[$question->question_type.'_'.$question->id][$i].","; 
 					}
+					//echo "Value String - ".$value_string;
+					/*$values = explode ( ",", $question->response );
+					$value_string = '';
+					foreach ( $values as $key => $value ) {
+						$post_val = $_POST [$question->question_type . '_' . $question->id . '_' . $key];
+						if ($key > 0 && ! empty ( $post_val )) $value_string .= ',';
+						$value_string .= $post_val;
+					}*/
+					$wpdb->query ( "INSERT into `$events_answer_tbl` (registration_id, question_id, answer)
+					values ('$reg_id', '$question->id', '$value_string')" );
+					break;
+			}
+		}
+	}
+	
+	
+	//Added by IJ: get the attendee-number and add to subject of email for having a unique attendee-number
+	$sql = "select max(id) as attnum from $events_attendee_tbl ";
+	$result = mysql_query ( $sql );
+	$row = mysql_fetch_array ( $result );
+	$attnum = $row ['attnum'];	
+	
+	
+	//Query Database for Event Organization Info to email registrant BHC
+	$events_organization_tbl = get_option ( 'events_organization_tbl' );
+	$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";
+	// $sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; 
+	
+
+	$result = mysql_query ( $sql );
+	while ( $row = mysql_fetch_assoc ( $result ) ) {
+		$org_id = $row ['id'];
+		$Organization = $row ['organization'];
+		$Organization_street1 = $row ['organization_street1'];
+		$Organization_street2 = $row ['organization_street2'];
+		$Organization_city = $row ['organization_city'];
+		$Organization_state = $row ['organization_state'];
+		$Organization_zip = $row ['organization_zip'];
+		$contact = $row ['contact_email'];
+		$registrar = $row ['contact_email'];
+		$payment_vendor_id = $row ['payment_vendor_id'];
+		$currency_format = $row ['currency_format'];
+		$return_url = $row ['return_url'];
+        $events_listing_type = $row ['events_listing_type'];
+		$default_mail = $row ['default_mail'];
+		$conf_message = $row ['message'];
+	}
+	
+	$events_detail_tbl = get_option ( 'events_detail_tbl' );
+	
+	$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE id='" . $event_id . "'";
+	$result = mysql_query ( $sql );
+	while ( $row = mysql_fetch_assoc ( $result ) ) {
+		$event_name = $row ['event_name'];
+		$event_desc = $row ['event_desc']; // BHC
+		$display_desc = $row ['display_desc'];
+		$image = $row ['image_link'];
+		$identifier = $row ['event_identifier'];
+		$reg_limit = $row ['reg_limit'];
+		$cost = $row ['event_cost'];
+		$start_month = $row ['start_month'];
+		$start_day = $row ['start_day'];
+		$start_year = $row ['start_year'];
+		$multiple = $row ['multiple'];
+		$end_month = $row ['end_month'];
+		$end_day = $row ['end_day'];
+		$end_year = $row ['end_year'];
+		$start_time = $row ['start_time'];
+		$end_time = $row ['end_time'];
+		$checks = $row ['allow_checks'];
+		$active = $row ['is_active'];
+		$question1 = $row ['question1'];
+		$question2 = $row ['question2'];
+		$question3 = $row ['question3'];
+		$question4 = $row ['question4'];
+		$send_mail = $row ['send_mail'];
+		$conf_mail = $row ['conf_mail'];
+				$event_location = $row ['event_location'];
+		$more_info = $row ['more_info'];
+		$custom_cur = $row ['custom_cur'];
+		$start_date = $start_month . " " . $start_day . ", " . $start_year;
+		$end_date = $end_month . " " . $end_day . ", " . $end_year;
+	}
+	
+	// Email Confirmation to Registrar
+	
+	$event_name = $current_event;
+    $headers  = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+    $headers .= 'From: "' . $Organization . '" <' . $registrar . ">\r\n";
+	
+	$distro = $registrar;
+	$message = ("$fname $lname  has signed up on-line for $event_name.\n\nMy email address is  $email.");
+	
+	wp_mail ( $distro, $event_name . " Number: $attnum", $message, $headers );
+  
+	
+	//Email Confirmation to Attendee
+	$query = "SELECT * FROM $events_attendee_tbl WHERE fname='$fname' AND lname='$lname' AND email='$email'";
+	$result = mysql_query ( $query ) or die ( 'Error : ' . mysql_error () );
+	while ( $row = mysql_fetch_assoc ( $result ) ) {
+		$id = $row ['id'];
+	}
+	
+	$payment_link = $return_url . "?id=" . $id;
+	
+	//Email Confirmation to Attendee
+	$SearchValues = array ("[fname]", "[lname]", "[phone]", "[event]", "[description]", "[cost]", "[currency]", "[qst1]", "[qst2]", "[qst3]", "[qst4]", "[contact]", "[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]", "[co_zip]", "[payment_url]", "[start_date]", "[start_time]", "[end_date]", "[end_time]","[snum]", "[num_people]" );
+	
+	$ReplaceValues = array ($fname, $lname, $phone, $event_name, $event_desc, $cost, $custom_cur, $question1, $question2, $question3, $question4, $contact, $Organization, $Organization_street1, $Organization_street2, $Organization_city, $Organization_state, $Organization_zip, $payment_link, $start_date, $start_time, $end_date, $end_time, $attnum, $num_people);
+	
+	$custom = str_replace ( $SearchValues, $ReplaceValues, $conf_mail );
+	$default_replaced = str_replace ( $SearchValues, $ReplaceValues, $conf_message );
+	
+	$distro = $email;
+	
+	if ($default_mail == 'Y') {
+		if ($send_mail == 'Y') {
+			wp_mail ( $distro, $event_name, $custom, $headers );
+		}
+	}
+	
+	if ($default_mail == 'Y') {
+		if ($send_mail == 'N') {
+			wp_mail ( $distro, $event_name, $default_replaced, $headers );
+		}
+	}
+	
+	//Get registrars id from the data table .
+	
+
+	$query = "SELECT * FROM $events_attendee_tbl WHERE fname='$fname' AND lname='$lname' AND email='$email'";
+	$result = mysql_query ( $query ) or die ( 'Error : ' . mysql_error () );
+	while ( $row = mysql_fetch_assoc ( $result ) ) {
+		$id = $row ['id'];
+		$lname = $row ['lname'];
+		$fname = $row ['fname'];
+		$address = $row ['address'];
+		$city = $row ['city'];
+		$state = $row ['state'];
+		$zip = $row ['zip'];
+		$email = $row ['email'];
+		$num_people = $row ['num_people'];
+		$phone = $row ['phone'];
+		$date = $row ['date'];
+		$paystatus = $row ['paystatus'];
+		$txn_type = $row ['txn_type'];
+		$amt_pd = $row ['amount_pd'];
+		$date_pd = $row ['paydate'];
+		$event_id = $row ['event_id'];
+		$custom1 = $row ['custom_1'];
+		$custom2 = $row ['custom_2'];
+		$custom3 = $row ['custom_3'];
+		$custom4 = $row ['custom_4'];
+	}
+	
+	update_option ( "attendee_id", $id );
+	
+	//Send screen confirmation & forward to paypal if selected.
+	
+
+	echo $events_lang ['registrationConfirm'];
+	
+	events_payment_page ( $event_id );
+}
+
+function manually_add_attendees_to_db() {
+	global $wpdb, $events_lang;
+	$current_event = get_option ( 'current_event' );
+	$registrar = get_option ( 'registrar' );
+	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
+	
+	$fname = $_POST ['fname'];
+	$lname = $_POST ['lname'];
+	$address = $_POST ['address'];
+	$city = $_POST ['city'];
+	$state = $_POST ['state'];
+	$zip = $_POST ['zip'];
+	$phone = $_POST ['phone'];
+	$email = $_POST ['email'];
+	$hear = $_POST ['hear'];
+	$num_people = $_POST ['num_people'];
+    $coupon = $_POST['coupon'];
+	$event_id = $_POST ['event_id'];
+	$payment = $_POST ['payment'];
+	$custom_1 = $_POST ['custom_1'];
+	$custom_2 = $_POST ['custom_2'];
+	$custom_3 = $_POST ['custom_3'];
+	$custom_4 = $_POST ['custom_4'];
+	update_option ( "attendee_first", $fname );
+	update_option ( "attendee_last", $lname );
+	update_option ( "attendee_name", $fname . " " . $lname );
+	update_option ( "attendee_email", $email );
+	
+$sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,state ,zip ,email ,phone ,hear ,coupon,num_people, payment, event_id) VALUES ('$lname', '$fname', '$address', '$city', '$state', '$zip', '$email', '$phone', '$hear', '$coupon','$num_people', '$payment', '$event_id')";
+
+	$wpdb->query ( $sql );
+	
+
+	
+	// Insert Extra From Post Here
+	$events_question_tbl = get_option ( 'events_question_tbl' );
+	$events_answer_tbl = get_option ( 'events_answer_tbl' );
+	$reg_id = $wpdb->get_var ( "SELECT LAST_INSERT_ID()" );
+	
+	$questions = $wpdb->get_results ( "SELECT * from `$events_question_tbl` where event_id = '$event_id'" );
+	if ($questions) {
+		foreach ( $questions as $question ) {
+			switch ($question->question_type) {
+				case "TEXT" :
+				case "TEXTAREA" :
+				case "DROPDOWN" :
+					$post_val = $_POST [$question->question_type . '_' . $question->id];
+					$wpdb->query ( "INSERT into `$events_answer_tbl` (registration_id, question_id, answer)
+					values ('$reg_id', '$question->id', '$post_val')" );
+					break;
+				case "SINGLE" :
+					$post_val = $_POST [$question->question_type . '_' . $question->id];
+					$wpdb->query ( "INSERT into `$events_answer_tbl` (registration_id, question_id, answer)
+					values ('$reg_id', '$question->id', '$post_val')" );
+					break;
+				case "MULTIPLE" :
+					$value_string = '';
+					for ($i=0; $i<count($_POST[$question->question_type.'_'.$question->id]); $i++){ 
+					//$value_string = $value_string +","+ ($_POST[$question->question_type.'_'.$question->id][$i]); 
+					$value_string .= $_POST[$question->question_type.'_'.$question->id][$i].","; 
+					}
 					echo "Value String - ".$value_string;
 					/*$values = explode ( ",", $question->response );
 					$value_string = '';
@@ -733,38 +960,5 @@ $sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,s
 	//Get registrars id from the data table .
 	
 
-	$query = "SELECT * FROM $events_attendee_tbl WHERE fname='$fname' AND lname='$lname' AND email='$email'";
-	$result = mysql_query ( $query ) or die ( 'Error : ' . mysql_error () );
-	while ( $row = mysql_fetch_assoc ( $result ) ) {
-		$id = $row ['id'];
-		$lname = $row ['lname'];
-		$fname = $row ['fname'];
-		$address = $row ['address'];
-		$city = $row ['city'];
-		$state = $row ['state'];
-		$zip = $row ['zip'];
-		$email = $row ['email'];
-		$num_people = $row ['num_people'];
-		$phone = $row ['phone'];
-		$date = $row ['date'];
-		$paystatus = $row ['paystatus'];
-		$txn_type = $row ['txn_type'];
-		$amt_pd = $row ['amount_pd'];
-		$date_pd = $row ['paydate'];
-		$event_id = $row ['event_id'];
-		$custom1 = $row ['custom_1'];
-		$custom2 = $row ['custom_2'];
-		$custom3 = $row ['custom_3'];
-		$custom4 = $row ['custom_4'];
-	}
-	
-	update_option ( "attendee_id", $id );
-	
-	//Send screen confirmation & forward to paypal if selected.
-	
-
-	echo $events_lang ['registrationConfirm'];
-	
-	events_payment_page ( $event_id );
 }
 ?>

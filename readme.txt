@@ -4,17 +4,15 @@ Donate link: http://www.edgetechweb.com/
 Tags: calendar, class, event management, event registration, events managment, events registration, event calendar, events calendar, events, event, class registration, class schedule, classes
 Requires at least: 2.0.2
 Tested up to: 3.0.1
-Stable tag: 5.11
+Stable tag: 5.20
 
-This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.
+This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information and any additional information you request to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, MonsterPay or Authorize.net online payment site for online collection of event fees.
 
 == Description ==
 
-This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees..  Additionally it allows support for checks and cash payments.  Detailed payment management system to track and record event payments.  Reporting features provide a list of events, list of attendees, and excel export.  Events can be created in an Excel spreadsheet and uploaded via the event upload tool.  Dashboard widget allows for quick reference to events from the dashboard.  Inline menu navigation allows for ease of use.
+This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. It allows you to capture the registering persons contact information and any additional infromation you request to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, Monster Pay,  or Authorize.net online payment site for online collection of event fees..  Additionally it allows support for checks and cash payments.  Detailed payment management system to track and record event payments.  Reporting features provide a list of events, list of attendees, and excel export.  Events can be created in an Excel spreadsheet and uploaded via the event upload tool.  Dashboard widget allows for quick reference to events from the dashboard.  Inline menu navigation allows for ease of use.
 
-I have made some changes to the database and the plugin.  I recommend you try this on a test site before going live and that you backup all your data and the old version of the plugin you are using before upgrading.
-
-If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
+If you like the plugin and find it useful, please donate.  Your donations help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 Also if you could rate the plugin that would also be helpful.
 
@@ -28,30 +26,46 @@ Please continue to email questions or comments to consultant@avdude.com.
 
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
-Changes:
-5.11  - Resolved shortcode displaying wrong on event page for single event shortcode.
-        Resolved broken links when using images on event listings.
-        Resolved broken month links in calendar.
-        Resolved missing images on Calendar.
-        Fixed events to display for current day autoomatically on Calendar.
-        Resolved broken links on event listings in Calendar.
+== Change Log ==
 
-5.10 Fixed issue with Calendar
-     Resolved Authorize.net validation issue
-     Resolved database upgrade from 4.0 issue
-     Resolved extra numbers at bottom of the Month select/option drop-down combo box
-     Resolved misspelling for Event Calendar shortcode
+= 5.20 =
+Fixed issue for custom currency to allow different currency formats per event
+Fixed issue where code displaying on registration confirmation page
+Fixed Currency display issue on events listing page
+Fixed mail send issue to use Organization name/email for outbound confirmations
+Fixed issue where Donations button was showing when Organization Section said no to accepting donations.
+Changed function name dateDiff - conflict with myadmanager plugin.
+Added ability to send mail to participants from within the plugin.
+Resolved default month display with Calendar
+Resolved Year Rollover Issue in Calendar
+Added MonsterPay as payment gateway option
+
+= 5.11 =
+Resolved shortcode displaying wrong on event page for single event shortcode.
+Resolved broken links when using images on event listings.
+Resolved broken month links in calendar.
+Resolved missing images on Calendar.
+Fixed events to display for current day autoomatically on Calendar.
+Resolved broken links on event listings in Calendar.
+
+= 5.10=  
+Fixed issue with Calendar
+Resolved Authorize.net validation issue
+Resolved database upgrade from 4.0 issue
+Resolved extra numbers at bottom of the Month select/option drop-down combo box
+Resolved misspelling for Event Calendar shortcode
 
 
-5.0 - Revised look and usability of admin panels by CSS
-      Fixed bug in CSV import file
-      Revised admin accounting features
-      Modified registration form to provide ability to use or not use default fields
-      Added dashboard widget
-      Added calendar
-      Added Sample Creation for getting started
-      Fixed issue where text would only appear below registration form.
-      Fixed other minor bugs.
+= 5.0 =
+Revised look and usability of admin panels by CSS
+Fixed bug in CSV import file
+Revised admin accounting features
+Modified registration form to provide ability to use or not use default fields
+Added dashboard widget
+Added calendar
+Added Sample Creation for getting started
+Fixed issue where text would only appear below registration form.
+Fixed other minor bugs.
       
 . . . See changelog.txt for more changes
 
@@ -77,6 +91,7 @@ If you would like to put a specific event on a page use `[Event_Registration_Sin
 All done. 
 
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
+
 = License =
 
 This plugin is provided "as is" and without any warranty or expectation of function. I'll probably try to help you if you ask nicely, but I can't promise anything. You are welcome to use this plugin and modify it however you want, as long as you give credit where it is due. 

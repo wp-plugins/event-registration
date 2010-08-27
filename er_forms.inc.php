@@ -240,12 +240,13 @@ echo $event_name." | Start Date: ".$start_date." ".$start_time." | End Date: ".$
   <div id="col-left">
   <div style=" border:#999 1px solid; background:#00FF7F; padding:10px; margin:10px 0;"> 
 
-<p><strong>Shortcode for displaying this event only:</strong><br />[Event_Registration_Single event_id="<?php echo $event_id?>"]</p>
+<p><strong>Shortcode for displaying this event only:</strong><br />[Event_Registration_Single event_id="<?php echo $event_id;?>"]</p>
 </div>
   
-  <p><strong>Event Identifier:</strong> <?php echo $event_identifier?></p>
+  <p><strong>Event Identifier:</strong> <?php echo $event_identifier;?></p>
+  <p><strong>Currency Format:</strong> <?php echo $custom_cur;?></p>
     
-    <p><strong>Cost:</strong> <?php echo $currency_format." ".$event_cost;?>
+    <p><strong>Cost:</strong> <?php echo $custom_cur." ".$event_cost;?>
     </p>
     <p><strong>Allow Cash/Check Payments for this event?</strong> 
     <?php
@@ -273,7 +274,7 @@ echo $event_name." | Start Date: ".$start_date." ".$start_time." | End Date: ".$
 		} 
      ?></p>
     <p><strong>Coupon Code:</strong> <?php echo $coupon_code;?></p>
-    <p><strong>Coupon discount amount:</strong> -<?php echo $currency_format." ".$coupon_code_price;?> </p>
+    <p><strong>Coupon discount amount:</strong> -<?php echo $custom_cur." ".$coupon_code_price;?> </p>
      
     <p><strong>Allow payment for more than one person at a time? (max # people 5)</strong>: 
     <?php 
@@ -465,7 +466,7 @@ echo "<h2><a href='admin.php?page=events&events=current'>Current Events</a>  |  
 				if ($start_date <= $curdate){
 					$status = '<span style="color: #F00; padding-left:30px; font-weight:bold;">EXPIRED</span>';
 				} else {
-					$days_till_event = dateDiff("-", $start_date, $curdate);
+					$days_till_event = dateDiffer("-", $start_date, $curdate);
                     $status = '<span style="color: blue; padding-left:30px; font-weight:bold;">'.$days_till_event.' DAYS UNTIL EVENT</span>';
 				}
                    
@@ -481,7 +482,7 @@ echo "<a href='admin.php?page=events&event_id=". $event_id . "&action=get_detail
 }
 
 
-function dateDiff($dformat, $endDate, $beginDate)
+function dateDiffer($dformat, $endDate, $beginDate)
 {
 $date_parts1=explode($dformat, $beginDate);
 $date_parts2=explode($dformat, $endDate);
