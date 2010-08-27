@@ -31,12 +31,13 @@ function add_event_form(){
 	<input type="radio" name="send_mail" value="N">No
    </li>
     <li>Custom Confirmation Email For This Event:</strong><br /> 
-    <textarea rows='4' cols='125' name='conf_mail' id="conf_mail_new"  class="my_ed"><p>***This is an automated response - Do Not Reply***</p>
-<p>Thank you [fname] [lname] for registering for [event].</p>
-<p> We hope that you will find this event both informative and enjoyable. Should have any questions, please contact [contact].</p>
-<p>If you have not done so already, please submit your payment in the amount of <?php echo htmlentities($org_options['currency_symbol'])?>[cost].</p>
-<p>Click here to reveiw your payment information [payment_url].</p>
-<p>Thank You.</p></textarea>
+    <textarea rows='4' cols='125' name='conf_mail' id="conf_mail_new"  class="my_ed">
+***This is an automated response - Do Not Reply***
+Thank you [fname] [lname] for registering for [event].
+We hope that you will find this event both informative and enjoyable. Should have any questions, please contact [contact].
+If you have not done so already, please submit your payment in the amount of [cost].
+Click here to reveiw your payment information [payment_url].
+Thank You.</textarea>
       <br />
 </li>   
     
@@ -65,6 +66,29 @@ function add_event_form(){
     <input type="radio" name="allow_multiple" checked value="Y">Yes
 	<input type="radio" name="allow_multiple" value="N">No
     <br />(max # people 5)
+    </li>
+    <li><strong>Custom Currency</strong><select name = "custom_cur"><?php
+    //If ($custom_cur !=""){echo "<option value='" . $custom_cur . "'>" . $custom_cur . "</option>";}
+    if ($currency_format !=""){echo "<option value='" . $currency_format . "'>" . $currency_format . "</option>";}
+    echo "<option value='USD'>USD</option>
+				<option value='AUD'>AUD</option>
+				<option value='GBP'>GBP</option>
+				<option value='CAD'>CAD</option>
+				<option value='CZK'>CZK</option>
+				<option value='DKK'>DKK</option>
+				<option value='EUR'>EUR</option>
+				<option value='HKD'>HKD</option>
+				<option value='HUF'>HUF</option>
+				<option value='ILS'>ILS</option>
+				<option value='JPY'>JPY</option>
+				<option value='MXN'>MXN</option>
+				<option value='NZD'>NZD</option>
+				<option value='NOK'>NOK</option>
+				<option value='PLN'>PLN</option>
+				<option value='SGD'>SGD</option>
+				<option value='SEK'>SEK</option>
+				<option value='CHF'>CHF</option></select>";
+     ?>
     </li>
     <li><strong>Event Cost:</strong>
     <?php echo $currency_format;?><input name="cost" size="10"><font size="-2">(leave blank for free events, enter 2 place decimal i.e. <?php echo $currency_format;?>7.00)</li>
@@ -287,8 +311,31 @@ function edit_event_form(){
 				} ?>
     <br />(max # people 5)
     </li>
+        <li><strong>Custom Currency</strong><select name = "custom_cur"><?php
+    If ($custom_cur !=""){echo "<option value='" . $custom_cur . "'>" . $custom_cur . "</option>";}
+    if ($currency_format !=""){echo "<option value='" . $currency_format . "'>" . $currency_format . "</option>";}
+    echo "<option value='USD'>USD</option>
+				<option value='AUD'>AUD</option>
+				<option value='GBP'>GBP</option>
+				<option value='CAD'>CAD</option>
+				<option value='CZK'>CZK</option>
+				<option value='DKK'>DKK</option>
+				<option value='EUR'>EUR</option>
+				<option value='HKD'>HKD</option>
+				<option value='HUF'>HUF</option>
+				<option value='ILS'>ILS</option>
+				<option value='JPY'>JPY</option>
+				<option value='MXN'>MXN</option>
+				<option value='NZD'>NZD</option>
+				<option value='NOK'>NOK</option>
+				<option value='PLN'>PLN</option>
+				<option value='SGD'>SGD</option>
+				<option value='SEK'>SEK</option>
+				<option value='CHF'>CHF</option></select>";
+     ?>
+    </li>
     <li><strong>Event Cost:</strong>
-    <?php echo $currency_format;?><input name="cost" size="10" value="<?php echo $event_cost;?>"><font size="-2">(leave blank for free events, enter 2 place decimal i.e. <?php echo $currency_format;?>7.00)</font></li>
+    <?php echo $custom_cur;?><input name="cost" size="10" value="<?php echo $event_cost;?>"><font size="-2">(leave blank for free events, enter 2 place decimal i.e. <?php echo $custom_cur;?>7.00)</font></li>
 	<li><strong>Allow Cash/Check Payments for this event?</strong>
     <?php	if ($allow_checks == "") {
 					echo " <INPUT TYPE='radio' NAME='allow_checks' CHECKED VALUE='yes'>Yes";
@@ -331,7 +378,7 @@ function edit_event_form(){
 				} ?>
     </li>
     <li><strong>Coupon Code:</strong> <input name="coupon_code" size="20" value="<?php echo $coupon_code;?>" > </li>
-    <li><strong>Amount of discount for coupon:</strong> -<?php echo $currency_format;?><input name="coupon_code_price" size="10" value="<?php echo $coupon_code_price;?>"><font size="-2">(enter 2 place decimal i.e. <?php echo $currency_format;?>7.00.)</font></li>
+    <li><strong>Amount of discount for coupon:</strong> -<?php echo $custom_cur;?> <input name="coupon_code_price" size="10" value="<?php echo $coupon_code_price;?>"><font size="-2">(enter 2 place decimal i.e. <?php echo $custom_cur;?> 7.00.)</font></li>
     
 	
   

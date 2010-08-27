@@ -7,6 +7,14 @@ global $wpdb;
 $events_detail_tbl = get_option ( 'events_detail_tbl' );
 $events_calendar_url = get_option ( 'er_calendar_url');
 $url = EVNT_RGR_PLUGINFULLURL;
+	
+//$d = date("j");
+//$month = date("n");
+//$year = date("Y");   
+    
+  
+    
+    
 ?>
 <script type="text/javascript">
 
@@ -152,25 +160,27 @@ h5{margin:0;}
     $d  = (isset($_GET["d"])) ? $_GET['d'] : "";
 	$month = (isset($_GET["month"])) ? $_GET['month'] : "";
 	$year = (isset($_GET["year"])) ? $_GET['year'] : "";
-	if(empty($d)){ $d = date("j"); }
-	if(empty($month)){ $month = date("n"); }
-	if(empty($year)){ $year = date("Y"); } 
+     
 	//set up vars for calendar etc
-	$currentTimeStamp = strtotime("$year-$month-$day");
-	$monthName = date("F", $currentTimeStamp);
-	$numDays = date("t", $currentTimeStamp);
+    if(empty($d)){ $d = date_i18n("j"); }
+    if(empty($day)){ $day = date_i18n("j"); }
+	if(empty($month)){ $month = date_i18n("n"); }
+	if(empty($year)){ $year = date("Y"); } 
+	$currentTimeStamp = strtotime("$year-$month-$d");
+	$monthName = date_i18n("F", $currentTimeStamp);
+	$numDays = date_i18n("t", $currentTimeStamp);
 	$counter = 0;
-    $t = date("j");
+    $t = date_i18n("j");
 
 	//run a selec statement to hi-light the days
 
 function hiLightEvt($eMonth,$eDay,$eYear){
     global $wpdb;
     $events_detail_tbl = get_option ( 'events_detail_tbl' );
-    $today = date("j"); 
-    $t = date("j");
-    $thisMonth = date("n"); 
-	$thisYear = date("Y"); 
+    $today = date_i18n("j"); 
+    $t = date_i18n("j");
+    $thisMonth = date_i18n("n"); 
+	$thisYear = date_i18n("Y"); 
         $aClass = 'normal';
         $month_name = '01';
 		if ($today == $eDay && $thisMonth == $eMonth && $thisYear == $eYear){$aClass='class="today"';}
@@ -236,7 +246,7 @@ function hiLightEvt($eMonth,$eDay,$eYear){
 		$timeStamp = strtotime("$year-$month-$i");
 		if($i == 1){
 			// Workout when the first day of the month is
-			$firstDay = date("w", $timeStamp);
+			$firstDay = date_i18n("w", $timeStamp);
 			for($j = 0; $j < $firstDay; $j++, $counter++){
 				echo "<td>&nbsp;</td>";
 			} 

@@ -10,6 +10,7 @@ er_plugin_menu();
 <h2>Manage Attendees</h2>
 
 <div style="float:left; margin-right:20px;">
+
   <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"];?>">
     <input type="hidden" name="action" value="">
     <input class="button-primary" type="submit" name="Submit" value="SELECT EVENT"/>
@@ -39,7 +40,13 @@ er_plugin_menu();
            else {echo "<font color='red'>No Attendees</font>";}
            ?>
      </h3>
-                <table class="widefat">
+<div style="float:left; margin-right:20px;">
+<form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"];?>">
+<input type="hidden" name="action" value="add">
+<input type="hidden" name="event_id" value="<?php echo $event_id;?>">
+    <input class="button-primary" type="submit" name="Submit" value="ADD NEW ATTENDEE"/>
+  </form>
+</div>    <table class="widefat">
                 <thead>
                 <tr><th># People</th><th>Name </th><th>Email</th><th>Phone</th><th>Action</th></tr>
                 </thead>
@@ -270,6 +277,244 @@ er_plugin_menu();
         
         break;
         
+        case "add":
+        		$event_id = $_REQUEST['event'];
+				$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE id='" . $event_id . "'";
+				$result = mysql_query ( $sql );
+				while ( $row = mysql_fetch_assoc ( $result ) ) {
+	                $event_id= $row['id'];
+			        $event_name =  stripslashes($row ['event_name']);
+					$event_identifier =  stripslashes($row ['event_identifier']);
+					$event_desc =  stripslashes($row ['event_desc']);
+					$image_link = $row ['image_link'];
+					$header_image = $row ['header_image'];
+					$display_desc = $row ['display_desc'];
+					$event_location =  stripslashes($row ['event_location']);
+					$more_info = $row ['more_info'];
+					$reg_limit = $row ['reg_limit'];
+					$event_cost = $row ['event_cost'];
+					$custom_cur = $row ['custom_cur'];
+					$multiple = $row ['multiple'];
+					$allow_checks = $row ['allow_checks'];
+					$is_active = $row ['is_active'];
+					$start_month = $row ['start_month'];
+					$start_day = $row ['start_day'];
+					$start_year = $row ['start_year'];
+					$end_month = $row ['end_month'];
+					$end_day = $row ['end_day'];
+					$end_year = $row ['end_year'];
+					$start_time = $row ['start_time'];
+					$end_time = $row ['end_time'];
+					$conf_mail = stripslashes($row ['conf_mail']);
+					$send_mail = $row ['send_mail'];
+                    $use_coupon=$row ['use_coupon'];
+            		$coupon_code=$row ['coupon_code'];
+            		$coupon_code_price=$row ['coupon_code_price'];
+            		$use_percentage=$row ['use_percentage'];
+            		$event_category =  $row ['event_category'];
+						if ($start_month == "Jan"){$month_no = '01';}
+						if ($start_month == "Feb"){$month_no = '02';}
+						if ($start_month == "Mar"){$month_no = '03';}
+						if ($start_month == "Apr"){$month_no = '04';}
+						if ($start_month == "May"){$month_no = '05';}
+						if ($start_month == "Jun"){$month_no = '06';}
+						if ($start_month == "Jul"){$month_no = '07';}
+						if ($start_month == "Aug"){$month_no = '08';}
+						if ($start_month == "Sep"){$month_no = '09';}
+						if ($start_month == "Oct"){$month_no = '10';}
+						if ($start_month == "Nov"){$month_no = '11';}
+						if ($start_month == "Dec"){$month_no = '12';}
+					$start_date = $start_year."-".$month_no."-".$start_day;
+						if ($end_month == "Jan"){$end_month_no = '01';}
+						if ($end_month == "Feb"){$end_month_no = '02';}
+						if ($end_month == "Mar"){$end_month_no = '03';}
+						if ($end_month == "Apr"){$end_month_no = '04';}
+						if ($end_month == "May"){$end_month_no = '05';}
+						if ($end_month == "Jun"){$end_month_no = '06';}
+						if ($end_month == "Jul"){$end_month_no = '07';}
+						if ($end_month == "Aug"){$end_month_no = '08';}
+						if ($end_month == "Sep"){$end_month_no = '09';}
+						if ($end_month == "Oct"){$end_month_no = '10';}
+						if ($end_month == "Nov"){$end_month_no = '11';}
+						if ($end_month == "Dec"){$end_month_no = '12';}
+					$end_date = $end_year."-".$end_month_no."-".$end_day;
+                    $reg_form_defaults = unserialize($row['reg_form_defaults']);
+                    if ($reg_form_defaults !=""){
+                        if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
+                        if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
+                        if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
+                        if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
+                        if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+                        }
+   		            if ($reg_limit == ''){$reg_limit = 999;}
+                    if ($event_cost == ''){$event_cost= 0;}
+                    if ($coupon_code_price == ''){$coupon_code_price = 0;}
+             }
+			
+            	$sql2= "SELECT SUM(num_people) FROM " . get_option('events_attendee_tbl') . " WHERE event_id='$event_id'";
+				$result2 = mysql_query($sql2);
+	
+				while($row = mysql_fetch_array($result2)){
+					$number_attendees =  $row['SUM(num_people)'];
+				}
+				
+				if ($number_attendees == '' || $number_attendees == 0){
+					$number_attendees = '0';
+				}
+				
+				
+				
+				?>
+                <div class="metabox-holder">
+                <div class="postbox">
+                <h3>Add New Attendee Information</h3>
+                <form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+                <input type="hidden" name="event" value="<?php echo $event_id; ?>">
+                <input type="hidden" name="action" value="post_new">
+                <ul>
+                <?php
+				echo "<table><tr><td width='25'></td><td align='left'><hr>";
+				echo "<form method='post' action='" . $_SERVER ['REQUEST_URI'] . "'>";
+			?>	<p align="left"><b><?php
+		echo $events_lang ['firstName'];
+		?>: <br />
+	<input tabIndex="1" maxLength="40" size="47" name="fname"></b></p>
+	<p align="left"><b><?php
+		echo $events_lang ['lastName'];
+		?>:<br />
+	<input tabIndex="2" maxLength="40" size="47" name="lname"></b></p>
+	<p align="left"><b><?php
+		echo $events_lang ['email'];
+		?>:<br />
+	<input tabIndex="3" maxLength="40" size="47" name="email"></b></p>
+	
+        
+<?php if ($inc_phone == "Y"){ ?>
+	<p align="left"><b><?php
+		echo $events_lang ['phone'];
+		?>:<br />
+  <input tabIndex="4" maxLength="20" size="25" name="phone"></b></p>
+<?php } 
+if ($inc_address == "Y"){  ?> 
+        <p align="left"><b>
+     <?php  echo $events_lang ['address'];	?>:<br />
+       	<input tabIndex="5" maxLength="35" size="49" name="address"></b></p>
+<?php } 
+
+if ($inc_city == "Y"){ ?>
+        <p align="left"><b>
+    <?php echo $events_lang ['city'];?>:<br />
+        <input tabIndex="6" maxLength="25" size="35" name="city"> </b></p>
+<?php } 
+
+if ($inc_state == "Y"){ ?>
+    <?php //no state necessary in germany
+      if ($events_lang_flag!="de")
+      {  ?>  
+      <p align="left"><b>
+    <?php  echo $events_lang ['state'];}	?>:<br />
+    	<input tabIndex="7" maxLength="20" size="18" name="state"></b></p>
+<?php } 
+
+if ($inc_zip == "Y"){	?>
+	<p align="left"><b>
+<?php echo $events_lang ['zip'];?>:<br />
+	<input tabIndex="8" maxLength="10" size="15" name="zip"></b></p>
+<?php } 
+
+if ($multiple == "Y"){?>			
+			
+<p align="left"><b>	Additional attendees?
+      <select name="num_people" style="width:70px;margin-top:4px">
+        <option value="1" selected>None</option>
+        <option value="2">1</option>
+        <option value="3">2</option>
+        <option value="4">3</option>
+        <option value="5">4</option>
+        <option value="6">5</option>
+      </select>		
+      </b></p>
+      
+      <?php
+	  }
+if ($multiple == "N"){?>
+<input type="hidden" name="num_people" value="1"> 
+<?php
+}
+		/*
+			<p align="left"><b>How did you hear about this event?</b><br /><select tabIndex="9" size="1" name="hear">
+			<option value="pick one" selected>pick one</option>
+			<option value="Website">Website</option>
+			<option value="A Friend">A Friend</option>
+			<option value="Brochure">A Brochure</option>
+			<option value="Announcment">An Announcment</option>
+			<option value="Other">Other</option>
+			</select></p>
+			*/
+		
+			/* TODO IJ not for everyone nesseccary...
+			if ($event_cost != "") {
+			?>
+			<p align="left">
+			<b><?php echo $events_lang['payingPlan'];?></b><br />
+	    <select tabIndex="10" size="1" name="payment">
+		  <option value="pickone" selected><?php echo $events_lang['pickone']; ?></option>
+			<?php
+			if ($payment_vendor_id != "") {
+				echo "<option value=\"Paypal\">$events_lang[paypal]</option>";
+			}
+			
+			echo "<option value=\"Cash\">$events_lang[cash]</option>";
+			
+			if ($checks == "yes" && $events_lang_flag!='de') {  //very unusual in germany
+        echo "<option value=\"Check\">$events_lang[check]</option>";
+			}
+			?>
+			</select></font></p>
+			<?php
+		} else {
+			?><input type="hidden" name="payment" value="free event"><?
+		}
+*/
+			
+if ($use_coupon =="Y"){
+    echo "<p align='left'><b>Please enter coupon code for discount?".
+    	"<input maxLength='10' size='12' name='coupon'></b></p>";
+}
+		$events_question_tbl = get_option ( 'events_question_tbl' );
+		$questions = $wpdb->get_results ( "SELECT * from `$events_question_tbl` where event_id = '$event_id' order by sequence" );
+		if ($questions) {
+			foreach ( $questions as $question ) {
+				
+				echo "<p align='left'><b>" . $question->question . BR;
+				event_form_build ( $question );
+				echo "</b></p>";
+			}
+		}
+		
+		?>
+
+
+		<input type="hidden" name="regevent_action" value="post_attendee"> 
+        <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
+		<?php			
+				echo "<input type='hidden' name='view_event' value='" . $view_event . "'>";
+				echo "<input type='hidden' name='form_action' value='edit_attendee'>";
+				echo "<input type='hidden' name='action' value='post_new'>";
+				?>
+<p><input type="submit" name="Submit" value="ADD ATTENDEE"></p>
+</form>
+<hr />
+</td>
+</tr>
+</table></ul></div><div>
+<?php
+			
+		
+        
+        
+        break;
+        
         case "post";
 				$id = $_POST ['attendee'];
                 $event_id = $_POST['event'];
@@ -341,6 +586,15 @@ er_plugin_menu();
             	}
                 echo "<div id='message' class='updated fade'><p><strong>
                 The attendee information has been successfully updated.</strong></p></div>";
+                echo "<META HTTP-EQUIV='refresh' content='2;URL=admin.php?page=attendees&action=view&event=".$event_id."'>";
+   
+        break;
+        
+        case "post_new";
+				$event_id = $_REQUEST['event'];
+                manually_add_attendees_to_db();
+                echo "<div id='message' class='updated fade'><p><strong>
+                The attendee information has been successfully added.</strong></p></div>";
                 echo "<META HTTP-EQUIV='refresh' content='2;URL=admin.php?page=attendees&action=view&event=".$event_id."'>";
    
         break;

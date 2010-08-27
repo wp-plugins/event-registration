@@ -1,5 +1,5 @@
 <?php
-function moneyFormat($number, $currencySymbol = '$', $decPoint = '.', $thousandsSep = ',', $decimals = 2) {
+function moneyFormat($number, $currencySymbol = '', $decPoint = '.', $thousandsSep = ',', $decimals = 2) {
 return $currencySymbol . number_format($number, $decimals,
 $decPoint, $thousandsSep);
 }
@@ -644,7 +644,7 @@ $qry  = "INSERT INTO ".$events_payment_tbl." VALUES (0, '".$payer_id."', '".$eve
        
 }
 //}
-
+//Used for return payment url
 function event_regis_pay() {
 	
 	global $wpdb;
@@ -785,12 +785,14 @@ function event_regis_pay() {
                                 er_google_pay(
                                 $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }
                             else if ($payment_vendor == "PAYPAL"){
-                                
                                 er_paypal_pay(
                                 $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }
+                              
+                              else if ($payment_vendor == "MONSTER"){
+                                er_monster_pay(
+                                $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }   
                             else if ($payment_vendor == "AUTHORIZE.NET"){
-                                
-                                er_authorize_pay(
+                                 er_authorize_pay(
                                  $payment_vendor_id, $txn_key,  $currency_format, $item_name, $event_name, $num_people,
                                   $adjusted_price); }
                             else if ($payment_vendor == "CUSTOM"){
@@ -838,6 +840,10 @@ function event_regis_pay() {
                                  echo "<p>The process is safe, simple, and secure and your bank or debit card information is used by Authorize.Net for the sole purpose of processing this transaction and never shared with us. To start, enter your donation amount below and click on the Donate button. You will be forwarded to Authorize.Net's secure website where you will enter your information and complete the transaction.</p>";
                                 er_authorize_pay(
                                  $payment_vendor_id,$txn_key,$currency_format, $item_name, $event_name, $num_people, $balance); }
+                            else if ($payment_vendor == "MONSTER"){
+                                 echo "<p>The process is safe, simple, and secure and your bank or debit card information is used by Monster for the sole purpose of processing this transaction and never shared with us. To start, enter your donation amount below and click on the Donate button. You will be forwarded to PayPal's secure website where you will enter your information and complete the transaction.</p>";
+                                er_monster_pay(
+                                $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $balance); }
                             else if ($payment_vendor == "CUSTOM"){
                                  er_custom_pay(
                                   $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $balance); }
@@ -901,7 +907,7 @@ function events_payment_page($event_id) {
                     $payment_vendor = $row['payment_vendor'];
 					$payment_vendor_id = $row ['payment_vendor_id'];
 					 $txn_key = $row['txn_key'];
-
+                    $donations = $row['accept_donations'];
 					$currency_format = $row ['currency_format'];
 					$events_listing_type = $row ['events_listing_type'];
 					$return_url = $row ['return_url'];
@@ -932,9 +938,12 @@ function events_payment_page($event_id) {
                         $use_coupon = $row['use_coupon'];
                         $coupon_code = $row['coupon_code'];
                         $coupon_code_price = $row['coupon_code_price'];
+                        $custom_cur = $row ['custom_cur'];
                         
 					}
-
+        
+        if ($custom_cur !=""){$currency_format = $custom_cur;}
+        if ($currency_format == "USD" || $currency_format == "") {$currency_format = "$";}
         //Get information about previous payments
                    $sql= "SELECT SUM(mc_gross) FROM $events_payment_tbl WHERE payer_id='$attendee_id'";
                     $result = mysql_query($sql);
@@ -948,13 +957,13 @@ function events_payment_page($event_id) {
         
         if ($use_coupon =="Y" && $event_cost > "0" ) {
                             if ($coupon == $coupon_code) {
-                                echo " Our records indicate you are paying for ".$num_people. " and have entered a valid coupon code and will receive a discount of ".moneyformat($coupon_code_price)." off each registration fee.</p>";
+                                echo " Our records indicate you are paying for ".$num_people. " and have entered a valid coupon code and will receive a discount of ".$custom_cur." ".$coupon_code_price." off each registration fee.</p>";
                                 $discount = $coupon_code_price;
                                 }
                             else {
                                 $discount = "0";}
                             }
-                         $adjusted_price = $event_cost - $discount;
+                         $adjusted_price = moneyFormat($event_cost - $discount);
                          if ($event_cost >"0" ){$balance = ((($event_cost-$discount)*$num_people)-$total_paid);
                          $balance = moneyFormat($balance);}
                          else if ($event_cost ==""){$balance = "Free Event";}
@@ -987,14 +996,15 @@ function events_payment_page($event_id) {
                     if ($payment_vendor != "") 
                             {
                             echo "<p>Your can pay online with a credit card through <b><font color = 'blue'>".$payment_vendor."</b></font></p>";
-                            echo "<p>The payment will be in the amount of ". $balance." </p>";
+                            echo "<p>The payment will be in the amount of ".$currency_format." ". $balance." </p>";
                             echo "<br>";
-            				if ($balance < $event_cost){$payment = "- Partial";}
-            				if ($balance == $event_cost){$payment = "- Full";}
+            				if ($balance < $event_cost){$currency_format." ".$payment = "- Partial";}
+            				if ($balance == $event_cost){$currency_format." ".$payment = "- Full";}
                             
                             
                             //Payment Selection with data hidden - forwards to payment vendor
-                            if ($currency_format == "$" || $currency_format == "") {$currency_format = "USD";}
+                            //if ($currency_format == "$" || $currency_format == "") {$currency_format = "USD";}
+                            
                             if ($num_people > '1'){$count = $num_people.' people';}
                             $item_name = $event_name . " - "  . $lname.", ".$fname. " (ID ".$attendee_id . ") - ".$count;
                             
@@ -1005,6 +1015,9 @@ function events_payment_page($event_id) {
                                 
                                 er_paypal_pay(
                                 $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); }
+                             else if ($payment_vendor == "MONSTER"){
+                                er_monster_pay(
+                                $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $adjusted_price); } 
                             else if ($payment_vendor == "AUTHORIZE.NET"){
                                 
                                 er_authorize_pay(
@@ -1017,7 +1030,7 @@ function events_payment_page($event_id) {
                             echo "<hr>";}
 		      }
               
-              else{
+              else if ($balance == "Free Event" && $donations =="Yes"){
                 $balance = "0";
                 echo "<p>This is a free event, however we gladly accpet donations to continue to offer such events in the future.</p>";
                 if ($allow_checks == "yes") 
@@ -1055,7 +1068,13 @@ function events_payment_page($event_id) {
                                  echo "<p>The process is safe, simple, and secure and your bank or debit card information is used by Authorize.Net for the sole purpose of processing this transaction and never shared with us. To start, enter your donation amount below and click on the Donate button. You will be forwarded to Authorize.Net's secure website where you will enter your information and complete the transaction.</p>";
                                 er_authorize_pay(
                                  $payment_vendor_id,$txn_key,$currency_format, $item_name, $event_name, $num_people, $balance); }
-                            else if ($payment_vendor == "CUSTOM"){
+                            
+                            
+                             else if ($payment_vendor == "MONSTER"){
+                                echo "<p>The process is safe, simple, and secure and your bank or debit card information is used by Monster for the sole purpose of processing this transaction and never shared with us. To start, enter your donation amount below and click on the Donate button. You will be forwarded to PayPal's secure website where you will enter your information and complete the transaction.</p>";
+                                er_monster_pay(
+                                $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $balance); } 
+                             else if ($payment_vendor == "CUSTOM"){
                                  er_custom_pay(
                                   $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $balance); }
                             else {echo "<B><h3><font color ='red'>Online Payments Are Currently Not Available</font></h3></b>";}

@@ -326,6 +326,7 @@ $sql = "UPDATE " . $events_organization_tbl .
           <option value='GOOGLE'>GOOGLE</option>
 		  <option value='PAYPAL'>PAYPAL</option>
           <option value='AUTHORIZE.NET'>AUTHORIZE.NET</option>
+          <option value='MONSTER'>MonsterPay</option>
           <option value='CUSTOM'>CUSTOM</option>
 		  </select> 
      <a href='https://ems.authorize.net/oap/home.aspx?SalesRepID=98&ResellerID=16334'><img src='http://www.authorize.net/images/reseller/oap_sign_up.gif' height='38' width='135' border='0' /></a>

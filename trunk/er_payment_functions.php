@@ -167,6 +167,38 @@ echo "</FORM>";
 // This is the end of the code generating the "submit payment" button.    -->
 }
 
+
+
+
+function er_monster_pay($payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $price){
+
+if ($currency_format == "$" || $currency_format == "") {$currency_format = "USD";}
+
+if ($num_people == "1" ){$people_count = "Individual";}
+if ($num_people >= "2" ){$people_count = "Group of ".$num_people;}
+
+
+$item_name= $item_name;
+$event_name=$event_name;
+$item_qty=$num_people;
+$item_price=$price;
+$currency_type= $currency_format;
+?>    
+<form action="https://www.monsterpay.com/secure/index.cfm" method="POST" enctype="APPLICATION/X-WWW-FORM-URLENCODED" target="_BLANK">
+<input type="hidden" name="ButtonAction" value="buynow">
+<input type="hidden" name="MerchantIdentifier" value="<?php echo $payment_vendor_id;?>">
+<input type="hidden" name="LIDDesc" value="<?php echo $event_name."-".$people_count;?>">
+<input type="hidden" name="LIDSKU" value="<?php echo $event_name;?>">
+<input type="hidden" name="LIDPrice" value="<?php echo $item_price;?>">
+<input type="hidden" name="LIDQty" value="<?php echo $item_qty;?>">
+<input type="hidden" name="CurrencyAlphaCode" value="<?php echo $currency_format;?>">
+<input type="hidden" name="ShippingRequired" value="0">
+<input type="hidden" name="MerchRef" value="">
+<input type="submit" value="Buy Now" style="background-color: #DCDCDC; font-family: Arial; font-size: 11px; color: #000000; font-weight: bold; border: 1px groove #000000;">
+</form> 
+<?php   
+}
+
 function er_custom_pay(){}
 
 ?>

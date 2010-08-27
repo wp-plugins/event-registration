@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.edgetechweb.com
 Description: I have made some changes to the database and the plugin.  I recommend you try this on a test site before going live and that you backup all your data and the old version of the plugin you are using before upgrading.  This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees..  Additionally it allows support for checks and cash payments.  Detailed payment management system to track and record event payments.  Reporting features provide a list of events, list of attendees, and excel export.  Events can be created in an Excel spreadsheet and uploaded via the event upload tool.  Dashboard widget allows for quick reference to events from the dashboard.  Inline menu navigation allows for ease of use.  
-Version: 5.11
+Version: 5.20
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.edgetechweb.com
 */
@@ -63,6 +63,7 @@ function er_plugin_menu(){
 require_once ('admin_header.php');
 require_once ('event_regis_config.php');
 require_once ('er_calendar.php');
+require_once ('er_followup_mail.php');
 require_once ('er_sample_page.php');
 require_once ('er_dashboad_widget.php');
 require_once ('attendee_list_page_view.php');
@@ -226,6 +227,7 @@ function add_event_registration_menus() {
 	add_menu_page ( 'Event Registration', 'Event Registration', 8, __FILE__ ,'event_main' );
 	add_submenu_page ( __FILE__, 'Configure Org', 'Organization', 8, 'config', 'event_config_mnu' );
     add_submenu_page ( __FILE__, 'Event Reports', 'Attendees', 8, 'attendees', 'attendee_display_edit' );
+    add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'er_mail_followup' );
 	add_submenu_page ( __FILE__, 'Manage Events', 'Events', 8, 'events', 'events_management_process' );
 	add_submenu_page ( __FILE__, 'Manage Event Categories', 'Categories', 8, 'event_categories', 'event_categories_config' );
     add_submenu_page ( __FILE__, 'Add Questions', 'Add Questions', 8, 'form', 'event_form_config' );
@@ -299,10 +301,11 @@ function display_all_events($event_category_id) {
     $events_cat_detail_tbl = get_option('events_cat_detail_tbl');
     $curdate = date ( "Y-m-j" );
 
-	$currency_format = get_option ( 'currency_format' );
-	$showthumb = get_option ('show_thumb');
-        $category_id = null;    
-        $sql = null;    
+	$currency_format = get_option('currency_format');
+    $showthumb = get_option ('show_thumb');
+    
+    $category_id = null;    
+    $sql = null;    
 		if ($event_category_id != ""){
 		   			$sql2  = "SELECT * FROM " . $events_cat_detail_tbl . " WHERE category_identifier = '".$event_category_id."'";
 					$result = mysql_query($sql2);
@@ -410,13 +413,22 @@ function display_all_events($event_category_id) {
         
           
         
-						
-		if ($custom_cur == ""){if ($currency_format == "USD" || $currency_format == "") {$currency_format = "$";}			}
+                                    
+		if ($custom_cur == "" || $custom_cur == null){
+		  if ($currency_format == "USD" || $currency_format == "") { $currency_format = "$"; }			
+            }
+        $currency_format = get_option('currency_format'); 
+          
 		if ($custom_cur != "" || $custom_cur != "USD"){$currency_format = $custom_cur;}
 		if ($custom_cur == "USD") {$currency_format = "$";}
-                $available_spaces = 0;  
+        
+        
+        $available_spaces = 0;  
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
 	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "Unlimited";}
+
+
+
 
 	if ($image_link == ""){
 		echo "<tr><td></td><td><br><b>" . $event_name . "   </b><br>";
