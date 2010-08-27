@@ -5,20 +5,29 @@
  * @copyright 2009
  */
 require_once ("er_add_event_form.php");
-
+$url = EVNT_RGR_PLUGINFULLURL;
 function display_event_details($all = 0) {
         global $wpdb;
 		$events_detail_tbl = get_option ( 'events_detail_tbl' );
+        
 		$currency_format = get_option ('currency_format');
-		?><div style="float:right; margin-right:20px;"><?php
+		?><div style="float:right; margin-right:20px;">
+        <?php
 		echo "<form name='form' method='post' action='". request_uri() ."'>";
 		echo "<input type='hidden' name='action' value='add_new'>";
 		echo "<INPUT CLASS='button-primary' TYPE='SUBMIT' VALUE='ADD NEW EVENT'>" ;
 		echo "</form></div>";
+     ?><div style="float:right; margin-right:20px;">
+        <?php
+        
+        echo "<form name='form' method='post' action='". $url ."er_event_details_export.php'>";
+		echo "<input type='hidden' name='action' value='excel'>";
+		echo "<INPUT CLASS='button-primary' TYPE='SUBMIT' VALUE='Export To Excel'>" ;
+		echo "</form></div>";
         
         echo "<h2><a href='admin.php?page=events&events=current'>Current Events</a>  |  <a href='admin.php?page=events&events=expired'>Expired Events</a> 
         </h2>"; 
-
+  	
 		
 		$curdate = date("Y-m-d");
 		//$sql = "SELECT * FROM ". get_option('events_detail_tbl') ." ORDER BY date(start_date) ASC";
@@ -351,6 +360,7 @@ echo $event_name." | Start Date: ".$start_date." ".$start_time." | End Date: ".$
 
 function display_events_all($all = 0) {
     global $wpdb;
+    $url = EVNT_RGR_PLUGINFULLURL;
     $currency_format = get_option ('currency_format');
     $curdate = date("Y-m-d");
     $events_detail_tbl = get_option ( 'events_detail_tbl' );
@@ -359,6 +369,13 @@ function display_events_all($all = 0) {
 		echo "<form name='form' method='post' action='". request_uri() ."'>";
 		echo "<input type='hidden' name='action' value='add_new'>";
 		echo "<INPUT CLASS='button-primary' TYPE='SUBMIT' VALUE='ADD NEW EVENT'>" ;
+		echo "</form></div>";
+             ?><div style="float:right; margin-right:20px;">
+        <?php
+        
+        echo "<form name='form' method='post' action='". $url ."er_event_details_export.php'>";
+		echo "<input type='hidden' name='action' value='excel'>";
+		echo "<INPUT CLASS='button-primary' TYPE='SUBMIT' VALUE='Export To Excel'>" ;
 		echo "</form></div>";
         
         //echo "<h3><a href='admin.php?page=events'>Current Events</a></h3>"; 
