@@ -17,13 +17,7 @@ function display_event_details($all = 0) {
 		echo "<input type='hidden' name='action' value='add_new'>";
 		echo "<INPUT CLASS='button-primary' TYPE='SUBMIT' VALUE='ADD NEW EVENT'>" ;
 		echo "</form></div>";
-     ?><div style="float:right; margin-right:20px;">
-        <?php
-        
-        echo "<form name='form' method='post' action='". $url ."er_event_details_export.php'>";
-		echo "<input type='hidden' name='action' value='excel'>";
-		echo "<INPUT CLASS='button-primary' TYPE='SUBMIT' VALUE='Export To Excel'>" ;
-		echo "</form></div>";
+     
         
         echo "<h2><a href='admin.php?page=events&events=current'>Current Events</a>  |  <a href='admin.php?page=events&events=expired'>Expired Events</a> 
         </h2>"; 
@@ -370,13 +364,7 @@ function display_events_all($all = 0) {
 		echo "<input type='hidden' name='action' value='add_new'>";
 		echo "<INPUT CLASS='button-primary' TYPE='SUBMIT' VALUE='ADD NEW EVENT'>" ;
 		echo "</form></div>";
-             ?><div style="float:right; margin-right:20px;">
-        <?php
-        
-        echo "<form name='form' method='post' action='". $url ."er_event_details_export.php'>";
-		echo "<input type='hidden' name='action' value='excel'>";
-		echo "<INPUT CLASS='button-primary' TYPE='SUBMIT' VALUE='Export To Excel'>" ;
-		echo "</form></div>";
+             
         
         //echo "<h3><a href='admin.php?page=events'>Current Events</a></h3>"; 
 echo "<h2><a href='admin.php?page=events&events=current'>Current Events</a>  |  <a href='admin.php?page=events&events=expired'>Expired Events</a> 
