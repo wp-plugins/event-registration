@@ -4,7 +4,7 @@ Donate link: http://www.edgetechweb.com/
 Tags:   event, events, event registration, event management,events managment, events registration, event calendar, calendar, class,events calendar, events, event, class registration, class schedule, classes
 Requires at least: 2.0.2
 Tested up to: 3.0.1
-Stable tag: 5.21
+Stable tag: 5.22
 
 This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information and any additional information you request to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, MonsterPay or Authorize.net online payment site for online collection of event fees.
 
