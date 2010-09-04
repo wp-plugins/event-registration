@@ -17,8 +17,8 @@ function events_view_widget() {
 	$currency_format = get_option ( 'currency_format' );
 
 	
-	$sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".date ( 'Y-m-j' )."' ORDER BY start_date";
-		
+	//$sql = "SELECT * FROM " . $events_detail_tbl ." WHERE start_date >= '".date ( 'Y-m-j' )."' ORDER BY start_date";
+    $sql = "SELECT * FROM " . get_option('events_detail_tbl') ." WHERE str_to_date(start_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";	
 	$result = mysql_query ( $sql );
 	
 	while ( $row = mysql_fetch_assoc ( $result ) ) {
