@@ -116,8 +116,10 @@ function er_dashboard_events_listing(){
                      <tbody>
                
                <?php 
-			  $sql = "SELECT * FROM ".get_option('events_detail_tbl')." WHERE start_date < '".date ( 'Y-m-d' )."' ORDER BY date(start_date) DESC LIMIT 3"; 
-			  $result = mysql_query ($sql);
+			  //$sql = "SELECT * FROM ".get_option('events_detail_tbl')." WHERE start_date < '".date ( 'Y-m-d' )."' ORDER BY date(start_date) DESC LIMIT 3"; 
+			  $sql = "SELECT * FROM " . get_option('events_detail_tbl') ." WHERE str_to_date(start_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e') DESC LIMIT 3";
+              
+              $result = mysql_query ($sql);
 			  while ($row = mysql_fetch_assoc ($result)){
 				$event_id=$row['id'];
 				$event_name=$row['event_name'];   
