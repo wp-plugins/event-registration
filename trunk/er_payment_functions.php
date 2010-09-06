@@ -64,7 +64,7 @@ function er_google_pay(
 $payment_vendor_id,$currency_format, $item_name, $event_name, $num_people, $price
 ){
 //Google Payment Button
-
+if ($currency_format == "$" || $currency_format == "") {$currency_format = "USD";}
 
 if ($num_people == "1" ){$people_count = "Individual";}
 if ($num_people >= "2" ){$people_count = "Group of ".$num_people;}

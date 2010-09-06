@@ -27,7 +27,10 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 == Change Log ==
-= 5.3 =
+= 5.31 =
+Fixed error on Google Pay
+
+= 5.30 =
 Error in SVN uploading of version 5.24
 = 5.25 =
 = 5.24 =
