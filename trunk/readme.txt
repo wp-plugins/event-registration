@@ -31,6 +31,7 @@ If you like the plugin and find it useful, your donations would also help me kee
 Fixed error on Google Pay
 Added Captcha to Registration Form
 Fixed hyperlink in Calendar for Day Of Events to link title to registration page.
+Fixed Calendar bug on showing active events in December
 
 = 5.30 =
 Error in SVN uploading of version 5.24
