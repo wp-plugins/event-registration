@@ -642,7 +642,7 @@ if ($use_coupon =="Y"){
 		
 		?>
 
-<hr /><p>Enter the securitycode as it is shown (required):<script type="text/javascript">sjcap("altTextField");</script>
+<hr /><p>Enter the security code as it is shown (required):<script type="text/javascript">sjcap("altTextField");</script>
 		<noscript><p>[This resource requires a Javascript enabled browser.]</p></noscript>
 		<input type="hidden" name="regevent_action" value="post_attendee"> 
         <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
