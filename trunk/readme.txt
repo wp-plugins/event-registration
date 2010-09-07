@@ -29,6 +29,7 @@ If you like the plugin and find it useful, your donations would also help me kee
 == Change Log ==
 = 5.31 =
 Fixed error on Google Pay
+Added Captcha to Registration Form
 
 = 5.30 =
 Error in SVN uploading of version 5.24
