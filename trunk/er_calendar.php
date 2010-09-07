@@ -5,7 +5,7 @@
 function er_show_calendar(){
 global $wpdb;
 $events_detail_tbl = get_option ( 'events_detail_tbl' );
-$events_calendar_url = get_option ( 'er_calendar_url');
+$events_calendar_url = get_option ( 'er_link_for_calendar_url');
 $url = EVNT_RGR_PLUGINFULLURL;
 	
 //$d = date("j");
