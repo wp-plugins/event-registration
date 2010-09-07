@@ -11,7 +11,7 @@ function events_payment_transactions_tbl_install  () {
 	   global $events_payment_transactions_tbl_version;
 //Create new variables for this function  
 	   $table_name = $wpdb->prefix . "events_payment_transactions";
-	   $events_payment_transactions_tbl_version = "5.1";
+	   $events_payment_transactions_tbl_version = "5.31";
 //check the SQL database for the existence of the Event Attendee Database - if it does not exist create it. 
 	   if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 			   $sql = "CREATE TABLE " . $table_name . " (
