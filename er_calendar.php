@@ -3,10 +3,48 @@
 //Known issue - calendar will not forward or reverse past current year!
 
 function er_show_calendar(){
-global $wpdb;
-$events_detail_tbl = get_option ( 'events_detail_tbl' );
-$events_calendar_url = get_option ( 'er_link_for_calendar_url');
+global $wpdb, $events_detail_tbl;
+$calendar_url = get_option ( 'er_link_for_calendar_url');
+$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
+	$events_detail_tbl = get_option ( 'events_detail_tbl' );
+	$events_organization_tbl = get_option ( 'events_organization_tbl' );
 $url = EVNT_RGR_PLUGINFULLURL;
+	
+    
+$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";
+	
+		   		$result = mysql_query($sql);
+		   	while ($row = mysql_fetch_assoc ($result))
+					{
+		  			$org_id =$row['id'];
+					$Organization =$row['organization'];
+					$Organization_street1 =$row['organization_street1'];
+					$Organization_street2=$row['organization_street2'];
+					$Organization_city =$row['organization_city'];
+					$Organization_state=$row['organization_state'];
+					$Organization_zip =$row['organization_zip'];
+					$contact =$row['contact_email'];
+	 				$registrar = $row['contact_email'];
+                    $payment_vendor = $row['payment_vendor'];
+					$payment_vendor_id =$row['payment_vendor_id'];
+					$currency_format =$row['currency_format'];
+					$return_url = $row['return_url'];
+					$cancel_return = $row['cancel_return'];
+                    $accept_donations = $row['accept_donations'];
+                    $txn_key = $row['txn_key'];
+					$notify_url = $row['notify_url'];
+					$return_method = $row['return_method'];
+					$use_sandbox = $row['use_sandbox'];
+					$image_url = $row['image_url'];
+					$events_listing_type =$row['events_listing_type'];
+                    $calendar_url = $row['calendar_url'];
+					$default_mail = $row['default_mail'];
+					$message =$row['message'];
+                    $show_thumb=$row['show_thumb'];
+                    $payment_subj=$row['payment_subj'];
+                    $payment_message=$row['payment_message'];
+					}
+	
 	
 //$d = date("j");
 //$month = date("n");
@@ -199,7 +237,7 @@ function hiLightEvt($eMonth,$eDay,$eYear){
                         if($month_no =="9"){$month_name ="09";}
                         if($month_no =="10"){$month_name ="10";}
                         if($month_no =="11"){$month_name ="11";}
-                        if($month_no =="11"){$month_name ="12";}
+                        if($month_no =="12"){$month_name ="12";}
 
 			
             $sql = "SELECT count(start_date) as eCount FROM " . $events_detail_tbl .
@@ -301,11 +339,11 @@ $month_name = '';
                                     <div class="output">
                                     	<?php 
                                             global $event_cost, $more_info;
-                                            $events_calendar_url = get_option ( 'er_link_for_calendar_url');
-                                            $arr_params = array ('regevent_action'=>'register', 'event_id' => $row['id'], 'name_of_event'=> $row['event_name']);
-                                            $link =  add_query_arg($arr_params, $events_calendar_url);
                                             
-                                            if ($events_calendar_url != ""){
+                                            $arr_params = array ('regevent_action'=>'register', 'event_id' => $row['id'], 'name_of_event'=> $row['event_name']);
+                                            $link =  add_query_arg($arr_params, $calendar_url);
+                                            
+                                            if ($calendar_url != ""){
                                                     echo "<p align=left><b><u><a href='".$link."'>".$row['event_name']."</a></u></b></p>";
                                                     }
                                                 else {

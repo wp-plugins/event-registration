@@ -110,7 +110,15 @@ $sql = "UPDATE " . $events_organization_tbl .
 		}
 
 
-
+  $option_name = 'er_link_for_calendar_url';
+		$newvalue = $calendar_url;
+		if (get_option ( $option_name )) {
+		  	update_option ( $option_name, $newvalue );
+		} else {
+			$deprecated = ' ';
+			$autoload = 'no';
+			add_option ( $option_name, $newvalue, $deprecated, $autoload );
+		}
 	$option_name = 'currency_format';
 		$newvalue = $currency_format;
 		if (get_option ( $option_name )) {
