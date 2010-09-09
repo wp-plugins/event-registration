@@ -7,12 +7,6 @@
 
 //Define the table versions for unique tables required in Events Registration
 
-$events_attendee_tbl_version = "5.31";
-$events_detail_tbl_version = "5.31";
-$events_organization_tbl_version = "5.31";
-$events_answer_tbl_version = "5.31";
-$events_question_tbl_version = "5.31";
-
 /** this does not only affect language but also format of date, and which fields are displayes in the form */
 $events_lang_flag = "en"; //switch to en for changing language and form 
 $test = "no";

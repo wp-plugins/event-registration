@@ -11,7 +11,7 @@ function events_organization_tbl_install () {
         global $events_organization_tbl_version;
 //Create new variables for this function 
         $table_name = $wpdb->prefix . "events_organization";
-        $events_organization_tbl_version = "5.31";
+        $events_organization_tbl_version = "5.32";
 //check the SQL database for the existence of the Event Attendee Database - if it does not exist create it. 
 	   if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 			$sql = "CREATE TABLE " . $table_name . " (
@@ -41,6 +41,7 @@ function events_organization_tbl_install () {
                   payment_subj varchar (250) default NULL,
                   payment_message varchar (1000) default NULL,
                   image_url varchar(100) default NULL,
+                  captcha varchar (5) default NULL,
 				  UNIQUE KEY id (id)
 				);";
 
@@ -50,12 +51,12 @@ function events_organization_tbl_install () {
 			$message=("Enter your custom confirmation message here.");
             $your_company = get_bloginfo('name');
             $your_email = get_bloginfo('admin_email');
-            $message=("Enter your custom confirmation message here.");
+            $message=("<p>***This is an automated response - Do Not Reply***</p> <p>Thank you [fname] [lname] for registering for [event].</p> <p> We hope that you will find this event both informative and enjoyable.");
             $payment_subj =("Payment Received");
             $payment_message = ("<p>***This is an automated response - Do Not Reply***</p> <p>Thank you [fname] [lname] for registering for [event].</p> <p> We hope that you will find this event both informative and enjoyable. Should have any questions, please contact [contact].</p> <p>If you have not done so already, please submit your payment in the amount of [cost].</p> <p>Click here to reveiw your payment information [payment_url].</p><p>Thank You.</p>");
 
-			$sql="INSERT into $table_name (organization, contact_email, default_mail, message, payment_subj, payment_message) values 
-                ('".$your_company."', '".$your_email."','Y', '".$message."','".$payment_subj."', '".$payment_message."')";
+			$sql="INSERT into $table_name (organization, contact_email, default_mail, message, payment_subj, payment_message, captcha) values 
+                ('".$your_company."', '".$your_email."','Y', '".$message."','".$payment_subj."', '".$payment_message."','Y')";
 			$wpdb->query($sql);
 		
         //create option for table name
@@ -116,6 +117,7 @@ function events_organization_tbl_install () {
                   payment_subj varchar (250) default NULL,
                   payment_message varchar (1000) default NULL,
                   image_url varchar(100) default NULL,
+                  captcha varchar (5) default NULL,
 				  UNIQUE KEY id (id)
 				);";
 
@@ -137,6 +139,15 @@ function events_organization_tbl_install () {
 
             if ($paypal_id != ""){
 			$sql="UPDATE $table_name set payment_vendor_id = '$paypal_id', payment_vendor = 'PAYPAL' WHERE id = 1";
+			$wpdb->query($sql);
+            }
+            
+            $sql="SELECT captcha FROM $table_name WHERE id = '1'";
+            $result = mysql_query($sql);
+		   	while ($row = mysql_fetch_assoc ($result)){$captcha = $row['captcha'];}
+            
+            if ($captcha != ""){
+			$sql="UPDATE $table_name set captcha = 'Y' WHERE id = 1";
 			$wpdb->query($sql);
             }
 //update the table version number to match the updated sql

@@ -4,15 +4,26 @@ Donate link: http://www.edgetechweb.com/
 Tags:   event, events, event registration, event management,events managment, events registration, event calendar, calendar, class,events calendar, events, event, class registration, class schedule, classes
 Requires at least: 2.0.2
 Tested up to: 3.0.1
-Stable tag: 5.3
+Stable tag: 5.32
 
-This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information and any additional information you request to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, MonsterPay or Authorize.net online payment site for online collection of event fees.
+This plugin is designed to allow you to take online registrations for events and classes. Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 
 == Description ==
 
-This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. It allows you to capture the registering persons contact information and any additional infromation you request to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, Monster Pay,  or Authorize.net online payment site for online collection of event fees..  Additionally it allows support for checks and cash payments.  Detailed payment management system to track and record event payments.  Reporting features provide a list of events, list of attendees, and excel export.  Events can be created in an Excel spreadsheet and uploaded via the event upload tool.  Dashboard widget allows for quick reference to events from the dashboard.  Inline menu navigation allows for ease of use.
+This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. 
+It allows you to capture the registering persons contact information and any additional infromation you request to a database and provides an association to an events database. 
+It provides the ability to send the register to either a Paypal, Google Pay, Monster Pay,  or Authorize.net online payment site for online collection of event fees.
+Additionally it allows support for checks and cash payments.  
+Optional Captcha field on registration form.
+Detailed payment management system to track and record event payments.  
+Reporting features provide a export list(s) of events, attendees, payments in excel or csv.  
+Events can be created in an Excel spreadsheet and uploaded via the event upload tool.  
+Dashboard widget allows for quick reference to events from the dashboard.  
+Inline menu navigation allows for ease of use.
 
-If you like the plugin and find it useful, please donate.  Your donations help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
+If you like the plugin and find it useful, please donate.  
+Your donations help me keep it going and improve it.  
+You can donate and find online information at http://edgetechweb.com/
 
 Also if you could rate the plugin that would also be helpful.
 
@@ -27,6 +38,13 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 == Change Log ==
+
+= 5.32 =
+added calendar widget for sidebars
+added hyperlink(s) to sidebard event listing widget for registration
+added captcha on/off button in Organization Tab
+Cleaned up code in Organization Admin File
+
 = 5.31 =
 Fixed error on Google Pay
 Added Captcha to Registration Form
