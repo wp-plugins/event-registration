@@ -84,10 +84,7 @@ function goNextMonth(month, year){
 </script>
 
 <style type="text/css">
-body{
-	font-family:Georgia, "Times New Roman", Times, serif;
-	font-size:12px;
-}
+
 
 .today{
 	/*background-color:#00CCCC;*/

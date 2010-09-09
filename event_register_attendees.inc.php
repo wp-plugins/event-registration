@@ -9,12 +9,12 @@ function register_attendees($event_single_id) {
 	$events_detail_tbl = get_option ( 'events_detail_tbl' );
 	$events_organization_tbl = get_option ( 'events_organization_tbl' );
 	$events_listing_type = get_option ( 'events_listing_type' );
-	$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";
-	$result = mysql_query ( $sql );
-	while ( $row = mysql_fetch_assoc ( $result ) ) {
-		$events_listing_type = $row ['events_listing_type'];
-	}
-	//Query Database for Active event and get variable
+	$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";	 
+    $result = mysql_query ( $sql );
+    $ER_org_data = mysql_fetch_array($result) or die(mysql_error());
+    $events_listing_type = $ER_org_data['events_listing_type'];
+	
+    //Query Database for Active event and get variable
 	if ($event_id == "") {
 		$sql = "SELECT * FROM " . $events_detail_tbl . " WHERE is_active='yes'";
 	} else {
@@ -110,7 +110,9 @@ function register_attendees($event_single_id) {
 	update_option ( "current_event", $event_name );
 	//Query Database for Event Organization Info to email registrant BHC
 	//$sql  = "SELECT * FROM wp_events_organization WHERE id='1'"; 
-	$events_organization_tbl = get_option ( 'events_organization_tbl' );
+	
+    /*This code outmoded by $ER_org_data['array']
+    $events_organization_tbl = get_option ( 'events_organization_tbl' );
 	$sql = "SELECT * FROM " . $events_organization_tbl . " WHERE id='1'";
 	$result = mysql_query ( $sql );
 	
@@ -129,7 +131,7 @@ function register_attendees($event_single_id) {
 		$events_listing_type = $row ['events_listing_type'];
 		$message = $row ['message'];
 	}
-	
+	*/
 	//get attendee count	
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 
@@ -154,6 +156,8 @@ $md5_url = EVNT_RGR_PLUGINFULLURL."/md5.js";
 ?>
 <script type="text/javascript" src="<?php echo $md5_url;?>"></script>
 <SCRIPT>
+
+<?php if ($ER_org_data['captcha']=='Y'){?>
 
 var imgdir = "<?php echo $cap_url;?>"; // identify directory where captcha images are located
 var jfldid = "uword"; // identify word field id name
@@ -247,7 +251,7 @@ else {
   }
 }
 
-
+<?php } ?>
 
 function checkInternationalPhone(strPhone){
 
@@ -468,12 +472,12 @@ function trim(s) {if (s) {return s.replace(/^\s*|\s*$/g,"");} return null;}
 		if ((!value || value =='') && e.className == "r")
 		{msg += "\n " + e.title;}
 	}
-
+<?php if ($ER_org_data['captcha']=='Y'){?>
 //Check Captcha
 if (jcap() == false){
 		msg += "\n " +"ERROR: Invalid Security Code."; 
         }
-
+<?php } ?>
      if (msg.length > 0) {
 			msg = "The following fields need to be completed before you can submit.\n\n" + msg;
 			alert(msg);
@@ -642,8 +646,11 @@ if ($use_coupon =="Y"){
 		
 		?>
 
-<hr /><p>Enter the security code as it is shown (required):<script type="text/javascript">sjcap("altTextField");</script>
+<hr />
+<?php if ($ER_org_data['captcha']=='Y'){?>
+<p>Enter the security code as it is shown (required):<script type="text/javascript">sjcap("altTextField");</script>
 		<noscript><p>[This resource requires a Javascript enabled browser.]</p></noscript>
+<?php } ?>
 		<input type="hidden" name="regevent_action" value="post_attendee"> 
         <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
 	<p align="center"><input type="submit" name="Submit" value="<?php echo $events_lang['submit']; ?>"> <font
@@ -828,7 +835,9 @@ $sql = "INSERT INTO " . $events_attendee_tbl . " (lname ,fname ,address ,city ,s
 		$id = $row ['id'];
 	}
 	
-	$payment_link = $return_url . "?id=" . $id;
+   $arr_params = array ('id' => $id);
+   $payment_link =  add_query_arg($arr_params, $return_url);
+    //$payment_link = $return_url . "?id=" . $id;
 	
 	//Email Confirmation to Attendee
 	$SearchValues = array ("[fname]", "[lname]", "[phone]", "[event]", "[description]", "[cost]", "[currency]", "[qst1]", "[qst2]", "[qst3]", "[qst4]", "[contact]", "[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]", "[co_zip]", "[payment_url]", "[start_date]", "[start_time]", "[end_date]", "[end_time]","[snum]", "[num_people]" );
