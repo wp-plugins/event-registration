@@ -3,8 +3,8 @@ Contributors: David Fleming
 Donate link: http://www.edgetechweb.com/
 Tags:   event, events, event registration, event management,events managment, events registration, event calendar, calendar, class,events calendar, events, event, class registration, class schedule, classes
 Requires at least: 2.0.2
-Tested up to: 3.0.1
-Stable tag: 5.32
+Tested up to: 3.0.2
+Stable tag: 5.36
 
 This plugin is designed to allow you to take online registrations for events and classes. Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 
@@ -38,6 +38,21 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 == Change Log ==
+
+= 5.36 =
+
+Resolved image address on category color selector
+
+= 5.35 =
+Resolved Calendar yearly rollover
+Resolved Calendar permalinks
+Changed Calendar format
+Modified category table for calendar coloring
+Added style to Calendar format
+Added hyperlink registration to Calendar Days with events
+Added day spaning for events on calendar with multiday events
+Added event color coding for events on calendar
+Added new shortcode for event listing for 60 day outlook  `{EVR_UPCOMING}`
 
 = 5.32 =
 added calendar widget for sidebars
