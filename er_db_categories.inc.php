@@ -11,7 +11,7 @@ function events_cat_detail_tbl_install() {
 		   global $events_cat_detail_tbl_version;
 //Create new variables for this function 			
 		   $table_name = $wpdb->prefix . "events_cat_detail_tbl";
-		   $events_cat_detail_tbl_version = "5.31";
+		   $events_cat_detail_tbl_version = "5.35";
 //check the SQL database for the existence of the Event Category Table - if it does not exist create it.     	
 		   if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 				   $sql = "CREATE TABLE " . $table_name . " (
@@ -20,6 +20,8 @@ function events_cat_detail_tbl_install() {
 					  category_identifier VARCHAR(45) DEFAULT NULL,
 					  category_desc TEXT,
 					  display_desc VARCHAR (4) DEFAULT NULL,
+                      category_color VARCHAR(30) NOT NULL ,
+                      font_color VARCHAR(30) NOT NULL DEFAULT '#000000',
 					   UNIQUE KEY id (id)
 					);";
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -58,6 +60,8 @@ function events_cat_detail_tbl_install() {
 					  category_identifier VARCHAR(45) DEFAULT NULL,
 					  category_desc TEXT,
 					  display_desc VARCHAR (4) DEFAULT NULL,
+                      category_color VARCHAR(30) NOT NULL ,
+                      font_color VARCHAR(30) NOT NULL DEFAULT '#000000',
 					   UNIQUE KEY id (id)
 					);";
 	
