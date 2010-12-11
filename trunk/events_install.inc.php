@@ -35,5 +35,6 @@ events_organization_tbl_install();
 events_question_tbl_install();
 events_answer_tbl_install();
 events_payment_transactions_tbl_install();
+update_option( 'awr_form_token', "387");
 }
 ?>
