@@ -40,6 +40,10 @@ If you like the plugin and find it useful, your donations would also help me kee
 == Change Log ==
 
 = 5.36 =
+added submission key to form submission to stop invalid registrations/spam from posting
+Changed Zip on from to reflect Postal/Zip for my international friends :)
+
+= 5.36 =
 
 Resolved image address on category color selector
 

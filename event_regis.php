@@ -3,7 +3,7 @@
 Plugin Name: Events Registration
 Plugin URI: http://www.edgetechweb.com
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees..  Additionally it allows support for checks and cash payments.  Detailed payment management system to track and record event payments.  Reporting features provide a list of events, list of attendees, and excel export.  Events can be created in an Excel spreadsheet and uploaded via the event upload tool.  Dashboard widget allows for quick reference to events from the dashboard.  Inline menu navigation allows for ease of use.  
-Version: 5.36
+Version: 5.37
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.edgetechweb.com
 */
@@ -188,7 +188,17 @@ function event_regis_run($id) {
          switch ($regevent_action) {
         	
             case "post_attendee":
-                add_attendees_to_db ();
+               $form_token = $_REQUEST["submitted_token"] - '20';
+               $valid_token = get_option('awr_form_token');
+               if ($form_token == $valid_token){  
+                        $new_token = $valid_token + 1;
+                        update_option( 'awr_form_token', $new_token);
+                        add_attendees_to_db ();
+                        } 
+                        else {echo "Invalid Form Submission!";}
+                
+                
+                
             break;
             
             case "pay":

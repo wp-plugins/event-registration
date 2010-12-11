@@ -652,6 +652,9 @@ if ($use_coupon =="Y"){
 		<noscript><p>[This resource requires a Javascript enabled browser.]</p></noscript>
 <?php } ?>
 		<input type="hidden" name="regevent_action" value="post_attendee"> 
+        <input type="hidden" name="submitted_token" value="<?php $raw_key = get_option('awr_form_token');
+        $submit_key = $raw_key +'20';
+        echo $submit_key ;?>" />
         <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
 	<p align="center"><input type="submit" name="Submit" value="<?php echo $events_lang['submit']; ?>"> <font
 		color="#FF0000"><b><?php echo $events_lang['submitHint'];?></b></font>
@@ -672,7 +675,8 @@ if ($use_coupon =="Y"){
 
 function add_attendees_to_db() {
 	global $wpdb, $events_lang;
-	$current_event = get_option ( 'current_event' );
+    
+    $current_event = get_option ( 'current_event' );
 	$registrar = get_option ( 'registrar' );
 	$events_attendee_tbl = get_option ( 'events_attendee_tbl' );
 	
