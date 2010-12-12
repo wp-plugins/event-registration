@@ -39,6 +39,10 @@ If you like the plugin and find it useful, your donations would also help me kee
 
 == Change Log ==
 
+=5.41 =
+Fixed error related to np_of_day function
+
+
 = 5.39 =
 added submission key to form submission to stop invalid registrations/spam from posting
 Changed Zip on from to reflect Postal/Zip for my international friends :)
