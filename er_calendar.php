@@ -105,7 +105,7 @@ function evr_year_compare($year){
 
 
 // Function to indicate the number of the day passed, eg. 1st or 2nd Sunday
-function np_of_day($date){
+function evr_np_of_day($date){
   $instance = 0;
   $dom = date('j',strtotime($date));
   if (($dom-7) <= 0) { $instance = 1; }
