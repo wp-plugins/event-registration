@@ -38,10 +38,11 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 == Change Log ==
+= 5.42 =
+Fixed error related to cp_day function in calendar
 
-=5.41 =
-Fixed error related to np_of_day function
-
+= 5.41 =
+Fixed error related to np_of_day function in calendar
 
 = 5.39 =
 added submission key to form submission to stop invalid registrations/spam from posting

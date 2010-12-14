@@ -167,7 +167,8 @@ function goFollowingMonth(month, year){
        }
    <?php $link = add_query_arg('d', '1',get_page_link());  ?>
    //link for next month
-	document.location.href = '<?php echo $link;?>&month='+(month+1)+'&year='+year;
+	document.location.href = '<?php echo $link;?>month='+(month+1)+'&year='+year;
+    
     }  
 
 </script>
@@ -477,7 +478,8 @@ echo "<hr />";
  
 function init_er_widget(){
 register_sidebar_widget("Events Registraion", "events_view_widget"); 
-register_sidebar_widget("Events Reg Calendar", "events_calendar_widget");    
+register_sidebar_widget("Events Reg Calendar", "events_calendar_widget");  
+//register_sidebar_widget("Events Reg Calendar", "er_show_calendar");  
 }
 
 ?>
