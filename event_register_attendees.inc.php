@@ -492,8 +492,6 @@ if (jcap() == false){
 
 }
 
-
-
 </SCRIPT>
 <?php 
 	

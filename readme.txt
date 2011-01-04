@@ -4,7 +4,7 @@ Donate link: http://www.edgetechweb.com/
 Tags:   event, events, event registration, event management,events managment, events registration, event calendar, calendar, class,events calendar, events, event, class registration, class schedule, classes
 Requires at least: 2.0.2
 Tested up to: 3.0.2
-Stable tag: 5.39
+Stable tag: 5.43
 
 This plugin is designed to allow you to take online registrations for events and classes. Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 
