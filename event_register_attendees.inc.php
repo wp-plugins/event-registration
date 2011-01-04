@@ -481,7 +481,11 @@ if (jcap() == false){
      if (msg.length > 0) {
 			msg = "The following fields need to be completed before you can submit.\n\n" + msg;
 			alert(msg);
-			return false;
+            if (document.getElementById("mySubmit").disabled==true){
+                document.getElementById("mySubmit").disabled=false;} 
+                document.getElementById("mySubmit").focus( );
+            return false;
+            
 		}
 	
 	return true;   
@@ -522,11 +526,7 @@ if ($header_image != ""){echo "<p align='center'><img src='".$header_image."'  w
 </td>
 <tr>
 	<td>
-	<form method="post"
-		action="<?php
-		echo $_SERVER ['REQUEST_URI'];
-		?>"
-		onSubmit="return validateForm(this)">
+	<form method="post" action="<?php echo $_SERVER ['REQUEST_URI'];?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
 	<p align="left"><b><?php
 		echo $events_lang ['firstName'];
 		?>: <br />
@@ -656,8 +656,7 @@ if ($use_coupon =="Y"){
         $submit_key = $raw_key +'20';
         echo $submit_key ;?>" />
         <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
-	<p align="center"><input type="submit" name="Submit" value="<?php echo $events_lang['submit']; ?>"> <font
-		color="#FF0000"><b><?php echo $events_lang['submitHint'];?></b></font>
+	<p align="center"><input type="submit" id="mySubmit" name="mySubmit" value="<?php echo $events_lang['submit']; ?>"/> <font color="#FF0000"><b><?php echo $events_lang['submitHint'];?></b></font>
 	
 	</form>
 	</td>
