@@ -458,7 +458,7 @@ span.event {
 /************************    Display the events  *********************************/
 
 function evr_show_events($events){
-  usort($events, "time_cmp");
+  usort($events, "evr_time_cmp");
   foreach($events as $event){
       $output .= evr_show_event($event).'<br />';
   }
@@ -526,7 +526,7 @@ function evr_fetch_events($y,$m,$d){
   	return $arr_events;
 }
 
-function time_cmp($a, $b){
+function evr_time_cmp($a, $b){
   if ($a->event_time == $b->event_time) {
     return 0;
   }
@@ -541,7 +541,7 @@ function evr_upcoming_events(){
   while ($day_count < $future_days+1){
 	 		list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m",evr_time_offset()),date("d",evr_time_offset()),date("Y",evr_time_offset()))));
 	 		$events = evr_fetch_events($y,$m,$d);
-	 		usort($events, "time_cmp");
+	 		usort($events, "evr_time_cmp");
 	 		if (count($events) != 0) {
 	 				$output .= '<li>'.date_i18n(get_option('date_format'),mktime($day_count*24,0,0,date("m",evr_time_offset()),date("d",evr_time_offset()),date("Y",evr_time_offset())));
 	 				foreach($events as $event){

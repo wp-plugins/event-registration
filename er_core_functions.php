@@ -97,6 +97,8 @@ function display_events_by_category($atts, $content=null) {
     return $buffer;
 }
 
+
+
 function er_calendar_display() {
 	ob_start();
     er_show_calendar();

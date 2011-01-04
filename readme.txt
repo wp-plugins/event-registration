@@ -4,7 +4,7 @@ Donate link: http://www.edgetechweb.com/
 Tags:   event, events, event registration, event management,events managment, events registration, event calendar, calendar, class,events calendar, events, event, class registration, class schedule, classes
 Requires at least: 2.0.2
 Tested up to: 3.0.2
-Stable tag: 5.39
+Stable tag: 5.43
 
 This plugin is designed to allow you to take online registrations for events and classes. Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 
@@ -38,10 +38,11 @@ Please continue to email questions or comments to consultant@avdude.com.
 If you like the plugin and find it useful, your donations would also help me keep it going and improve it.  You can donate and find online information at http://edgetechweb.com/
 
 == Change Log ==
+= 5.42 =
+Fixed error related to cp_day function in calendar
 
-=5.41 =
-Fixed error related to np_of_day function
-
+= 5.41 =
+Fixed error related to np_of_day function in calendar
 
 = 5.39 =
 added submission key to form submission to stop invalid registrations/spam from posting
