@@ -6,7 +6,7 @@
  */
 
 /*
-Plugin Name: Event Registration
+Plugin Name: Events Registration
 Plugin URI: http://www.wordpresseventregister.com
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   Detailed payment management system to track and record event payments.  
 Reporting features provide a list of events, list of attendees, and excel export. 
@@ -84,7 +84,7 @@ require ("evr_public_registration.php"); //holds functions that display the regi
 require ("paypal.class.php"); //used for paypal IPN
 require ("evr_ipn.php"); //used for paypal IPN
 require ("evr_calendar.php"); //holds functions for calendar page
-
+require ("evr_pdf.php"); //creates pdf of reg details
 
 //Install/Update Tables when plugin is activated
 register_activation_hook(__file__, 'evr_install');
