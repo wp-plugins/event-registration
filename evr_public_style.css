@@ -1,0 +1,48 @@
+.evr_ticket_info a{
+    cursor:default!important;
+    background:url(<?php echo EVNT_RGR_PLUGINFULLURL;?>images/info-icon.png) no-repeat bottom left;
+    text-decoration:none;
+    position:relative;top:-1px
+}
+
+.evr_ticket_info a span{
+    padding:0 5px;
+    visibility:hidden
+}
+
+.evr_ticket_info a:hover{
+    text-decoration:none!important
+}
+
+div#evr_event_list {
+
+}
+
+table.evr_events
+ { width: 100%;
+ background-color: #fafafa;
+ border: none;
+ border-collapse: collapse;
+ border-spacing: 0px; }
+ 
+table.evr_events th
+ { background-color: #666;
+ color: #fff;
+ padding: 4px;
+ text-align: left;
+ border-bottom: 2px #fff solid;
+ font-size: 12px;
+ font-weight: bold;} 
+ 
+ table.evr_events tr.odd
+ {background-color:#FFFFFF;
+}
+ 
+ table.evr_events tr.even
+ {background-color: #F8F8F8;
+ }
+ 
+ table.evr_events td.er_date
+ {width:150px;} 
+
+.padding { padding:10px;	overflow:hidden; }
