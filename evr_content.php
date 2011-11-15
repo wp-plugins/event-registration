@@ -9,6 +9,11 @@
 function evr_main_content(){
     
 }
+//function that provides the content in the content replacement for widget
+function evr_widget_content(){
+    echo "This feature currently not available";
+    
+}
 //function to add payment shortcode option page on public page for plugin
 function evr_payment_page(){
         global $wpdb;

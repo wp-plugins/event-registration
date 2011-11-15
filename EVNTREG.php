@@ -302,6 +302,15 @@ function evr_admin_menu()
 //function to load widgets to the widgets menu
 function evr_widgets()
 {
+        if (preg_match('{EVR_WIDGET}', $content)) {
+        ob_start();
+        //event_regis_run($event_single_ID);
+        evr_widget_content(); //function with widget content
+        $buffer = ob_get_contents();
+        ob_end_clean();
+        $content = str_replace('{EVR_WIDGET}', $buffer, $content);
+    }
+    return $content;
 }
 //function to add quick link to Plugin Activation Menu - used as a filter
 function evr_quick_action($links, $file)
