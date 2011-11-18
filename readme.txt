@@ -104,6 +104,12 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 == Change Log ==
 
+= Version 6.00.06 = 
+* changed DB uninstall feature from a hidden deactivate feature to a menu choice.
+* Added more information and links to the splash page
+* Changed logo
+* Added donation links throughout
+
 = Version 6.00.05.01 = 
 * Fixed help window on Company-->Page Settings to display proper shortcode
 
