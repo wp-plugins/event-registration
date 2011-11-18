@@ -21,7 +21,7 @@ function evr_admin_view_payments(){
                             }
 ?>
 <div class="wrap">
-<div id="icon-plugins" class="icon32"></div><h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Payment Management','evr_language');?></h2>
 <form name="form" method="post" action="admin.php?page=payments">
                                     <input class="button-secondary" type="submit" name="Select Different" value="<?php _e('Select A Different Event','evr_language');?>" />
