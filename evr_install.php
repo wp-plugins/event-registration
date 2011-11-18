@@ -348,6 +348,15 @@ function evr_upgrade_tables(){
    	update_option( 'evr_company_settings', $company_options);
     }
     
+    //email about an upgrade  activation@wordpresseventregister.com
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: Plugin Upgrade <>\r\n";
+    
+    $email_body = get_option('siteurl');
+    
+    wp_mail("activation@wordpresseventregister.com", "Upgrade Complete - ". $upgrade_version, html_entity_decode($email_body), $headers);
+    
 }
 
 
@@ -950,5 +959,14 @@ function evr_answer_db() {
 //update the table version number to match the updated sql
     update_option( "evr_answer_version", $evr_answer_version );
     }
+    
+    //email about an upgrade  activation@wordpresseventregister.com
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: Plugin Upgrade <>\r\n";
+    
+    $email_body = get_option('siteurl');
+    
+    wp_mail("activation@wordpresseventregister.com", "Installation Complete - ". $cur_build, html_entity_decode($email_body), $headers);
 }
 ?>
