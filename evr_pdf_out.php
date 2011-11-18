@@ -122,7 +122,9 @@ function PutLink($URL, $txt)
        
        
        $reg_form = unserialize(urldecode($_POST["reg_form"]));
-       $attendee_list = $_POST['attendee_list'];
+       $attendee_array = unserialize($_POST['attendee_list']);
+       echo $_POST['attendee_list'];
+       break;
     //   $pdf=new FPDF();
     //    $pdf->AddPage();
     //    $pdf->SetFont( 'Arial', 'B', 24 );
@@ -153,7 +155,7 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $reg_form['event
                             
 $item_order = unserialize($reg_form['tickets']);
         
- $invoice = '<br><br><br><br><br><br><b><u>Registration Details:</u></b>'.
+ $invoice = '<br><br><br><b><u>Registration Details:</u></b>'.
  '<br><br><b>Event Name/Cost:</b> '.$event_name.
  '<br><br><b>Attendee Name:</b> '.$reg_form['fname'].' '.$reg_form['lname'].
  '<br><br><b>Email Address:</b> '.$reg_form['email'].
@@ -166,7 +168,6 @@ $item_order = unserialize($reg_form['tickets']);
     $invoice .='     <br><br><b>Total:</b> '.$item_order[0]['ItemCurrency'].' '.$reg_form['payment'];
     $invoice .='<br><br><b><u>Attendee List:</b></u><br><br>';
      
-        $attendee_array = unserialize($attendee_list);
         foreach($attendee_array as &$ma) {
             $invoice .= $ma["first_name"].' '.$ma["last_name"].'<br/>';}
      
@@ -200,17 +201,17 @@ $pdf = new PDF();
 
 
 $pdf->AddPage();
- $pdf->SetFont( 'Arial', 'B', 20 );
+ $pdf->SetFont( 'Arial', 'B', 16 );
             $pdf->Write( 12, $company );
             $pdf->Ln( 12 );
-            $pdf->SetFont( 'Arial', 'B', 18 );
+            $pdf->SetFont( 'Arial', 'B', 14 );
             $pdf->Write( 12, $page_title );
             $pdf->Ln( 6 );
 //$pdf->SetLink($link);
 //$pdf->Image('logo.png',10,12,30,0,'','http://www.fpdf.org');
 $pdf->SetFont('Arial','',20);
 $pdf->SetLeftMargin(45);
-$pdf->SetFontSize(14);
+$pdf->SetFontSize(12);
 $pdf->WriteHTML($html);
 
             

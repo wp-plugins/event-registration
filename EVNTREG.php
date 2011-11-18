@@ -281,20 +281,16 @@ function evr_admin_menu()
     global $evr_date_format, $evr_ver;
     $version = "EVNTRG_" . $evr_ver;
     add_menu_page($version, $version, 8, __file__, 'evr_splash');
-    add_submenu_page(__file__, 'Setup Company', 'Company', 8, 'company',
-        'evr_admin_company');
-    add_submenu_page(__file__, 'Manage Attendees', 'Attendees', 8, 'attendee',
-        'evr_attendee_admin');
-    add_submenu_page(__file__, 'Manage Events', 'Events', 8, 'events',
-        'evr_admin_events');
-    add_submenu_page(__file__, 'Questions', 'Questions', 8, 'questions',
-        'evr_admin_questions');
-    add_submenu_page(__file__, 'Categories', 'Categories', 8, 'categories',
-        'evr_admin_categories');
-    add_submenu_page(__file__, 'Manage Payments', 'Payments', 8, 'payments',
-        'awr_admin_payments');
+    add_submenu_page(__file__, 'Setup Company', 'Company', 8, 'company','evr_admin_company');
+    add_submenu_page(__file__, 'Categories', 'Categories', 8, 'categories','evr_admin_categories');
+    add_submenu_page(__file__, 'Manage Events', 'Events', 8, 'events','evr_admin_events');
+    add_submenu_page(__file__, 'Questions', 'Questions', 8, 'questions','evr_admin_questions');
+    add_submenu_page(__file__, 'Manage Attendees', 'Attendees', 8, 'attendee','evr_attendee_admin');
+    add_submenu_page(__file__, 'Manage Payments', 'Payments', 8, 'payments','evr_admin_payments');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
+    //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
+    //add_submenu_page ( __FILE__, 'Sample Events', 'Sample Events', 8, 'sample', 'evr_create_events_sample_page' );
     //add_submenu_page ( __FILE__, 'Reports', 'Reports', 8, 'reports', 'evr_admin_reports' );
     //add_submenu_page ( __FILE__, 'Support', 'Support', 8, 'support', 'evr_admin_support' );
 

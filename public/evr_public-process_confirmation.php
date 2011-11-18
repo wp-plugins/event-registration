@@ -43,6 +43,8 @@ function evr_process_confirmation(){
    _e("You're information has been recieved.",'evr_language');
    echo "<br/>";
    
+/* Comment Out PDF confirmation Option
+
 ?>
 <form id="pdf out" class="evr_regform" method="post" action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/event-registration/evr_pdf_out.php'?>">
 
@@ -51,8 +53,9 @@ function evr_process_confirmation(){
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('PDF Confirmation','evr_language');?>" /> 
 </form>
 <?php
-   //evr_pdf($reg_form,$attendee_list);
-   
+ 
+ */
+    
    $sql= "SELECT * FROM ". get_option('evr_event')." WHERE id=".$event_id; 
    
    $result = mysql_query ( $sql );

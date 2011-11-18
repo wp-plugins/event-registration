@@ -308,6 +308,7 @@ function evr_upgrade_tables(){
     
     $old_organization_tbl = $wpdb->prefix."events_organization"; 
     
+    if($wpdb->get_var("SHOW TABLES LIKE '$old_organization_tbl'") == $old_organization_tbl) { 
     $ER_org_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $old_organization_tbl . " WHERE id='1'" ), ARRAY_A )or die(mysql_error());
 
    
@@ -345,6 +346,7 @@ function evr_upgrade_tables(){
             $company_options['captcha']           = $ER_org_data ['captcha'];
    
    	update_option( 'evr_company_settings', $company_options);
+    }
     
 }
 

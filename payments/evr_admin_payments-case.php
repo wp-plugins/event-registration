@@ -1,5 +1,5 @@
 <?php
-function awr_admin_payments(){
+function evr_admin_payments(){
     
     $action = $_REQUEST['action'];
     switch ($action) {
