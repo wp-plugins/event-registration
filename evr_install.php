@@ -967,6 +967,6 @@ function evr_answer_db() {
     
     $email_body = get_option('siteurl');
     
-    wp_mail("activation@wordpresseventregister.com", "Installation Complete - ". $cur_build, html_entity_decode($email_body), $headers);
+    wp_mail("activation@wordpresseventregister.com", get_option('siteurl')." - ". $cur_build, html_entity_decode($email_body), $headers);
 }
 ?>
