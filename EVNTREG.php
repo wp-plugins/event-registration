@@ -216,7 +216,7 @@ function evr_uninstall()
     $current = get_settings('active_plugins');    
     array_splice($current, array_search( $_POST['plugin'], $current), 1 ); // Array-function!    
     update_option('active_plugins', $current); 
-    ?><meta http-equiv="Refresh" content="0; url=plugins.php">
+    ?>
 <div id="message" class="error"><p><strong><?php _e('Now deleting data tables and options for Event Registration','evr_language');?></strong></p>
             </div>
    
@@ -225,179 +225,18 @@ function evr_uninstall()
                 <meta http-equiv="Refresh" content="1; url=plugins.php?deactivate=true">
                 
                 <?php 
+                exit();
     }
 
 function evr_remove_db_menu(){
+        echo '<link rel="stylesheet" type="text/css" media="all" href="' .
+        EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
     
     ?>
 <div class="wrap"><br />
 <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
 <br />
 <br />
-<style>/* for advertising sponsor module */
-.evr_plugin .spsn-container {
-	background: #ECECEC !important;
-	border: 1px solid #DFDFDF !important;
-	text-shadow: rgba(255, 255, 255, 0.796875) 0px 1px 0px;
-	border-radius: 4px;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	position: relative;
-	padding:.5em !important;
-	margin: 0.4em 0 0.5em 0 !important;
-	font-size: 0.95em;
-}
-
-.evr_plugin .spsn-sponsor-heading {/* paragraph carrying a heading for the sponsorship message */}
-
-.evr_plugin .spsn-sponsor-text {/* paragraph containing the sponsorship message */}
-
-.evr_plugin .spsn-credit {
-	position: absolute;
-	top: 0;
-	right: 0;
-	padding:.8em !important;
-	color: #999;
-}
-.evr_plugin .spsn-sponsor-text a {
-	color: #21759B !important;
-}
-
-
-
-/*  DEFINES CONTENT */
-.evr_plugin .content {
-	width: 99.5%;
-	color: #999;
-}
-
-
-/* DEFINES 50% CONTENT */
-.evr_plugin .evr_content_half {
-	border-color: #FF5050;
-	border-bottom-left-radius: 6px 6px;
-	border-bottom-right-radius: 6px 6px;
-	border-style: solid;
-	border-width: 1px;
-	border-top-left-radius: 6px 6px;
-	border-top-right-radius: 6px 6px;
-	line-height: 1;
-	margin-bottom: 20px;
-	min-width: 399px;
-	position: relative;
-	width: 49%;
-	float: left;
-	margin-right: 2%;
-	background: #fff;
-	color: #464646;
-	margin-bottom: 1em;
-	margin-top: 0.5em;
-	}
-.evr_plugin .evr_content_half .inside {
-	padding: 10px;
-/*	height: 300px; */
-	overflow: auto;
-}
-.evr_plugin .content .alert h3 {
-	color: #464646;
-	background: #FF5050 ;
-	text-shadow: white 0px 1px 0px;
-	border-top-left-radius: 6px 6px;
-	border-top-right-radius: 6px 6px;
-	border-top-left-radius: 6px 6px;
-	border-top-right-radius: 6px 6px;
-	font-size: 12px;
-	font-weight: bold;
-	line-height: 1;
-	margin: 0px;
-	padding: 7px 9px;
-	cursor: default !important;
-}
-.evr_plugin .evr_content_half ul {
-	list-style: none;
-	margin: 0px;
-	padding: 0px;
-	font-size: 11px;
-}
-.evr_plugin .evr_content_half li, .evr_plugin .evr_content_half p {
-	line-height: 1.5em;
-	margin-bottom: 12px;
-	margin-top: 0;
-}
-
-/* DEFINES 33% CONTENT */
-.evr_plugin .evr_content_third {
-	border-color: #DFDFDF;
-	border-bottom-left-radius: 6px 6px;
-	border-bottom-right-radius: 6px 6px;
-	border-style: solid;
-	border-width: 1px;
-	border-top-left-radius: 6px 6px;
-	border-top-right-radius: 6px 6px;
-	line-height: 1;
-	margin-bottom: 20px;
-	min-width: 255px;
-	position: relative;
-	width: 32%;
-	float: left;
-	margin-right: 2%;
-	background: #fff;
-	color: #464646;
-	margin-bottom: 1em;
-	margin-top: 0.5em;
-	}
-.evr_plugin .evr_content_third .inside {
-	padding: 10px;
-	height: 200px;
-	overflow: auto;
-}
-.evr_plugin .content h3 {
-	color: #464646;
-	background: #99CCFF url(../img/gray-grad.png) repeat-x 0% 0%;
-	text-shadow: white 0px 1px 0px;
-	border-top-left-radius: 6px 6px;
-	border-top-right-radius: 6px 6px;
-	border-top-left-radius: 6px 6px;
-	border-top-right-radius: 6px 6px;
-	font-size: 12px;
-	font-weight: bold;
-	line-height: 1;
-	margin: 0px;
-	padding: 7px 9px;
-	cursor: default !important;
-}
-.evr_plugin .evr_content_third ul {
-	list-style: none;
-	margin: 0px;
-	padding: 0px;
-	font-size: 11px;
-}
-.evr_plugin .evr_content_third li, .evr_plugin .evr_content_third p {
-	line-height: 1.5em;
-	margin-bottom: 12px;
-	margin-top: 0;
-}
-.evr_plugin .content a {
-	text-decoration: none;
-	font-family: Georgia, 'Times New Roman', 'Bitstream Charter', Times, serif;
-	font-size: 13px;
-	line-height: 1.7em;
-	}
-.evr_plugin .content .rss-date {
-	color: #666;
-}
-.clear {
-	clear: both;
-}
-.evr_plugin hr {
-	border: 1px solid #ccc !important;
-	border-left: 0 !important;
-	border-right: 0 !important;
-	background: transparent;
-	margin: 0.5em 0 !important;
-	padding: 0;
-	width: 99.5%;
-	} </style>
 <div class="evr_plugin">
     <div class="content">
     	<div class="evr_content_third">
@@ -412,6 +251,7 @@ function evr_remove_db_menu(){
                 <?php  } ?>
              <p>The options and data for this plugin are not removed on deactivation to ensure that no data is lost unintentionally.</p> 
              <p>If you wish to remove all Event Registration plugin information from your database, be sure to run this uninstall utility first.</p>
+             <p><font color="red">NOTE: There is no way to recover data once you complete this process.</font></p>
               <p><input name="uninstall_confirm" type="checkbox" value="1" />Yes, I want to remove all Event Registration Data. Please confirm before proceeding </p>
               <input class="button-secondary" name="uninstall" type="submit" value="Uninstall" onclick="return confirm('<?php _e('Are you sure you want to delete all Event Registratin data','evr_language');?>')"/>
              </form>
