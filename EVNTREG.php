@@ -84,7 +84,7 @@ require ("evr_public_registration.php"); //holds functions that display the regi
 require ("paypal.class.php"); //used for paypal IPN
 require ("evr_ipn.php"); //used for paypal IPN
 require ("evr_calendar.php"); //holds functions for calendar page
-require ("evr_pdf.php"); //creates pdf of reg details
+//require ("evr_pdf.php"); //creates pdf of reg details
 
 //Install/Update Tables when plugin is activated
 register_activation_hook(__file__, 'evr_install');
@@ -120,6 +120,7 @@ add_filter('plugin_action_links', 'evr_quick_action', 10, 2);
 add_filter('the_content', 'evr_content_replace');
 add_filter('the_content', 'evr_calendar_replace');
 add_filter('the_content', 'evr_upcoming_event_list');
+
 add_shortcode('EVR_PAYMENT', 'evr_payment_page');
 add_shortcode('EVR_CALENDAR', 'evr_calendar_page');
 add_shortcode('EVR_SINGLE', 'evr_single_event');
@@ -300,17 +301,10 @@ function evr_admin_menu()
 
 }
 //function to load widgets to the widgets menu
-function evr_widgets()
-{
-        if (preg_match('{EVR_WIDGET}', $content)) {
-        ob_start();
-        //event_regis_run($event_single_ID);
-        evr_widget_content(); //function with widget content
-        $buffer = ob_get_contents();
-        ob_end_clean();
-        $content = str_replace('{EVR_WIDGET}', $buffer, $content);
-    }
-    return $content;
+//function to load widgets to the widgets menu
+function evr_widgets(){
+register_sidebar_widget("Event Registraion", "evr_widget_content"); 
+//register_sidebar_widget("Event Reg Calendar", "events_calendar_widget");
 }
 //function to add quick link to Plugin Activation Menu - used as a filter
 function evr_quick_action($links, $file)

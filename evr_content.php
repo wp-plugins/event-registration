@@ -11,6 +11,7 @@ function evr_main_content(){
 }
 //function that provides the content in the content replacement for widget
 function evr_widget_content(){
+    echo "<U><h3>UPCOMING EVENTS</H3></U>";
     echo "This feature currently not available";
     
 }
