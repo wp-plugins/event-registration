@@ -248,7 +248,7 @@ function evr_clean_old_db(){
             	<div class="evr_content_third">
             		<h3>Purge Previous Version Data</h3>
             		<div class="inside">
-                        <form method="POST"  action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                        <form method="POST"  action="admin.php?page=purge">
                       <div id="message" class="error"><p><strong><?php _e('You must check the confirm box before continuing!','evr_language');?></strong></p></div>    
                      <p>The options and data for a previous version of this plugin were not removed during the upgrade.</p> 
                      <p>If you have verified the data migration and you wish to remove all the previous data tables (new tables were created during the installation/upgrade.</p>
