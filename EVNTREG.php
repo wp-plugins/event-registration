@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
 $evr_ver = "6.00.06";
+$evr_admin_level = "8";
 
 /*
 to change date format in event listing display
@@ -85,6 +86,7 @@ require ("evr_public_registration.php"); //holds functions that display the regi
 require ("paypal.class.php"); //used for paypal IPN
 require ("evr_ipn.php"); //used for paypal IPN
 require ("evr_calendar.php"); //holds functions for calendar page
+require ("evr_clean_db.php"); //holds functions for calendar page
 //require ("evr_pdf.php"); //creates pdf of reg details
 
 //Install/Update Tables when plugin is activated
@@ -97,35 +99,35 @@ add_action('admin_head', 'evr_admin_header');
 add_action('wp_head', 'evr_public_header');
 add_action('admin_menu', 'evr_admin_menu');
 add_action('plugins_loaded', 'evr_widgets');
-add_action('activated_plugin','save_error');
-function save_error(){
-    update_option('plugin_error',  ob_get_contents());
-}
+add_action('activated_plugin','evr_save_error');
+add_action('init', 'evr_init');
+add_action("admin_head","evr_load_tiny_mce");
+//add_action( 'admin_print_footer_scripts', 'wp_preload_dialogs');
+//wp_preload_dialogs( array( 'plugins' => 'wpdialogs,wplink,wpfullscreen' ) );
 
 function evr_init()
 {
-    //if (!is_admin()) {wp_enqueue_script('jquery');}
-
+  //if (!is_admin()) {wp_enqueue_script('jquery');}
   wp_enqueue_script('jquery');
   wp_enqueue_script('jquery-ui-sortable'); 
   wp_enqueue_script('jquery-ui-draggable'); 
   wp_enqueue_script('jquery-ui-droppable');
   wp_enqueue_script('jquery-ui-selectable');
   wp_enqueue_script('jquery-ui-core');
-    load_plugin_textdomain('evr_language', false, dirname(plugin_basename(__file__)) .
-        '/lang/');
+  wp_enqueue_script(array('editor', 'thickbox', 'media-upload'));
+  wp_enqueue_style('thickbox');      
+  //Text Domain support for other languages
+  load_plugin_textdomain('evr_language', false, dirname(plugin_basename(__file__)).'/lang/');      
 }
-add_action('init', 'evr_init');
-
-
-// Add a settings link to the Plugins page, so people can go straight from the plugin page to the settings page.
-add_filter('plugin_action_links', 'evr_quick_action', 10, 2);
 
 // Content filter and shortcodes
+// Add a settings link to the Plugins page, so people can go straight from the plugin page to the settings page.
+add_filter('plugin_action_links', 'evr_quick_action', 10, 2);
+//Filters
 add_filter('the_content', 'evr_content_replace');
 add_filter('the_content', 'evr_calendar_replace');
 add_filter('the_content', 'evr_upcoming_event_list');
-
+//Shortcodes
 add_shortcode('EVR_PAYMENT', 'evr_payment_page');
 add_shortcode('EVR_CALENDAR', 'evr_calendar_page');
 add_shortcode('EVR_SINGLE', 'evr_single_event');
@@ -133,253 +135,11 @@ add_shortcode('EVR_CATEGORY', 'evr_by_category');
 add_shortcode('EVR_ATTENDEE', 'evr_attendee_short');
 
 
-//Function List
-//function to install plugin - load tables and wp_options
-function evr_install()
-{
-
-    global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $old_event_tbl = $wpdb->prefix . "events_detail";
-
-    if (get_option('evr_was_upgraded')!= "Y"){
-    if ($wpdb->get_var("SHOW TABLES LIKE '$old_event_tbl'") == $old_event_tbl) {
-        evr_upgrade_tables();
-    //create option in the wordpress options table to bypass upgrade in the future    
-        $option_name = 'evr_was_upgraded' ;
-    	$newvalue = "Y";
-    	if ( get_option($option_name) ) {
-    	update_option($option_name, $newvalue);
-    	 } else {
-    	  $deprecated=' ';
-    	  $autoload='no';
-    	  add_option($option_name, $newvalue, $deprecated, $autoload);
-    	 }
-     }}
-    $cur_build = "6.00.05";
-    evr_attendee_db();
-    evr_category_db();
-    evr_event_db();
-    evr_cost_db();
-    evr_payment_db();
-    evr_question_db();
-    evr_answer_db();
-    evr_notification();
+function evr_save_error(){
+    update_option('plugin_error',  ob_get_contents());
 }
-//function to remove plugin - remove tables and wp_options
-
-
-function evr_uninstall()
-{
-   
-    global $wpdb;
-    //Drop Attendee Table
-    $thetable = $wpdb->prefix . "evr_attendee";
-    $wpdb->query("DROP TABLE IF EXISTS $thetable");
-    delete_option('evr_attendee');
-    delete_option('evr_attendee_version');
-
-    //Drop Events Detail Table
-    $thetable = $wpdb->prefix . "evr_event";
-    $wpdb->query("DROP TABLE IF EXISTS $thetable");
-    delete_option('evr_event');
-    delete_option('evr_event_version');
-
-    //Drop Events Question Table
-    $thetable = $wpdb->prefix . "evr_question";
-    $wpdb->query("DROP TABLE IF EXISTS $thetable");
-    delete_option('evr_question');
-    delete_option('evr_question_version');
-
-    //Drop Events Answer Table
-    $thetable = $wpdb->prefix . "evr_answer";
-    $wpdb->query("DROP TABLE IF EXISTS $thetable");
-    delete_option('evr_answer');
-    delete_option('evr_answer_version');
-
-    //Drop Events Category Table
-    $thetable = $wpdb->prefix . "evr_category";
-    $wpdb->query("DROP TABLE IF EXISTS $thetable");
-    delete_option('evr_category');
-    delete_option('evr_category_version');
-
-    //Drop Events Cost Table
-    $thetable = $wpdb->prefix . "evr_cost";
-    $wpdb->query("DROP TABLE IF EXISTS $thetable");
-    delete_option('evr_cost');
-    delete_option('evr_cost_version');
-
-    //Drop Attendee Payment Table
-    $thetable = $wpdb->prefix . "evr_payment";
-    $wpdb->query("DROP TABLE IF EXISTS $thetable");
-    delete_option('evr_payment');
-    delete_option('evr_payment_version');
-    
-    //Remove Company Settings
-    
-    delete_option('evr_company_settings');
-    delete_option('evr_was_upgraded');
-
-    $current = get_settings('active_plugins');    
-    array_splice($current, array_search( $_POST['plugin'], $current), 1 ); // Array-function!    
-    update_option('active_plugins', $current); 
-    ?>
-<div id="message" class="error"><p><strong><?php _e('Now deleting data tables and options for Event Registration','evr_language');?></strong></p>
-            </div>
-   
-    <div id="message" class="error"><p><strong><?php _e('All Event Registration Data Tables and Options have been deleted!','evr_language');?>
-                </strong></p></div> 
-                <meta http-equiv="Refresh" content="1; url=plugins.php?deactivate=true">
-                
-                <?php 
-                exit();
-}
-
-function evr_clean_old_db(){
-    if ( isset( $_POST['purge'], $_POST['purge_confirm'] ) ) {evr_delete_old_tables();}
-    elseif (get_option('evr_was_upgraded')== "Y"){
-        echo '<link rel="stylesheet" type="text/css" media="all" href="' . EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
-        ?>
-        <div class="wrap"><br />
-        <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
-        <br />
-        <br />
-        <div class="evr_plugin">
-            <div class="content">
-            	<div class="evr_content_third">
-            		<h3>Purge Previous Version Data</h3>
-            		<div class="inside">
-                        <form method="POST"  action="admin.php?page=purge">
-                      <div id="message" class="error"><p><strong><?php _e('You must check the confirm box before continuing!','evr_language');?></strong></p></div>    
-                     <p>The options and data for a previous version of this plugin were not removed during the upgrade.</p> 
-                     <p>If you have verified the data migration and you wish to remove all the previous data tables (new tables were created during the installation/upgrade.</p>
-                     <p><font color="red">NOTE: There is no way to recover the old data once you complete this process.</font></p>
-                      <p><input name="purge_confirm" type="checkbox" value="1" />Yes, I want to remove the previous version Event Registration Data. Please confirm before proceeding </p>
-                      <input class="button-secondary" name="purge" type="submit" value="PURGE" onclick="return confirm('<?php _e('Are you sure you want to purge the old data from a previous version?','evr_language');?>')"/>
-                     </form>
-                     </div>
-                </div>  		
-            </div>
-           </div>  		
-        </div>        
-        <?php
-        }
-}
-
-
-function evr_delete_old_tables(){
-    
-global $wpdb;  
-?>
-<div id="message" class="error"><p><strong><?php _e('Now deleting old data tables and options from previous version of Event Registration','evr_language');?></strong></p></div>
-<?php
-
-//Drop Organization Table
-$thetable = $wpdb->prefix."events_organization";  
-$wpdb->query("DROP TABLE IF EXISTS $thetable");
-delete_option('events_organization_tbl');
-delete_option('events_organization_tbl_version');  
-
-//Drop Events Detail Table
-$thetable = $wpdb->prefix."events_detail";  
-$wpdb->query("DROP TABLE IF EXISTS $thetable");
-delete_option('events_detail_tbl');
-delete_option('events_detail_tbl_version'); 
-
-//Drop Events Attendee Table
-$thetable = $wpdb->prefix."events_attendee";  
-$wpdb->query("DROP TABLE IF EXISTS $thetable");
-delete_option('events_attendee_tbl');
-delete_option('events_attendee_tbl_version'); 
-
-//Drop Events Category Table
-$thetable = $wpdb->prefix."events_cat_detail_tbl";  
-$wpdb->query("DROP TABLE IF EXISTS $thetable");
-delete_option('events_cat_detail_tbl');
-delete_option('events_cat_detail_tbl_version'); 
-
-//Drop Events Payment Table
-$thetable = $wpdb->prefix."events_payment_transactions";  
-$wpdb->query("DROP TABLE IF EXISTS $thetable");
-delete_option('events_payment_transactions_tbl');
-delete_option('events_payment_transactions_tbl_version'); 
-
-//Drop Events Question Table
-$thetable = $wpdb->prefix."events_question_tbl";  
-$wpdb->query("DROP TABLE IF EXISTS $thetable");
-delete_option('events_question_tbl');
-delete_option('events_question_tbl_version'); 
-
-//Drop Events Answer Table
-$thetable = $wpdb->prefix."events_answer_tbl";  
-$wpdb->query("DROP TABLE IF EXISTS $thetable");
-delete_option('events_answer_tbl');
-delete_option('events_answer_tbl_version'); 
-
-
-//Remove other Events Registration Options
-delete_option('all_events_sample_page_id'); 
-delete_option('er_link_for_calendar_url'); 
-delete_option('single_event_sample_page_id'); 
-delete_option('category_sample_page_id'); 
-delete_option('current_event'); 
-delete_option('payment_vendor_id'); 
-delete_option('show_thumb'); 
-delete_option('er_link_for_calendar_url'); 
-delete_option('currency_format');
-delete_option('events_listing_type');
-delete_option('return_url');
-delete_option('cancel_return');
-delete_option('notify_url');
-delete_option('return_method');
-delete_option('use_sandbox');
-delete_option('image_url');
-delete_option('registrar');
-delete_option('currency_format');
-delete_option('attendee_first');
-delete_option('attendee_last');
-delete_option('attendee_name');
-delete_option('attendee_email');
-delete_option('attendee_id');
-
-delete_option('evr_was_upgraded');
-?>
-<div id="message" class="error"><p><strong><?php _e('All previous version Event Registration Data Tables and Options have been deleted!','evr_language');?></strong></p></div> 
-<?php
-    
-}
-
-function evr_remove_db_menu(){
-        echo '<link rel="stylesheet" type="text/css" media="all" href="' .
-        EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
-    
-    ?>
-        <div class="wrap"><br />
-        <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
-        <br />
-        <br />
-        <div class="evr_plugin">
-            <div class="content">
-            	<div class="evr_content_third">
-            		<h3>Permanently Remove All Data</h3>
-            		<div class="inside">
-                        <form method="post">
-                        <input id="plugin" name="plugin" type="hidden" value="EVENTREG.php" />     
-                     <?php if ( isset( $_POST['uninstall'] ) && ! isset( $_POST['uninstall_confirm'] ) ) { ?>
-                        <div id="message" class="error"><p><strong><?php _e('You must check the confirm box before continuing!','evr_language');?>
-                        </strong></p></div>
-                        <?php  } ?>
-                     <p>The options and data for this plugin are not removed on deactivation to ensure that no data is lost unintentionally.</p> 
-                     <p>If you wish to remove all Event Registration plugin information from your database, be sure to run this uninstall utility first.</p>
-                     <p><font color="red">NOTE: There is no way to recover data once you complete this process.</font></p>
-                      <p><input name="uninstall_confirm" type="checkbox" value="1" />Yes, I want to remove all Event Registration Data. Please confirm before proceeding </p>
-                      <input class="button-secondary" name="uninstall" type="submit" value="Uninstall" onclick="return confirm('<?php _e('Are you sure you want to delete all Event Registratin data','evr_language');?>')"/>
-                     </form>
-                     </div>
-                </div>  		
-            </div>
-           </div>  		
-        </div>        
-        <?php 
+function evr_load_tiny_mce() {
+    wp_tiny_mce( false ); // true gives you a stripped down version of the editor
 }
 
 
@@ -389,16 +149,20 @@ function evr_remove_db_menu(){
 //function to load items to header of wordpress admin
 function evr_admin_header()
 {
-    echo '<link rel="stylesheet" type="text/css" media="all" href="' .
-        EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
+    //echo '<link rel="stylesheet" type="text/css" media="all" href="' . EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
         //wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
+       // scripts
+			//add_thickbox();
+			//wp_enqueue_script('media-upload');
+			wp_enqueue_script('evr_admin', plugins_url('/scripts/evr.js',dirname(__FILE__)));
+           wp_enqueue_script('evr_admin_fancy', plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js',dirname(__FILE__)));
+		// styles
+			wp_enqueue_style('evr_admin', plugins_url('/evr_admin_style.css',dirname(__FILE__))); 
+
 ?>
-    
-    <script type="text/javascript" src="<?php echo EVR_PLUGINFULLURL ?>scripts/evr.js"></script>
-    
-   <script type="text/javascript" src="<?php echo EVR_PLUGINFULLURL ?>scripts/fancybox/jquery.fancybox-1.2.5.pack.js"></script>
-     
-    <script type="text/javascript">
+ 
+    <script type="text/javascript"> 
+   
     	function myEdToolbar(obj) {
     	   	document.write("<img class=\"my_button\" src=\"<?php echo
 EVR_PLUGINFULLURL ?>images/paragraph.gif\" name=\"btnPara\" title=\"Paragraph\" onClick=\"doAddTags('<p>','</p>','" + obj + "')\">");
@@ -443,29 +207,27 @@ EVR_PLUGINFULLURL ?>images/quote.gif\" name=\"btnQuote\" title=\"Quote\" onClick
 /*********************************   HEAD   CSS   ********************************/
 
 //function to load items to public pages of wordpress site
-function evr_public_header()
-{
-    echo '<link rel="stylesheet" type="text/css" media="all" href="' .
-        EVR_PLUGINFULLURL . 'evr_public_style.css' . '" />';
-    echo '<link rel="stylesheet" type="text/css" media="all" href="' .
-        EVR_PLUGINFULLURL . 'evr_calendar.css' . '" />';
-        include "evr_event_popup_layout.php";
-
+function evr_public_header(){
+    include "evr_event_popup_layout.php";
+    // styles
+			wp_enqueue_style('evr_public', plugins_url('/evr_public_style.css',dirname(__FILE__)));
+            wp_enqueue_style('evr_calendar', plugins_url('/evr_calendar.css',dirname(__FILE__)));  
 }
+
 //function to load plugin admin menu to sidebar
 function evr_admin_menu()
 {
     global $evr_date_format, $evr_ver;
     $version = "EVNTRG_" . $evr_ver;
     add_menu_page($version, $version, 8, __file__, 'evr_splash');
-    add_submenu_page(__file__, 'Setup Company', 'Company', 8, 'company','evr_admin_company');
-    add_submenu_page(__file__, 'Categories', 'Categories', 8, 'categories','evr_admin_categories');
-    add_submenu_page(__file__, 'Manage Events', 'Events', 8, 'events','evr_admin_events');
-    add_submenu_page(__file__, 'Questions', 'Questions', 8, 'questions','evr_admin_questions');
-    add_submenu_page(__file__, 'Manage Attendees', 'Attendees', 8, 'attendee','evr_attendee_admin');
-    add_submenu_page(__file__, 'Manage Payments', 'Payments', 8, 'payments','evr_admin_payments');
-    add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', 8, 'uninstall','evr_remove_db_menu');
-    add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', 8, 'purge','evr_clean_old_db');
+    add_submenu_page(__file__, 'Setup Company', 'Company', $evr_admin_level, 'company','evr_admin_company');
+    add_submenu_page(__file__, 'Categories', 'Categories', $evr_admin_level, 'categories','evr_admin_categories');
+    add_submenu_page(__file__, 'Manage Events', 'Events', $evr_admin_level, 'events','evr_admin_events');
+    add_submenu_page(__file__, 'Questions', 'Questions', $evr_admin_level, 'questions','evr_admin_questions');
+    add_submenu_page(__file__, 'Manage Attendees', 'Attendees', $evr_admin_level, 'attendee','evr_attendee_admin');
+    add_submenu_page(__file__, 'Manage Payments', 'Payments', $evr_admin_level, 'payments','evr_admin_payments');
+    add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $evr_admin_level, 'uninstall','evr_remove_db_menu');
+    add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $evr_admin_level, 'purge','evr_clean_old_db');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
     //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
@@ -476,39 +238,9 @@ function evr_admin_menu()
 
 }
 //function to load widgets to the widgets menu
-//function to load widgets to the widgets menu
 function evr_widgets(){
 register_sidebar_widget("Event Registraion", "evr_widget_content"); 
 //register_sidebar_widget("Event Reg Calendar", "events_calendar_widget");
 }
-//function to add quick link to Plugin Activation Menu - used as a filter
-function evr_quick_action($links, $file)
-{
-    // Static so we don't call plugin_basename on every plugin row.
-    static $this_plugin;
-    if (!$this_plugin)
-        $this_plugin = plugin_basename(__file__);
 
-    if ($file == $this_plugin) {
-        $org_settings_link = '<a href="admin.php?page=' . __file__ . '">' . __('Settings',
-            'evr_language') . '</a>';
-        $events_link = '<a href="admin.php?page=events">' . __('Events', 'evr_language') .
-            '</a>';
-        array_unshift($links, $org_settings_link, $events_link); // before other links
-    }
-    return $links;
-}
-//function to replace content on public page for plugin
-function evr_content_replace($content)
-{
-    if (preg_match('{EVRREGIS}', $content)) {
-        ob_start();
-        //event_regis_run($event_single_ID);
-        evr_registration_main(); //function with main content
-        $buffer = ob_get_contents();
-        ob_end_clean();
-        $content = str_replace('{EVRREGIS}', $buffer, $content);
-    }
-    return $content;
-}
 ?>

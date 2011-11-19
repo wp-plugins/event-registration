@@ -10,6 +10,37 @@ function EVR_Offset($dt, $year_offset = '', $month_offset = '', $day_offset = ''
         2) + $month_offset, substr($dt, 8, 2) + $day_offset, substr($dt, 0, 4) + $year_offset));
 }
 
+//function to install plugin - load tables and wp_options
+function evr_install()
+{
+
+    global $evr_date_format, $evr_ver, $wpdb, $cur_build;
+    $old_event_tbl = $wpdb->prefix . "events_detail";
+
+    if (get_option('evr_was_upgraded')!= "Y"){
+    if ($wpdb->get_var("SHOW TABLES LIKE '$old_event_tbl'") == $old_event_tbl) {
+        evr_upgrade_tables();
+    //create option in the wordpress options table to bypass upgrade in the future    
+        $option_name = 'evr_was_upgraded' ;
+    	$newvalue = "Y";
+    	if ( get_option($option_name) ) {
+    	update_option($option_name, $newvalue);
+    	 } else {
+    	  $deprecated=' ';
+    	  $autoload='no';
+    	  add_option($option_name, $newvalue, $deprecated, $autoload);
+    	 }
+     }}
+    $cur_build = "6.00.05";
+    evr_attendee_db();
+    evr_category_db();
+    evr_event_db();
+    evr_cost_db();
+    evr_payment_db();
+    evr_question_db();
+    evr_answer_db();
+    evr_notification();
+}
 
 function evr_upgrade_tables()
 {

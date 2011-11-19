@@ -718,4 +718,36 @@ function evr_attendee_list($event_id){
 
 }
 
+
+//function to add quick link to Plugin Activation Menu - used as a filter
+function evr_quick_action($links, $file)
+{
+    // Static so we don't call plugin_basename on every plugin row.
+    static $this_plugin;
+    if (!$this_plugin)
+        $this_plugin = plugin_basename(__file__);
+
+    if ($file == $this_plugin) {
+        $org_settings_link = '<a href="admin.php?page=' . __file__ . '">' . __('Settings',
+            'evr_language') . '</a>';
+        $events_link = '<a href="admin.php?page=events">' . __('Events', 'evr_language') .
+            '</a>';
+        array_unshift($links, $org_settings_link, $events_link); // before other links
+    }
+    return $links;
+}
+//function to replace content on public page for plugin
+function evr_content_replace($content)
+{
+    if (preg_match('{EVRREGIS}', $content)) {
+        ob_start();
+        //event_regis_run($event_single_ID);
+        evr_registration_main(); //function with main content
+        $buffer = ob_get_contents();
+        ob_end_clean();
+        $content = str_replace('{EVRREGIS}', $buffer, $content);
+    }
+    return $content;
+}
+
 ?>
