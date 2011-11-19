@@ -131,6 +131,13 @@ function evr_splash(){
         <div class="alert"><h3>ALERT</h3></div>
     		
     		<div class="inside">
+            <?php echo get_option('plugin_error');
+            if (get_option('evr_was_upgraded')== "Y") {?>
+      <div id="message" class="error"><p><strong><?php 
+      _e('You upgraded from a previous version of Event Registration.  All existing data has been imported.  Please verify data before deleting old tables!','evr_language');?></strong></p>
+            </div>
+            <a href="admin.php?page=purge">Remove Old Data Tables</a>
+            <?php }?>
     			
     	</div>		
 		<div class="clear"></div>
