@@ -34,7 +34,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
 $evr_ver = "6.00.06";
-$evr_admin_level = "8";
 
 /*
 to change date format in event listing display
@@ -62,15 +61,21 @@ Y - A full numeric representation of a year, 4 digits Examples: 1999 or 2003
 y - A two digit representation of a year Examples: 99 or 03 
 
 */
-
+/*********************************   ERROR REPORTING   ********************************/
 error_reporting(E_ALL ^ E_NOTICE);
+function evr_save_error(){
+    update_option('plugin_error',  ob_get_contents());
+}
+/*********************************   PATH VARIABLES   ********************************/
 //Define path variables
 define("EVR_PLUGINPATH", "/" . plugin_basename(dirname(__file__)) . "/");
 define("EVR_PLUGINFULLURL", WP_PLUGIN_URL . EVR_PLUGINPATH);
-
+//
 if ( isset( $_POST['uninstall'], $_POST['uninstall_confirm'] ) ) {evr_uninstall();}
-
-//Dependencies
+//
+//
+/*********************************   DEPENDENCIES   ********************************/
+//
 require ("evr_admin_menu.php"); //holds function used in the admin menu
 require ("evr_support_functions.php"); //holds functions used throughout the plugin
 require ("evr_content.php"); //holds functions that replaces the content in main page
@@ -88,25 +93,51 @@ require ("evr_ipn.php"); //used for paypal IPN
 require ("evr_calendar.php"); //holds functions for calendar page
 require ("evr_clean_db.php"); //holds functions for calendar page
 //require ("evr_pdf.php"); //creates pdf of reg details
-
+//
+//
+/*********************************   HOOKS   ********************************/
 //Install/Update Tables when plugin is activated
 register_activation_hook(__file__, 'evr_install');
 ## uncomment the next line to completely remove the plugin including all data files when deactivated
 //register_deactivation_hook( __FILE__, 'evr_uninstall' );
-
-//Add page headers for client and admin pages, Add Admin menu for plugin, Add widgets
-add_action('admin_head', 'evr_admin_header');
-add_action('wp_head', 'evr_public_header');
-add_action('admin_menu', 'evr_admin_menu');
-add_action('plugins_loaded', 'evr_widgets');
+//
+/*********************************   ACTIONS   ********************************/
+//
 add_action('activated_plugin','evr_save_error');
 add_action('init', 'evr_init');
+add_action('admin_menu', 'evr_admin_menu');
+add_action('plugins_loaded', 'evr_widgets');
+//admin header
 add_action("admin_head","evr_load_tiny_mce");
-//add_action( 'admin_print_footer_scripts', 'wp_preload_dialogs');
-//wp_preload_dialogs( array( 'plugins' => 'wpdialogs,wplink,wpfullscreen' ) );
-
-function evr_init()
-{
+add_action('admin_head', 'evr_admin_header');
+add_action('admin_print_styles', 'evr_admin_css_all_page');
+add_action('admin_print_scripts', 'evr_admin_scripts_all_page');
+//public header
+add_action('wp_head', 'evr_public_header');
+add_action('wp_print_styles', 'evr_public_stylesheets');
+add_action('wp_print_scripts', 'evr_public_scripts');
+//
+//
+/*********************************   FILTERS   ********************************/
+//
+// Add a settings link to the Plugins page, so people can go straight from the plugin page to the settings page.
+add_filter('plugin_action_links', 'evr_quick_action', 10, 2);
+add_filter('the_content', 'evr_content_replace');
+add_filter('the_content', 'evr_calendar_replace');
+add_filter('the_content', 'evr_upcoming_event_list');
+//
+/*********************************   SHORTCODES  *****************************/
+//
+add_shortcode('EVR_PAYMENT', 'evr_payment_page');
+add_shortcode('EVR_CALENDAR', 'evr_calendar_page');
+add_shortcode('EVR_SINGLE', 'evr_single_event');
+add_shortcode('EVR_CATEGORY', 'evr_by_category');
+add_shortcode('EVR_ATTENDEE', 'evr_attendee_short');
+//
+//
+/*********************************   STARTUP FUNCTIONS   ********************************/
+//
+function evr_init(){
   //if (!is_admin()) {wp_enqueue_script('jquery');}
   wp_enqueue_script('jquery');
   wp_enqueue_script('jquery-ui-sortable'); 
@@ -114,120 +145,89 @@ function evr_init()
   wp_enqueue_script('jquery-ui-droppable');
   wp_enqueue_script('jquery-ui-selectable');
   wp_enqueue_script('jquery-ui-core');
-  wp_enqueue_script(array('editor', 'thickbox', 'media-upload'));
-  wp_enqueue_style('thickbox');      
+  wp_enqueue_script(array('tiny_mce','editor','editor-functions', 'thickbox', 'media-upload'));
   //Text Domain support for other languages
   load_plugin_textdomain('evr_language', false, dirname(plugin_basename(__file__)).'/lang/');      
 }
-
-// Content filter and shortcodes
-// Add a settings link to the Plugins page, so people can go straight from the plugin page to the settings page.
-add_filter('plugin_action_links', 'evr_quick_action', 10, 2);
-//Filters
-add_filter('the_content', 'evr_content_replace');
-add_filter('the_content', 'evr_calendar_replace');
-add_filter('the_content', 'evr_upcoming_event_list');
-//Shortcodes
-add_shortcode('EVR_PAYMENT', 'evr_payment_page');
-add_shortcode('EVR_CALENDAR', 'evr_calendar_page');
-add_shortcode('EVR_SINGLE', 'evr_single_event');
-add_shortcode('EVR_CATEGORY', 'evr_by_category');
-add_shortcode('EVR_ATTENDEE', 'evr_attendee_short');
-
-
-function evr_save_error(){
-    update_option('plugin_error',  ob_get_contents());
-}
+//
 function evr_load_tiny_mce() {
-    wp_tiny_mce( false ); // true gives you a stripped down version of the editor
+    //for help with this http://dannyvankooten.com/450/tinymce-wysiwyg-editor-in-wordpress-plugin/
+   global $wp_version;
+      //for older versions we need this script.
+   if (!version_compare($wp_version, '3.2', '>=')) {
+       if (function_exists('wp_tiny_mce_preload_dialogs')) {
+           add_action('admin_print_footer_scripts', 'wp_tiny_mce_preload_dialogs');
+       }
+  	}
+    //wp_tiny_mce( false ); // true gives you a stripped down version of the editor
+    wp_tiny_mce( false , array( "editor_selector" => "edit_class", 
+    'height' => 200,
+    'plugins' => 'inlinepopups,wpdialogs,wplink,media,wpeditimage,wpgallery,paste,tabfocus',        
+    'forced_root_block' => false,        
+    'force_br_newlines' => true,        
+    'force_p_newlines' => false,        
+    'convert_newlines_to_brs' => true));
 }
-
-
-
-
-
+//
+//
+/*********************************   ADMIN HEAD   ********************************/
+//              
+//function to enqueue styles in admin pages
+function evr_admin_css_all_page() {
+       wp_register_style($handle = 'evr_admin_css', $src = plugins_url('/evr_admin_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_enqueue_style('evr_admin_css');
+}
+//function to enqueue scripts in admin pages
+function evr_admin_scripts_all_page() {
+       wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_enqueue_script('evr_admin_script');
+       wp_enqueue_script('evr_admin_fancy');
+}
 //function to load items to header of wordpress admin
-function evr_admin_header()
-{
-    //echo '<link rel="stylesheet" type="text/css" media="all" href="' . EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
-        //wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
-       // scripts
-			//add_thickbox();
-			//wp_enqueue_script('media-upload');
-			wp_enqueue_script('evr_admin', plugins_url('/scripts/evr.js',dirname(__FILE__)));
-           wp_enqueue_script('evr_admin_fancy', plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js',dirname(__FILE__)));
-		// styles
-			wp_enqueue_style('evr_admin', plugins_url('/evr_admin_style.css',dirname(__FILE__))); 
-
-?>
- 
-    <script type="text/javascript"> 
-   
-    	function myEdToolbar(obj) {
-    	   	document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/paragraph.gif\" name=\"btnPara\" title=\"Paragraph\" onClick=\"doAddTags('<p>','</p>','" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/bold.gif\" name=\"btnBold\" title=\"Bold\" onClick=\"doAddTags('<strong>','</strong>','" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/italic.gif\" name=\"btnItalic\" title=\"Italic\" onClick=\"doAddTags('<em>','</em>','" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/underline.gif\" name=\"btnUnderline\" title=\"Underline\" onClick=\"doAddTags('<u>','</u>','" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/link.gif\" name=\"btnLink\" title=\"Insert Link\" onClick=\"doURL('" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/email.gif\" name=\"btnEmail\" title=\"Insert Email\" onClick=\"doMailto('" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/image.gif\" name=\"btnPicture\" title=\"Insert Picture\" onClick=\"doImage('" + obj + "')\" />");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/ordered.gif\" name=\"btnList\" title=\"Ordered List\" onClick=\"doList('<ol>','</ol>','" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/unordered.gif\" name=\"btnList\" title=\"Unordered List\" onClick=\"doList('<ul>','</ul>','" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/list_item.gif\" name=\"btnList_Item\" title=\"List Item\" onClick=\"doAddTags('<li>','</li>','" + obj + "')\">");
-    		document.write("<img class=\"my_button\" src=\"<?php echo
-EVR_PLUGINFULLURL ?>images/quote.gif\" name=\"btnQuote\" title=\"Quote\" onClick=\"doAddTags('<blockquote>','</blockquote>','" + obj + "')\">"); 
-    	}
-    
-        $j = jQuery.noConflict();
-        jQuery(document).ready(function($j) {
-        $j("a.ev_reg-fancylink").fancybox({
-        		'padding':		10,
-        		'imageScale':	true,
-        		'zoomSpeedIn':	250, 
-        		'zoomSpeedOut':	250,
-        		'zoomOpacity':	true, 
-        		'overlayShow':	false,
-        		'frameHeight':	250,
-        		'hideOnContentClick': false
-        	});
-        });
-    </script>
-    <?php
+function evr_admin_header(){
 }
-/*********************************   HEAD   CSS   ********************************/
-
+/*********************************   END ADMIN HEAD   ********************************/
+//
+//
+/*********************************   PUBLIC HEAD     ********************************/
+//
+//function to enqueue styles in public pages
+function evr_public_stylesheets() {
+    wp_register_style($handle = 'evr_public', $src = plugins_url('/evr_public_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+	wp_register_style($handle = 'evr_calendar', $src = plugins_url('/evr_calendar.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    wp_register_style($handle = 'evr_pop_style', $src = plugins_url('/evr_pop_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');		
+            wp_enqueue_style('evr_public');
+            wp_enqueue_style('evr_calendar');
+            wp_enqueue_style('evr_pop_style');
+}
+// function to enqueue scripts in public pages
+function evr_public_scripts() {
+ wp_register_script($handle = 'evr_public_script', $src = plugins_url('/evr_public_script.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+ wp_enqueue_script('evr_public_script');		
+ }
 //function to load items to public pages of wordpress site
 function evr_public_header(){
-    include "evr_event_popup_layout.php";
-    // styles
-			wp_enqueue_style('evr_public', plugins_url('/evr_public_style.css',dirname(__FILE__)));
-            wp_enqueue_style('evr_calendar', plugins_url('/evr_calendar.css',dirname(__FILE__)));  
 }
-
-//function to load plugin admin menu to sidebar
+/*********************************   END PUBLIC HEAD   *****************************/
+//
+//
+/*********************************   ADMIN MENUE   ********************************/
+//
+//function to load plugin admin menu to Admin sidebar
 function evr_admin_menu()
 {
     global $evr_date_format, $evr_ver;
     $version = "EVNTRG_" . $evr_ver;
     add_menu_page($version, $version, 8, __file__, 'evr_splash');
-    add_submenu_page(__file__, 'Setup Company', 'Company', $evr_admin_level, 'company','evr_admin_company');
-    add_submenu_page(__file__, 'Categories', 'Categories', $evr_admin_level, 'categories','evr_admin_categories');
-    add_submenu_page(__file__, 'Manage Events', 'Events', $evr_admin_level, 'events','evr_admin_events');
-    add_submenu_page(__file__, 'Questions', 'Questions', $evr_admin_level, 'questions','evr_admin_questions');
-    add_submenu_page(__file__, 'Manage Attendees', 'Attendees', $evr_admin_level, 'attendee','evr_attendee_admin');
-    add_submenu_page(__file__, 'Manage Payments', 'Payments', $evr_admin_level, 'payments','evr_admin_payments');
-    add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $evr_admin_level, 'uninstall','evr_remove_db_menu');
-    add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $evr_admin_level, 'purge','evr_clean_old_db');
+    add_submenu_page(__file__, 'Setup Company', 'Company', 8, 'company','evr_admin_company');
+    add_submenu_page(__file__, 'Categories', 'Categories',8, 'categories','evr_admin_categories');
+    add_submenu_page(__file__, 'Manage Events', 'Events', 8, 'events','evr_admin_events');
+    add_submenu_page(__file__, 'Questions', 'Questions', 8, 'questions','evr_admin_questions');
+    add_submenu_page(__file__, 'Manage Attendees', 'Attendees', 8, 'attendee','evr_attendee_admin');
+    add_submenu_page(__file__, 'Manage Payments', 'Payments', 8, 'payments','evr_admin_payments');
+    add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', 8, 'uninstall','evr_remove_db_menu');
+    add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', 8, 'purge','evr_clean_old_db');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
     //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
@@ -237,10 +237,37 @@ function evr_admin_menu()
 
 
 }
+/*********************************   END ADMIN MENU   ********************************/
+//
+//
 //function to load widgets to the widgets menu
 function evr_widgets(){
 register_sidebar_widget("Event Registraion", "evr_widget_content"); 
 //register_sidebar_widget("Event Reg Calendar", "events_calendar_widget");
+}
+
+function evr_check_usage_time(){
+			if ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_donated') == "Y")){
+    			if ( get_option('evr_dontshowpopup') ) {
+                	update_option('evr_dontshowpopup', "Y");
+                	 } else {
+                	  $deprecated=' ';
+                	  $autoload='no';
+                	  add_option('evr_dontshowpopup', "Y", $deprecated, $autoload);
+                	 }
+			}
+            //
+            if(!get_option('evr_date_installed') ) {
+                $installed_date = strtotime('now');
+                $deprecated=' ';
+                $autoload='no';
+                	  add_option('evr_date_installed', $installed_date, $deprecated, $autoload);
+                } elseif ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_date_installed')< strtotime('-30 days'))){
+                // plugin has been installed for over 30 days
+                //wp_enqueue_style('evr_donate', plugins_url('evr_donate.css',dirname(__FILE__)));
+				//wp_enqueue_script('evr_donate', plugins_url('evr_donate.js',dirname(__FILE__)));
+                evr_show_donate_box();
+                }
 }
 
 ?>

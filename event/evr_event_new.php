@@ -97,6 +97,7 @@ jQuery(document).ready(function($){
 });
 </script>
 
+
 <a href="#?w=800" rel="popup0" class="poplight"><input type="button" value="<?php _e('ADD EVENT','evr_language');?>"/></a>
 
 <?php //evr_check_form_submission();?>
@@ -202,6 +203,46 @@ html ul.tabs li.active, html ul.tabs li.active a:hover  {
 }
 
 </style>
+
+<script type="text/javascript">    
+                       jQuery(document).ready(function($) {        
+                        id = 'conf_mail';        
+                        jQuery('#mailButtonPreview').click(            
+                        function() {                
+                            tinyMCE.execCommand('mceAddControl', false, id);                
+                            jQuery('#mailButtonPreview').addClass('active');                
+                            jQuery('#mailButtonHTML').removeClass('active');            
+                            }        
+                            );        
+                            jQuery('#mailButtonHTML').click(            
+                            function() {                
+                                tinyMCE.execCommand('mceRemoveControl', false, id);                
+                                jQuery('#mailButtonPreview').removeClass('active');                
+                                jQuery('#mailButtonHTML').addClass('active');            
+                                }        
+                                );    
+                                });    
+</script>
+<script type="text/javascript">    
+                       jQuery(document).ready(function($) {        
+                        idi = 'event_desc';        
+                        jQuery('#descButtonPreview').click(            
+                        function() {                
+                            tinyMCE.execCommand('mceAddControl', false, idi);                
+                            jQuery('#descButtonPreview').addClass('active');                
+                            jQuery('#descButtonHTML').removeClass('active');            
+                            }        
+                            );        
+                            jQuery('#descButtonHTML').click(            
+                            function() {                
+                                tinyMCE.execCommand('mceRemoveControl', false, idi);                
+                                jQuery('#descButtonPreview').removeClass('active');                
+                                jQuery('#descButtonHTML').addClass('active');            
+                                }        
+                                );    
+                                });    
+</script>                        
+                        
 <div class="container">
 	<h1><?php _e('ADD NEW EVENT','evr_language');?></h1>
     <ul class="tabs">
@@ -250,12 +291,18 @@ To create new display lines just press Enter.','evr_language');?>">
                 </tr>
                 <tr>
                     <td colspan="2">
-                    <textarea rows="5" cols="90" name="event_desc" id="evnt_descr"  class="my_ed"></textarea>
+                    <a id="descButtonHTML"><button type="button">HTML CODE</button></a>    
+                   <a id="descButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
+                   
+                    <textarea rows="5" cols="90" name="event_desc" id="event_desc"  class="edit_class"></textarea>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                    <p align="left"><script>myEdToolbar('evnt_descr'); </script></p>
+                    <p align="left">
+                    
+                    
+                    </p>
                     </td>
                 </tr>
               <tr></tr></table>
@@ -458,15 +505,21 @@ To create new display lines just press Enter.','evr_language');?>">
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
             <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a></label>
             <br />
-            <textarea rows='10' cols='90' name='conf_mail' id="conf_mail_new" class="my_ed">
-            ***This is an automated response - Do Not Reply***
-            Thank you [fname] [lname] for registering for [event].
+            
+            <a id="mailButtonHTML"><button type="button">HTML CODE</button></a>    
+                   <a id="mailButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
+                   
+            <textarea rows='10' cols='90' name='conf_mail' id="conf_mail" class="edit_class">
+            ***This is an automated response - Do Not Reply***<br />
+            Thank you [fname] [lname] for registering for [event].<br />
             We hope that you will find this event both informative and enjoyable.
             Should have any questions, please contact [contact].
             If you have not done so already, please submit your payment in the amount of [cost].
-            Click here to reveiw your payment information [payment_url].
-            Thank You.</textarea>
-            <p align="left"><script>myEdToolbar('conf_mail_new'); </script></p>
+            Click here to reveiw your payment information [payment_url].<br />
+            Thank You.
+            </textarea>
+            
+            
             <br />
             <br />         
             <input  type="submit" name="Submit" value="<?php _e('Submit New Event','evr_language'); ?>" id="add_new_event" />

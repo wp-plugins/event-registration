@@ -56,7 +56,7 @@ function evr_admin_company(){
         default:
         global $wpdb;
         
-        wp_tiny_mce( false , array( "editor_selector" => "edit_class" )); 
+        //wp_tiny_mce( false , array( "editor_selector" => "edit_class" )); 
         require ("evr_tab_incl.php");
 ?>
 

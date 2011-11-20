@@ -141,12 +141,41 @@ To create new display lines just press Enter.','evr_language');?>">
                 </tr>
                 <tr>
                     <td colspan="2">
-                    <textarea rows="5" cols="90" name="event_desc" id="evnt_descr"  class="my_ed"><?php echo $event_desc?></textarea>
+                                       
+                       <script type="text/javascript">    
+                       jQuery(document).ready(function($) {        
+                        idi = 'event_desc';        
+                        jQuery('#descButtonPreview').click(            
+                        function() {                
+                            tinyMCE.execCommand('mceAddControl', false, idi);                
+                            jQuery('#descButtonPreview').addClass('active');                
+                            jQuery('#descButtonHTML').removeClass('active');            
+                            }        
+                            );        
+                            jQuery('#descButtonHTML').click(            
+                            function() {                
+                                tinyMCE.execCommand('mceRemoveControl', false, idi);                
+                                jQuery('#descButtonPreview').removeClass('active');                
+                                jQuery('#descButtonHTML').addClass('active');            
+                                }        
+                                );    
+                                });    
+                        </script>
+
+                    
+                      
+                   <a id="descButtonHTML"><button type="button">HTML CODE</button></a>    
+                   <a id="descButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
+                   
+                    <textarea rows="5" cols="90" name="event_desc" id="event_desc"  class="edit_class">
+          
+                    <?php echo $event_desc?></textarea>
+                    
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                    <p align="left"><script>myEdToolbar('evnt_descr'); </script></p>
+                    
                     </td>
                 </tr>
               <tr></tr></table>
@@ -378,11 +407,35 @@ To create new display lines just press Enter.','evr_language');?>">
             <br />          
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
             <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a></label>
-            <br />
-            <textarea rows='10' cols='90' name='conf_mail' id="conf_mail_new" class="my_ed">
+            
+            <script type="text/javascript">    
+                       jQuery(document).ready(function($) {        
+                        id = 'conf_mail';        
+                        jQuery('#mailButtonPreview').click(            
+                        function() {                
+                            tinyMCE.execCommand('mceAddControl', false, id);                
+                            jQuery('#mailButtonPreview').addClass('active');                
+                            jQuery('#mailButtonHTML').removeClass('active');            
+                            }        
+                            );        
+                            jQuery('#mailButtonHTML').click(            
+                            function() {                
+                                tinyMCE.execCommand('mceRemoveControl', false, id);                
+                                jQuery('#mailButtonPreview').removeClass('active');                
+                                jQuery('#mailButtonHTML').addClass('active');            
+                                }        
+                                );    
+                                });    
+                        </script>
+
+                    
+                       
+                   <a id="mailButtonHTML"><button type="button">HTML CODE</button></a>    
+                   <a id="mailButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
+                   
+            <textarea rows='10' cols='90' name='conf_mail' id="conf_mail" class="edit_class">
             <?php echo $conf_mail;?></textarea>
-            <p align="left"><script>myEdToolbar('conf_mail_new'); </script></p>
-            <br />
+              <br />
             <br />         
             <input  type="submit" name="Submit" value="<?php _e('Update Event','evr_language'); ?>" id="add_new_event" />
             </form>
