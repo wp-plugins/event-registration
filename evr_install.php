@@ -17,7 +17,7 @@ function evr_install()
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
     $old_event_tbl = $wpdb->prefix . "events_detail";
 
-    if (get_option('evr_was_upgraded')!= "Y"){
+   /* if (get_option('evr_was_upgraded')!= "Y"){
     if ($wpdb->get_var("SHOW TABLES LIKE '$old_event_tbl'") == $old_event_tbl) {
         evr_upgrade_tables();
     //create option in the wordpress options table to bypass upgrade in the future    
@@ -30,7 +30,7 @@ function evr_install()
     	  $autoload='no';
     	  add_option($option_name, $newvalue, $deprecated, $autoload);
     	 }
-     }}
+     }}*/
     $cur_build = "6.00.05";
     evr_attendee_db();
     evr_category_db();
@@ -453,26 +453,29 @@ function evr_attendee_db()
         //create option in the wordpress options tale for the event attendee table name
         $option_name = 'evr_attendee';
         $newvalue = $table_name;
-        if (get_option($option_name)) {
+        update_option($option_name, $newvalue);
+        /*if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
             $deprecated = ' ';
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        }*/
 
 
         //create option in the wordpress options table for the event attendee table version
         $option_name = 'evr_attendee_version';
         $newvalue = $evr_attendee_version;
-        if (get_option($option_name)) {
+        update_option($option_name, $newvalue);
+        /*if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
             $deprecated = ' ';
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        }*/
     }
+    /*
     // Code here with new database upgrade info/table Must change version number to work.
     // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
     // Retrieve the installed version of the events attendee table and assign a variable
@@ -507,6 +510,7 @@ function evr_attendee_db()
         //update the table version number to match the updated sql
         update_option("evr_attendee_version", $evr_attendee_version);
     }
+    */
 }
 
 function evr_category_db()
@@ -534,16 +538,20 @@ function evr_category_db()
         //create option in the wordpress options table for the event category table
         $option_name = 'evr_category';
         $newvalue = $table_name;
-        if (get_option($option_name)) {
+        update_option($option_name, $newvalue);
+        /*if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
             $deprecated = ' ';
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
         //create option in the wordpress options table for the event attendee table version
         $option_name = 'evr_category_version';
         $newvalue = $evr_category_version;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -551,7 +559,9 @@ function evr_category_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
     }
+    /*
     // Code here with new database upgrade info/table Must change version number to work.
     // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
     // Retrieve the installed version of the events category table and assign a variable
@@ -575,7 +585,7 @@ function evr_category_db()
         //update the table version number to match the updated sql
         update_option("evr_category_version", $evr_category_version);
     }
-
+    */
 
 }
 
@@ -635,6 +645,8 @@ function evr_event_db()
         //create option for table name
         $option_name = 'evr_event';
         $newvalue = $table_name;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -642,9 +654,12 @@ function evr_event_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
         //create option for table version
         $option_name = 'evr_event_version';
         $newvalue = $evr_event_version;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -652,7 +667,9 @@ function evr_event_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
     }
+    /*
     // Code here with new database upgrade info/table Must change version number to work.
     // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
     // Retrieve the installed version of the events detail table and assign a variable
@@ -704,6 +721,7 @@ function evr_event_db()
         //update the table version number to match the updated sql
         update_option("evr_event_version", $evr_event_version);
     }
+    */
 }
 
 function evr_cost_db()
@@ -726,7 +744,6 @@ function evr_cost_db()
             item_limit VARCHAR (10) DEFAULT NULL,
             item_price decimal(7,2) DEFAULT NULL,
             free_item VARCHAR (4) DEFAULT NULL,
-            
             item_available_start_date VARCHAR (15) DEFAULT NULL,
             item_available_end_date VARCHAR (15) DEFAULT NULL,
             item_custom_cur VARCHAR(10) DEFAULT NULL,
@@ -737,6 +754,8 @@ function evr_cost_db()
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_cost';
         $newvalue = $table_name;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -744,9 +763,12 @@ function evr_cost_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
         //create option in the wordpress options table for the event question table version
         $option_name = 'evr_cost_version';
         $newvalue = $evr_cost_version;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -754,7 +776,9 @@ function evr_cost_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
     }
+    /*
     // Code here with new database upgrade info/table Must change version number to work.
     // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
     // Retrieve the installed version of the events attendee table and assign a variable
@@ -781,6 +805,7 @@ function evr_cost_db()
         //update the table version number to match the updated sql
         update_option("evr_cost_version", $evr_cost_version);
     }
+    */
 }
 
 function evr_payment_db()
@@ -831,6 +856,8 @@ function evr_payment_db()
         //create option in the wordpress options tale for the event payment transaction table name
         $option_name = 'evr_payment';
         $newvalue = $table_name;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -838,10 +865,12 @@ function evr_payment_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
-
+        */
         //create option in the wordpress options table for the event payment transaction table version
         $option_name = 'evr_payment_version';
         $newvalue = $evr_payment_version;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -849,7 +878,9 @@ function evr_payment_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
     }
+    /*
     // Code here with new database upgrade info/table Must change version number to work.
     // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
     // Retrieve the installed version of the events attendee table and assign a variable
@@ -894,6 +925,7 @@ function evr_payment_db()
         //update the table version number to match the updated sql
         update_option("evr_payment_version", $evr_payment_version);
     }
+    */
 }
 
 function evr_question_db()
@@ -921,6 +953,8 @@ function evr_question_db()
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_question';
         $newvalue = $table_name;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -928,9 +962,12 @@ function evr_question_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
         //create option in the wordpress options table for the event question table version
         $option_name = 'evr_question_version';
         $newvalue = $evr_question_version;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -938,7 +975,9 @@ function evr_question_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
     }
+    /*
     // Code here with new database upgrade info/table Must change version number to work.
     // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
     // Retrieve the installed version of the events attendee table and assign a variable
@@ -960,6 +999,7 @@ function evr_question_db()
         //update the table version number to match the updated sql
         update_option("evr_question_version", $evr_question_version);
     }
+    */
 }
 //
 //Create the table for the answers for the questions
@@ -984,6 +1024,8 @@ function evr_answer_db()
         //create option in the wordpress options tale for the event answer table name
         $option_name = 'evr_answer';
         $newvalue = $table_name;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -991,9 +1033,12 @@ function evr_answer_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
         //create option in the wordpress options table for the event answer table version
         $option_name = 'evr_answer_version';
         $newvalue = $evr_answer_version;
+        update_option($option_name, $newvalue);
+        /*
         if (get_option($option_name)) {
             update_option($option_name, $newvalue);
         } else {
@@ -1001,7 +1046,9 @@ function evr_answer_db()
             $autoload = 'no';
             add_option($option_name, $newvalue, $deprecated, $autoload);
         }
+        */
     }
+    /*
     // Code here with new database upgrade info/table Must change version number to work.
     // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
     // Retrieve the installed version of the events attendee table and assign a variable
@@ -1019,6 +1066,7 @@ function evr_answer_db()
         //update the table version number to match the updated sql
         update_option("evr_answer_version", $evr_answer_version);
     }
+    */
 
 }
 

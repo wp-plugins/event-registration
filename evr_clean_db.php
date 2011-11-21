@@ -2,7 +2,7 @@
 function evr_clean_old_db(){
     if ( isset( $_POST['purge'], $_POST['purge_confirm'] ) ) {evr_delete_old_tables();}
     elseif (get_option('evr_was_upgraded')== "Y"){
-        echo '<link rel="stylesheet" type="text/css" media="all" href="' . EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
+        //echo '<link rel="stylesheet" type="text/css" media="all" href="' . EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
         ?>
         <div class="wrap"><br />
         <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
@@ -30,8 +30,40 @@ function evr_clean_old_db(){
         }
 }
 
-function evr_uninstall()
-{
+function evr_remove_db_menu(){
+       // echo '<link rel="stylesheet" type="text/css" media="all" href="' . EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
+    if ( isset( $_POST['uninstall'], $_POST['uninstall_confirm'] ) ) {evr_uninstall();}
+    ?>
+        <div class="wrap"><br />
+        <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
+        <br />
+        <br />
+        <div class="evr_plugin">
+            <div class="content">
+            	<div class="evr_content_third">
+            		<h3>Permanently Remove All Data</h3>
+            		<div class="inside">
+                        <form method="post">
+                        <input id="plugin" name="plugin" type="hidden" value="EVENTREG.php" />     
+                     <?php if ( isset( $_POST['uninstall'] ) && ! isset( $_POST['uninstall_confirm'] ) ) { ?>
+                        <div id="message" class="error"><p><strong><?php _e('You must check the confirm box before continuing!','evr_language');?>
+                        </strong></p></div>
+                        <?php  } ?>
+                     <p>The options and data for this plugin are not removed on deactivation to ensure that no data is lost unintentionally.</p> 
+                     <p>If you wish to remove all Event Registration plugin information from your database, be sure to run this uninstall utility first.</p>
+                     <p><font color="red">NOTE: There is no way to recover data once you complete this process.</font></p>
+                      <p><input name="uninstall_confirm" type="checkbox" value="1" />Yes, I want to remove all Event Registration Data. Please confirm before proceeding </p>
+                      <input class="button-secondary" name="uninstall" type="submit" value="Uninstall" onclick="return confirm('<?php _e('Are you sure you want to delete all Event Registratin data','evr_language');?>')"/>
+                     </form>
+                     </div>
+                </div>  		
+            </div>
+           </div>  		
+        </div>        
+        <?php 
+}
+
+function evr_uninstall(){
    
     global $wpdb;
     //Drop Attendee Table
@@ -81,7 +113,7 @@ function evr_uninstall()
     delete_option('evr_company_settings');
     delete_option('evr_was_upgraded');
 
-    $current = get_settings('active_plugins');    
+    $current = get_option('active_plugins');    
     array_splice($current, array_search( $_POST['plugin'], $current), 1 ); // Array-function!    
     update_option('active_plugins', $current); 
     ?>

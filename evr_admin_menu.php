@@ -117,7 +117,7 @@ function evr_splash(){
 <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
+</form></p>
     		</div>
     	</div>		
 		<div class="clear"></div>
@@ -141,6 +141,10 @@ function evr_splash(){
     			
     	</div>		
 		<div class="clear"></div>
+        <p align="center">
+<a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=7673_0_1_7" target="_blank">
+<img border="0" src="http://www.elegantthemes.com/affiliates/banners/468x60.gif" width="468" height="60"></a>
+</p>
 	   </div>
          	<div class="evr_content_half" style="margin-right:0; float:right;">
         <h3>Event Registration News</h3>
@@ -159,39 +163,32 @@ function evr_splash(){
     
 </div> 
 </div>
-<?php  
+
+<?php 
 }
-function evr_remove_db_menu(){
-        echo '<link rel="stylesheet" type="text/css" media="all" href="' .
-        EVR_PLUGINFULLURL . 'evr_admin_style.css' . '" />';
+
+function evr_footer_ad(){
+?>
+<style>
+.evr_foot_add{
+    width:400px;
     
-    ?>
-        <div class="wrap"><br />
-        <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
-        <br />
-        <br />
-        <div class="evr_plugin">
-            <div class="content">
-            	<div class="evr_content_third">
-            		<h3>Permanently Remove All Data</h3>
-            		<div class="inside">
-                        <form method="post">
-                        <input id="plugin" name="plugin" type="hidden" value="EVENTREG.php" />     
-                     <?php if ( isset( $_POST['uninstall'] ) && ! isset( $_POST['uninstall_confirm'] ) ) { ?>
-                        <div id="message" class="error"><p><strong><?php _e('You must check the confirm box before continuing!','evr_language');?>
-                        </strong></p></div>
-                        <?php  } ?>
-                     <p>The options and data for this plugin are not removed on deactivation to ensure that no data is lost unintentionally.</p> 
-                     <p>If you wish to remove all Event Registration plugin information from your database, be sure to run this uninstall utility first.</p>
-                     <p><font color="red">NOTE: There is no way to recover data once you complete this process.</font></p>
-                      <p><input name="uninstall_confirm" type="checkbox" value="1" />Yes, I want to remove all Event Registration Data. Please confirm before proceeding </p>
-                      <input class="button-secondary" name="uninstall" type="submit" value="Uninstall" onclick="return confirm('<?php _e('Are you sure you want to delete all Event Registratin data','evr_language');?>')"/>
-                     </form>
-                     </div>
-                </div>  		
-            </div>
-           </div>  		
-        </div>        
-        <?php 
 }
+</style>
+<div class="evr_foot_ad"><
+<p align="center">
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form></p>
+<p align="center">
+<a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=7673_0_1_7" target="_blank">
+<img border="0" src="http://www.elegantthemes.com/affiliates/banners/468x60.gif" width="468" height="60"></a>
+</p>
+/div>
+<?php
+}
+
 ?>

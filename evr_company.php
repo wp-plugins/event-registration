@@ -55,8 +55,6 @@ function evr_admin_company(){
         
         default:
         global $wpdb;
-        
-        //wp_tiny_mce( false , array( "editor_selector" => "edit_class" )); 
         require ("evr_tab_incl.php");
 ?>
 
@@ -296,12 +294,36 @@ function evr_admin_company(){
                         <input type="radio" name="send_confirm" class="regular-radio" value="N"  <?php if ($company_options['send_confirm'] == "N"){echo "checked";}?> />No<br />  
                         <font size="-5" color="red">(This option must be enable to send custom mails in events)</font></p>
                         <p><a class="ev_reg-fancylink" href="#custom_email_settings">Settings</a> | <a class="ev_reg-fancylink" href="#custom_email_example">Example</a></p>
-                        <p>Email Body: <br />
-                        <textarea name="message" id="message" class="edit_class"><?php echo $company_options['message'];?></textarea>
-                        <br />
+                        <p>Email Body: <br /><br />
+                        <script type="text/javascript">    
+                       jQuery(document).ready(function($) {        
+                        ido = 'message';        
+                        jQuery('#descButtonPreview').click(            
+                        function() {                
+                            tinyMCE.execCommand('mceAddControl', false, ido);                
+                            jQuery('#msgButtonPreview').addClass('active');                
+                            jQuery('#msgButtonHTML').removeClass('active');            
+                            }        
+                            );        
+                            jQuery('#msgButtonHTML').click(            
+                            function() {                
+                                tinyMCE.execCommand('mceRemoveControl', false, ido);                
+                                jQuery('#msgButtonPreview').removeClass('active');                
+                                jQuery('#msgButtonHTML').addClass('active');            
+                                }        
+                                );    
+                                });    
+                        </script>
+
+                    
+                   <a id="msgButtonPreview" class="active"><button type="button">WYSIWYG</button></a>   
+                   <a id="msgButtonHTML"><button type="button">HTML CODE</button></a>    
+                   
+                        
+                        <textarea rows="5" cols="90" name="message" id="message" class="edit_class" ><?php echo $company_options['message'];?></textarea>
+                        
                         </p>
-                        <div style="clear:both;"></div>
-                    </div> 
+                        </div> 
                     <hr />
                     <div class="padding">
 

@@ -71,7 +71,6 @@ function evr_save_error(){
 define("EVR_PLUGINPATH", "/" . plugin_basename(dirname(__file__)) . "/");
 define("EVR_PLUGINFULLURL", WP_PLUGIN_URL . EVR_PLUGINPATH);
 //
-if ( isset( $_POST['uninstall'], $_POST['uninstall_confirm'] ) ) {evr_uninstall();}
 //
 //
 /*********************************   DEPENDENCIES   ********************************/
@@ -91,7 +90,7 @@ require ("evr_public_registration.php"); //holds functions that display the regi
 require ("paypal.class.php"); //used for paypal IPN
 require ("evr_ipn.php"); //used for paypal IPN
 require ("evr_calendar.php"); //holds functions for calendar page
-require ("evr_clean_db.php"); //holds functions for calendar page
+require ("evr_clean_db.php");
 //require ("evr_pdf.php"); //creates pdf of reg details
 //
 //
@@ -186,6 +185,7 @@ function evr_admin_scripts_all_page() {
 }
 //function to load items to header of wordpress admin
 function evr_admin_header(){
+    require ("evr_tab_incl.php"); //this needs to be moved into admin style and scripts df
 }
 /*********************************   END ADMIN HEAD   ********************************/
 //
@@ -215,19 +215,21 @@ function evr_public_header(){
 /*********************************   ADMIN MENUE   ********************************/
 //
 //function to load plugin admin menu to Admin sidebar
+
 function evr_admin_menu()
 {
     global $evr_date_format, $evr_ver;
     $version = "EVNTRG_" . $evr_ver;
-    add_menu_page($version, $version, 8, __file__, 'evr_splash');
-    add_submenu_page(__file__, 'Setup Company', 'Company', 8, 'company','evr_admin_company');
-    add_submenu_page(__file__, 'Categories', 'Categories',8, 'categories','evr_admin_categories');
-    add_submenu_page(__file__, 'Manage Events', 'Events', 8, 'events','evr_admin_events');
-    add_submenu_page(__file__, 'Questions', 'Questions', 8, 'questions','evr_admin_questions');
-    add_submenu_page(__file__, 'Manage Attendees', 'Attendees', 8, 'attendee','evr_attendee_admin');
-    add_submenu_page(__file__, 'Manage Payments', 'Payments', 8, 'payments','evr_admin_payments');
-    add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', 8, 'uninstall','evr_remove_db_menu');
-    add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', 8, 'purge','evr_clean_old_db');
+    $role = 'manage_options';
+    add_menu_page($version, $version, $role, __file__, 'evr_splash');
+    add_submenu_page(__file__, 'Setup Company', 'Company', $role, 'company','evr_admin_company');
+    add_submenu_page(__file__, 'Categories', 'Categories',$role, 'categories','evr_admin_categories');
+    add_submenu_page(__file__, 'Manage Events', 'Events', $role, 'events','evr_admin_events');
+    add_submenu_page(__file__, 'Questions', 'Questions', $role, 'questions','evr_admin_questions');
+    add_submenu_page(__file__, 'Manage Attendees', 'Attendees', $role, 'attendee','evr_attendee_admin');
+    add_submenu_page(__file__, 'Manage Payments', 'Payments', $role, 'payments','evr_admin_payments');
+    add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $role, 'uninstall','evr_remove_db_menu');
+    add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $role, 'purge','evr_clean_old_db');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
     //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
@@ -242,9 +244,18 @@ function evr_admin_menu()
 //
 //function to load widgets to the widgets menu
 function evr_widgets(){
-register_sidebar_widget("Event Registraion", "evr_widget_content"); 
-//register_sidebar_widget("Event Reg Calendar", "events_calendar_widget");
+
+wp_register_sidebar_widget(
+    'EVNTRG LST',        // your unique widget id
+    'Event List',          // widget name
+    'evr_widget_content',  // callback function
+    array(                  // options
+        'description' => 'Lists all the active events currently in Event Registration Plugin'
+    )
+);
+
 }
+
 
 function evr_check_usage_time(){
 			if ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_donated') == "Y")){
@@ -266,7 +277,7 @@ function evr_check_usage_time(){
                 // plugin has been installed for over 30 days
                 //wp_enqueue_style('evr_donate', plugins_url('evr_donate.css',dirname(__FILE__)));
 				//wp_enqueue_script('evr_donate', plugins_url('evr_donate.js',dirname(__FILE__)));
-                evr_show_donate_box();
+                evr_donate_popup();
                 }
 }
 
