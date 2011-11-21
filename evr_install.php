@@ -454,63 +454,11 @@ function evr_attendee_db()
         $option_name = 'evr_attendee';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
-        /*if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }*/
-
-
         //create option in the wordpress options table for the event attendee table version
         $option_name = 'evr_attendee_version';
         $newvalue = $evr_attendee_version;
         update_option($option_name, $newvalue);
-        /*if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }*/
-    }
-    /*
-    // Code here with new database upgrade info/table Must change version number to work.
-    // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
-    // Retrieve the installed version of the events attendee table and assign a variable
-    $installed_ver = get_option("evr_attendee_version");
-    //check the installed version to the version defined tin the top of this file, if version is different - update to the sql structure below.
-    if ($installed_ver != $evr_attendee_version) {
-        $sql = "CREATE TABLE " . $table_name . " (
-					  id MEDIUMINT NOT NULL AUTO_INCREMENT,
-					  lname VARCHAR(45) DEFAULT NULL,
-					  fname VARCHAR(45) DEFAULT NULL,
-					  address VARCHAR(45) DEFAULT NULL,
-					  city VARCHAR(45) DEFAULT NULL,
-					  state VARCHAR(45) DEFAULT NULL,
-					  zip VARCHAR(45) DEFAULT NULL,
-					  reg_type VARCHAR (45) DEFAULT NULL,
-					  email VARCHAR(65) DEFAULT NULL,
-					  phone VARCHAR(45) DEFAULT NULL,
-					  date timestamp NOT NULL default CURRENT_TIMESTAMP,
-					  event_id VARCHAR(45) DEFAULT NULL,
-                      coupon VARCHAR(45) DEFAULT NULL,
-					  quantity VARCHAR(45) DEFAULT NULL,
-                      attendees MEDIUMTEXT DEFAULT NULL,
-                      tickets MEDIUMTEXT DEFAULT NULL,
-                      payment VARCHAR(45) DEFAULT NULL,
-                      payment_status VARCHAR(45) DEFAULT NULL,
-                      amount_pd VARCHAR (45) DEFAULT NULL,
-                      payment_date varchar(30) DEFAULT NULL,
-                      UNIQUE KEY id (id)
-					) DEFAULT CHARSET=utf8;";
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        //update the table version number to match the updated sql
-        update_option("evr_attendee_version", $evr_attendee_version);
-    }
-    */
+        }
 }
 
 function evr_category_db()
@@ -539,54 +487,11 @@ function evr_category_db()
         $option_name = 'evr_category';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
-        /*if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
         //create option in the wordpress options table for the event attendee table version
         $option_name = 'evr_category_version';
         $newvalue = $evr_category_version;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
     }
-    /*
-    // Code here with new database upgrade info/table Must change version number to work.
-    // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
-    // Retrieve the installed version of the events category table and assign a variable
-    $installed_ver = get_option("evr_category_version");
-    //check the installed version to the version defined tin the top of this file, if version is different - update to the sql structure below.
-    if ($installed_ver != $evr_category_version) {
-
-        $sql = "CREATE TABLE " . $table_name . " (
-					  id MEDIUMINT NOT NULL AUTO_INCREMENT,
-					  category_name VARCHAR(100) DEFAULT NULL,
-					  category_identifier VARCHAR(45) DEFAULT NULL,
-					  category_desc TEXT,
-					  display_desc VARCHAR (4) DEFAULT NULL,
-                      category_color VARCHAR(30) NOT NULL ,
-                      font_color VARCHAR(30) NOT NULL DEFAULT '#000000',
-					   UNIQUE KEY id (id)
-					) DEFAULT CHARSET=utf8;";
-
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        //update the table version number to match the updated sql
-        update_option("evr_category_version", $evr_category_version);
-    }
-    */
-
 }
 
 function evr_event_db()
@@ -646,82 +551,12 @@ function evr_event_db()
         $option_name = 'evr_event';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
         //create option for table version
         $option_name = 'evr_event_version';
         $newvalue = $evr_event_version;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
     }
-    /*
-    // Code here with new database upgrade info/table Must change version number to work.
-    // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
-    // Retrieve the installed version of the events detail table and assign a variable
-    $installed_ver = get_option("$evr_event_version");
-    //check the installed version to the version defined tin the top of this file, if version is different - update to the sql structure below.
-    if ($installed_ver != $evr_event_version) {
-        $sql = "CREATE TABLE " . $table_name . " (
-				  id MEDIUMINT NOT NULL AUTO_INCREMENT,
-				  event_name VARCHAR(100) DEFAULT NULL,
-				  event_desc TEXT DEFAULT NULL,
-				  event_location VARCHAR(300) DEFAULT NULL,
-                  event_address VARCHAR(100) DEFAULT NULL,
-                  event_city VARCHAR(100) DEFAULT NULL,
-                  event_state VARCHAR(100) DEFAULT NULL,
-                  event_postal VARCHAR(100) DEFAULT NULL,
-                  google_map VARCHAR (4) DEFAULT NULL,
-                  outside_reg VARCHAR (4) DEFAULT NULL,
-                  external_site VARCHAR (100) DEFAULT NULL,
-				  display_desc VARCHAR (4) DEFAULT NULL,
-				  image_link VARCHAR(100) DEFAULT NULL,
-				  header_image VARCHAR(100) DEFAULT NULL,
-				  event_identifier VARCHAR(45) DEFAULT NULL,
-				  more_info VARCHAR(100) DEFAULT NULL,
-				  start_month VARCHAR (15) DEFAULT NULL,
-				  start_day VARCHAR (15) DEFAULT NULL,
-				  start_year VARCHAR (15) DEFAULT NULL,
-                  start_time VARCHAR (15) DEFAULT NULL,
-				  start_date VARCHAR (15) DEFAULT NULL,
-				  end_month VARCHAR (15) DEFAULT NULL,
-				  end_day VARCHAR (15) DEFAULT NULL,
-				  end_year VARCHAR (15) DEFAULT NULL,
-				  end_date VARCHAR (15) DEFAULT NULL,
-				  end_time VARCHAR (15) DEFAULT NULL,
-				  reg_limit VARCHAR (15) DEFAULT NULL,
-                  custom_cur VARCHAR(10) DEFAULT NULL,
-				  reg_form_defaults VARCHAR(100) DEFAULT NULL,
-				  allow_checks VARCHAR(45) DEFAULT NULL,
-				  send_mail VARCHAR (2) DEFAULT NULL,
-				  is_active VARCHAR(45) DEFAULT NULL,
-				  conf_mail VARCHAR (1000) DEFAULT NULL,
-                  use_coupon VARCHAR(1) DEFAULT NULL,
-				  coupon_code VARCHAR(50) DEFAULT NULL,
-				  coupon_code_price decimal(7,2) DEFAULT NULL,
-				  category_id TEXT,
-				  UNIQUE KEY id (id)
-				) DEFAULT CHARSET=utf8;";
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        //update the table version number to match the updated sql
-        update_option("evr_event_version", $evr_event_version);
-    }
-    */
+
 }
 
 function evr_cost_db()
@@ -755,57 +590,11 @@ function evr_cost_db()
         $option_name = 'evr_cost';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
         //create option in the wordpress options table for the event question table version
         $option_name = 'evr_cost_version';
         $newvalue = $evr_cost_version;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
     }
-    /*
-    // Code here with new database upgrade info/table Must change version number to work.
-    // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
-    // Retrieve the installed version of the events attendee table and assign a variable
-    $installed_ver = get_option("evr_cost_version");
-    //check the installed version to the version defined tin the top of this file, if version is different - update to the sql structure below.
-    if ($installed_ver != $evr_cost_version) {
-        $sql = "CREATE TABLE " . $table_name . " (
-			id MEDIUMINT NOT NULL auto_increment,
-			sequence int(11) NOT NULL default '0',
-			event_id int(11) NOT NULL default '0',
-            item_title VARCHAR(75) DEFAULT NULL,
-            item_description VARCHAR(150) DEFAULT NULL,
-            item_cat VARCHAR (10) DEFAULT NULL,
-            item_limit VARCHAR (10) DEFAULT NULL,
-            item_price decimal(7,2) DEFAULT NULL,
-            free_item VARCHAR (4) DEFAULT NULL,
-            item_available_start_date VARCHAR (15) DEFAULT NULL,
-            item_available_end_date VARCHAR (15) DEFAULT NULL,
-            item_custom_cur VARCHAR(10) DEFAULT NULL,
-            PRIMARY KEY  (id)
-			)DEFAULT CHARSET=utf8;";
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        //update the table version number to match the updated sql
-        update_option("evr_cost_version", $evr_cost_version);
-    }
-    */
 }
 
 function evr_payment_db()
@@ -857,75 +646,11 @@ function evr_payment_db()
         $option_name = 'evr_payment';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
         //create option in the wordpress options table for the event payment transaction table version
         $option_name = 'evr_payment_version';
         $newvalue = $evr_payment_version;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
     }
-    /*
-    // Code here with new database upgrade info/table Must change version number to work.
-    // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
-    // Retrieve the installed version of the events attendee table and assign a variable
-    $installed_ver = get_option("$evr_payment_version");
-    //check the installed version to the version defined tin the top of this file, if version is different - update to the sql structure below.
-    if ($installed_ver != $evr_payment_version) {
-
-        $sql = "CREATE TABLE " . $table_name . " (
-				  id MEDIUMINT NOT NULL AUTO_INCREMENT,
-				  payer_id varchar(15) NOT NULL,
-                  event_id varchar (15) NOT NULL,
-				  payment_date varchar(30) DEFAULT NULL,
-				  txn_id varchar(20) NOT NULL,
-				  first_name varchar(50) NOT NULL,
-				  last_name varchar(50) NOT NULL,
-				  payer_email varchar(100) NOT NULL,
-				  payer_status varchar(10) NOT NULL,
-				  payment_type varchar(20) NOT NULL,
-				  memo text NOT NULL,
-				  item_name text NOT NULL,
-				  item_number varchar(50) NOT NULL,
-				  quantity int(3) NOT NULL,
-				  mc_gross decimal(10,2) NOT NULL,
-				  mc_currency varchar(3) NOT NULL,
-				  address_name varchar(32) DEFAULT NULL,
-				  address_street varchar(64) DEFAULT NULL,
-				  address_city varchar(32) DEFAULT NULL,
-				  address_state varchar(32) DEFAULT NULL,
-				  address_zip varchar(10) DEFAULT NULL,
-				  address_country varchar(64) DEFAULT NULL,
-				  address_status varchar(11) DEFAULT NULL,
-				  payer_business_name varchar(64) DEFAULT NULL,
-				  payment_status varchar(17) NOT NULL,
-				  pending_reason varchar(14) DEFAULT NULL,
-				  reason_code varchar(15) DEFAULT NULL,
-				  txn_type varchar(20) NOT NULL,
-				  PRIMARY KEY (id)
-				);";
-
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        //update the table version number to match the updated sql
-        update_option("evr_payment_version", $evr_payment_version);
-    }
-    */
 }
 
 function evr_question_db()
@@ -954,64 +679,24 @@ function evr_question_db()
         $option_name = 'evr_question';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
         //create option in the wordpress options table for the event question table version
         $option_name = 'evr_question_version';
         $newvalue = $evr_question_version;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
+
     }
-    /*
-    // Code here with new database upgrade info/table Must change version number to work.
-    // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
-    // Retrieve the installed version of the events attendee table and assign a variable
-    $installed_ver = get_option("evr_question_version");
-    //check the installed version to the version defined tin the top of this file, if version is different - update to the sql structure below.
-    if ($installed_ver != $evr_question_version) {
-        $sql = "CREATE TABLE " . $table_name . " (
-			id MEDIUMINT NOT NULL auto_increment,
-			event_id int(11) NOT NULL default '0',
-			sequence int(11) NOT NULL default '0',
-			question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL default 'TEXT',
-			question text NOT NULL,
-			response text NOT NULL,
-			required ENUM( 'Y', 'N' ) NOT NULL DEFAULT 'N',
-			PRIMARY KEY  (id)
-			);";
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        //update the table version number to match the updated sql
-        update_option("evr_question_version", $evr_question_version);
-    }
-    */
 }
 //
 //Create the table for the answers for the questions
 function evr_answer_db()
 {
-    //Define global variables
+//Define global variables
     global $wpdb, $cur_build;
     global $evr_answer_version;
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_answer";
     $evr_answer_version = $cur_build;
-    //check the SQL database for the existence of the Event Answer Database - if it does not exist create it.
+//check the SQL database for the existence of the Event Answer Database - if it does not exist create it.
     if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
         $sql = "CREATE TABLE " . $table_name . " (
 			registration_id int(11) NOT NULL default '0',
@@ -1021,52 +706,17 @@ function evr_answer_db()
 			);";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-        //create option in the wordpress options tale for the event answer table name
+   //create option in the wordpress options tale for the event answer table name
         $option_name = 'evr_answer';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
-        //create option in the wordpress options table for the event answer table version
+   //create option in the wordpress options table for the event answer table version
         $option_name = 'evr_answer_version';
         $newvalue = $evr_answer_version;
         update_option($option_name, $newvalue);
-        /*
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-        */
+        
     }
-    /*
-    // Code here with new database upgrade info/table Must change version number to work.
-    // Note: SQL syntex should be the same in both places to ensure new table/ table update match.
-    // Retrieve the installed version of the events attendee table and assign a variable
-    $installed_ver = get_option("evr_answer_version");
-    //check the installed version to the version defined tin the top of this file, if version is different - update to the sql structure below.
-    if ($installed_ver != $evr_answer_version) {
-        $sql = "CREATE TABLE " . $table_name . " (
-			registration_id int(11) NOT NULL default '0',
-			question_id int(11) NOT NULL default '0',
-			answer text NOT NULL,
-			PRIMARY KEY  (registration_id, question_id)
-			);";
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        //update the table version number to match the updated sql
-        update_option("evr_answer_version", $evr_answer_version);
-    }
-    */
+    
 
 }
 
