@@ -63,6 +63,10 @@ function evr_upgrade_tables()
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD reg_type VARCHAR (45) DEFAULT NULL AFTER zip") or die(mysql_error());
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD tickets MEDIUMTEXT DEFAULT NULL AFTER quantity") or die(mysql_error());
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD payment_status VARCHAR(45) DEFAULT NULL AFTER payment") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD attendees MEDIUMTEXT DEFAULT NULL AFTER quantity") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD COLUMN payment_date varchar(30) DEFAULT NULL AFTER amount_pd") or die(mysql_error());
+        //ALTER TABLE wp_evr_attendee ADD COLUMN payment_date varchar(30) DEFAULT NULL
+        
         $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people") or  die(mysql_error());
         //$wpdb->query("INSERT INTO " . $new_attendee_tbl . " (quantity) SELECT num_people FROM ".$new_attendee_tbl) or die(mysql_error());
         //$wpdb->query ( "UPDATE ".$new_attendee_tbl." SET payment_status = paystatus") or die(mysql_error());
@@ -87,37 +91,31 @@ function evr_upgrade_tables()
         $newvalue = $upgrade_version;
         
             update_option($option_name, $newvalue);
-        
+        //ALTER TABLE wp_evr_event CHANGE COLUMN id id MEDIUMINT NOT NULL AUTO_INCREMENT
 
         //Add new fields to table
         //ALTER TABLE contacts ADD email VARCHAR(60) AFTER name;
-        $wpdb->query("ALTER TABLE " . $new_event_tbl .
-            " ADD event_address VARCHAR(100) DEFAULT NULL AFTER event_location") or die(mysql_error
-            ());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl .
-            " ADD event_city VARCHAR(100) DEFAULT NULL AFTER event_address") or die(mysql_error
-            ());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl .
-            " ADD event_state VARCHAR(100) DEFAULT NULL AFTER event_city") or die(mysql_error
-            ());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl .
-            " ADD event_postal VARCHAR(100) DEFAULT NULL AFTER event_state") or die(mysql_error
-            ());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl .
-            " ADD google_map VARCHAR (4) DEFAULT NULL AFTER event_postal") or die(mysql_error
-            ());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl .
-            " ADD outside_reg VARCHAR (4) DEFAULT NULL AFTER google_map") or die(mysql_error
-            ());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl .
-            " ADD external_site VARCHAR (100) DEFAULT NULL AFTER outside_reg") or die(mysql_error
-            ());
+        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " DROP KEY id") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_event_tbl ." CHANGE COLUMN id id MEDIUMINT NOT NULL AUTO_INCREMENT") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD event_address VARCHAR(100) DEFAULT NULL AFTER event_location") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD event_city VARCHAR(100) DEFAULT NULL AFTER event_address") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD event_state VARCHAR(100) DEFAULT NULL AFTER event_city") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD event_postal VARCHAR(100) DEFAULT NULL AFTER event_state") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD google_map VARCHAR (4) DEFAULT NULL AFTER event_postal") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD outside_reg VARCHAR (4) DEFAULT NULL AFTER google_map") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD external_site VARCHAR (100) DEFAULT NULL AFTER outside_reg") or die(mysql_error());
+            
+            //ALTER TABLE wp_evr_event CHANGE COLUMN id id MEDIUMINT NOT NULL AUTO_INCREMENT
+            //ALTER TABLE wp_evr_event ADD UNIQUE KEY id (id)
     }
     $new_question_tbl = $wpdb->prefix . "evr_question";
     $old_question_tbl = $wpdb->prefix . "events_question_tbl";
     if ($wpdb->get_var("SHOW TABLES LIKE '$new_question_tbl'") != $new_question_tbl) {
         $wpdb->query("CREATE TABLE IF NOT EXISTS " . $new_question_tbl .
             " SELECT * FROM " . $old_question_tbl);
+            //ALTER TABLE wp_evr_answer ADD PRIMARY KEY (registration_id, question_id)
+             $wpdb->query("ALTER TABLE " . $new_event_tbl ." CHANGE COLUMN id id MEDIUMINT NOT NULL auto_increment") or die(mysql_error());
+             
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_question';
         $newvalue = $new_question_tbl;
@@ -158,6 +156,8 @@ function evr_upgrade_tables()
 
         $wpdb->query("CREATE TABLE IF NOT EXISTS " . $new_category_tbl .
             " SELECT * FROM " . $old_category_tbl);
+           // ALTER TABLE wp_evr_category CHANGE COLUMN id id MEDIUMINT NOT NULL AUTO_INCREMENT
+           $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " CHANGE COLUMN id id MEDIUMINT NOT NULL AUTO_INCREMENT") or die(mysql_error());
         //create option in the wordpress options table for the event category table
         $option_name = 'evr_category';
         $newvalue = $new_category_tbl;
@@ -177,6 +177,11 @@ function evr_upgrade_tables()
         $wpdb->query("CREATE TABLE IF NOT EXISTS " . $new_payment_tbl .
             " SELECT * FROM " . $old_payment_tbl);
         //create option in the wordpress options tale for the event payment transaction table name
+        //ALTER TABLE wp_evr_payment DROP PRIMARY KEY
+        //ALTER TABLE wp_evr_payment CHANGE COLUMN id id MEDIUMINT NOT NULL AUTO_INCREMENT
+        
+        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " DROP PRIMARY KEY") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " CHANGE COLUMN id id MEDIUMINT NOT NULL AUTO_INCREMENT") or die(mysql_error());
         $option_name = 'evr_payment';
         $newvalue = $new_payment_tbl;
         
@@ -373,8 +378,7 @@ function evr_attendee_db()
     $table_name = $wpdb->prefix . "evr_attendee";
     $evr_attendee_version = $cur_build;
     //check the SQL database for the existence of the Event Attendee Database - if it does not exist create it.
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-        $sql = "CREATE TABLE " . $table_name . " (
+    $sql = "CREATE TABLE " . $table_name . " (
 					  id MEDIUMINT NOT NULL AUTO_INCREMENT,
 					  lname VARCHAR(45) DEFAULT NULL,
 					  fname VARCHAR(45) DEFAULT NULL,
@@ -409,7 +413,8 @@ function evr_attendee_db()
         $option_name = 'evr_attendee_version';
         $newvalue = $evr_attendee_version;
         update_option($option_name, $newvalue);
-        }
+       
+        
 }
 
 function evr_category_db()
@@ -420,8 +425,7 @@ function evr_category_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_category";
     $evr_category_version = $cur_build;
-    //check the SQL database for the existence of the Event Category Table - if it does not exist create it.
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+    
         $sql = "CREATE TABLE " . $table_name . " (
 					  id MEDIUMINT NOT NULL AUTO_INCREMENT,
 					  category_name VARCHAR(100) DEFAULT NULL,
@@ -430,7 +434,7 @@ function evr_category_db()
 					  display_desc VARCHAR (4) DEFAULT NULL,
                       category_color VARCHAR(30) NOT NULL ,
                       font_color VARCHAR(30) NOT NULL DEFAULT '#000000',
-					   UNIQUE KEY id (id)
+				        UNIQUE KEY id (id)
 					) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
@@ -442,7 +446,7 @@ function evr_category_db()
         $option_name = 'evr_category_version';
         $newvalue = $evr_category_version;
         update_option($option_name, $newvalue);
-    }
+   
 }
 
 function evr_event_db()
@@ -453,8 +457,7 @@ function evr_event_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_event";
     $evr_event_version = $cur_build;
-    //check the SQL database for the existence of the Event Details Database - if it does not exist create it.
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+   
         $sql = "CREATE TABLE " . $table_name . " (
 				  id MEDIUMINT NOT NULL AUTO_INCREMENT,
 				  event_name VARCHAR(100) DEFAULT NULL,
@@ -506,8 +509,6 @@ function evr_event_db()
         $option_name = 'evr_event_version';
         $newvalue = $evr_event_version;
         update_option($option_name, $newvalue);
-    }
-
 }
 
 function evr_cost_db()
@@ -518,9 +519,7 @@ function evr_cost_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_cost";
     $evr_cost_version = $cur_build;
-    //check the SQL database for the existence of the Event Question Table - if it does not exist create it.
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-        $sql = "CREATE TABLE " . $table_name . " (
+    $sql = "CREATE TABLE " . $table_name . " (
 			id MEDIUMINT NOT NULL auto_increment,
 			sequence int(11) NOT NULL default '0',
 			event_id int(11) NOT NULL default '0',
@@ -545,7 +544,6 @@ function evr_cost_db()
         $option_name = 'evr_cost_version';
         $newvalue = $evr_cost_version;
         update_option($option_name, $newvalue);
-    }
 }
 
 function evr_payment_db()
@@ -556,9 +554,7 @@ function evr_payment_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_payment";
     $evr_payment_version = $cur_build;
-    //check the SQL database for the existence of the Event Attendee Database - if it does not exist create it.
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-        $sql = "CREATE TABLE " . $table_name . " (
+    $sql = "CREATE TABLE " . $table_name . " (
 				  id MEDIUMINT NOT NULL AUTO_INCREMENT,
 				  payer_id varchar(15) NOT NULL,
                   event_id varchar (15) NOT NULL,
@@ -601,7 +597,7 @@ function evr_payment_db()
         $option_name = 'evr_payment_version';
         $newvalue = $evr_payment_version;
         update_option($option_name, $newvalue);
-    }
+   
 }
 
 function evr_question_db()
@@ -612,9 +608,7 @@ function evr_question_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_question";
     $evr_question_version = $cur_build;
-    //check the SQL database for the existence of the Event Question Table - if it does not exist create it.
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-        $sql = "CREATE TABLE " . $table_name . " (
+    $sql = "CREATE TABLE " . $table_name . " (
 			id MEDIUMINT NOT NULL auto_increment,
 			event_id int(11) NOT NULL default '0',
 			sequence int(11) NOT NULL default '0',
@@ -635,7 +629,7 @@ function evr_question_db()
         $newvalue = $evr_question_version;
         update_option($option_name, $newvalue);
 
-    }
+    
 }
 //
 //Create the table for the answers for the questions
@@ -647,9 +641,7 @@ function evr_answer_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_answer";
     $evr_answer_version = $cur_build;
-//check the SQL database for the existence of the Event Answer Database - if it does not exist create it.
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-        $sql = "CREATE TABLE " . $table_name . " (
+    $sql = "CREATE TABLE " . $table_name . " (
 			registration_id int(11) NOT NULL default '0',
 			question_id int(11) NOT NULL default '0',
 			answer text NOT NULL,
@@ -666,7 +658,7 @@ function evr_answer_db()
         $newvalue = $evr_answer_version;
         update_option($option_name, $newvalue);
         
-    }
+    
     
 
 }
