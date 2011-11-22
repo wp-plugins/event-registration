@@ -17,20 +17,16 @@ function evr_install()
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
     $old_event_tbl = $wpdb->prefix . "events_detail";
 
-   /* if (get_option('evr_was_upgraded')!= "Y"){
+    if (get_option('evr_was_upgraded')!= "Y"){
     if ($wpdb->get_var("SHOW TABLES LIKE '$old_event_tbl'") == $old_event_tbl) {
         evr_upgrade_tables();
     //create option in the wordpress options table to bypass upgrade in the future    
         $option_name = 'evr_was_upgraded' ;
     	$newvalue = "Y";
-    	if ( get_option($option_name) ) {
+    	
     	update_option($option_name, $newvalue);
-    	 } else {
-    	  $deprecated=' ';
-    	  $autoload='no';
-    	  add_option($option_name, $newvalue, $deprecated, $autoload);
-    	 }
-     }}*/
+    	 
+     }}
     $cur_build = "6.00.05";
     evr_attendee_db();
     evr_category_db();
@@ -49,43 +45,32 @@ function evr_upgrade_tables()
     $new_attendee_tbl = $wpdb->prefix . "evr_attendee";
     $old_attendee_tbl = $wpdb->prefix . "events_attendee";
     if ($wpdb->get_var("SHOW TABLES LIKE '$new_attendee_tbl'") != $new_attendee_tbl) {
-        $wpdb->query("CREATE TABLE IF NOT EXISTS " . $new_attendee_tbl .
-            " SELECT * FROM " . $old_attendee_tbl);
+        $wpdb->query("CREATE TABLE IF NOT EXISTS " . $new_attendee_tbl ." LIKE " . $old_attendee_tbl);
+        $wpdb->query("INSERT INTO " . $new_attendee_tbl ." SELECT * FROM " . $old_attendee_tbl);
         //create option in the wordpress options tale for the event attendee table name
         $option_name = 'evr_attendee';
         $newvalue = $new_attendee_tbl;
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        update_option($option_name, $newvalue);
+       
         //create option in the wordpress options table for the event attendee table version
         $option_name = 'evr_attendee_version';
         $newvalue = $upgrade_version;
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        update_option($option_name, $newvalue);
+        
 
         // copy num_people to quantity then drop num_people
-
-        $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people") or
-            die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_attendee_tbl .
-            " ADD reg_type VARCHAR (45) DEFAULT NULL AFTER zip") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_attendee_tbl .
-            " ADD tickets MEDIUMTEXT DEFAULT NULL AFTER quantity") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_attendee_tbl .
-            " ADD payment_status VARCHAR(45) DEFAULT NULL AFTER payment") or die(mysql_error
-            ());
+       
+        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD reg_type VARCHAR (45) DEFAULT NULL AFTER zip") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD tickets MEDIUMTEXT DEFAULT NULL AFTER quantity") or die(mysql_error());
+        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD payment_status VARCHAR(45) DEFAULT NULL AFTER payment") or die(mysql_error());
+        $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people") or  die(mysql_error());
+        //$wpdb->query("INSERT INTO " . $new_attendee_tbl . " (quantity) SELECT num_people FROM ".$new_attendee_tbl) or die(mysql_error());
         //$wpdb->query ( "UPDATE ".$new_attendee_tbl." SET payment_status = paystatus") or die(mysql_error());
+    
+    
     }
 
+  
     $new_event_tbl = $wpdb->prefix . "evr_event";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     if ($wpdb->get_var("SHOW TABLES LIKE '$new_event_tbl'") != $new_event_tbl) {
@@ -94,23 +79,15 @@ function evr_upgrade_tables()
         //create option for table name
         $option_name = 'evr_event';
         $newvalue = $new_event_tbl;
-        if (get_option($option_name)) {
+       
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
         //create option for table version
         $option_name = 'evr_event_version';
         $newvalue = $upgrade_version;
-        if (get_option($option_name)) {
+        
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
 
         //Add new fields to table
         //ALTER TABLE contacts ADD email VARCHAR(60) AFTER name;
@@ -144,27 +121,18 @@ function evr_upgrade_tables()
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_question';
         $newvalue = $new_question_tbl;
-        if (get_option($option_name)) {
+        
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
         //create option in the wordpress options table for the event question table version
         $option_name = 'evr_question_version';
         $newvalue = $upgrade_version;
-        if (get_option($option_name)) {
+        
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
 
     }
-
-    $new_answer_tbl = $wpdb->prefix . "evr_answer";
+  $new_answer_tbl = $wpdb->prefix . "evr_answer";
     $old_answer_tbl = $wpdb->prefix . "events_answer_tbl";
     if ($wpdb->get_var("SHOW TABLES LIKE '$new_answer_tbl'") != $new_answer_tbl) {
 
@@ -173,23 +141,15 @@ function evr_upgrade_tables()
         //create option in the wordpress options tale for the event answer table name
         $option_name = 'evr_answer';
         $newvalue = $new_answer_tbl;
-        if (get_option($option_name)) {
+        
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
         //create option in the wordpress options table for the event answer table version
         $option_name = 'evr_answer_version';
         $newvalue = $upgrade_version;
-        if (get_option($option_name)) {
+        
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
     }
 
     $new_category_tbl = $wpdb->prefix . "evr_category";
@@ -201,23 +161,14 @@ function evr_upgrade_tables()
         //create option in the wordpress options table for the event category table
         $option_name = 'evr_category';
         $newvalue = $new_category_tbl;
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        update_option($option_name, $newvalue);
+      
         //create option in the wordpress options table for the event attendee table version
         $option_name = 'evr_category_version';
         $newvalue = $upgrade_version;
-        if (get_option($option_name)) {
+        
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
     }
 
     $new_payment_tbl = $wpdb->prefix . "evr_payment";
@@ -228,24 +179,16 @@ function evr_upgrade_tables()
         //create option in the wordpress options tale for the event payment transaction table name
         $option_name = 'evr_payment';
         $newvalue = $new_payment_tbl;
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
+        update_option($option_name, $newvalue);
+        
 
         //create option in the wordpress options table for the event payment transaction table version
         $option_name = 'evr_payment_version';
         $newvalue = $upgrade_version;
-        if (get_option($option_name)) {
-            update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
+        update_option($option_name, $newvalue);
+        
     }
 
     $new_cost_tbl = $wpdb->prefix . "evr_cost";
@@ -274,24 +217,15 @@ function evr_upgrade_tables()
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_cost';
         $newvalue = $new_cost_tbl;
-        if (get_option($option_name)) {
+       
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
+        
         //create option in the wordpress options table for the event question table version
         $option_name = 'evr_cost_version';
         $newvalue = $upgrade_version;
-        if (get_option($option_name)) {
+        
             update_option($option_name, $newvalue);
-        } else {
-            $deprecated = ' ';
-            $autoload = 'no';
-            add_option($option_name, $newvalue, $deprecated, $autoload);
-        }
-
+        
         //Now get the pricing information from the events.
 
         $old_events = $wpdb->get_results("SELECT * from  " . $old_cost_tbl .
@@ -361,6 +295,23 @@ function evr_upgrade_tables()
             }
         }
     }
+  
+  //Update shortcodes if previous version
+  
+    	$wpdb->query("SELECT id FROM " . $wpdb->prefix . "posts " . " WHERE (post_content LIKE '%{EVENTREGIS}%' AND post_type = 'page') ".
+        "OR (post_content LIKE '%{EVENTREGPAY}%' AND post_type = 'page') ".
+        "OR (post_content LIKE '%{EVENTPAYPALTXN}%' AND post_type = 'page') ".
+        "OR (post_content LIKE '%[Event_Registration_Calendar]%' AND post_type = 'page') ".
+        "OR (post_content LIKE '%[EVENT_REGIS_CATEGORY%' AND post_type = 'page') ".
+        "OR (post_content LIKE '%[Event_Registration_Single%' AND post_type = 'page')");
+
+		if ($wpdb->num_rows > 0) {
+			$wpdb->query("UPDATE " . $wpdb->prefix . "posts SET post_content = REPLACE(post_content,'{EVENTREGIS}','{EVRREGIS}')");
+			$wpdb->query("UPDATE " . $wpdb->prefix . "posts SET post_content = REPLACE(post_content,'{EVENTREGPAY}','[EVR_PAYMENT]')");
+			$wpdb->query("UPDATE " . $wpdb->prefix . "posts SET post_content = REPLACE(post_content,'[Event_Registraiton_Calendar]','{EVR_CALENDAR}')");
+            $wpdb->query("UPDATE " . $wpdb->prefix . "posts SET post_content = REPLACE(post_content,'[Event_Registration_Single','[EVR_SINGLE')");
+            $wpdb->query("UPDATE " . $wpdb->prefix . "posts SET post_content = REPLACE(post_content,'[EVENT_REGIS_CATEGORY','[EVR_CATEGORY')");
+		}
 
     $old_organization_tbl = $wpdb->prefix . "events_organization";
 
