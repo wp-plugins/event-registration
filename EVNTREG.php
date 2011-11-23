@@ -267,16 +267,14 @@ function evr_check_usage_time(){
                 	 } else {
                 	  $deprecated=' ';
                 	  $autoload='no';
-                	  add_option('evr_dontshowpopup', "Y", $deprecated, $autoload);
+                	  update_option('evr_dontshowpopup', "Y");
                 	 }
 			}
             //
             if(!get_option('evr_date_installed') ) {
                 $installed_date = strtotime('now');
-                $deprecated=' ';
-                $autoload='no';
-                	  add_option('evr_date_installed', $installed_date, $deprecated, $autoload);
-                } elseif ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_date_installed')< strtotime('-30 days'))){
+             	  update_option('evr_date_installed', $installed_date);
+                } elseif ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_date_installed')< strtotime('-1 days'))){
                 // plugin has been installed for over 30 days
                 //wp_enqueue_style('evr_donate', plugins_url('evr_donate.css',dirname(__FILE__)));
 				//wp_enqueue_script('evr_donate', plugins_url('evr_donate.js',dirname(__FILE__)));
