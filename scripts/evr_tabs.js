@@ -15,3 +15,11 @@ jQuery(document).ready(function() {
 	});
 
 });
+
+jQuery(document).ready(function() {
+	jQuery('#evr-donate-box').fadeIn();
+	
+	jQuery('img.evr-close').click(function() {
+		jQuery('#evr-donate-box').fadeOut();
+	});
+});

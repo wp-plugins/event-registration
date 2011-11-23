@@ -24,13 +24,9 @@ add_submenu_page ( __FILE__, 'Support', 'Support', 8, 'support', 'evr_admin_supp
 //function for the splash page of the plugin
 function evr_splash(){
     global $wpdb, $sponsorship_promo;
-    
+    evr_check_usage_time();
     
 ?>
-<style>
-
-</style>
-
 
 <div class="wrap"><br />
 <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
@@ -191,4 +187,29 @@ function evr_footer_ad(){
 <?php
 }
 
+function evr_donate_popup()
+		{
+			?>
+			<div id="evr-donate-box">
+					<div id="evr-donate-box-content">
+						<img width="32" height="32" class="evr-close" src="images/btn-close.png" alt="X">
+						<a href="http://www.wordpresseventregister.com"><img src="images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
+                        <h3>Support Event Registration</h3>
+						<p align="justify">I noticed you've been using Event Registration for WordPress for at least 30 days.</p>  
+                        <p align="justify">If you find Evnet Registration useful, please consider donating to show your appreciation for the time and money this product is saving you.</p>
+						<p align="center">
+						
+                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                        <input type="hidden" name="cmd" value="_s-xclick">
+                        <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+                        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                        </form></p>
+
+						<a class="evr-dontshow" href="&dontshowpopup=1">(do not show me this pop-up again)</a>
+					</div>
+				</div>
+				<?php
+
+}
 ?>
