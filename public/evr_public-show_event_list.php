@@ -143,7 +143,7 @@ function evr_show_event_list(){
                                $available_spaces = $reg_limit;
                                
                                //div for popup goes here.
-                            include "evr_event_popup_pop.php";
+                            include plugins_url("/evr_event_popup_pop.php");
                               }         
                                
             				
