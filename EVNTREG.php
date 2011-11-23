@@ -180,12 +180,15 @@ function evr_admin_css_all_page() {
 function evr_admin_scripts_all_page() {
        wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_enqueue_script('evr_admin_script');
        wp_enqueue_script('evr_admin_fancy');
+       wp_enqueue_script('evr_tab_script');
+       
 }
 //function to load items to header of wordpress admin
 function evr_admin_header(){
-    require ("evr_tab_incl.php"); //this needs to be moved into admin style and scripts df
+  //special code for header - should put all css in css admin and all script in script admin
 }
 /*********************************   END ADMIN HEAD   ********************************/
 //

@@ -2,8 +2,7 @@
 //function to edit an existing event built into event listing page.
 function evr_edit_event(){
     global $wpdb;
-    require ("evr_tab_incl.php");
-	$event_id = $_REQUEST['id'];
+    $event_id = $_REQUEST['id'];
 	$sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
                     		$result = mysql_query ($sql);
                             while ($row = mysql_fetch_assoc ($result)){  

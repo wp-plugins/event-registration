@@ -55,8 +55,7 @@ function evr_admin_company(){
         
         default:
         global $wpdb;
-        require ("evr_tab_incl.php");
-?>
+        ?>
 
 <div class="container">
 <div class="wrap">
