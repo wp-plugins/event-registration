@@ -787,7 +787,7 @@ table.evr_evntpop {
     	padding: 5px;
     }
     
-    #evr-donate-box{
+#evr-donate-box{
 	display:none;
 	background:url(images/overlay.png);
 	position:absolute;
@@ -799,14 +799,14 @@ table.evr_evntpop {
 
 #evr-donate-box-content{
 	position:fixed;
-	left:50%;
-	top:50%;
+	left:25%;
+	top:25%;
 	width:300px;
-	height:220px;
+	height:400px;
 	padding:10px 25px;
     
-	margin-left:175px;
-	margin-top:135px;
+	margin-left:75px;
+	margin-top:35px;
 	background:white;
 	border:1px solid #DFDFDF;
 	-moz-border-radius: 6px;
@@ -821,7 +821,7 @@ table.evr_evntpop {
 	cursor:pointer;
 }
 #evr-donate-box a.evr-dontshow{
-	font-size:10px;
+	font-size:8px;
 	position:absolute;
 	right:10px;
 	bottom:10px;

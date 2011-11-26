@@ -18,16 +18,23 @@ function evr_widget_content(){
 //function to add payment shortcode option page on public page for plugin
 function evr_payment_page(){
         global $wpdb;
-		$id="";
+        $company_options = get_option('evr_company_settings');
+		$attendee_id="";
         $first = "";
-        $first = $_GET['fname'];
-		$id=$_GET['id'];
-        if ($id =="") {_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
-        else if ($first ==""){_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
+        $passed_attendee_id = $_GET['id'];
+        $passed_first = $_GET['fname'];
+               
+        if (is_numeric($passed_attendee_id)){$attendee_id = $passed_attendee_id;}
+            else {
+                $attendee_id = "0";
+                echo "Failure - please retry!"; 
+                exit;}
+
+        if ($attendee_id =="") {_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
         else {
             
             
-			$query  = "SELECT * FROM ".get_option('evr_attendee')." WHERE id='$id' AND fname = '$first'";
+			$query  = "SELECT * FROM ".get_option('evr_attendee')." WHERE id='$attendee_id'";
 	   		$result = mysql_query($query) or die('Error : ' . mysql_error());
 	   		while ($row = mysql_fetch_assoc ($result))
 				{
@@ -50,30 +57,12 @@ function evr_payment_page(){
 				$attendee_name = $fname." ".$lname;
 				}
 
-				
-			$company_options = get_option('evr_company_settings');
-				$company =$company_options['company'];
-				$company_street1 =$company_options['company_street1'];
-				$company_street2=$company_options['company_street2'];
-				$company_city =$company_options['company_city'];
-				$company_state=$company_options['company_state'];
-				$company_zip =$company_options['company_zip'];
-				$contact =$company_options['contact_email'];
- 				$registrar = $company_options['contact_email'];
-				$paypal_id =$company_options['paypal_id'];
-				$paypal_cur =$company_options['currency_format'];
-				$events_listing_type =$company_options['events_listing_type'];
-				$message =$company_options['message'];
-				$return_url = $company_options['return_url'];
-				$cancel_return = $company_options['cancel_return'];
-				$notify_url = $company_options['notify_url'];
-				$use_sandbox = $company_options['use_sandbox'];
-				$image_url = $company_options['image_url'];
-				$currency_symbol = $company_options['currency_symbol'];
-			
+            if ($passed_first==$fname){}
+            else {
+                echo "Failure - please retry!"; 
+                exit;}
 
-
-			//Query Database for event and get variable
+		//Query Database for event and get variable
 
 			$sql = "SELECT * FROM ". get_option('evr_event') . " WHERE id='$event_id'";
 			$result = mysql_query($sql);
@@ -171,10 +160,18 @@ $payment=$total_due;
 			
 			
 				  $p->add_field('business', $company_options['payment_vendor_id']);
-				  $p->add_field('return', evr_permalink($company_options['return_url']));
-				  $p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
-				  $p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&attendee_action=post_payment&form_action=payment');
-				  $p->add_field('item_name', $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity);
+                  $p->add_field('return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
+				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
+				  $p->add_field('cancel_return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
+                  //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
+				  $p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
+                  
+                  
+				  //$p->add_field('return', evr_permalink($company_options['return_url']));
+				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
+				  //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&attendee_action=post_payment&form_action=payment');
+				  //$p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
+                  $p->add_field('item_name', $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity);
 				  $p->add_field('amount', $payment);
 				  $p->add_field('currency_code', $ticket_order[0]['ItemCurrency']);
 				  

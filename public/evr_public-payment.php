@@ -1,9 +1,23 @@
 <?php
 
-function evr_registration_payment($event_id, $attendee_id){
+function evr_registration_payment($passed_event_id, $passed_attendee_id){
     
     global $wpdb;
     $company_options = get_option('evr_company_settings');
+   
+    if (is_numeric($passed_event_id)){$event_id = $passed_event_id;}
+    else {
+        $event_id = "0";
+        echo "Failure - please retry!"; 
+        exit;}
+        
+    if (is_numeric($passed_attendee_id)){$attendee_id = $passed_attendee_id;}
+    else {
+        $attendee_id = "0";
+        echo "Failure - please retry!"; 
+        exit;}
+    
+    
     //Get Event Info
     
     $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
@@ -57,15 +71,20 @@ function evr_registration_payment($event_id, $attendee_id){
 	}else {
 		$p->paypal_url = 'https://www.paypal.com/cgi-bin/webscr'; // paypal url
 	}
-    	if ($payment != "0.00" || $payment != "" || $payment != " "){
+    	if ($payment != "0.00" || $payment != "0" || $payment != "" || $payment != " "){
 			 			
 			
 			
 				  $p->add_field('business', $company_options['payment_vendor_id']);
-				  $p->add_field('return', evr_permalink($company_options['return_url']));
-				  $p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
-				  //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
+				  //$p->add_field('return', evr_permalink($company_options['return_url']));
+				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
+                  $p->add_field('return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
+				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
+				  $p->add_field('cancel_return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
+                  //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
 				  $p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
+				  //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
+				  //$p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
                   $p->add_field('item_name', $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity);
 				  $p->add_field('amount', $payment);
 				  $p->add_field('currency_code', $ticket_order[0]['ItemCurrency']);
@@ -79,7 +98,7 @@ function evr_registration_payment($event_id, $attendee_id){
 				  $p->add_field('state', $state);
 				  $p->add_field('zip', $zip);				 
                 ?>				  
-                <p align="left"><strong>Please verify your registration details:</strong></p>
+                <p align="left"><strong>Order details:</strong></p>
                     <table width="95%" border="0">
                       <tr>
                         <td><strong>Event Name/Cost:</strong></td>
@@ -112,8 +131,7 @@ function evr_registration_payment($event_id, $attendee_id){
 				  }   
 			
 			}
-	  
-    
+               
  }
  //End Paypal Section
  
@@ -312,5 +330,140 @@ if ($company_options['payment_vendor']=="MONSTER"){
 //End Monster Pay Section
 
  
+}
+
+function evr_registration_donation($passed_event_id, $passed_attendee_id){
+    
+    global $wpdb;
+    $company_options = get_option('evr_company_settings');
+   
+    if (is_numeric($passed_event_id)){$event_id = $passed_event_id;}
+    else {
+        $event_id = "0";
+        echo "Failure - please retry!"; 
+        exit;}
+        
+    if (is_numeric($passed_attendee_id)){$attendee_id = $passed_attendee_id;}
+    else {
+        $attendee_id = "0";
+        echo "Failure - please retry!"; 
+        exit;}
+    
+    
+    //Get Event Info
+    
+    $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
+                    		$result = mysql_query ($sql);
+                            while ($row = mysql_fetch_assoc ($result)){  
+                         
+                            $event_id       = $row['id'];
+            				$event_name     = $row['event_name'];
+            				$event_location = $row['event_location'];
+                            $event_address  = $row['event_address'];
+                            $event_city     = $row['event_city'];
+                            $event_postal   = $row['event_postal'];
+                            $reg_limit      = $row['reg_limit'];
+                    		$start_time     = $row['start_time'];
+                    		$end_time       = $row['end_time'];
+                    		$start_date     = $row['start_date'];
+                    		$end_date       = $row['end_date'];
+                            }
+    //Get Attendee Info
+    $sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE id=".$attendee_id;
+                            $result = mysql_query ( $sql );
+                            while ( $row = mysql_fetch_assoc ( $result ) ) {
+                                    $attendee_id = $row['id'];
+                                    $lname = $row ['lname'];
+                        			$fname = $row ['fname'];
+                        			$address = $row ['address'];
+                        			$city = $row ['city'];
+                        			$state = $row ['state'];
+                        			$zip = $row ['zip'];
+                        			$email = $row ['email'];
+                        			$phone = $row ['phone'];
+                        			$quantity = $row ['quantity'];
+                        			$date = $row ['date'];
+                        			$reg_type = $row['reg_type'];
+                                    $ticket_order = unserialize($row['tickets']);
+                                    $payment= $row['payment'];
+                                    $event_id = $row['event_id'];
+                                    $coupon = $row['coupon'];
+                                    $attendee_name = $fname." ".$lname;
+                                    }
+    
+    //Get Donate Info
+    
+    if ($company_options['donations']=="Yes"){ $pay_now = "MAKE A DONATION";}
+    elseif ($company_options['pay_now']!=""){$pay_now = $company_options['pay_now'];} 
+    else {$pay_now = "PAY NOW";}
+    
+//Paypal 
+    if ($company_options['payment_vendor']=="PAYPAL"){
+    $p = new paypal_class;// initiate an instance of the class
+    if ($company_options['use_sandbox'] == "Y") {
+		$p->paypal_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr'; // testing paypal url
+		echo "<h3 style=\"color:#ff0000;\" title=\"Payments will not be processed\">Sandbox Mode Is Active</h3>";
+	}else {
+		$p->paypal_url = 'https://www.paypal.com/cgi-bin/webscr'; // paypal url
+	}
+    	if (($payment == "0.00" || $payment == "0" || $payment == "" || $payment == " ")&&($company_options['donations']=="Yes")){
+    	   
+ 		
+				  $p->add_field('business', $company_options['payment_vendor_id']);
+				  $p->add_field('return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
+				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
+				  $p->add_field('cancel_return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
+                  //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
+				  $p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
+                   $p->add_field('cmd', '_donations');
+                  $p->add_field('item_name', 'Donation - '.$event_name );
+				  $p->add_field('no_note', '0');
+				  $p->add_field('currency_code', $ticket_order[0]['ItemCurrency']);
+				  //Post variables
+				  $p->add_field('first_name', $fname);
+				  $p->add_field('last_name', $lname);
+				  $p->add_field('email', $email);
+				  $p->add_field('address1', $address);
+				  $p->add_field('city', $city);
+				  $p->add_field('state', $state);
+				  $p->add_field('zip', $zip);				 
+                ?>				  
+                <p align="left"><strong>Order details:</strong></p>
+                    <table width="95%" border="0">
+                      <tr>
+                        <td><strong>Event Name/Cost:</strong></td>
+                        <td><?php echo $event_name?> - <?php echo $ticket_order[0]['ItemCurrency'];?><?php echo $payment?></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Attendee Name:</strong></td>
+                        <td><?php echo $attendee_name?></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Email Address:</strong></td>
+                        <td><?php echo $email?></td>
+                      </tr>
+                       <tr>
+                        <td><strong>Number of Attendees:</strong></td>
+                        <td><?php echo $quantity?></td>
+                      </tr>
+                       <tr>
+                        <td><strong>Order Details:</strong></td>
+                        <td><?php $row_count = count($ticket_order);
+    for ($row = 0; $row < $row_count; $row++) {
+    if ($ticket_order[$row]['ItemQty'] >= "1"){ echo $ticket_order[$row]['ItemQty']." ".$ticket_order[$row]['ItemCat']."-".$ticket_order[$row]['ItemName']." ".$ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']."<br \>";}
+    } ?></td>
+                      </tr>
+                    </table><br />
+                <?php
+					 $p->submit_paypal_post($pay_now); // submit the fields to paypal
+				  if ($company_options['use_sandbox'] == "Y") {
+					  $p->dump_fields(); // for debugging, output a table of all the fields
+				  }   
+			
+			}
+            
+    
+ }
+ //End Paypal Donation Section
 }
 ?>

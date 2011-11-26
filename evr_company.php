@@ -2,6 +2,7 @@
 function evr_admin_company(){
 
 		global $wpdb;
+        evr_check_usage_time();
         $company_options = get_option('evr_company_settings');
         $update_company = $_POST['update_company'];
         switch ($update_company) {
@@ -170,6 +171,14 @@ function evr_admin_company(){
                             </select></td>
                         </tr>
                         <tr valign="top">
+                        <th scope="row"><label for="checka"><?php _e('Will you accept checks/cash?','evr_language');?></label></th>
+                        <td><select name = 'checks' class="regular-select">
+                            <option value="<?php  echo $company_options['checks'];?>"><?php  echo $company_options['checks'];?> </option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            </select></td>
+                        </tr>
+                        <tr valign="top">
                         <th scope="row"><label for="accept_donations"><?php _e('Will you accept donations?','evr_language');?></label></th>
                         <td><select name = 'donations' class="regular-select">
                             <option value="<?php  echo $company_options['donations'];?>"><?php  echo $company_options['donations'];?> </option>
@@ -199,12 +208,12 @@ function evr_admin_company(){
                             ?>
                             
                         <tr valign="top">
-                        <th scope="row"><label for="cancel_return"><?php _e('Cancel Return URL','evr_language');?><br /><font size="-6"><?php _e('(used for cancelled payments)','evr_language');?></font></label></th>
+                        <th scope="row"><label for="cancel_return"><?php _e('Cancel Return URL','evr_language');?><br /><font size="-6"><?php _e('(page you setup for cancelled payment)','evr_language');?></font></label></th>
                         <td><input name="cancel_return" value="<?php  echo $company_options['cancel_return'];?>" class="regular-text" /></td>
                         </tr>
                         <tr valign="top">
                         <th scope="row"><label for="notify_url"><?php _e('Notify URL','evr_language');?><br /><font size="-6"><?php _e('(used to process payments)','evr_language');?></font></label></th>
-                        <td><input name="notify_url" value="<?php  echo $company_options['notify_url'];?>" class="regular-text" /></td>
+                        <td><input name="" value="No Selection Required - based registration page" class="regular-text" /></td>
                         </tr>    
                         <tr valign="top">
                         <th scope="row"><label for="return_method"><?php _e('Return Method:','evr_language');?></label></th>

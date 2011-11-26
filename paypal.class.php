@@ -140,7 +140,7 @@ class paypal_class {
   <?php foreach ($this->fields as $name => $value) {
          echo "<input type=\"hidden\" name=\"$name\" value=\"$value\"/>\n";
       }?>
-  <input type="submit" id="registration_payment_button" value="<?php echo $pay_text; //changed by david fleming to make customizable?>">  
+  <input type="submit" id="registration_payment_button" value="<?php echo $pay_text; /*changed by david fleming to make customizable*/ ?>">  
 </form>
 <?php  }
    

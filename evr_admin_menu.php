@@ -115,7 +115,7 @@ function evr_splash(){
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form></p>
     		</div>
-    	</div>		
+           </div>		
 		<div class="clear"></div>
 	</div>
 	
@@ -189,14 +189,15 @@ function evr_footer_ad(){
 
 function evr_donate_popup()
 		{
-			?>
+		$guid=md5(uniqid(mt_rand(), true)); 
+        	?>
 			<div id="evr-donate-box">
 					<div id="evr-donate-box-content">
-						<img width="32" height="32" class="evr-close" src="images/btn-close.png" alt="X">
-						<a href="http://www.wordpresseventregister.com"><img src="images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
+						<img width="32" height="32" class="evr-close" src="<?php echo EVR_PLUGINFULLURL.'images/btn-close.png';?>" alt="X">
+						<a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL.'images/evr_icon.png';?>" alt="Event Registration for Wordpress" /></a>
                         <h3>Support Event Registration</h3>
 						<p align="justify">I noticed you've been using Event Registration for WordPress for at least 30 days.</p>  
-                        <p align="justify">If you find Evnet Registration useful, please consider donating to show your appreciation for the time and money this product is saving you.</p>
+                        <p align="justify">If you find Event Registration useful, please consider donating to show your appreciation for the time and money this product is saving you.</p>
 						<p align="center">
 						
                         <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -205,11 +206,12 @@ function evr_donate_popup()
                         <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
                         <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
                         </form></p>
-
-						<a class="evr-dontshow" href="&dontshowpopup=1">(do not show me this pop-up again)</a>
+						<a class="evr-dontshow" href="admin.php?page=popup&dontshowpopup=1">(do not show me this pop-up again)</a>
 					</div>
 				</div>
 				<?php
 
 }
+
+
 ?>

@@ -105,12 +105,21 @@ register_activation_hook(__file__, 'evr_install');
 add_action('activated_plugin','evr_save_error');
 add_action('init', 'evr_init');
 add_action('admin_menu', 'evr_admin_menu');
+add_action('admin_menu', 'evr_options_item');
+
 add_action('plugins_loaded', 'evr_widgets');
 //admin header
 add_action("admin_head","evr_load_tiny_mce");
 add_action('admin_head', 'evr_admin_header');
 add_action('admin_print_styles', 'evr_admin_css_all_page');
 add_action('admin_print_scripts', 'evr_admin_scripts_all_page');
+//admin footer
+add_action('admin_footer', 'evr_footer_text');
+
+function evr_footer_text() 
+{
+	echo "<p id='footer' style=\"text-align:center;\">Event Registration created by <a href='http://www.WordpressEventRegister.com'>WordpressEventRegister.com</a></p>";
+} 
 //public header
 add_action('wp_head', 'evr_public_header');
 add_action('wp_print_styles', 'evr_public_stylesheets');
@@ -224,6 +233,7 @@ function evr_admin_menu()
     global $evr_date_format, $evr_ver;
     $version = "EVNTRG_" . $evr_ver;
     $role = 'manage_options';
+    
     add_menu_page($version, $version, $role, __file__, 'evr_splash');
     add_submenu_page(__file__, 'Setup Company', 'Company', $role, 'company','evr_admin_company');
     add_submenu_page(__file__, 'Categories', 'Categories',$role, 'categories','evr_admin_categories');
@@ -233,16 +243,22 @@ function evr_admin_menu()
     add_submenu_page(__file__, 'Manage Payments', 'Payments', $role, 'payments','evr_admin_payments');
     add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $role, 'uninstall','evr_remove_db_menu');
     add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $role, 'purge','evr_clean_old_db');
+    add_submenu_page(__file__, 'Disable Popup', 'Disable Popup', $role, 'popup','evr_validate_key');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
     //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
     //add_submenu_page ( __FILE__, 'Sample Events', 'Sample Events', 8, 'sample', 'evr_create_events_sample_page' );
     //add_submenu_page ( __FILE__, 'Reports', 'Reports', 8, 'reports', 'evr_admin_reports' );
     //add_submenu_page ( __FILE__, 'Support', 'Support', 8, 'support', 'evr_admin_support' );
+    
 
 
 }
 /*********************************   END ADMIN MENU   ********************************/
+
+function evr_options_item(){
+    add_options_page('EVNTRG Options', 'EVNTRG Options', 'administrator', __FILE__, 'evr_validate_key');
+}
 //
 //
 //function to load widgets to the widgets menu
@@ -261,23 +277,13 @@ wp_register_sidebar_widget(
 
 
 function evr_check_usage_time(){
-			if ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_donated') == "Y")){
-    			if ( get_option('evr_dontshowpopup') ) {
-                	update_option('evr_dontshowpopup', "Y");
-                	 } else {
-                	  $deprecated=' ';
-                	  $autoload='no';
-                	  update_option('evr_dontshowpopup', "Y");
-                	 }
-			}
-            //
-            if(!get_option('evr_date_installed') ) {
-                $installed_date = strtotime('now');
+			if ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_donated') == "Y")){update_option('evr_dontshowpopup', "Y");}
+			if(!get_option('evr_date_installed') ) {
+                  $installed_date = strtotime('now');
              	  update_option('evr_date_installed', $installed_date);
-                } elseif ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_date_installed')< strtotime('-1 days'))){
+                } 
+            elseif ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_date_installed')< strtotime('-1 days'))){
                 // plugin has been installed for over 30 days
-                //wp_enqueue_style('evr_donate', plugins_url('evr_donate.css',dirname(__FILE__)));
-				//wp_enqueue_script('evr_donate', plugins_url('evr_donate.js',dirname(__FILE__)));
                 evr_donate_popup();
                 }
 }
