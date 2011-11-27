@@ -1,6 +1,13 @@
 Changes:
 =========
 
+= Version 6.00.07 = 
+* Changed DB Installation and Upgrade to simplfly and condition upgrading
+* Added sponsor section
+* Moved all admin scripts and style to enqueue.
+* Resolved depricated options issue
+* Added system alerts
+
 = Version 6.00.06 = 
 * changed DB uninstall feature from a hidden deactivate feature to a menu choice.
 * Added more information and links to the splash page

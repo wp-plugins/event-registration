@@ -302,6 +302,6 @@ switch ($_REQUEST['action']) {
 }
 }
 
-else {_e('Report Folder configuration is not correct, please email consultant@avdude.com for configuration assistance.','evr_language');}
+else {_e('Report Folder configuration is not correct, please email support@wordpresseventregister.com for configuration assistance.','evr_language');}
 
 ?>
