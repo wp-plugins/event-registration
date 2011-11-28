@@ -578,7 +578,7 @@ msgid "Transaction ID"
 msgstr ""
 
 #: evr_admin_payments.php:492
-msgid "Do you want to send a payment recieved notice to the payer?"
+msgid "Do you want to send a payment received notice to the payer?"
 msgstr ""
 
 #: evr_admin_payments.php:519
@@ -586,7 +586,7 @@ msgid "POST PAYMENT"
 msgstr ""
 
 #: evr_admin_payments.php:687
-msgid "Do you want to send a revised payment recieved notice to the payer?"
+msgid "Do you want to send a revised payment received notice to the payer?"
 msgstr ""
 
 #: evr_admin_payments.php:714
@@ -952,7 +952,7 @@ msgstr ""
 
 #: evr_content.php:123
 #: evr_registration.php:1734
-msgid "Payments Recieved:"
+msgid "Payments Received:"
 msgstr ""
 
 #: evr_content.php:126
@@ -1629,7 +1629,7 @@ msgid "There was an error in your submission, please try again."
 msgstr ""
 
 #: evr_registration.php:1176
-msgid "You're information has been recieved."
+msgid "You're information has been received."
 msgstr ""
 
 #: evr_registration.php:1272
@@ -1653,7 +1653,7 @@ msgid "At this time, all seats for the event have been taken.  Your information 
 msgstr ""
 
 #: evr_registration.php:1298
-msgid "Registration, however, is not complete until we have recieved your payment."
+msgid "Registration, however, is not complete until we have received your payment."
 msgstr ""
 
 #: evr_registration.php:1301
@@ -1663,4 +1663,3 @@ msgstr ""
 #: evr_registration.php:1308
 msgid "Please select the Pay Now button to be taken to our payment vendor's site for online-payment."
 msgstr ""
-

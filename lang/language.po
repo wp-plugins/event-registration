@@ -513,12 +513,12 @@ msgstr ""
 
 #. Text in echo
 #: evr_admin_payments.php:492
-msgid "Do you want to send a payment recieved notice to the payer?"
+msgid "Do you want to send a payment received notice to the payer?"
 msgstr ""
 
 #. Text in echo
 #: evr_admin_payments.php:687
-msgid "Do you want to send a revised payment recieved notice to the payer?"
+msgid "Do you want to send a revised payment received notice to the payer?"
 msgstr ""
 
 #. Text in echo
@@ -1172,7 +1172,7 @@ msgstr ""
 #. Text in echo
 #: evr_registration.php:1724
 #: evr_content.php:113
-msgid "Payments Recieved:"
+msgid "Payments received:"
 msgstr ""
 
 #. Text in echo
@@ -1384,7 +1384,7 @@ msgstr ""
 
 #. Text in echo
 #: evr_registration.php:1172
-msgid "Registration, however, is not complete until we have recieved your payment."
+msgid "Registration, however, is not complete until we have received your payment."
 msgstr ""
 
 #. Text in echo
@@ -1937,7 +1937,7 @@ msgstr ""
 
 #. Text in echo
 #: evr_registration.php:1172
-msgid "You're information has been recieved."
+msgid "You're information has been received."
 msgstr ""
 
 #. Text in echo
