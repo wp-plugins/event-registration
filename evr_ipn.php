@@ -138,8 +138,22 @@ function evr_paypal_txn(){
      '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
         	
         
-    $wpdb->insert( get_option('evr_payment'), $sql, $sql_data );
-               
+    //$wpdb->insert( get_option('evr_payment'), $sql, $sql_data );
+      if ($wpdb->insert( get_option('evr_payment'), $sql, $sql_data )){ 
+                $subject = 'Instant Payment Notification - Success';
+				 $body =  "An instant payment notification was successfully posted\n";
+				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
+				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
+				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
+				 wp_mail($contact, $subject, $body);} 
+                 else {
+                     $subject = 'Instant Payment Notification - Failure';
+				 $body =  "An instant payment notification was recieved but not posted!\n";
+				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
+				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
+				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
+				 wp_mail($contact, $subject, $body);
+                 };         
 				 
 			}
 		}

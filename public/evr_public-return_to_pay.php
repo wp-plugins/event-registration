@@ -3,11 +3,20 @@
 function evr_retun_to_pay(){
  
 		global $wpdb;
-		$id="";
-		$id=$_GET['id'];
-        if ($id ==""){echo "Please check your email for payment information.";}
+        $company_options = get_option('evr_company_settings');
+        $id="";
+        $passed_id="";
+        $passed_id = $_GET['id'];
+       
+        if (is_numeric($passed_id)){$id = $passed_id;}
+        else {
+            $passed_id = "";
+            echo "Failure - please retry!"; 
+            exit;}
+            
+        if ($passed_id ==""){echo "Please check your email for payment information.";}
         else{
-			$query  = "SELECT * FROM ".get_option('evr_attendee')." WHERE id='$id'";
+			$query  = "SELECT * FROM ".get_option('evr_attendee')." WHERE id='$passed_id'";
 	   		$result = mysql_query($query) or die('Error : ' . mysql_error());
 	   		while ($row = mysql_fetch_assoc ($result))
 				{
@@ -30,9 +39,7 @@ function evr_retun_to_pay(){
 				$attendee_name = $fname." ".$lname;
 				}
 
-				
-			$company_options = get_option('evr_company_settings');
-				$company =$company_options['company'];
+			/*	$company =$company_options['company'];
 				$company_street1 =$company_options['company_street1'];
 				$company_street2=$company_options['company_street2'];
 				$company_city =$company_options['company_city'];
@@ -51,7 +58,7 @@ function evr_retun_to_pay(){
 				$image_url = $company_options['image_url'];
 				$currency_symbol = $company_options['currency_symbol'];
 			
-
+*/
 
 			//Query Database for event and get variable
 

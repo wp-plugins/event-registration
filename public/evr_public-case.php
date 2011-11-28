@@ -1,12 +1,13 @@
 <?php
 function evr_registration_main(){
     
+    global $wpdb;
+    $company_options = get_option('evr_company_settings');
     $action = $_REQUEST['action'];
     if (is_numeric($_REQUEST['event_id'])){
         $event_id = (int)$_REQUEST['event_id'];
     }
-        
-         switch ($action) {
+    switch ($action) {
             
             case "register":
             if (is_numeric($event_id)){
@@ -27,7 +28,12 @@ function evr_registration_main(){
             break;
 
             case "paypal_txn":
-                evr_paypal_txn();     
+               if ($company_options['payment_vendor']=="PAYPAL"){          
+                evr_paypal_txn();
+                }
+                else {
+                    _e('IPN is only avialble with PAYPAL with this version of Event Reigstration','evr_language');
+                }
             break;
             
             default:

@@ -9,7 +9,10 @@ function evr_process_confirmation(){
     $reg_form = unserialize(urldecode($_POST["reg_form"]));
     $qanda = unserialize(urldecode($_POST["questions"]));
 
-    $event_id = $reg_form["event_id"];
+    
+    $passed_event_id = $reg_form["event_id"];
+    if (is_numeric($passed_event_id)){$event_id = $passed_event_id;}
+    else {echo "Failure - please retry!"; exit;}
     
     $attendee_array = $_POST['attendee'];
     $attendee_list = serialize($attendee_array);
@@ -183,25 +186,54 @@ function evr_process_confirmation(){
    
    
 //Provide screen feedback on registration process   
+//If registration is at capacity and attendee is waitlisted, notify attendee of waitlist.
    if($reg_type=="WAIT"){
     echo "<p>";
     _e("At this time, all seats for the event have been taken.  Your information has been placed on our waiting list.  The waiting list is on a first come, first serve basis.  You will be notified by email should a seat become available.",'evr_language');
     echo "</p>";
    }
-   
+//If there is a balance of payment over 0, then notify attendee of payment need.  
    if ($reg_form['payment'] > "0"){
              _e("Registration, however, is not complete until we have recieved your payment.",'evr_language'); 
            echo " ";
-           if ($company_options['accept_checks']=="Y"){
+           if ($company_options['checks'] == "Yes"){
                 _e("You may pay online or by check.  If you are paying by check, please mail your check today to:",'evr_language');
                 echo "<p>".
                 $company_options['company']."<br />".
                 $company_options['company_street1']."<br />".
                 $company_options['company_street2']."<br />".
                 $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."</p>";
+                 _e("Reference ",'evr_language');
+                 echo "<b>".$event_name." - ID: ".$reg_id."</b><br/><br/>";
             }     
-           _e("Please select the Pay Now button to be taken to our payment vendor's site for online-payment.",'evr_language'); $company_options['company_email']     = $_POST['email'];
+           _e("To pay online, please select the Pay Now button to be taken to our payment vendor's site.",'evr_language'); 
+           echo "<hr/>";
            evr_registration_payment($event_id, $reg_id);
            }
+           
+ // If Accept Donations is yes and Event Fees are 0, then make Donation Offer
+          
+        if (($company_options['donations']=="Yes") && (($reg_form['payment'] < "1")||($reg_form['payment'] == ""))) {
+            _e("While there is no fee for this event, we gladly accept donations.",'evr_language');
+              echo "<br/>";
+              if ($company_options['checks']=="Yes"){
+                _e("You may donate online or by check.  If you are donating by check, please mail your check to:",'evr_language');
+                echo "<p>".
+                $company_options['company']."<br />".
+                $company_options['company_street1']."<br />".
+                $company_options['company_street2']."<br />".
+                $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."</p>";
+                _e("Reference: Donation - ",'evr_language');
+                 echo "<b>".$event_name."</b><br/><br/>";
+            }    
+                               
+           _e("Please select the Donate button to be taken to our payment vendor's site for online-donations.",'evr_language');
+           echo "<hr/>";
+           evr_registration_donation($event_id, $reg_id);
+           }
+
+
+
+
 }
 ?>

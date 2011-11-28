@@ -74,9 +74,11 @@ function evr_admin_events(){
      
      default:
         evr_event_listing();
+        evr_check_usage_time();
      
     
     }
     
 }
+
 ?>

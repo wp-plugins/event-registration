@@ -7,7 +7,10 @@ function evr_confirm_form(){
     $num_people = 0;
     $item_order = array();
         
-    $event_id = $_POST['event_id'];
+    $passed_event_id = $_POST['event_id'];
+    if (is_numeric($passed_event_id)){$event_id = $passed_event_id;}
+    else {echo "Failure - please retry!"; exit;}
+    
     //Begin gather registrtion data for database input
     $fname = $_POST['fname'];
     $lname = $_POST['lname'];

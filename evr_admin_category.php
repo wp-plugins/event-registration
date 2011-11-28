@@ -6,6 +6,7 @@
  */
 
 function evr_admin_categories(){
+    
 ?>
 <div class="wrap">
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>

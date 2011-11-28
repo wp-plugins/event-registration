@@ -83,8 +83,8 @@ if ($rows){
                             </table>
                             <br />
                             <div style="clear:both;"></div>
-                            <button style="background-color: lightgreen"  onclick="window.location='<?php echo EVR_PLUGINFULLURL . "evr_admin_export.php?id=" . $event_id . "&export=report&action=excel";?>'"><?php _e('Export Excel','evr_language');?></button>
-                            <button style="background-color: lightgreen" onclick="window.location='<?php echo EVR_PLUGINFULLURL . "evr_admin_export.php?id=" . $event_id. "&action=csv";?>'" style="width:180; height: 30"><?php _e('Export CSV','evr_language');?></button>            
+                            <button style="background-color: lightgreen"  onclick="window.location='<?php echo EVR_PLUGINFULLURL . "evr_admin_export.php?id=" . $event_id . "&export=report&action=excel&key=5678";?>'"><?php _e('Export Excel','evr_language');?></button>
+                            <button style="background-color: lightgreen" onclick="window.location='<?php echo EVR_PLUGINFULLURL . "evr_admin_export.php?id=" . $event_id. "&action=csv&key=5678";?>'" style="width:180; height: 30"><?php _e('Export CSV','evr_language');?></button>            
                            
                         </div>
                         </div>

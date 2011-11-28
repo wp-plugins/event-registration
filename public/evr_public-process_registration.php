@@ -8,6 +8,8 @@ function evr_process_regform(){
     $item_order = array();
     //$event_id = $_REQUEST['event_id'];
     (is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
+    if ($event_id = "0"){echo "Failure, Please try again!"; exit;}
+    
     //Begin gather registrtion data for database input
     $fname = $_REQUEST['fname'];
     $lname = $_REQUEST['lname'];
@@ -232,7 +234,7 @@ function evr_process_regform(){
    if ($payment > "0"){
              _e("Registration, however, is not complete until we have recieved your payment.",'evr_language'); 
            echo " ";
-           if ($company_options['accept_checks']=="Y"){
+           if ($company_options['checks']=="Y"){
                 _e("You may pay online or by check.  If you are paying by check, please mail your check today to:",'evr_language');
                 echo "<p>".
                 $company_options['company']."<br />".

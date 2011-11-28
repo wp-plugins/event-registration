@@ -200,4 +200,74 @@ function evr_greaterDate($start_date,$end_date)
   else
    return 0;
 }
+
+function evr_validate_key(){
+    
+    
+    global $wpdb;
+    if (get_option('evr_dontshowpopup')=="Y"){$alert = '<div id="message" class="updated"><p><strong>'.__('POPUP IS DISABLED','evr_language').'</strong></p></div>';}
+    else {$alert = '<div id="message" class="updated"><p><strong>Please enter a key.</strong></p></div>';}
+   
+   
+    
+    if ( isset( $_POST['key'], $_POST['donated'] ) ) {
+        $cur_key = get_option('plug-evr-activate');
+        $submitted_key = $_POST['key'];
+        if ($cur_key == $submitted_key){ 
+            update_option('evr_dontshowpopup', "Y"); 
+            $alert =  '<div id="message" class="updated highlight"><p><strong>Popup Donate Message has been disabled!</strong></p></div>';       
+            }
+        elseif ($cur_key != $submitted_key){
+            $alert = '<div id="message" class="error"><p><strong>Invalid key.  Please re-enter your key.</strong></p></div>';
+            update_option('evr_dontshowpopup', "N");
+        }
+     
+    }
+    ?>
+        <div class="wrap"><br />
+        <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
+        <br />
+        <br />
+        <div class="evr_plugin">
+            <div class="content">
+            	<div class="evr_content_half">
+            		<h3>Disable Donate Popup</h3>
+            		<div class="inside">
+                    <?php echo $alert;?> 
+                    <form method="POST"  action="admin.php?page=popup">
+                        
+                        
+                      
+                     <p>Thank you for donating to support Event Registration.  To disable the popup alert, you will need an activation key. Please send an email to support@wordpresseventregister to request the activation key.  Please include your website and paypal reciept #.</p>
+                     <p>Note: Each key is specific to your website/installation.</p>
+                     <p><input name="donated" type="checkbox" value="1" />Yes, I have donated to Event Registration.</p>
+                     <p>Paste Activation Key<input name="key"/></p>
+                      <input class="button-secondary" name="disable_pop" type="submit" value="Disable Popup"/>
+                     </form>
+                     </div>
+                </div>
+                    	<div class="evr_content_third" style="margin-right:0; float:right;">
+    		<h3>Support Event Registration</h3>
+    		<div class="inside">
+    			<div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful,<br /> please contribute to enable its continued development!<br />
+                <br /><p align="center">
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form></p>
+    		</div>
+           </div>		
+		<div class="clear"></div>
+	</div>
+	  		
+            </div>
+           </div>  		
+        </div>        
+        <?php
+    
+    
+    
+}
 ?>

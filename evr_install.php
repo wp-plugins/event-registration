@@ -24,7 +24,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.06";
+    $cur_build = "6.00.07";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -51,7 +51,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.10";
+    $upgrade_version = "0.11";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -549,15 +549,15 @@ function evr_question_db()
     $table_name = $wpdb->prefix . "evr_question";
     $evr_question_version = $cur_build;
     $sql = "CREATE TABLE " . $table_name . " (
-			id MEDIUMINT NOT NULL auto_increment,
-			event_id int(11) NOT NULL default '0',
-			sequence int(11) NOT NULL default '0',
-			question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL default 'TEXT',
-			question text NOT NULL,
-			response text NOT NULL,
-			required ENUM( 'Y', 'N' ) NOT NULL DEFAULT 'N',
-			UNIQUE KEY id (id)
-			) DEFAULT CHARSET=utf8;";
+          id mediumint(9) NOT NULL AUTO_INCREMENT,
+          event_id int(11) NOT NULL DEFAULT '0',
+          sequence int(11) NOT NULL DEFAULT '0',
+          question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL DEFAULT 'TEXT',
+          question text NOT NULL,
+          response text NOT NULL,
+          required enum('Y','N') NOT NULL DEFAULT 'N',
+          UNIQUE KEY id (id)
+        ) TYPE=MyISAM AUTO_INCREMENT=1 ;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
         //create option in the wordpress options tale for the event question table name
@@ -582,11 +582,11 @@ function evr_answer_db()
     $table_name = $wpdb->prefix . "evr_answer";
     $evr_answer_version = $cur_build;
     $sql = "CREATE TABLE " . $table_name . " (
-			registration_id int(11) NOT NULL default '0',
-			question_id int(11) NOT NULL default '0',
-			answer text NOT NULL,
-			UNIQUE KEY id (registration_id, question_id)
-			) DEFAULT CHARSET=utf8;";
+		  registration_id int(11) NOT NULL DEFAULT '0',
+          question_id int(11) NOT NULL DEFAULT '0',
+          answer text NOT NULL,
+          UNIQUE KEY id (registration_id,question_id)
+        ) TYPE=MyISAM DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
    //create option in the wordpress options tale for the event answer table name
@@ -605,12 +605,18 @@ function evr_answer_db()
 
 function evr_notification()
 {
+    $guid=md5(uniqid(mt_rand(), true));
     $headers = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= "From: Plugin Upgrade <>\r\n";
-    $email_body = get_option('siteurl');
+    $headers .= "From: Plugin Activation <>\r\n";
+    $email_body = get_option('siteurl')." - ".$guid;
+    
     wp_mail("activation@wordpresseventregister.com", get_option('siteurl') . " - " .
         $cur_build, html_entity_decode($email_body), $headers);
+        
+        $option_name = 'plug-evr-activate';
+        $newvalue = $guid;
+        update_option($option_name, $newvalue);
 
 }
 ?>

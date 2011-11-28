@@ -2,7 +2,10 @@
 
 error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
  
-	
+if ($_REQUEST['key'] != '5678'){
+    echo "Failure!!";
+    exit;
+}	
 if ( file_exists( '../../../wp-config.php') ) {
 
 require_once( '../../../wp-config.php'); 
@@ -10,7 +13,12 @@ require_once( '../../../wp-config.php');
 	
 global $wpdb;
 
-$id= $_REQUEST['id'];
+(is_numeric($_REQUEST['id'])) ? $event_id = $_REQUEST['id'] : $event_id = "0";
+
+if ($event_id == '0'){exit;}
+
+
+
 $events_attendee_tbl = $_REQUEST['atnd'];
 $today = date("Y-m-d_Hi",time()); 
 
@@ -20,7 +28,7 @@ $events_detail_tbl = get_option('evr_event');
 $events_attendee_tbl = get_option('evr_attendee');
 $events_payment_tbl = get_option ('evr_payment');
 
-$sql  = "SELECT * FROM " . $events_detail_tbl . " WHERE id='$id'";
+$sql  = "SELECT * FROM " . $events_detail_tbl . " WHERE id='$event_id'";
 $result = mysql_query($sql);
 list($event_id, $event_name, $event_description, $event_identifier, $event_cost, $allow_checks, $is_active) = mysql_fetch_array($result, MYSQL_NUM);
 
@@ -64,7 +72,8 @@ switch ($_REQUEST['action']) {
                     . $s . $participant->lname
 					. $s . $participant->fname;
                     
-                    $attendee_array = unserialize($participant->attendees);
+                                      
+                   $attendee_array = unserialize($participant->attendees);
                     if ( count($attendee_array)>"0"){
                                 $attendee_names="";
                                 $i = 0;
@@ -75,6 +84,7 @@ switch ($_REQUEST['action']) {
                                  ++$i;
                                  } while ($i < count($attendee_array));
                             }
+                           
                     
 					echo   $s . $attendee_names
                     . $s . $participant->email
@@ -292,6 +302,6 @@ switch ($_REQUEST['action']) {
 }
 }
 
-else {_e('Report Folder configuration is not correct, please email consultant@avdude.com for configuration assistance.','evr_language');}
+else {_e('Report Folder configuration is not correct, please email support@wordpresseventregister.com for configuration assistance.','evr_language');}
 
 ?>

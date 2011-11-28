@@ -4,19 +4,19 @@ Donate link: http://www.wordpresseventregister.com/donations
 Tags:   event, events, event registration, event management,events managment, events registration, event calendar, calendar, class,events calendar, events, event, class registration, class schedule, classes
 Requires at least: 2.0.2
 Tested up to: 3.2.1
-Stable tag: 6.00.06
+Stable tag: 6.00.07
 
 This plugin is designed to allow you to take online registrations for events and classes. 
 Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 
 == Description ==
 
-This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. 
+This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. It is designed to be easy to navigate.
 It allows you to capture the registering persons contact information and any additional infromation you request to a database and provides an association to an events database. 
 It provides the ability to send the register to either a Paypal, Google Pay, Monster Pay,  or Authorize.net online payment site for online collection of event fees.
 Additionally it allows support for checks and cash payments.  
 Optional Captcha field on registration form.
-Detailed payment management system to track and record event payments.  
+Detailed payment management system to track and record event payments and support for PayPal payment notification.  
 Reporting features provide a export list(s) of events, attendees, payments in excel or csv.  
 
 If you like the plugin and find it useful, please donate.  
@@ -31,7 +31,7 @@ If you have used event registration in the past and desire to keep your data, ve
 If you are unsatisfied with the upgrade, simply deactivate and delete the plugin.  You can then download the prior version and mannually upload to your system.  
 All your old data will still be in tact as the upgrade copies and creates new tables, and leaves the existing ones for easy rollback.
 
-Please note that because of conflicts with other plugins, I have changed many of the shortcodes and functions, so you will need to update all your shortcodes on your pages.
+Please note that because of conflicts with other plugins (people copying my work!), I have changed many of the shortcodes and functions, so you will need to update all your shortcodes on your pages.
 
 
 * {EVENTREGIS}   Now -> {EVRREGIS}
@@ -105,9 +105,11 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 == Change Log ==
 
 = Version 6.00.07 = 
-* changed DB Installation and Upgrade to simplfly and condition upgrading
+* Changed DB Installation and Upgrade to simplfly and condition upgrading
 * Added sponsor section
 * Moved all admin scripts and style to enqueue.
+* Resolved depricated options issue
+* Added system alerts
 
 = Version 6.00.06 = 
 * changed DB uninstall feature from a hidden deactivate feature to a menu choice.
