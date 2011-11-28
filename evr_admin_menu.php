@@ -176,10 +176,7 @@ function evr_splash(){
             </div>		
 		  <div class="clear"></div>
 	   </div>
-       <p align="center">
-       <a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=7673_0_1_7" target="_blank">
-       <img border="0" src="http://www.elegantthemes.com/affiliates/banners/468x60.gif" width="468" height="60"></a></p>
-        
+              
     </div>     	
 
 </div>
@@ -203,10 +200,6 @@ function evr_footer_ad(){
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form></p>
-<p align="center">
-<a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=7673_0_1_7" target="_blank">
-<img border="0" src="http://www.elegantthemes.com/affiliates/banners/468x60.gif" width="468" height="60"></a>
-</p>
 /div>
 <?php
 }
@@ -237,50 +230,6 @@ function evr_donate_popup()
 
 }
 
-function evr_parseRSS($url) { 
- 
-	//PARSE RSS FEED
-        $feedeed = implode('', file($url));
-        $parser = xml_parser_create();
-        xml_parse_into_struct($parser, $feedeed, $valueals, $index);
-        xml_parser_free($parser);
- 
-	//CONSTRUCT ARRAY
-        foreach($valueals as $keyey => $valueal){
-            if($valueal['type'] != 'cdata') {
-                $item[$keyey] = $valueal;
-			}
-        }
- 
-        $i = 0;
- 
-        foreach($item as $key => $value){
- 
-            if($value['type'] == 'open') {
- 
-                $i++;
-                $itemame[$i] = $value['tag'];
- 
-            } elseif($value['type'] == 'close') {
- 
-                $feed = $values[$i];
-                $item = $itemame[$i];
-                $i--;
- 
-                if(count($values[$i])>1){
-                    $values[$i][$item][] = $feed;
-                } else {
-                    $values[$i][$item] = $feed;
-                }
- 
-            } else {
-                $values[$i][$value['tag']] = $value['value'];  
-            }
-        }
- 
-	//RETURN ARRAY VALUES
-        return $values[0];
-	} 
     
 function evr_xml2array($url, $get_attributes = 1, $priority = 'tag')
  {
@@ -419,17 +368,5 @@ function evr_xml2array($url, $get_attributes = 1, $priority = 'tag')
          }
      }
      return ($xml_array);
-/*
-Returns a well formed array like the structure of the xml-document
- 
-<root>
-  <child1>
-   <child1child1/>
-  </child1>
- </root>
- 
-create an array like 
-array[root][child1][child1child1]
-
-*/ }
+}
 ?>
