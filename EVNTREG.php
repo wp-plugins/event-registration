@@ -105,8 +105,6 @@ register_activation_hook(__file__, 'evr_install');
 add_action('activated_plugin','evr_save_error');
 add_action('init', 'evr_init');
 add_action('admin_menu', 'evr_admin_menu');
-add_action('admin_menu', 'evr_options_item');
-
 add_action('plugins_loaded', 'evr_widgets');
 //admin header
 add_action("admin_head","evr_load_tiny_mce");
@@ -115,11 +113,6 @@ add_action('admin_print_styles', 'evr_admin_css_all_page');
 add_action('admin_print_scripts', 'evr_admin_scripts_all_page');
 //admin footer
 add_action('admin_footer', 'evr_footer_text');
-
-function evr_footer_text() 
-{
-	echo "<p id='footer' style=\"text-align:center;\">Event Registration created by <a href='http://www.WordpressEventRegister.com'>WordpressEventRegister.com</a></p>";
-} 
 //public header
 add_action('wp_head', 'evr_public_header');
 add_action('wp_print_styles', 'evr_public_stylesheets');
@@ -255,10 +248,6 @@ function evr_admin_menu()
 
 }
 /*********************************   END ADMIN MENU   ********************************/
-
-function evr_options_item(){
-    add_options_page('EVNTRG Options', 'EVNTRG Options', 'administrator', __FILE__, 'evr_validate_key');
-}
 //
 //
 //function to load widgets to the widgets menu
@@ -282,10 +271,14 @@ function evr_check_usage_time(){
                   $installed_date = strtotime('now');
              	  update_option('evr_date_installed', $installed_date);
                 } 
-            elseif ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_date_installed')< strtotime('-1 days'))){
+            elseif ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_date_installed')< strtotime('-29 days'))){
                 // plugin has been installed for over 30 days
                 evr_donate_popup();
                 }
 }
 
+function evr_footer_text() 
+{
+	echo "<p id='footer' style=\"text-align:center;\">Event Registration created by <a href='http://www.WordpressEventRegister.com'>WordpressEventRegister.com</a></p>";
+} 
 ?>

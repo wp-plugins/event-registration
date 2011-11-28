@@ -399,6 +399,5 @@ function evr_admin_categories(){
 </div>
 
 <?php
-evr_check_usage_time();
 }
 ?>

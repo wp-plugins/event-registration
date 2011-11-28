@@ -102,62 +102,86 @@ function evr_splash(){
     			</ul>            
     		</div>
     	</div> 
-        
     	<div class="evr_content_third" style="margin-right:0; float:right;">
-    		<h3>Support Event Registration</h3>
+    		<h3>Sites Using Event Registration</h3>
     		<div class="inside">
-    			<div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
-<p align="center">
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form></p>
+                 <table width="300">
+                     <th width="200">Website</th>
+                     <th width="4"></th>
+                     <th width="62">Version</th>
+                     <th width="4"></th>
+                     <th width="30">Donated?</th>
+                     <?php
+                        $url = "http://www.wordpresseventregister.com/?feed=customfeed";
+                        $xml = evr_xml2array($url, $get_attributes = 1, $priority = 'tag');
+                        foreach($xml['rss']['channel']['item'] as $item) {
+                            if($item['url']!=""){echo '<tr><td><a href="'.$item['url'].'">'.$item['company'].'</a></td><td></td>';}
+                                else {echo '<tr><td>'.$item['company'].'</td><td></td>';}
+                            if($item['version']!=""){echo '<td>'.$item['version'].'</td><td></td>';}  
+                                else {echo '<td>Unknown</td><td></td>';} 
+                            if ($item['donated']=='Y'){echo '<td align="center"><img src="'.EVR_PLUGINFULLURL.'images/yes.png" width="23" height="24" /></td></tr>';}
+                                elseif ($item['donated']=='N'){echo '<td align="center"><img src="'.EVR_PLUGINFULLURL.'images/no.png" width="23" height="24" /></td></tr>';}
+                                else {echo '<td></td><tr>';}
+                	       }
+                    ?>
+        		</table>        
     		</div>
-           </div>		
-		<div class="clear"></div>
-	</div>
+    	</div> 
+        
+
 	
 </div>
  <hr />
  <div class="content">
   
-     	<div class="evr_content_third" style="margin-right:0; float:left;">
-        <div class="alert"><h3>ALERT</h3></div>
-    		
+     	<div class="evr_content_third">
+            <div class="alert"><h3>ALERT</h3></div>
     		<div class="inside">
-            <?php echo get_option('plugin_error');
-            if (get_option('evr_was_upgraded')== "Y") {?>
-      <div id="message" class="error"><p><strong><?php 
-      _e('You upgraded from a previous version of Event Registration.  All existing data has been imported.  Please verify data before deleting old tables!','evr_language');?></strong></p>
-            </div>
-            <a href="admin.php?page=purge">Remove Old Data Tables</a>
-            <?php }?>
-    			
-    	</div>		
-		<div class="clear"></div>
-        <p align="center">
-<a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=7673_0_1_7" target="_blank">
-<img border="0" src="http://www.elegantthemes.com/affiliates/banners/468x60.gif" width="468" height="60"></a>
-</p>
-	   </div>
-         	<div class="evr_content_half" style="margin-right:0; float:right;">
-        <h3>Event Registration News</h3>
+                    <?php echo get_option('plugin_error');
+                    if (get_option('evr_was_upgraded')== "Y") {?>
+                    <div id="message" class="error"><p><strong><?php 
+                    _e('You upgraded from a previous version of Event Registration.  All existing data has been imported.  Please verify data before deleting old tables!','evr_language');?></strong></p>
+                    </div>
+                    <a href="admin.php?page=purge">Remove Old Data Tables</a>
+                    <?php }?>
+   			</div>		
+    		<div class="clear"></div>
+        </div>
+       
+       <div class="evr_content_third" style="margin-right:0;">
+            <h3>Event Registration News</h3>
     		
-    		<div class="inside">
-    		 <script language="JavaScript" src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fwww.wordpresseventregister.com%2Ffeed&chan=y&num=3&desc=1&date=y&targ=y" type="text/javascript"></script>
-
-<noscript>
-<a href="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fwww.wordpresseventregister.com%2Ffeed&chan=y&num=3&desc=1&date=y&targ=y&html=y">View RSS feed</a>
-</noscript>
+    		  <div class="inside">
+        		 <script language="JavaScript" src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fwww.wordpresseventregister.com%2Ffeed&chan=y&num=3&desc=1&date=y&targ=y" type="text/javascript"></script>
+                <noscript>
+                <a href="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fwww.wordpresseventregister.com%2Ffeed&chan=y&num=3&desc=1&date=y&targ=y&html=y">View RSS feed</a>
+                </noscript>
 	
-    	</div>		
-		<div class="clear"></div>
+    	       </div>		
+		  <div class="clear"></div>
+        </div>
+       
+        <div class="evr_content_third" style="margin-right:0; float:right;">
+    		<h3>Support Event Registration</h3>
+    		<div class="inside">
+    			<div style="clear: both; display: block; padding: 10px 0; text-align:center;"><br />If you find this plugin useful,<br /> please contribute to enable its continued development!<br /><br />
+                    <p align="center">
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                    </form></p>
+    		    </div>
+            </div>		
+		  <div class="clear"></div>
 	   </div>
-   
-    
-</div> 
+       <p align="center">
+       <a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=7673_0_1_7" target="_blank">
+       <img border="0" src="http://www.elegantthemes.com/affiliates/banners/468x60.gif" width="468" height="60"></a></p>
+        
+    </div>     	
+
 </div>
 
 <?php 
@@ -213,5 +237,199 @@ function evr_donate_popup()
 
 }
 
+function evr_parseRSS($url) { 
+ 
+	//PARSE RSS FEED
+        $feedeed = implode('', file($url));
+        $parser = xml_parser_create();
+        xml_parse_into_struct($parser, $feedeed, $valueals, $index);
+        xml_parser_free($parser);
+ 
+	//CONSTRUCT ARRAY
+        foreach($valueals as $keyey => $valueal){
+            if($valueal['type'] != 'cdata') {
+                $item[$keyey] = $valueal;
+			}
+        }
+ 
+        $i = 0;
+ 
+        foreach($item as $key => $value){
+ 
+            if($value['type'] == 'open') {
+ 
+                $i++;
+                $itemame[$i] = $value['tag'];
+ 
+            } elseif($value['type'] == 'close') {
+ 
+                $feed = $values[$i];
+                $item = $itemame[$i];
+                $i--;
+ 
+                if(count($values[$i])>1){
+                    $values[$i][$item][] = $feed;
+                } else {
+                    $values[$i][$item] = $feed;
+                }
+ 
+            } else {
+                $values[$i][$value['tag']] = $value['value'];  
+            }
+        }
+ 
+	//RETURN ARRAY VALUES
+        return $values[0];
+	} 
+    
+function evr_xml2array($url, $get_attributes = 1, $priority = 'tag')
+ {
+     $contents = "";
+     if (!function_exists('xml_parser_create'))
+     {
+         return array ();
+     }
+     $parser = xml_parser_create('');
+     if (!($fp = @ fopen($url, 'rb')))
+     {
+         return array ();
+     }
+     while (!feof($fp))
+     {
+         $contents .= fread($fp, 8192);
+     }
+     fclose($fp);
+     xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8");
+     xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+     xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+     xml_parse_into_struct($parser, trim($contents), $xml_values);
+     xml_parser_free($parser);
+     if (!$xml_values)
+         return; //Hmm...
+     $xml_array = array ();
+     $parents = array ();
+     $opened_tags = array ();
+     $arr = array ();
+     $current = & $xml_array;
+     $repeated_tag_index = array (); 
+    foreach ($xml_values as $data)
+     {
+         unset ($attributes, $value);
+         extract($data);
+         $result = array ();
+         $attributes_data = array ();
+         if (isset ($value))
+         {
+             if ($priority == 'tag')
+                 $result = $value;
+             else
+                 $result['value'] = $value;
+         }
+         if (isset ($attributes) and $get_attributes)
+         {
+             foreach ($attributes as $attr => $val)
+             {
+                 if ($priority == 'tag')
+                     $attributes_data[$attr] = $val;
+                 else
+                     $result['attr'][$attr] = $val; //Set all the attributes in a array called 'attr'
+             }
+         }
+         if ($type == "open")
+         { 
+            $parent[$level -1] = & $current;
+             if (!is_array($current) or (!in_array($tag, array_keys($current))))
+             {
+                 $current[$tag] = $result;
+                 if ($attributes_data)
+                     $current[$tag . '_attr'] = $attributes_data;
+                 $repeated_tag_index[$tag . '_' . $level] = 1;
+                 $current = & $current[$tag];
+             }
+             else
+             {
+                 if (isset ($current[$tag][0]))
+                 {
+                     $current[$tag][$repeated_tag_index[$tag . '_' . $level]] = $result;
+                     $repeated_tag_index[$tag . '_' . $level]++;
+                 }
+                 else
+                 { 
+                    $current[$tag] = array (
+                         $current[$tag],
+                         $result
+                     ); 
+                    $repeated_tag_index[$tag . '_' . $level] = 2;
+                     if (isset ($current[$tag . '_attr']))
+                     {
+                         $current[$tag]['0_attr'] = $current[$tag . '_attr'];
+                         unset ($current[$tag . '_attr']);
+                     }
+                 }
+                 $last_item_index = $repeated_tag_index[$tag . '_' . $level] - 1;
+                 $current = & $current[$tag][$last_item_index];
+             }
+         }
+         elseif ($type == "complete")
+         {
+             if (!isset ($current[$tag]))
+             {
+                 $current[$tag] = $result;
+                 $repeated_tag_index[$tag . '_' . $level] = 1;
+                 if ($priority == 'tag' and $attributes_data)
+                     $current[$tag . '_attr'] = $attributes_data;
+             }
+             else
+             {
+                 if (isset ($current[$tag][0]) and is_array($current[$tag]))
+                 {
+                     $current[$tag][$repeated_tag_index[$tag . '_' . $level]] = $result;
+                     if ($priority == 'tag' and $get_attributes and $attributes_data)
+                     {
+                         $current[$tag][$repeated_tag_index[$tag . '_' . $level] . '_attr'] = $attributes_data;
+                     }
+                     $repeated_tag_index[$tag . '_' . $level]++;
+                 }
+                 else
+                 {
+                     $current[$tag] = array (
+                         $current[$tag],
+                         $result
+                     ); 
+                    $repeated_tag_index[$tag . '_' . $level] = 1;
+                     if ($priority == 'tag' and $get_attributes)
+                     {
+                         if (isset ($current[$tag . '_attr']))
+                         { 
+                            $current[$tag]['0_attr'] = $current[$tag . '_attr'];
+                             unset ($current[$tag . '_attr']);
+                         }
+                         if ($attributes_data)
+                         {
+                             $current[$tag][$repeated_tag_index[$tag . '_' . $level] . '_attr'] = $attributes_data;
+                         }
+                     }
+                     $repeated_tag_index[$tag . '_' . $level]++; //0 and 1 index is already taken
+                 }
+             }
+         }
+         elseif ($type == 'close')
+         {
+             $current = & $parent[$level -1];
+         }
+     }
+     return ($xml_array);
+/*
+Returns a well formed array like the structure of the xml-document
+ 
+<root>
+  <child1>
+   <child1child1/>
+  </child1>
+ </root>
+ 
+create an array like 
+array[root][child1][child1child1]
 
+*/ }
 ?>

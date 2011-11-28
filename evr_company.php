@@ -2,7 +2,6 @@
 function evr_admin_company(){
 
 		global $wpdb;
-        evr_check_usage_time();
         $company_options = get_option('evr_company_settings');
         $update_company = $_POST['update_company'];
         switch ($update_company) {
