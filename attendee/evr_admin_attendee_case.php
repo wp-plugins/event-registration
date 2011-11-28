@@ -36,6 +36,11 @@ function evr_attendee_admin(){
         //evr_check_form_submission();
      break;
      
+          case "delete_all_attendees":
+        evr_delete_all_attendee();
+        //evr_check_form_submission();
+     break;
+     
      
      default:
     
