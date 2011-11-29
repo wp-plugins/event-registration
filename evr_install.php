@@ -24,7 +24,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.07";
+    $cur_build = "6.00.08";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -291,7 +291,7 @@ function evr_upgrade_tables(){
         $company_options['image_url'] = $ER_org_data['image_url'];
         $company_options['admin_message'] = "";
         $company_options['payment_subj'] = "Payment Received";
-        $company_options['payment_message'] = "We recieved your event payment";
+        $company_options['payment_message'] = "We received your event payment";
         $company_options['captcha'] = $ER_org_data['captcha'];
         update_option('evr_company_settings', $company_options);
     }

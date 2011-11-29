@@ -1,6 +1,12 @@
 Changes:
 =========
 
+= Version 6.00.08 = 
+* Fixed systemwide misspelling of received!
+* Added "Delete All Attendees for An Event" button in attendee event listing page
+* Removed advertising from plugin
+* fixed issue with graphic name: no.png
+
 = Version 6.00.07 = 
 * Changed DB Installation and Upgrade to simplfly and condition upgrading
 * Added sponsor section

@@ -110,7 +110,7 @@ function evr_process_regform(){
                 } 
     
   
-   _e("You're information has been recieved.",'evr_language');
+   _e("You're information has been received.",'evr_language');
    echo " ";
    
    $sql= "SELECT * FROM ". get_option('evr_event')." WHERE id=".$event_id; 
@@ -232,7 +232,7 @@ function evr_process_regform(){
    }
    
    if ($payment > "0"){
-             _e("Registration, however, is not complete until we have recieved your payment.",'evr_language'); 
+             _e("Registration, however, is not complete until we have received your payment.",'evr_language'); 
            echo " ";
            if ($company_options['checks']=="Y"){
                 _e("You may pay online or by check.  If you are paying by check, please mail your check today to:",'evr_language');

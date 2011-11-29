@@ -114,7 +114,7 @@ $sql3 = "SELECT * FROM " . get_option('evr_payment') . " WHERE payer_id='$attend
                             if($made_payments > 0)  { 
                                 $payment_made="0";
                                 echo '<p align="left"><strong>';
-                                _e('Payments Recieved:','evr_language');
+                                _e('Payments Received:','evr_language');
                                 echo "</strong></p>";
                             while ( $row3 = mysql_fetch_assoc ( $result3 ) ) {
                                 echo  __('Payment','evr_language')." ".$row3['mc_currency']." ".$row3['mc_gross']." ".$row3['txn_type']." ".$row3['txn_id']." (".$row3['payment_date'].")"."<br />";

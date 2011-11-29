@@ -152,7 +152,7 @@ function evr_admin_payments_edit(){
                                         
                         <hr />
                         <br />
-                        <li><label><?php _e('Do you want to send a revised payment recieved notice to the payer?','evr_language');?></label>
+                        <li><label><?php _e('Do you want to send a revised payment received notice to the payer?','evr_language');?></label>
                         <INPUT TYPE='radio' NAME='send_payment_rec'  VALUE='Y'><?php _e('Yes','evr_language');?> 
                         <INPUT TYPE='radio' NAME='send_payment_rec' VALUE='N' CHECKED><?php _e('No','evr_language');?></li>
                         <br />

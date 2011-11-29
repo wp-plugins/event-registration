@@ -43,7 +43,7 @@ function evr_process_confirmation(){
     } 
     
   
-   _e("You're information has been recieved.",'evr_language');
+   _e("You're information has been received.",'evr_language');
    echo "<br/>";
    
 /* Comment Out PDF confirmation Option
@@ -194,7 +194,7 @@ function evr_process_confirmation(){
    }
 //If there is a balance of payment over 0, then notify attendee of payment need.  
    if ($reg_form['payment'] > "0"){
-             _e("Registration, however, is not complete until we have recieved your payment.",'evr_language'); 
+             _e("Registration, however, is not complete until we have received your payment.",'evr_language'); 
            echo " ";
            if ($company_options['checks'] == "Yes"){
                 _e("You may pay online or by check.  If you are paying by check, please mail your check today to:",'evr_language');

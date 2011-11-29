@@ -148,7 +148,7 @@ function evr_paypal_txn(){
 				 wp_mail($contact, $subject, $body);} 
                  else {
                      $subject = 'Instant Payment Notification - Failure';
-				 $body =  "An instant payment notification was recieved but not posted!\n";
+				 $body =  "An instant payment notification was received but not posted!\n";
 				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
 				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
 				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
@@ -211,7 +211,7 @@ function evr_sandbox_using_ipn($id){
 			if ($email_paypal_dump == true) {
 				 // For this, we'll just email ourselves ALL the data as plain text output.
 				 $subject = 'Instant Payment Notification - PayPal Variable Dump';
-				 $body =  "An instant payment notification was successfully recieved\n";
+				 $body =  "An instant payment notification was successfully received\n";
 				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
 				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
 				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
@@ -295,7 +295,7 @@ function evr_sandbox_using_ipn($id){
 				 wp_mail($contact, $subject, $body);} 
                  else {
                      $subject = 'Instant Payment Notification - Failure';
-				 $body =  "An instant payment notification was recieved but not posted!\n";
+				 $body =  "An instant payment notification was received but not posted!\n";
 				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
 				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
 				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }

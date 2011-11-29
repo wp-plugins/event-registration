@@ -8,9 +8,12 @@
 /*
 Plugin Name: Event Registration
 Plugin URI: http://www.wordpresseventregister.com
-Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   Detailed payment management system to track and record event payments.  
+Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. 
+It allows you to capture the registering persons contact information to a database and provides an association to an events database. 
+It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   
+Detailed payment management system to track and record event payments.  
 Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.00.07
+Version: 6.00.08
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.wordpresseventregister.com
 */
@@ -33,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.00.07";
+$evr_ver = "6.00.08";
 
 /*
 to change date format in event listing display
