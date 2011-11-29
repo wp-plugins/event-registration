@@ -1,10 +1,10 @@
 === Event Registration ===
 Contributors: David Fleming
 Donate link: http://www.wordpresseventregister.com/donations
-Tags:   event, events, event registration, event management,events managment, events registration, event calendar, calendar, class,events calendar, events, event, class registration, class schedule, classes
+Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 2.0.2
 Tested up to: 3.2.1
-Stable tag: 6.00.07
+Stable tag: 6.00.08
 
 This plugin is designed to allow you to take online registrations for events and classes. 
 Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
@@ -103,6 +103,12 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.08 = 
+* Fixed systemwide misspelling of received!
+* Added "Delete All Attendees for An Event" button in attendee event listing page
+* Removed advertising from plugin
+* fixed issue with graphic name: no.png
 
 = Version 6.00.07 = 
 * Changed DB Installation and Upgrade to simplfly and condition upgrading
