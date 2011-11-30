@@ -51,7 +51,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.11";
+    $upgrade_version = "0.12";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -67,12 +67,31 @@ function evr_upgrade_tables(){
         $newvalue = $upgrade_version;
         update_option($option_name, $newvalue);
         //Modify Table for Upgrades
+       /* 
         $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people") or  die(mysql_error());
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD reg_type VARCHAR (45) DEFAULT NULL AFTER zip") or die(mysql_error());
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD tickets MEDIUMTEXT DEFAULT NULL AFTER quantity") or die(mysql_error());
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD payment_status VARCHAR(45) DEFAULT NULL AFTER payment") or die(mysql_error());
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD attendees MEDIUMTEXT DEFAULT NULL AFTER quantity") or die(mysql_error());
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD COLUMN payment_date varchar(30) DEFAULT NULL AFTER amount_pd") or die(mysql_error());
+        
+        */
+        $sql = "SELECT num_people FROM ".$new_attendee_tbl;
+        if (!$wpdb->query($sql)){ 
+            $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `num_people` varchar(45) COLLATE 'utf8_general_ci' NULL;";
+             $wpdb->query($sql);
+            }
+      
+        $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people");
+        
+        $sql = "ALTER TABLE ".$new_attendee_tbl. 
+          " ADD `reg_type` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `zip`,
+            ADD `tickets` mediumint NULL AFTER `quantity`,
+            ADD `payment_status` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `payment`,
+            ADD `payment_date` varchar(30) COLLATE 'utf8_general_ci' NULL AFTER `txn_id`,
+            ADD `attendees` mediumtext COLLATE 'utf8_general_ci' NULL AFTER `quantity`;";
+        $wpdb->query($sql) or die(mysql_error());   
+            
 //
 // Event Table Copy Table, Replace Data, Add Colulmns        
 //

@@ -168,7 +168,7 @@ $i = 0;
  $question_post = urlencode(serialize($qanda));
 
 ?>
-<br />
+<br /><input type="button" value=" &lt;-- BACK " onclick="history.go(-1);return false;" />
 <input type="hidden" name="reg_form" value="<?php echo $form_post;?>" />
 <input type="hidden" name="questions" value="<?php echo $question_post;?>" />
 <input type="hidden" name="action" value="post"/>
