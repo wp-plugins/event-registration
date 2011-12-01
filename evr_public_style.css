@@ -72,6 +72,23 @@ height: 1%;
     width: 250px;
     height: 150px;
     }
+/*added for temp fix for radio and checkbox alignment issues*/    
+.evr_regform input[type="radio"]{ /*temp fix for radio button labels*/
+margin: 15px 0 0 10px;
+padding: 0px 0px 0px 0px;
+width: 50px;
+display: inline;
+}
+
+.evr_regform input[type="checkbox"]{ /*temp fix for checkbox labels*/
+margin: 15px 0 0 10px;
+padding: 0px 0px 0px 0px;
+width: 50px;
+display: inline;
+}
+    
+    
+    
 /*.threepxfix class below:
 Targets IE6- ONLY. Adds 3 pixel indent for multi-line form contents.
 to account for 3 pixel bug: http://www.positioniseverything.net/explorer/threepxtest.html
