@@ -135,44 +135,7 @@ else {
 
 <?php } ?>
     
-<style type="text/css">
 
-.evr_regform p{
-width: 300px;
-clear: left;
-margin: 0;
-padding: 2px 0 3px 0;
-padding-left: 155px; /*width of left column containing the label elements*/
-/*border-top: 1px dashed gray;*/
-height: 1%;
-}
-
-.evr_regform label{
-font-weight: bold;
-float: left;
-margin-left: -155px; /*width of left column*/
-width: 150px; /*width of labels. Should be smaller than left column (155px) to create some right margin*/
-}
-
-.evr_regform input[type="text"]{ /*width of text boxes. IE6 does not understand this attribute*/
-width: 180px;
-}
-
-.evr_regform textarea{
-width: 250px;
-height: 150px;
-}
-
-/*.threepxfix class below:
-Targets IE6- ONLY. Adds 3 pixel indent for multi-line form contents.
-to account for 3 pixel bug: http://www.positioniseverything.net/explorer/threepxtest.html
-*/
-
-* html .threepxfix{
-margin-left: 3px;
-}
-
-</style>
 
 <form id="attendee_reg" class="evr_regform" method="post" 
 <?php /* get_permalink(
