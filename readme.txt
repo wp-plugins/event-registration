@@ -2,12 +2,11 @@
 Contributors: David Fleming
 Donate link: http://www.wordpresseventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
-Requires at least: 2.0.2
+Requires at least: 3.0.2
 Tested up to: 3.2.1
-Stable tag: 6.00.08
+Stable tag: 6.00.09
 
-This plugin is designed to allow you to take online registrations for events and classes. 
-Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
+This plugin is designed to allow you to take online registrations for events and classes. Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 
 == Description ==
 
@@ -103,6 +102,24 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.09 = 
+* Resolved issue where company contact email was not working the code replace of the email text for payment recieved notice via IPN
+* Resolved issue where available items was not showing properly per configuration
+* Added feature to bypass event listing popup from the company settings
+* changed event popup to center header image in css
+* Resolved htm tag error in start of popup div
+* Modified styling for popup to use CSS for layout instead of tables
+* Changed public page popup from fancy box to wordpress native thickbox.
+* Changed popup styling from table to CSS
+* Resolved issue where item reorder was not saving new order.
+* Resolved bug in Event Popup where google map always showed.  Set to conditional if Y for event to show.
+* Modified google map feature to default to Yes on new event creation.  User must change to No to disable.
+* Bbug fix for reg confirmation page for Waitlist, proper wording and set count to 1.
+* Resolved WAITLIST screen and email confirmation bug - wrong variable for if then
+* Temp fix for radio and checkbox alignment with extra questions on radio form
+* Moved style from inline of event signup form to public style sheet
+* Modified attendee table upgrade script for column issues.
 
 = Version 6.00.08 = 
 * Fixed systemwide misspelling of received!

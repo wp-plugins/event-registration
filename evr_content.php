@@ -747,4 +747,18 @@ function evr_content_replace($content)
     return $content;
 }
 
+//function to replace content on public page for plugin
+function evr_rotator_replace($content)
+{
+    if (preg_match('{EVRROTATOR}', $content)) {
+        ob_start();
+        //event_regis_run($event_single_ID);
+        evr_rotator_test(); //function with main content
+        $buffer = ob_get_contents();
+        ob_end_clean();
+        $content = str_replace('{EVRROTATOR}', $buffer, $content);
+    }
+    return $content;
+}
+
 ?>

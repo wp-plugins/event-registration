@@ -55,8 +55,9 @@ function evr_confirm_form(){
             array_push($item_order, $item_info);
             
             }
+    if ($reg_type = "WAIT"){$quantity = "1";}
+    else {$quantity = $num_people;}
     
-    $quantity = $num_people;
     $ticket_data = serialize($item_order);
 
      $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city'=>$city, 
@@ -132,19 +133,24 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                         <td><?php echo $email?></td>
                       </tr>
                        <tr>
-                        <td><strong>Number of Attendees:</strong></td>
+                       <td><strong>Number of Attendees:</strong></td>
                         <td><?php echo $quantity?></td>
                       </tr>
                        <tr>
                         <td><strong>Order Details:</strong></td>
-                        <td><?php $row_count = count($item_order);
+                        <td><?php if ($reg_type = "WAIT"){echo "WAIT LIST";}
+                        else {
+                        $row_count = count($item_order);
     for ($row = 0; $row < $row_count; $row++) {
     if ($item_order[$row]['ItemQty'] >= "1"){ echo $item_order[$row]['ItemQty']." ".$item_order[$row]['ItemCat']."-".$item_order[$row]['ItemName']." ".$item_order[$row]['ItemCurrency'] . " " . $item_order[$row]['ItemCost']."<br \>";}
-    } ?></td>
+    } }?></td>
                       </tr>
                     </table>
                     
-<p align="left"><strong>You are registering for <?php echo $quantity;?> people.  Please provide the first and last name of each person:</strong><br />
+<p align="left"><strong><?php if ($reg_type = "WAIT"){$type = "You are on the waiting list.";}
+                                if ($reg_type = "REG"){$type = "You are registering for ".$quantity." people.   Please provide the first and last name of each person:" ;}
+                                echo $type;
+                                ?></strong><br />
 <form id="attendee_confirm" class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
 <p>
 <?php
@@ -168,7 +174,7 @@ $i = 0;
  $question_post = urlencode(serialize($qanda));
 
 ?>
-<br />
+<br /><input type="button" value=" &lt;-- BACK " onclick="history.go(-1);return false;" />
 <input type="hidden" name="reg_form" value="<?php echo $form_post;?>" />
 <input type="hidden" name="questions" value="<?php echo $question_post;?>" />
 <input type="hidden" name="action" value="post"/>

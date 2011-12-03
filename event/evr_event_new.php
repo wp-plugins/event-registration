@@ -189,7 +189,7 @@ To create new display lines just press Enter.','evr_language');?>">
 					<?php _e('Use Google Maps On Registration Page','evr_language');?> <a><span>?</span></a></legend>
                     </td>
                     <td>
-                    <label for="google_map_yes"><input type="radio" class="radio" name="google_map" value="Y"><?php _e('Yes','evr_language');?></label>
+                    <label for="google_map_yes"><input type="radio" class="radio" name="google_map" value="Y" checked><?php _e('Yes','evr_language');?></label>
                     <label for="google_map_no"><input type="radio" class="radio" name="google_map" value="N"><?php _e('No','evr_language');?>
                     </label>
                     </td>

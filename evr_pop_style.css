@@ -1,53 +1,70 @@
-#fade { /*--Transparent background layer--*/
-	display: none; /*--hidden by default--*/
-	background: #000;
-	position: fixed; left: 0; top: 0;
-	width: 100%; height: 100%;
-	opacity: .80;
-	z-index: 9999;
-}
-.popup_block{
-	display: none; /*--hidden by default--*/
-	background: #fff;
-	padding: 20px;
-	border: 20px solid #ddd;
-	float: left;
-	font-size: 12px;
-	position: fixed;
-	top: 50%; left: 50%;
-    
-	z-index: 99999;
-	/*--CSS3 Box Shadows--*/
-	-webkit-box-shadow: 0px 0px 20px #000;
-	-moz-box-shadow: 0px 0px 20px #000;
-	box-shadow: 0px 0px 20px #000;
-	/*--CSS3 Rounded Corners--*/
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-}
-img.btn_close {
-	float: right;
-	margin: -55px -55px 0 0;
-}
-/*--Making IE6 Understand Fixed Positioning--*/
-*html #fade {
-	position: absolute;
-}
-*html .popup_block {
-	position: absolute;
-}
 /*--Styling Inside Popup--*/
-table.evr_evntpop {
-    width:100%;
-    border-collapse:collapse;
-    font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-    }
-.evr_evntpop.th{
-    border-collapse:collapse;
-    font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-    }
-.evr_evntpop.td{
-    border-collapse:collapse;
-    font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-    }
+#evr_pop_top{
+    clear: both;
+    width: 98%;
+    text-align: center;
+
+    
+}
+.evr_pop_hdr_img { 
+  width:  auto; 
+  height: 100px; 
+}
+#evr_pop_title{
+    clear: both;
+    width: 98%;
+    
+}
+#evr_pop_date_row{
+    clear: both;
+    width: 98%;
+    
+}
+.evr_pop_date{
+    
+}
+#evr_pop_body{
+    clear: left;
+    float: left;
+    width: 620px;
+   
+}
+#evr_pop_image{
+    clear: right;
+    float: right;
+    margin: 0 10px 0 10px;
+    width:125px;
+    
+}
+.evr_pop_img { 
+  width:  100px; 
+  height: auto; 
+}
+
+#evr_pop_price{
+ width: 250px;
+ float: left;
+ font-weight: bold;
+ padding: 10px 0 10px 0;
+ }
+#evr_pop_venue{
+ width: 150px;
+ float: left;
+ font-weight: bold;
+ padding: 10px 0 10px 0;
+  
+}
+#evr_pop_map{
+ width: 362px;
+ float: right;
+ font-weight: bold;
+ 
+ }
+#evr_pop_foot{
+    clear: both;
+    
+}
+.evr_spacer{
+    padding: 5px 0 5px 0;
+    clear:both;
+}

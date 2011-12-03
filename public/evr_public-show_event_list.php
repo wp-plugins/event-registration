@@ -54,7 +54,13 @@ function evr_show_event_list(){
 
         if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
         ?>
-            <td class="er_title er_ticket_info"><b><a href="#?w=700" rel="popup<?php echo $event_id;?>" class="poplight"><?php echo $event_name;?></a></b></td>
+            <td class="er_title er_ticket_info"><b>
+            <?php $company_options = get_option('evr_company_settings');
+            if ($company_options['event_pop']=="N"){echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=register&event_id='.$event_id.'">';}
+            else {?>
+            <a href="#TB_inline?&height=600&width=800&inlineId=popup<?php echo $event_id;?>&modal=false" class="thickbox" title="<?php echo $event_name;?>">
+            
+            <?php } echo $event_name;?></a></b></td>
             <td></td><td></td>
             <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
             <td class="er_date"><?php if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;?></td></tr>

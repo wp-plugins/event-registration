@@ -251,8 +251,8 @@ function evr_sandbox_using_ipn($id){
 					}
 											
 				//Replace the tags
-				$tags = array("[id]","[fname]", "[lname]", "[payer_email]", "[event_name]", "[amnt_pd]", "[txn_id]", "[address_street]", "[address_city]", "[address_state]", "[address_zip]", "[address_country]", "[start_date]", "[start_time]", "[end_date]", "[end_time]" );
-				$vals = array($id, $first_name, $last_name, $payer_email, $event_name, $amount_pd, $txn_id, $address_street, $address_city, $address_state, $address_zip, $address_country, $start_date, $start_time, $end_date, $end_time);
+				$tags = array("[id]","[fname]", "[contact]","[lname]", "[payer_email]", "[event_name]", "[amnt_pd]", "[txn_id]", "[address_street]", "[address_city]", "[address_state]", "[address_zip]", "[address_country]", "[start_date]", "[start_time]", "[end_date]", "[end_time]" );
+				$vals = array($id, $first_name, $company_options('company_email'),$last_name, $payer_email, $event_name, $amount_pd, $txn_id, $address_street, $address_city, $address_state, $address_zip, $address_country, $start_date, $start_time, $end_date, $end_time);
 				
 			$headers = "MIME-Version: 1.0\r\n";
 			$headers .= "From: " . $Organization . " <". $contact . ">\r\n";

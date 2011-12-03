@@ -168,7 +168,7 @@ function evr_process_confirmation(){
     The waiting list is on a first come, first serve basis.  
     You will be notified by email should a seat become available.",'evr_language').'</p><p>'.__("Thank You",'evr_language').'</p></font>';
     
-    if ($reg_type=="WAIT"){$email_content = $wait_message;}
+    if ($reg_form['reg_type']=="WAIT"){$email_content = $wait_message;}
     $email_body = $message_top.$email_content.$message_bottom;
             
     $headers = "MIME-Version: 1.0\r\n";
@@ -187,7 +187,7 @@ function evr_process_confirmation(){
    
 //Provide screen feedback on registration process   
 //If registration is at capacity and attendee is waitlisted, notify attendee of waitlist.
-   if($reg_type=="WAIT"){
+   if($reg_form['reg_type']=="WAIT"){
     echo "<p>";
     _e("At this time, all seats for the event have been taken.  Your information has been placed on our waiting list.  The waiting list is on a first come, first serve basis.  You will be notified by email should a seat become available.",'evr_language');
     echo "</p>";
