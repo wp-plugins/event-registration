@@ -6,7 +6,7 @@
  */
 ?>
 <!-- Main Page Event PopUp Start -->
-div id="popup<?php echo $event_id;?>" style="display:none">
+<div id="popup<?php echo $event_id;?>" style="display:none">
 <div id="evr_pop_top"><span style="float:center;"><?php  if ($header_image != ""){ ?> <img class="evr_pop_hdr_img" src="<?php echo $header_image;?>" /><?php } ?></span></div>
 <div id="evr_pop_title"><span style="float:left;"><h3><?php echo $event_name;?></h3></span>
                         <span style="float:right;"><a href="<?php echo EVR_PLUGINFULLURL."evr_ics.php";?>?event_id=<?php echo $event_id;?>">
