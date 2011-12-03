@@ -13,7 +13,8 @@ function evr_reorder_items(){
                        placeholder: 'ui-state-highlight'  
                        $.ajax({  
                             type: "GET",  
-                            url: "admin.php?page=questions&action=post_reorder",  
+                            url: "admin.php?page=events&action=post_reorder_item", 
+                             
                             data: $("#er_ticket_sortable").sortable("serialize")});  
                    }  
                 });  
