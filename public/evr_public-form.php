@@ -222,7 +222,7 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
 
 <?php 	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                             		$result2 = mysql_query($sql2);
-                                            $num = 0;   
+                                    $num = 0;   
                             		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
                                     
                                     $available = $reg_limit - $num;
@@ -267,11 +267,12 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
                             <?php
                             if ($item_cat == "REG"){
                              if ($item_limit != ""){
-                                if ($available >= $item_limit){$available = $item_limit;}
+                                if ($available >= $item_limit){$units_available = $item_limit;} else {$units_available = $available;}
                                 }
-                             for($i=1; $i<$available+1; $i++) { ?>
+                             for($i=1; $i<=$units_available; $i++) { ?>
                                     <option value="<?php echo($i); ?>"><?php echo($i); ?></option>
                             	<?php } }
+                                
                             if ($item_cat != "REG"){
                             $num_select = "10";    
                             if ($item_limit != ""){
@@ -288,6 +289,7 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
                             if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
                             echo $item_title . "    " . $item_custom_cur . " " . $item_price; ?></div>
                             <?php } }?>
+                            
                             <br /><br /><b><?php _e('Registration TOTAL','evr_language');?>  <input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></b>
                             <br />
                             <?php
