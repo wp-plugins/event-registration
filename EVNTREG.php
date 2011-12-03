@@ -13,7 +13,7 @@ It allows you to capture the registering persons contact information to a databa
 It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   
 Detailed payment management system to track and record event payments.  
 Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.00.08
+Version: 6.00.09
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.wordpresseventregister.com
 */
@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.00.08";
+$evr_ver = "6.00.09";
 
 /*
 to change date format in event listing display
@@ -94,6 +94,7 @@ require ("paypal.class.php"); //used for paypal IPN
 require ("evr_ipn.php"); //used for paypal IPN
 require ("evr_calendar.php"); //holds functions for calendar page
 require ("evr_clean_db.php");
+//require ("evrtest.php");
 //require ("evr_pdf.php"); //creates pdf of reg details
 //
 //
@@ -128,6 +129,7 @@ add_action('wp_print_scripts', 'evr_public_scripts');
 add_filter('plugin_action_links', 'evr_quick_action', 10, 2);
 add_filter('the_content', 'evr_content_replace');
 add_filter('the_content', 'evr_calendar_replace');
+//add_filter('the_content', 'evr_rotator_replace');
 add_filter('the_content', 'evr_upcoming_event_list');
 //
 /*********************************   SHORTCODES  *****************************/
@@ -149,6 +151,8 @@ function evr_init(){
   wp_enqueue_script('jquery-ui-droppable');
   wp_enqueue_script('jquery-ui-selectable');
   wp_enqueue_script('jquery-ui-core');
+  wp_enqueue_script('thickbox'); 
+  wp_enqueue_style('thickbox');
   wp_enqueue_script(array('tiny_mce','editor','editor-functions', 'thickbox', 'media-upload'));
   //Text Domain support for other languages
   load_plugin_textdomain('evr_language', false, dirname(plugin_basename(__file__)).'/lang/');      
