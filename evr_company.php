@@ -40,6 +40,7 @@ function evr_admin_company(){
             $company_options['payment_subj']      = $_POST['payment_subj'];
             $company_options['payment_message']   = htmlentities2($_POST['payment_message']);
             $company_options['captcha']           = $_POST['captcha'];
+            $company_options['event_pop']           = $_POST['event_pop'];
    
    	update_option( 'evr_company_settings', $company_options);
     
@@ -287,6 +288,20 @@ function evr_admin_company(){
                                 <p>This is the page that PayPal IPN uses to post payments.</p>
                                 <p>This page should contain the <strong>[EVR_PAYMENT]</strong> shortcode.</p>
                             </div> 
+                    </div>
+                    <div class="padding">
+                    <label for="event_pop"><a class="ev_reg-fancylink" href="#popup_info"><img src="<?php echo EVR_PLUGINFULLURL?>/images/question-frame.png" width="16" height="16" /></a><?php _e('Use event detail popup on event listing page?','evr_language');?></label>
+                        <input name="event_pop" type="radio" value="Y" class="regular-radio" <?php if ($company_options['event_pop']=="Y"){echo "checked";}
+                        if ($company_options['event_pop']==""){echo "checked";}?> /><?php _e('Yes','evr_language');?>
+                        <input name="event_pop" type="radio" value="N" class="regular-radio" <?php if ($company_options['event_pop']=="N"){echo "checked";}?> /><?php _e('No','evr_language');?>
+                     
+                    <div id="popup_info" style="display:none">
+                                <h2>Disable Event Popup</h2>
+                                <p>The events are designed to provide details and register button via a popup window</p>
+                                <p>This may conflict with some themes or just not wanted</p>
+                                <p>Select no to disable popup on event registration page.</p>
+                            </div> 
+                    
                     </div>
                     </div>  
                 </div>
