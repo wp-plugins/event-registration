@@ -25,7 +25,7 @@ function evr_admin_add_attendee(){
 ?>
 <div class="wrap">
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
-<h2><?php _e('Attedee Management','evr_language');?></h2>
+<h2><?php _e('Attendee Management','evr_language');?></h2>
     <div id="dashboard-widgets-wrap">
         <div id="dashboard-widgets" class="metabox-holder">
         	<div class='postbox-container' style='width:65%;'>

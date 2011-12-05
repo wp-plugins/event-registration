@@ -227,7 +227,7 @@ msgstr ""
 #. Text in echo
 #: evr_admin_attendee.php:367
 #: evr_admin_attendee.php:1238
-msgid "Attedee Management"
+msgid "Attendee Management"
 msgstr ""
 
 #. Text in echo

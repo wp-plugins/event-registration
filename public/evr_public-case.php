@@ -38,6 +38,7 @@ function evr_registration_main(){
             
             default:
                 evr_show_event_list();
+               //evr_show_event_accordian();
            }
 }
 

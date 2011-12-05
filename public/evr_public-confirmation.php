@@ -25,6 +25,8 @@ function evr_confirm_form(){
     $reg_type = $_POST['reg_type'];
     $attendee_name = $fname." ".$lname;
     
+    echo "Registration Type is: ".$reg_type."!";
+    
     
    
     $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
@@ -55,7 +57,7 @@ function evr_confirm_form(){
             array_push($item_order, $item_info);
             
             }
-    if ($reg_type = "WAIT"){$quantity = "1";}
+    if ($reg_type == "WAIT"){$quantity = "1";}
     else {$quantity = $num_people;}
     
     $ticket_data = serialize($item_order);
@@ -138,7 +140,7 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                       </tr>
                        <tr>
                         <td><strong>Order Details:</strong></td>
-                        <td><?php if ($reg_type = "WAIT"){echo "WAIT LIST";}
+                        <td><?php if ($reg_type == "WAIT"){echo "WAIT LIST";}
                         else {
                         $row_count = count($item_order);
     for ($row = 0; $row < $row_count; $row++) {
@@ -147,8 +149,8 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                       </tr>
                     </table>
                     
-<p align="left"><strong><?php if ($reg_type = "WAIT"){$type = "You are on the waiting list.";}
-                                if ($reg_type = "REG"){$type = "You are registering for ".$quantity." people.   Please provide the first and last name of each person:" ;}
+<p align="left"><strong><?php if ($reg_type == "WAIT"){$type = "You are on the waiting list.";}
+                                if ($reg_type == "REG"){$type = "You are registering for ".$quantity." people.   Please provide the first and last name of each person:" ;}
                                 echo $type;
                                 ?></strong><br />
 <form id="attendee_confirm" class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">

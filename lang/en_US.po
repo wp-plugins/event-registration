@@ -23,7 +23,7 @@ msgstr ""
 #: evr_admin_attendee.php:84
 #: evr_admin_attendee.php:367
 #: evr_admin_attendee.php:1238
-msgid "Attedee Management"
+msgid "Attendee Management"
 msgstr ""
 
 #: evr_admin_attendee.php:91
