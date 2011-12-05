@@ -1,6 +1,10 @@
 Changes:
 =========
 
+= Version 6.00.10 =
+* Fixed Issue created by 6.00.09 - all attendees go to waitlist
+* Corrected spelling issue of Attendee Management
+
 = Version 6.00.09 = 
 * Resolved issue where company contact email was not working the code replace of the email text for payment recieved notice via IPN
 * Resolved issue where available items was not showing properly per configuration
