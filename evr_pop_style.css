@@ -42,7 +42,7 @@
 }
 
 #evr_pop_price{
- width: 250px;
+ width: 350px;
  float: left;
  font-weight: bold;
  padding: 10px 0 10px 0;
@@ -55,7 +55,7 @@
   
 }
 #evr_pop_map{
- width: 362px;
+ width: 282px;
  float: right;
  font-weight: bold;
  

@@ -54,7 +54,7 @@
                         <?php echo $event_city.", ".$event_state." ".$event_postal;?><br />
                         </div>
 <div id="evr_pop_map"><?php if ($google_map == "Y"){?>
-                        <img border="0" src="http://maps.google.com/maps/api/staticmap?center=<?php echo $event_address.",".$event_city.",".$event_state;?>&zoom=14&size=360x180&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|<?php echo $event_address.",".$event_city;?>&sensor=false" />
+                        <img border="0" src="http://maps.google.com/maps/api/staticmap?center=<?php echo $event_address.",".$event_city.",".$event_state;?>&zoom=14&size=280x180&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|<?php echo $event_address.",".$event_city;?>&sensor=false" />
                         <?php } ?>
                         </div>		                          
 <div class="evr_spacer"></div>
