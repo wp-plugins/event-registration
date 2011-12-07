@@ -567,7 +567,7 @@ function evr_attendee_list($event_id){
 //sort array of all attendees
 
  $tmp = Array();
- foreach($people as &$aSingleArray)    $tmp[] = &$aSingleArray["last_name"];
+ foreach($people as &$aSingleArray)    $tmp[] = $aSingleArray["last_name"];
  $tmp = array_map('strtolower', $tmp);
  array_multisort($tmp, $people);
  if ( count($people)>"0"){

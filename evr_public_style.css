@@ -50,43 +50,66 @@ table.evr_events th
 /**/
 /*Style for Registration Form Layout */
 /**/
-.evr_regform p{
-width: 300px;
-clear: left;
-margin: 0;
-padding: 2px 0 3px 0;
-padding-left: 155px; /*width of left column containing the label elements*/
-/*border-top: 1px dashed gray;*/
-height: 1%;
-}
+
 .evr_regform label{
     font-weight: bold;
-    float: left;
-    margin-left: -155px; /*width of left column*/
-    width: 150px; /*width of labels. Should be smaller than left column (155px) to create some right margin*/
-    }
-.evr_regform input[type="text"]{ /*width of text boxes. IE6 does not understand this attribute*/
-    width: 180px;
-    }
-.evr_regform textarea{
-    width: 250px;
-    height: 150px;
-    }
-/*added for temp fix for radio and checkbox alignment issues*/    
-.evr_regform input[type="radio"]{ /*temp fix for radio button labels*/
-margin: 15px 0 0 10px;
-padding: 0px 0px 0px 0px;
-width: 50px;
-display: inline;
+    display:block;
+    padding-bottom:5px;
+    margin-top:20px;
+}
+ 
+#evrRegForm {
+    width:95%;
+    overflow:hidden;
+}
+ 
+#evrRegForm li {
+    list-style:none;
+    padding-bottom:20px;
 }
 
-.evr_regform input[type="checkbox"]{ /*temp fix for checkbox labels*/
-margin: 15px 0 0 10px;
-padding: 0px 0px 0px 0px;
-width: 50px;
-display: inline;
-}
+/*Textfield style*/
+#evrRegForm li .fieldbox {
+    background:transparent url(images/subfield.jpg) no-repeat top left;    
+    float:left;    
+    height:27px;    
+    padding-left:5px;} 
+#evrRegForm li .fieldbox input {    
+    background:transparent url(images/subfield.jpg) no-repeat top right;    
+    height:27px;    
+    padding-top:5px;    
+    width:400px;}
     
+#evrRegForm li .couponbox {
+    background:transparent url(images/subfield.jpg) no-repeat top left;    
+    float:left;    
+    height:27px;    
+    padding-left:5px;} 
+#evrRegForm li .couponbox input {    
+    background:transparent url(images/subfield.jpg) no-repeat top right;    
+    height:27px;    
+    padding-top:5px;    
+    width:200px;}    
+
+/*Textarea style*/
+#evrRegForm li .msgbox {    
+    background:transparent url(images/msgfield.jpg) no-repeat top left;    
+    float:left;    
+    height:110px;    
+    padding-left:5px;} 
+#evrRegForm li .msgbox textarea {    
+    background:transparent url(images/msgfield.jpg)  no-repeat top right ;    
+    height:110px;    
+    padding-top:5px;    
+    width:500px;}
+/*Radio and Checkbox Style*/
+p.hanging-indent {
+ text-indent: -25px;
+ padding-left: 25px;
+ margin-top:2px ;
+ margin-bottom:2px;
+ }
+   
     
     
 /*.threepxfix class below:

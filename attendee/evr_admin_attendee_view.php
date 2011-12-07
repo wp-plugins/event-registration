@@ -67,7 +67,7 @@ if ($rows){
         echo "<tr><td>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td><td>";
         if ($attendee->attendees ==""){echo "<font color='red'>Please Update This Attendee</font>";}
         else {$attendee_array = unserialize($attendee->attendees);
-        foreach($attendee_array as &$ma) 
+        foreach($attendee_array as $ma) 
             echo $ma["first_name"]." ".$ma["last_name"]."<br/>";}
         
         echo "</td><td>" . $attendee->email . "</td><td>" . $attendee->phone . "</td>";
