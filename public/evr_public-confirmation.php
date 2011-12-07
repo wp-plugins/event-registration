@@ -158,10 +158,11 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
 <?php
 
 if ( $quantity >"0"){
+    echo '<div style="width:95%;">';
 $i = 0;
  do {
     $person = $i + 1;
-    echo 'Attendee #'.$person.' First Name: <input name="attendee['.$i.'][first_name]"';
+    echo 'Attendee #'.$person.'<br/> First Name: <input name="attendee['.$i.'][first_name]"';
     if ($i == 0){ echo 'value ="'.$fname.'"';}
     echo '/>';
     echo '  Last Name: <input name="attendee['.$i.'][last_name]"';
@@ -170,13 +171,13 @@ $i = 0;
     
  ++$i;
  } while ($i < $quantity);
- 
+ echo '</div>';
  }
  $form_post = urlencode(serialize($posted_data));
  $question_post = urlencode(serialize($qanda));
 
 ?>
-<br /><input type="button" value=" &lt;-- BACK " onclick="history.go(-1);return false;" />
+<br /><div style="float:left;"><input type="button" value=" &lt;-- BACK " onclick="history.go(-1);return false;" /></div>
 <input type="hidden" name="reg_form" value="<?php echo $form_post;?>" />
 <input type="hidden" name="questions" value="<?php echo $question_post;?>" />
 <input type="hidden" name="action" value="post"/>
@@ -184,6 +185,7 @@ $i = 0;
 <div style="margin-left: 150px;">
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Confirmed','evr_language');?>" /> 
 </form>
+</div>
 
 
 <?php
