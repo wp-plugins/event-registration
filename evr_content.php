@@ -343,9 +343,13 @@ function display_events_by_category($atts, $content=null) {
 
 //function to add events by category page on public page for plugin
 function evr_by_category($atts, $content=null){
+    global $wpdb, $evr_date_format;
+	
+    $curdate = date ( "Y-m-j" );
+    
     extract(shortcode_atts(array('event_category_id' => 'No Category ID Supplied'), $atts));
 	$event_category_id = "{$event_category_id}";
-    global $wpdb;
+    
     ob_start();
 	$curdate = date ( "Y-m-j" );
     $category_id = null;    
