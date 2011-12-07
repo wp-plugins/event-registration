@@ -370,11 +370,13 @@ function evr_by_category($atts, $content=null){
     $result = mysql_query ( $sql );
 ?>
 <div class="evr_event_list">
+<b>Click on Event Name for description/registration</b>
 <table class="evr_events">
 <thead>
-    <tr><th>EVENT</th><th></th><th></th><th>START</th><th>-</th><th>END</th></tr>
+    <tr><th>EVENT</th><th></th><th width="8"><?php echo "     ";?></th><th>START</th><th>-</th><th>END</th></tr>
 </thead>
 <tbody>
+
 <?php
    $color_row= "1";
    $month_no = $end_month_no = '01';  
@@ -409,107 +411,28 @@ function evr_by_category($atts, $content=null){
      
 
 
-        if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
+      if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
         ?>
-            <td class="er_title er_ticket_info"><b><a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"><?php echo $event_name;?></a></b></td>
+            <td class="er_title er_ticket_info"><b>
+            <?php $company_options = get_option('evr_company_settings');
+            if ($company_options['event_pop']=="N"){echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=register&event_id='.$event_id.'">';}
+            else {?>
+            <a href="#TB_inline?&height=600&width=800&inlineId=popup<?php echo $event_id;?>&modal=false" class="thickbox" title="<?php echo $event_name;?>">
+            
+            <?php } echo $event_name;?></a></b></td>
             <td></td><td></td>
-            <td class="er_date"><?php echo date('M d, Y',strtotime($start_date));?></td>
-            <td class="er_date"><?php echo date('M d, Y',strtotime($end_date));?></td></tr>
+            <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
+            <td class="er_date"><?php if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;?></td></tr>
+            
+           
             <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}
         }
         ?>
     </tbody></table></div>
-<style>
-#fade { /*--Transparent background layer--*/
-	display: none; /*--hidden by default--*/
-	background: #000;
-	position: fixed; left: 0; top: 0;
-	width: 100%; height: 100%;
-	opacity: .80;
-	z-index: 9999;
-}
-.popup_block{
-	display: none; /*--hidden by default--*/
-	background: #fff;
-	padding: 20px;
-	border: 20px solid #ddd;
-	float: left;
-	font-size: 12px;
-	position: fixed;
-	top: 50%; left: 50%;
     
-	z-index: 99999;
-	/*--CSS3 Box Shadows--*/
-	-webkit-box-shadow: 0px 0px 20px #000;
-	-moz-box-shadow: 0px 0px 20px #000;
-	box-shadow: 0px 0px 20px #000;
-	/*--CSS3 Rounded Corners--*/
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-}
-img.btn_close {
-	float: right;
-	margin: -55px -55px 0 0;
-}
-/*--Making IE6 Understand Fixed Positioning--*/
-*html #fade {
-	position: absolute;
-}
-*html .popup_block {
-	position: absolute;
-}
-</style>
-
-<script type="text/javascript">
-jQuery(document).ready(function($){
-	 					   		   
-							   		   
-	//When you click on a link with class of poplight and the href starts with a # 
-	$('a.poplight[href^=#]').click(function() {
-		var popID = $(this).attr('rel'); //Get Popup Name
-		var popURL = $(this).attr('href'); //Get Popup href to define size
-				
-		//Pull Query & Variables from href URL
-		var query= popURL.split('?');
-		var dim= query[1].split('&');
-		var popWidth = dim[0].split('=')[1]; //Gets the first query string value
-
-		//Fade in the Popup and add close button
-		$('#' + popID).fadeIn().css({ 'width': Number( popWidth ) }).prepend('<a href="#" class="close"><img src="<?php echo EVR_PLUGINFULLURL;?>images/btn-close.png" class="btn_close" title="Close Window" alt="Close" /></a>');
-		
-		//Define margin for center alignment (vertical + horizontal) - we add 80 to the height/width to accomodate for the padding + border width defined in the css
-		var popMargTop = ($('#' + popID).height() + 80) / 2;
-		var popMargLeft = ($('#' + popID).width() + 80) / 2;
-		
-		//Apply Margin to Popup
-		$('#' + popID).css({ 
-			'margin-top' : -popMargTop,
-			'margin-left' : -popMargLeft
-		});
-		
-		//Fade in Background
-		$('body').append('<div id="fade"></div>'); //Add the fade layer to bottom of the body tag.
-		$('#fade').css({'filter' : 'alpha(opacity=80)'}).fadeIn(); //Fade in the fade layer 
-		
-		return false;
-	});
-	
-	   
-	//Close Popups and Fade Layer
-	$('a.close, #fade').live('click', function() { //When clicking on the close or fade layer...
-	  	$('#fade , .popup_block').fadeOut(function() {
-			$('#fade, a.close').remove();  
-	}); //fade them both out
-		
-		return false;
-	});
-
-	
-});
-</script>    
+ 
     
-    <?php 
+       <?php 
     $company_options = get_option('evr_company_settings');
     //Section for popup listings
     
@@ -539,7 +462,7 @@ jQuery(document).ready(function($){
                             $event_desc = stripslashes($row['event_desc']);
                             $event_category = unserialize($_REQUEST['event_category']);
         					$reg_limit = $row['reg_limit'];
-        					$event_location = $row['event_location'];
+        					$event_location = stripslashes($row['event_location']);
                             $event_address = $row['event_address'];
                             $event_city = $row['event_city'];
                             $event_state =$row['event_state'];
@@ -586,68 +509,8 @@ jQuery(document).ready(function($){
                                $available_spaces = $reg_limit;
                                
                                //div for popup goes here.
-                            ?>
-                            <style>
-                            table.evr_evntpop {
-                                width:100%;
-                                border-collapse:collapse;
-                                font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-                            }
-                            .evr_evntpop.th{
-                                border-collapse:collapse;
-                                font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-                                
-                            }
-                            .evr_evntpop.td{
-                                border-collapse:collapse;
-                                font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-                            }
-                            </style>
-                            <div id="popup<?php echo $event_id;?>" class="popup_block">
-                            	<?php if ($header_image !=""){?><img src="<?php echo $header_image;?>" alt="Header Image" style="float: center; margin: 20px 0 0 20px;" /><?php } ?>
-                                <br /><table class="evr_evntpop">
-                                <tr><th rowspan="5" valign="top">
-                                <?php if ($image_link !=""){?><img src="<?php echo $image_link;?>" alt="Thumbnail Image" style="float: left; margin: 20px 0 0 20px;" /><?php } ?>
-                                </th><td>&nbsp;&nbsp;&nbsp;&nbsp; </td><td colspan="2"><h3><?php echo $event_name;?></h3></td></tr>
-                                <tr><td></td><td colspan="2"><font color="green"><pre><?php echo $start_date." ".$start_time." through ".$end_date." ".$end_time;?></pre></font></td></tr>
-                                <tr><td></td><td colspan="2"><?php echo html_entity_decode($event_desc);?></td></tr><tr></tr>
-                                <tr><td></td><td colspan="2"><b><u><?php _e('Event Fees','evr_language');?>:</u></b><br /><?php
-                                $curdate = date("Y-m-d");
-                                $sql2 = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
-                                $result2 = mysql_query ( $sql2 );
-                            	while ($row2 = mysql_fetch_assoc ($result2)){
-                                        $item_id          = $row2['id'];
-                                        $item_sequence    = $row2['sequence'];
-                            			$event_id         = $row2['event_id'];
-                                        $item_title       = $row2['item_title'];
-                                        $item_description = $row2['item_description']; 
-                                        $item_cat         = $row2['item_cat'];
-                                        $item_limit       = $row2['item_limit'];
-                                        $item_price       = $row2['item_price'];
-                                        $free_item        = $row2['free_item'];
-                                        $item_start_date  = $row2['item_available_start_date'];
-                                        $item_end_date    = $row2['item_available_end_date'];
-                                        $item_custom_cur  = $row2['item_custom_cur'];
-                                        
-                                        echo $item_title.'   '.$item_custom_cur.' '.$item_price.'<br />';
-                                        
-                                        }
-                                
-                                 ?>
-                              
-                                </td></tr>
-                                <tr><td colspan="2"></td><td><?php echo $event_location;?><br />
-                                <?php echo $event_address;?><br />
-                                <?php echo $event_city.", ".$event_state." ".$event_postal;?><br />
-                                </td><td align="center"><img border="0" src="http://maps.google.com/maps/api/staticmap?center=<?php echo $event_address.",".$event_city.",".$event_state;?>&zoom=14&size=240x120&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|<?php echo $event_address.",".$event_city;?>,Austria&sensor=false" />
-                                </td></tr>
-                                <tr><td colspan="4" align="center"><br><a href="<?php echo evr_permalink($company_options['evr_page_id']);?>action=register&event_id=<?php echo $event_id;?>"><?php _e('REGISTER','evr_language');?></a>
-                                <a href="<?php echo EVR_PLUGINFULLURL."evr_ics.php";?>?event_id=<?php echo $event_id;?>"><?php _e('Add To Calendar','evr_language');?></a></td>
-                                </tr></table>
-                            </div>
-                            <?php
-                               
-                 }         
+                            include "public/evr_event_popup_pop.php";
+                              } 
                                
             				
             					
