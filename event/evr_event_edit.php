@@ -88,12 +88,39 @@ function evr_edit_event(){
 	
 	    
 ?>
-	
+
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <br />
 <div class="container">
 	<h2><?php _e('EDIT','evr_language');?> <?php echo $event_name." ".$active_event;?></h2>
-    <ul class="tabs">
+    <ul class="tabs"><script>
+                    var tinymceConfigs = [ {
+                        theme : "advanced",        
+                        mode : "none",        
+                        language : "en",        
+                        height:"200",        
+                        width:"100%",        
+                        theme_advanced_layout_manager : "SimpleLayout",        
+                        theme_advanced_toolbar_location : "top",        
+                        theme_advanced_toolbar_align : "left",        
+                        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",        
+                        theme_advanced_buttons2 : "",        
+                        theme_advanced_buttons3 : "" },
+                            { 
+                                theme : "advanced",        
+                                mode : "none",
+                                skin : "o2k7",        
+                                language : "en",
+                                height:"300",        
+                                width:"100%",        
+                                theme_advanced_layout_manager : "SimpleLayout",        
+                                theme_advanced_toolbar_location : "top",        
+                                theme_advanced_toolbar_align : "left"
+                                }];
+                    function tinyfy(settingid,el_id) {    
+                        tinyMCE.settings = tinymceConfigs[settingid];    
+                        tinyMCE.execCommand('mceAddControl', true, el_id);}
+                    </script>	
         <li><a href="#tab1"><?php _e('Event Description','evr_language');?></a></li>
         <li><a href="#tab2"><?php _e('Event Venue','evr_language');?></a></li>
         <li><a href="#tab3"><?php _e('Event Date/Time','evr_language');?></a></li>
@@ -135,49 +162,12 @@ function evr_edit_event(){
                     <td colspan="2">
                     <label for="event_desc" class="tooltip" title="<?php _e('Provide a detailed description of the event, include key details other than when and where. Do not use any html code. This is a text only display. 
 To create new display lines just press Enter.','evr_language');?>">
-                    <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a>
+                    <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a><a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="2">
-                                       
-                       <script type="text/javascript">    
-                       jQuery(document).ready(function($) {        
-                        idi = 'event_desc';        
-                        jQuery('#descButtonPreview').click(            
-                        function() {                
-                            tinyMCE.execCommand('mceAddControl', false, idi);                
-                            jQuery('#descButtonPreview').addClass('active');                
-                            jQuery('#descButtonHTML').removeClass('active');            
-                            }        
-                            );        
-                            jQuery('#descButtonHTML').click(            
-                            function() {                
-                                tinyMCE.execCommand('mceRemoveControl', false, idi);                
-                                jQuery('#descButtonPreview').removeClass('active');                
-                                jQuery('#descButtonHTML').addClass('active');            
-                                }        
-                                );    
-                                });    
-                        </script>
+                </table>
+                  <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"><?php echo $event_desc?></textarea><br />
 
-                    
-                      
-                   <a id="descButtonHTML"><button type="button">HTML CODE</button></a>    
-                   <a id="descButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
-                   
-                    <textarea rows="5" cols="90" name="event_desc" id="event_desc"  class="edit_class">
-          
-                    <?php echo $event_desc?></textarea>
-                    
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                    
-                    </td>
-                </tr>
-              <tr></tr></table>
               <hr />
               <table><tr></tr>
                 
@@ -405,35 +395,9 @@ To create new display lines just press Enter.','evr_language');?>">
             <br />
             <br />          
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
-            <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a></label>
+            <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a><a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a></label>
             
-            <script type="text/javascript">    
-                       jQuery(document).ready(function($) {        
-                        id = 'conf_mail';        
-                        jQuery('#mailButtonPreview').click(            
-                        function() {                
-                            tinyMCE.execCommand('mceAddControl', false, id);                
-                            jQuery('#mailButtonPreview').addClass('active');                
-                            jQuery('#mailButtonHTML').removeClass('active');            
-                            }        
-                            );        
-                            jQuery('#mailButtonHTML').click(            
-                            function() {                
-                                tinyMCE.execCommand('mceRemoveControl', false, id);                
-                                jQuery('#mailButtonPreview').removeClass('active');                
-                                jQuery('#mailButtonHTML').addClass('active');            
-                                }        
-                                );    
-                                });    
-                        </script>
-
-                    
-                       
-                   <a id="mailButtonHTML"><button type="button">HTML CODE</button></a>    
-                   <a id="mailButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
-                   
-            <textarea rows='10' cols='90' name='conf_mail' id="conf_mail" class="edit_class">
-            <?php echo $conf_mail;?></textarea>
+                 <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $conf_mail;?></textarea>
               <br />
             <br />         
             <input  type="submit" name="Submit" value="<?php _e('Update Event','evr_language'); ?>" id="add_new_event" />

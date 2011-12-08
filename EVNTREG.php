@@ -196,6 +196,9 @@ function evr_admin_scripts_all_page() {
        wp_enqueue_script('evr_tab_script');
          
        wp_enqueue_script( 'farbtastic' );
+       ?>
+       <script type='text/javascript' src='http://test.wordpresseventregister.com/wp-includes/js/thickbox/thickbox.js'></script>
+<?php
        
 }
 //function to load items to header of wordpress admin

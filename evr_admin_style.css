@@ -713,7 +713,7 @@ table.evr_evntpop {
 //Style for Tabs
 
     h1 {font-size: 3em; margin: 20px 0;}
-    .evr_acrdn_container {width: 800px; margin: 10px auto;}
+    .container {width: 800px; margin: 10px auto;}
     ul.tabs {
     	margin: 0;
     	padding: 0;
