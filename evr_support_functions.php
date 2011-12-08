@@ -109,7 +109,7 @@ function evr_form_build($question, $answer = "") {
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
 				//echo "<label><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</label><br/>\n";
-			 echo "<p class=\"hanging-indent\"><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</p>\n";
+			 echo "<span class=\"radio\"><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</span>\n";
 			
             }
 			break;
@@ -121,7 +121,7 @@ function evr_form_build($question, $answer = "") {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
 			/*	echo "<label><input type=\"checkbox\"$required id=\"MULTIPLE_$question->id_$key\" name=\"MULTIPLE_$question->id_$key\" title=\"$question->question\" value=\"$value\"$checked /> $value</label><br/>\n"; */
 			//echo "<label><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value</label><br/>\n";
-			echo "<p class=\"hanging-indent\"><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value</p>\n";
+			echo "<span class=\"radio\"><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value</span>\n";
 			
             }
 			break;

@@ -25,7 +25,7 @@ function evr_confirm_form(){
     $reg_type = $_POST['reg_type'];
     $attendee_name = $fname." ".$lname;
     
-    echo "Registration Type is: ".$reg_type."!";
+    //echo "Registration Type is: ".$reg_type."!";
     
     
    

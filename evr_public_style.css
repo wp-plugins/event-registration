@@ -103,14 +103,18 @@ table.evr_events th
     padding-top:5px;    
     width:500px;}
 /*Radio and Checkbox Style*/
-p.hanging-indent {
- text-indent: -25px;
- padding-left: 25px;
- margin-top:2px ;
- margin-bottom:2px;
+p {
+ margin-top:0 ;
+ margin-bottom:0;
  }
    
-    
+.radio {
+    margin-top:0 ;
+    margin-bottom:0;
+    text-indent: -25px;
+    padding-left: 25px;
+    display: block;
+}    
     
 /*.threepxfix class below:
 Targets IE6- ONLY. Adds 3 pixel indent for multi-line form contents.

@@ -220,6 +220,9 @@ function evr_public_scripts() {
  }
 //function to load items to public pages of wordpress site
 function evr_public_header(){
+    wp_enqueue_script('thickbox'); 
+    wp_enqueue_style('thickbox');
+    echo "<!--David-->";
 }
 /*********************************   END PUBLIC HEAD   *****************************/
 //
