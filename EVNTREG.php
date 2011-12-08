@@ -184,6 +184,7 @@ function evr_load_tiny_mce() {
 function evr_admin_css_all_page() {
        wp_register_style($handle = 'evr_admin_css', $src = plugins_url('/evr_admin_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_enqueue_style('evr_admin_css');
+       wp_enqueue_style( 'farbtastic' );
 }
 //function to enqueue scripts in admin pages
 function evr_admin_scripts_all_page() {
@@ -193,6 +194,8 @@ function evr_admin_scripts_all_page() {
        wp_enqueue_script('evr_admin_script');
        wp_enqueue_script('evr_admin_fancy');
        wp_enqueue_script('evr_tab_script');
+         
+       wp_enqueue_script( 'farbtastic' );
        
 }
 //function to load items to header of wordpress admin
