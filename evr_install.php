@@ -3,6 +3,13 @@
  * @author David Fleming
  * @copyright 2010
  */
+/* 6.00.12 - Added fields to event table  
+send_mail VARCHAR (2) DEFAULT NULL,
+send_contact VARCHAR (2) DEFAULT NULL,
+contact_email VARCHAR(65) DEFAULT NULL,
+
+added conditionals to upgrading attendee table for conflicts with expresso*/
+
 
 function EVR_Offset($dt, $year_offset = '', $month_offset = '', $day_offset = '')
 {
@@ -24,7 +31,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.10";
+    $cur_build = "6.00.12";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -66,7 +73,7 @@ function evr_upgrade_tables(){
         $option_name = 'evr_attendee_version';
         $newvalue = $upgrade_version;
         update_option($option_name, $newvalue);
-        //Modify Table for Upgrades
+        //Modify Table for Upgrades- change 6.00.09
        /* 
         $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people") or  die(mysql_error());
         $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD reg_type VARCHAR (45) DEFAULT NULL AFTER zip") or die(mysql_error());
@@ -84,13 +91,49 @@ function evr_upgrade_tables(){
       
         $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people");
         
-        $sql = "ALTER TABLE ".$new_attendee_tbl. 
+       /* 6.00.12 Added condtionals for the upgrade of attendee table - previous conflicts with upgrades
+       
+       $sql = "ALTER TABLE ".$new_attendee_tbl. 
           " ADD `reg_type` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `zip`,
             ADD `tickets` mediumint NULL AFTER `quantity`,
             ADD `payment_status` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `payment`,
             ADD `payment_date` varchar(30) COLLATE 'utf8_general_ci' NULL AFTER `txn_id`,
             ADD `attendees` mediumtext COLLATE 'utf8_general_ci' NULL AFTER `quantity`;";
         $wpdb->query($sql) or die(mysql_error());   
+        */
+        $sql = "SELECT reg_type FROM ".$new_attendee_tbl;
+        if (!$wpdb->query($sql)){ 
+            $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `reg_type` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `zip`;";
+             $wpdb->query($sql);
+            }
+
+        $sql = "SELECT tickets FROM ".$new_attendee_tbl;
+                if (!$wpdb->query($sql)){ 
+                    $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `tickets` mediumint NULL AFTER `quantity `;";
+                     $wpdb->query($sql);
+                    }
+        
+        $sql = "SELECT payment_status FROM ".$new_attendee_tbl;
+                if (!$wpdb->query($sql)){ 
+                    $sql = "ALTER TABLE ".$new_attendee_tbl." ADD ` payment_status` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `payment`;";
+                     $wpdb->query($sql);
+                    }
+        
+        $sql = "SELECT payment_date FROM ".$new_attendee_tbl;
+                if (!$wpdb->query($sql)){ 
+                    $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `payment_date` varchar(30) COLLATE 'utf8_general_ci' NULL AFTER `txn_id`,";
+                     $wpdb->query($sql);
+                    }
+        
+        $sql = "SELECT attendees FROM ".$new_attendee_tbl;
+                if (!$wpdb->query($sql)){ 
+                    $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `attendees` mediumtext COLLATE 'utf8_general_ci' NULL AFTER `quantity`;";
+                     $wpdb->query($sql);
+                    }
+
+        
+        
+        
             
 //
 // Event Table Copy Table, Replace Data, Add Colulmns        
@@ -449,6 +492,9 @@ function evr_event_db()
 				  reg_form_defaults VARCHAR(100) DEFAULT NULL,
 				  allow_checks VARCHAR(45) DEFAULT NULL,
 				  send_mail VARCHAR (2) DEFAULT NULL,
+                  send_contact VARCHAR (2) DEFAULT NULL,
+                  contact_email VARCHAR(65) DEFAULT NULL,
+                  contact_msg VARCHAR (1000) DEFAULT NULL,
 				  is_active VARCHAR(45) DEFAULT NULL,
 				  conf_mail VARCHAR (1000) DEFAULT NULL,
                   use_coupon VARCHAR(1) DEFAULT NULL,
