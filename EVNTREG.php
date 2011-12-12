@@ -253,6 +253,7 @@ function evr_admin_menu()
     add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $role, 'uninstall','evr_remove_db_menu');
     add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $role, 'purge','evr_clean_old_db');
     add_submenu_page(__file__, 'Disable Popup', 'Disable Popup', $role, 'popup','evr_validate_key');
+     add_submenu_page(__file__, 'Function Testing', 'Function Testing', $role, 'testing','evr_testing');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
     //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
@@ -266,6 +267,16 @@ function evr_admin_menu()
 /*********************************   END ADMIN MENU   ********************************/
 //
 //
+
+//function for testing functions
+function evr_testing(){
+            
+        
+}
+
+
+
+
 //function to load widgets to the widgets menu
 function evr_widgets(){
 

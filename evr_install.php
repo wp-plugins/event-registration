@@ -58,7 +58,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.12";
+    $upgrade_version = "0.13";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -73,66 +73,46 @@ function evr_upgrade_tables(){
         $option_name = 'evr_attendee_version';
         $newvalue = $upgrade_version;
         update_option($option_name, $newvalue);
-        //Modify Table for Upgrades- change 6.00.09
-       /* 
-        $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people") or  die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD reg_type VARCHAR (45) DEFAULT NULL AFTER zip") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD tickets MEDIUMTEXT DEFAULT NULL AFTER quantity") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD payment_status VARCHAR(45) DEFAULT NULL AFTER payment") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD attendees MEDIUMTEXT DEFAULT NULL AFTER quantity") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_attendee_tbl . " ADD COLUMN payment_date varchar(30) DEFAULT NULL AFTER amount_pd") or die(mysql_error());
-        
-        */
-        $sql = "SELECT num_people FROM ".$new_attendee_tbl;
-        if (!$wpdb->query($sql)){ 
-            $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `num_people` varchar(45) COLLATE 'utf8_general_ci' NULL;";
-             $wpdb->query($sql);
-            }
-      
+        //Get an array of column names from attendee table      
+           $sql = "SELECT * FROM ".$new_attendee_tbl;
+           $wpdb->query($sql);
+           $fields = $wpdb->get_col_info('name', -1);
+           //change column names from values to keys for identifcation 
+            $field_names = array_flip($fields);
+                  
+        $value = "num_people";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD num_people varchar(45) COLLATE utf8_general_ci NULL;";
+        if (!array_key_exists($value, $field_names)) {
+            $wpdb->query($sql);
+            } 
         $wpdb->query("UPDATE " . $new_attendee_tbl . " SET quantity = num_people");
-        
-       /* 6.00.12 Added condtionals for the upgrade of attendee table - previous conflicts with upgrades
-       
-       $sql = "ALTER TABLE ".$new_attendee_tbl. 
-          " ADD `reg_type` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `zip`,
-            ADD `tickets` mediumint NULL AFTER `quantity`,
-            ADD `payment_status` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `payment`,
-            ADD `payment_date` varchar(30) COLLATE 'utf8_general_ci' NULL AFTER `txn_id`,
-            ADD `attendees` mediumtext COLLATE 'utf8_general_ci' NULL AFTER `quantity`;";
-        $wpdb->query($sql) or die(mysql_error());   
-        */
-        $sql = "SELECT reg_type FROM ".$new_attendee_tbl;
-        if (!$wpdb->query($sql)){ 
-            $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `reg_type` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `zip`;";
+        //
+        $value = "reg_type";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD reg_type varchar(45) COLLATE utf8_general_ci NULL AFTER zip";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            } 
+        $value = "tickets";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD tickets mediumint NULL AFTER quantity";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            } 
+        $value = "payment_status";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD payment_status varchar(45) COLLATE utf8_general_ci NULL AFTER payment";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            } 
+        $value = "payment_date";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD payment_date varchar(30) COLLATE utf8_general_ci NULL AFTER txn_id";
+        if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }
-
-        $sql = "SELECT tickets FROM ".$new_attendee_tbl;
-                if (!$wpdb->query($sql)){ 
-                    $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `tickets` mediumint NULL AFTER `quantity `;";
-                     $wpdb->query($sql);
-                    }
-        
-        $sql = "SELECT payment_status FROM ".$new_attendee_tbl;
-                if (!$wpdb->query($sql)){ 
-                    $sql = "ALTER TABLE ".$new_attendee_tbl." ADD ` payment_status` varchar(45) COLLATE 'utf8_general_ci' NULL AFTER `payment`;";
-                     $wpdb->query($sql);
-                    }
-        
-        $sql = "SELECT payment_date FROM ".$new_attendee_tbl;
-                if (!$wpdb->query($sql)){ 
-                    $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `payment_date` varchar(30) COLLATE 'utf8_general_ci' NULL AFTER `txn_id`,";
-                     $wpdb->query($sql);
-                    }
-        
-        $sql = "SELECT attendees FROM ".$new_attendee_tbl;
-                if (!$wpdb->query($sql)){ 
-                    $sql = "ALTER TABLE ".$new_attendee_tbl." ADD `attendees` mediumtext COLLATE 'utf8_general_ci' NULL AFTER `quantity`;";
-                     $wpdb->query($sql);
-                    }
-
-        
-        
+        $value = "attendees";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD attendees mediumtext COLLATE utf8_general_ci NULL AFTER quantity";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+            
         
             
 //
@@ -150,14 +130,56 @@ function evr_upgrade_tables(){
         $newvalue = $upgrade_version;
         update_option($option_name, $newvalue);
         //Add new fields to table
-        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD event_address VARCHAR(100) DEFAULT NULL AFTER event_location") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD event_city VARCHAR(100) DEFAULT NULL AFTER event_address") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD event_state VARCHAR(100) DEFAULT NULL AFTER event_city") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD event_postal VARCHAR(100) DEFAULT NULL AFTER event_state") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD google_map VARCHAR (4) DEFAULT NULL AFTER event_postal") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD outside_reg VARCHAR (4) DEFAULT NULL AFTER google_map") or die(mysql_error());
-        $wpdb->query("ALTER TABLE " . $new_event_tbl ." ADD external_site VARCHAR (100) DEFAULT NULL AFTER outside_reg") or die(mysql_error());
-//
+        //Get an array of column names from attendee table      
+        $sql = "SELECT * FROM ".$new_event_tbl;
+        $wpdb->query($sql);
+        $fields = $wpdb->get_col_info('name', -1);
+        //change column names from values to keys for identifcation 
+        $field_names = array_flip($fields);
+        
+        $value = "event_address";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD event_address VARCHAR(100) DEFAULT NULL AFTER event_location";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        $value = "event_city";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD event_city VARCHAR(100) DEFAULT NULL AFTER event_address";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        $value = "event_state";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD event_state VARCHAR(100) DEFAULT NULL AFTER event_city";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        $value = "event_postal";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD event_postal VARCHAR(100) DEFAULT NULL AFTER event_state";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        $value = "google_map";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD google_map VARCHAR (4) DEFAULT NULL AFTER event_postal";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        $value = "outside_reg";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD outside_reg VARCHAR (4) DEFAULT NULL AFTER google_map";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        $value = "external_site";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD external_site VARCHAR (100) DEFAULT NULL AFTER outside_reg";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        /*
+        $value = "";
+        
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        */
+        //
 // Question Table Copy Table, Replace Data, Add Colulmns        
 //
         $new_question_tbl = $wpdb->prefix . "evr_question";
