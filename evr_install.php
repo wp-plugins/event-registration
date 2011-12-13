@@ -519,7 +519,7 @@ function evr_event_db()
                   contact_msg VARCHAR (1000) DEFAULT NULL,
 				  is_active VARCHAR(45) DEFAULT NULL,
 				  conf_mail VARCHAR (1000) DEFAULT NULL,
-                  use_coupon VARCHAR(1) DEFAULT NULL,
+                  use_coupon VARCHAR(2) DEFAULT NULL,
 				  coupon_code VARCHAR(50) DEFAULT NULL,
 				  coupon_code_price decimal(7,2) DEFAULT NULL,
 				  category_id TEXT,
