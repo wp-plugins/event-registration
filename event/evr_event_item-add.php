@@ -355,7 +355,8 @@ img.btn_close {
 					<?php _e('Enter the Code','evr_language');?> <a><span> ?</span></a></label> 
 					<input id="coupon_code" name="coupon_code" type="text" value="<?php echo $coupon_code;?>"/></li>
 				    
-                     <li><label class="tooltip" title="<?php _e('Enter the amount with two decimal places.  Do not put a - sign, as that is done during calculations  ','evr_language');?>">
+                     <li><label class="tooltip" title="<?php _e('Enter the amount with two decimal places.  You MUST put a - sign before the value, otherwise this will add to the total
+                     during calculations. i.e. -10.00  ','evr_language');?>">
 					<?php _e('Discount amount for Coupon Code','evr_language');?> <a><span> ?</span></a></label>
 					<input id="coupon_code_price" name="coupon_code_price" type="text" value="<?php echo $coupon_code_price;?>"/>
 				     </li>
