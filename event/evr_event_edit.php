@@ -1,7 +1,12 @@
 <?php
 //function to edit an existing event built into event listing page.
 function evr_edit_event(){
-    global $wpdb;
+    global $wpdb, $wp_version;
+    $settings = array(
+                                		'media_buttons' => false,
+                                        'quicktags' => array('buttons' => 'b,i,ul,ol,li,link,close'),
+                                		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
+                                	);
     $event_id = $_REQUEST['id'];
 	$sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
                     		$result = mysql_query ($sql);
@@ -162,11 +167,22 @@ function evr_edit_event(){
                     <td colspan="2">
                     <label for="event_desc" class="tooltip" title="<?php _e('Provide a detailed description of the event, include key details other than when and where. Do not use any html code. This is a text only display. 
 To create new display lines just press Enter.','evr_language');?>">
-                    <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a><a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
-                    </td>
-                </tr>
-                </table>
-                  <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"><?php echo $event_desc?></textarea><br />
+                    <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a>
+                    <?php
+                    if (!version_compare($wp_version, '3.3', '>=')) { 
+                    ?>
+                            <a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
+                            </td>
+                            </tr>
+                            </table>
+                            <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"><?php echo $event_desc;?></textarea>
+                    <?php }
+                            else { 
+                                echo "</td></tr></table>";
+                                wp_editor( $event_desc, 'event_desc', $settings );
+                                }  
+                    ?>
+                    <br />
 
               <hr />
               <table><tr></tr>
@@ -395,10 +411,21 @@ To create new display lines just press Enter.','evr_language');?>">
             <br />
             <br />          
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
-            <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a><a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a></label>
+            <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a>
+              <?php
+              if (!version_compare($wp_version, '3.3', '>=')) { 
+                    ?>
+                        <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+                        <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $conf_mail;?></textarea>
+                    <?php }
+                            else { 
+                                
+                                wp_editor( $conf_mail, 'conf_mail', $settings );
+                                }  
+                    ?>
             
-                 <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $conf_mail;?></textarea>
-              <br />
+            
+            <br />
             <br />         
             <input  type="submit" name="Submit" value="<?php _e('Update Event','evr_language'); ?>" id="add_new_event" />
             </form>

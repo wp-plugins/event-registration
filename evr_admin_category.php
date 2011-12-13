@@ -6,7 +6,12 @@
  */
 
 function evr_admin_categories(){
-    
+  global $wpdb, $wp_version; 
+  $settings = array(
+                                		'media_buttons' => false,
+                                        'quicktags' => array('buttons' => 'b,i,ul,ol,li,link,close'),
+                                		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
+                                	); 
 ?>
 <div class="wrap">
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -46,7 +51,12 @@ function evr_admin_categories(){
                                     <input type='radio' name='display_desc' value='Y'><?php _e('Yes','evr_language');?>
                                     <input type='radio' name='display_desc' checked value='N'><?php _e('No','evr_language');?></li>
                                     <li><p><?php _e('Category Description','evr_language');?><br />
-                                    <?php the_editor('',$id='category_desc',$media_buttons=false, $extended=false);
+                                    <?php 
+                                    if (!version_compare($wp_version, '3.3', '>=')) { 
+                                        the_editor('',$id='category_desc',$media_buttons=false, $extended=false);
+                                       	}
+                                    else { wp_editor( '', 'category_desc', $settings );}
+                                    
                                     ?>
                                     </li>
                                         <p>Select color for Calendar Display:</p>
@@ -110,7 +120,11 @@ function evr_admin_categories(){
                                     </li>
                                     <li><strong><?php _e('Category Description','evr_language');?>:</strong><br />
                                     
-                                    <?php the_editor($category_desc,$id='category_desc',$media_buttons=false, $extended=false);
+                                    <?php 
+                                    if (!version_compare($wp_version, '3.3', '>=')) { 
+                                        the_editor($category_desc,$id='category_desc',$media_buttons=false, $extended=false);
+                                       	}
+                                    else { wp_editor( $category_desc, 'category_desc', $settings );}
                                     ?>
                                     </li>
                                         <p>Select color for Calendar Display:</p>
