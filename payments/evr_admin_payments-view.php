@@ -135,8 +135,7 @@ function evr_admin_view_payments(){
                                 <?php   }  
                             echo "</table>";
                             ?>
-                            <button style="background-color: lightgreen" onclick="window.location='<?php echo EVR_PLUGINFULLURL . "evr_admin_export.php?id=" . $event_id. "&action=payment";?>'" style="width:180; height: 30">Export Payment to Excel</button>            
-
+                             <?php evr_payment_export($event_id);?>
                             <div class="tablenav">
                         <div class='tablenav-pages'>
                             <?php echo $p->show();  // Echo out the list of paging. ?>

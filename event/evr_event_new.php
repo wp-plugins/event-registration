@@ -1,55 +1,48 @@
 <?php
 //function to create a new event
 function evr_new_event(){
+    global $wpdb, $wp_version;
+    $settings = array(
+                                		'media_buttons' => false,
+                                        'quicktags' => array('buttons' => 'b,i,ul,ol,li,link,close'),
+                                		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
+                                	);
     
 ?>
 
-
+                    <script>
+                    var tinymceConfigs = [ {
+                        theme : "advanced",        
+                        mode : "none",        
+                        language : "en",        
+                        height:"200",        
+                        width:"100%",        
+                        theme_advanced_layout_manager : "SimpleLayout",        
+                        theme_advanced_toolbar_location : "top",        
+                        theme_advanced_toolbar_align : "left",        
+                        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",        
+                        theme_advanced_buttons2 : "",        
+                        theme_advanced_buttons3 : "" },
+                            { 
+                                theme : "advanced",        
+                                mode : "none",        
+                                language : "en",        
+                                height:"200",        
+                                width:"100%",        
+                                theme_advanced_layout_manager : "SimpleLayout",        
+                                theme_advanced_toolbar_location : "top",        
+                                theme_advanced_toolbar_align : "left"
+                                }];
+                    function tinyfy(settingid,el_id) {    
+                        tinyMCE.settings = tinymceConfigs[settingid];    
+                        tinyMCE.execCommand('mceAddControl', true, el_id);}
+                    </script>
+                    
 <a href="#?w=800" rel="popup0" class="poplight"><input type="button" value="<?php _e('ADD EVENT','evr_language');?>"/></a>
 
 <?php //evr_check_form_submission();?>
 
 <div id="popup0" class="popup_block">
-
-
-<script type="text/javascript">    
-                       jQuery(document).ready(function($) {        
-                        id = 'conf_mail';        
-                        jQuery('#mailButtonPreview').click(            
-                        function() {                
-                            tinyMCE.execCommand('mceAddControl', false, id);                
-                            jQuery('#mailButtonPreview').addClass('active');                
-                            jQuery('#mailButtonHTML').removeClass('active');            
-                            }        
-                            );        
-                            jQuery('#mailButtonHTML').click(            
-                            function() {                
-                                tinyMCE.execCommand('mceRemoveControl', false, id);                
-                                jQuery('#mailButtonPreview').removeClass('active');                
-                                jQuery('#mailButtonHTML').addClass('active');            
-                                }        
-                                );    
-                                });    
-</script>
-<script type="text/javascript">    
-                       jQuery(document).ready(function($) {        
-                        idi = 'event_desc';        
-                        jQuery('#descButtonPreview').click(            
-                        function() {                
-                            tinyMCE.execCommand('mceAddControl', false, idi);                
-                            jQuery('#descButtonPreview').addClass('active');                
-                            jQuery('#descButtonHTML').removeClass('active');            
-                            }        
-                            );        
-                            jQuery('#descButtonHTML').click(            
-                            function() {                
-                                tinyMCE.execCommand('mceRemoveControl', false, idi);                
-                                jQuery('#descButtonPreview').removeClass('active');                
-                                jQuery('#descButtonHTML').addClass('active');            
-                                }        
-                                );    
-                                });    
-</script>                        
                         
 <div class="container">
 	<h1><?php _e('ADD NEW EVENT','evr_language');?></h1>
@@ -95,25 +88,25 @@ function evr_new_event(){
                     <label for="event_desc" class="tooltip" title="<?php _e('Provide a detailed description of the event, include key details other than when and where. Do not use any html code. This is a text only display. 
 To create new display lines just press Enter.','evr_language');?>">
                     <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                    <a id="descButtonHTML"><button type="button">HTML CODE</button></a>    
-                   <a id="descButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
-                   
-                    <textarea rows="5" cols="90" name="event_desc" id="event_desc"  class="edit_class"></textarea>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                    <p align="left">
+                    
+                    <?php
+                    if (!version_compare($wp_version, '3.3', '>=')) { 
+                    ?>
+                            <a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
+                            </td>
+                            </tr>
+                            </table>
+                            <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"></textarea>
+                    <?php }
+                            else { 
+                                echo "</td></tr></table>";
+                                wp_editor( '', 'event_desc', $settings );
+                                }  
+                    ?>
                     
                     
-                    </p>
-                    </td>
-                </tr>
-              <tr></tr></table>
+                    
+              <br>      
               <hr />
               <table><tr></tr>
                 
@@ -312,20 +305,26 @@ To create new display lines just press Enter.','evr_language');?>">
             <br />          
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
             <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a></label>
-            <br />
+            <?php
+                $body = "***This is an automated response - Do Not Reply***<br />
+                        Thank you [fname] [lname] for registering for [event].<br />
+                        We hope that you will find this event both informative and enjoyable.
+                        Should have any questions, please contact [contact].
+                        If you have not done so already, please submit your payment in the amount of [cost].
+                        Click here to review your payment information [payment_url].<br />
+                        Thank You.";     
+                
+                if (!version_compare($wp_version, '3.3', '>=')) { 
+                    ?>
+                        <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+                        <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $body;?></textarea>
+                    <?php }
+                            else { 
+                                
+                                wp_editor( $body, 'conf_mail', $settings );
+                                }  
+                    ?>
             
-            <a id="mailButtonHTML"><button type="button">HTML CODE</button></a>    
-                   <a id="mailButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
-                   
-            <textarea rows='10' cols='90' name='conf_mail' id="conf_mail" class="edit_class">
-            ***This is an automated response - Do Not Reply***<br />
-            Thank you [fname] [lname] for registering for [event].<br />
-            We hope that you will find this event both informative and enjoyable.
-            Should have any questions, please contact [contact].
-            If you have not done so already, please submit your payment in the amount of [cost].
-            Click here to reveiw your payment information [payment_url].<br />
-            Thank You.
-            </textarea>
             
             
             <br />

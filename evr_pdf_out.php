@@ -168,7 +168,7 @@ $item_order = unserialize($reg_form['tickets']);
     $invoice .='     <br><br><b>Total:</b> '.$item_order[0]['ItemCurrency'].' '.$reg_form['payment'];
     $invoice .='<br><br><b><u>Attendee List:</b></u><br><br>';
      
-        foreach($attendee_array as &$ma) {
+        foreach($attendee_array as $ma) {
             $invoice .= $ma["first_name"].' '.$ma["last_name"].'<br/>';}
      
      $company_options = get_option('evr_company_settings');

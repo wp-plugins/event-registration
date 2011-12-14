@@ -1,7 +1,7 @@
 <?php
 function evr_admin_company(){
 
-		global $wpdb;
+		global $wpdb, $wp_version;
         $company_options = get_option('evr_company_settings');
         $update_company = $_POST['update_company'];
         switch ($update_company) {
@@ -59,6 +59,34 @@ function evr_admin_company(){
         ?>
 
 <div class="container">
+<script>
+                    var tinymceConfigs = [ {
+                        theme : "advanced",        
+                        mode : "none",        
+                        language : "en",        
+                        height:"200",        
+                        width:"100%",        
+                        theme_advanced_layout_manager : "SimpleLayout",        
+                        theme_advanced_toolbar_location : "top",        
+                        theme_advanced_toolbar_align : "left",        
+                        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",        
+                        theme_advanced_buttons2 : "",        
+                        theme_advanced_buttons3 : "" },
+                            { 
+                                theme : "advanced",        
+                                mode : "none",
+                                skin : "o2k7",        
+                                language : "en",
+                                height:"200",        
+                                width:"100%",        
+                                theme_advanced_layout_manager : "SimpleLayout",        
+                                theme_advanced_toolbar_location : "top",        
+                                theme_advanced_toolbar_align : "left"
+                                }];
+                    function tinyfy(settingid,el_id) {    
+                        tinyMCE.settings = tinymceConfigs[settingid];    
+                        tinyMCE.execCommand('mceAddControl', true, el_id);}
+                    </script>	
 <div class="wrap">
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 	
@@ -316,33 +344,28 @@ function evr_admin_company(){
                         <input type="radio" name="send_confirm" class="regular-radio" value="N"  <?php if ($company_options['send_confirm'] == "N"){echo "checked";}?> />No<br />  
                         <font size="-5" color="red">(This option must be enable to send custom mails in events)</font></p>
                         <p><a class="ev_reg-fancylink" href="#custom_email_settings">Settings</a> | <a class="ev_reg-fancylink" href="#custom_email_example">Example</a></p>
-                        <p>Email Body: <br /><br />
-                        <script type="text/javascript">    
-                       jQuery(document).ready(function($) {        
-                        ido = 'message';        
-                        jQuery('#descButtonPreview').click(            
-                        function() {                
-                            tinyMCE.execCommand('mceAddControl', false, ido);                
-                            jQuery('#msgButtonPreview').addClass('active');                
-                            jQuery('#msgButtonHTML').removeClass('active');            
-                            }        
-                            );        
-                            jQuery('#msgButtonHTML').click(            
-                            function() {                
-                                tinyMCE.execCommand('mceRemoveControl', false, ido);                
-                                jQuery('#msgButtonPreview').removeClass('active');                
-                                jQuery('#msgButtonHTML').addClass('active');            
-                                }        
-                                );    
-                                });    
-                        </script>
-
-                    
-                   <a id="msgButtonPreview" class="active"><button type="button">WYSIWYG</button></a>   
-                   <a id="msgButtonHTML"><button type="button">HTML CODE</button></a>    
-                   
+                        <p>Email Body:   
                         
-                        <textarea rows="5" cols="90" name="message" id="message" class="edit_class" ><?php echo $company_options['message'];?></textarea>
+                        
+                        <?php
+                        $settings = array(
+                                		'media_buttons' => false,
+                                        'quicktags' => array('buttons' => 'b,i,ul,ol,li,link,close'),
+                                		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
+                                	);
+                        
+                        if (!version_compare($wp_version, '3.3', '>=')) { ?>
+                            <a href="javascript:void(0)" onclick="tinyfy(1,'message')"><input type="button" value="WYSIWG"/></a>
+                            <br />
+                            <textarea name="message" id="message" style="width: 100%; height: 200px;">
+                        <?php echo $company_options['message'];?></textarea>
+                        <?php
+                          	}
+                            else {
+                        wp_editor( $company_options['message'], 'message', $settings );}
+                        ?>
+                        
+                        
                         
                         </p>
                         </div> 
@@ -358,9 +381,27 @@ function evr_admin_company(){
                         <p><a class="ev_reg-fancylink" href="#custom_payment_email_settings">Settings</a> | <a class="ev_reg-fancylink" href="#custom_payment_email_example">Example</a></p>
                         <br />
                         <p><label for="payment_subj"><?php _e('Payment Message Subject','evr_language');?></label><input name="payment_subj" value="<?php  echo $company_options['payment_subj'];?>" class="regular-text" /></p>
-                        <p>Email Body: <br />
-                        <textarea name="payment_message" id="payment_message"  class="edit_class"><?php echo $company_options['payment_message'];?></textarea>
-                        <br />
+                        <p>Email Body:   
+                        <?php
+                                               
+                        if (!version_compare($wp_version, '3.3', '>=')) { ?>
+                           <a href="javascript:void(0)" onclick="tinyfy(1,'payment_message')"><input type="button" value="WYSIWG"/></a><br />
+                        
+                         <textarea name="payment_message" id="payment_message" style="width: 100%; height: 200px;">
+                        <?php echo $company_options['payment_message'];?></textarea>
+                        <br /> 
+                        <?php
+                          	}
+                            else { wp_editor( $company_options['payment_message'], 'payment_message', $settings );}
+                        ?>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                                                 </p>
                     <div style="clear:both;"></div>
                     </div>   

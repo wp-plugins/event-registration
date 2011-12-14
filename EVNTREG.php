@@ -13,7 +13,7 @@ It allows you to capture the registering persons contact information to a databa
 It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   
 Detailed payment management system to track and record event payments.  
 Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.00.10
+Version: 6.00.12
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.wordpresseventregister.com
 */
@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.00.10";
+$evr_ver = "6.00.12";
 
 /*
 to change date format in event listing display
@@ -166,8 +166,7 @@ function evr_load_tiny_mce() {
        if (function_exists('wp_tiny_mce_preload_dialogs')) {
            add_action('admin_print_footer_scripts', 'wp_tiny_mce_preload_dialogs');
        }
-  	}
-    //wp_tiny_mce( false ); // true gives you a stripped down version of the editor
+           //wp_tiny_mce( false ); // true gives you a stripped down version of the editor
     wp_tiny_mce( false , array( "editor_selector" => "edit_class", 
     'height' => 200,
     'plugins' => 'inlinepopups,wpdialogs,wplink,media,wpeditimage,wpgallery,paste,tabfocus',        
@@ -175,6 +174,8 @@ function evr_load_tiny_mce() {
     'force_br_newlines' => true,        
     'force_p_newlines' => false,        
     'convert_newlines_to_brs' => true));
+  	}
+
 }
 //
 //
@@ -184,6 +185,7 @@ function evr_load_tiny_mce() {
 function evr_admin_css_all_page() {
        wp_register_style($handle = 'evr_admin_css', $src = plugins_url('/evr_admin_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_enqueue_style('evr_admin_css');
+       wp_enqueue_style( 'farbtastic' );
 }
 //function to enqueue scripts in admin pages
 function evr_admin_scripts_all_page() {
@@ -193,6 +195,11 @@ function evr_admin_scripts_all_page() {
        wp_enqueue_script('evr_admin_script');
        wp_enqueue_script('evr_admin_fancy');
        wp_enqueue_script('evr_tab_script');
+         
+       wp_enqueue_script( 'farbtastic' );
+       ?>
+       <script type='text/javascript' src='http://test.wordpresseventregister.com/wp-includes/js/thickbox/thickbox.js'></script>
+<?php
        
 }
 //function to load items to header of wordpress admin
@@ -220,6 +227,9 @@ function evr_public_scripts() {
  }
 //function to load items to public pages of wordpress site
 function evr_public_header(){
+    wp_enqueue_script('thickbox'); 
+    wp_enqueue_style('thickbox');
+    echo "<!--David-->";
 }
 /*********************************   END PUBLIC HEAD   *****************************/
 //
@@ -244,6 +254,7 @@ function evr_admin_menu()
     add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $role, 'uninstall','evr_remove_db_menu');
     add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $role, 'purge','evr_clean_old_db');
     add_submenu_page(__file__, 'Disable Popup', 'Disable Popup', $role, 'popup','evr_validate_key');
+     add_submenu_page(__file__, 'Function Testing', 'Function Testing', $role, 'testing','evr_testing');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
     //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
@@ -257,6 +268,16 @@ function evr_admin_menu()
 /*********************************   END ADMIN MENU   ********************************/
 //
 //
+
+//function for testing functions
+function evr_testing(){
+            
+        
+}
+
+
+
+
 //function to load widgets to the widgets menu
 function evr_widgets(){
 

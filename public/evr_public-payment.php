@@ -35,6 +35,9 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
                     		$end_time       = $row['end_time'];
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
+                            $use_coupon         = $row['use_coupon'];
+                            $coupon_code        = $row['coupon_code'];
+                            $coupon_code_price  = $row['coupon_code_price'];
                             }
     //Get Attendee Info
     $sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE id=".$attendee_id;
@@ -367,6 +370,9 @@ function evr_registration_donation($passed_event_id, $passed_attendee_id){
                     		$end_time       = $row['end_time'];
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
+                            $use_coupon         = $row['use_coupon'];
+                            $coupon_code        = $row['coupon_code'];
+                            $coupon_code_price  = $row['coupon_code_price'];
                             }
     //Get Attendee Info
     $sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE id=".$attendee_id;
