@@ -58,8 +58,19 @@
                         <?php } ?>
                         </div>		                          
 <div class="evr_spacer"></div>
-<div id="evr_pop_foot"><p align="center"><?php if ($more_info !=""){ ?><input type="button" onClick="window.open('<?php echo $more_info;?>');" value='MORE INFO'/> <?php	} ?>
+<div id="evr_pop_foot"><p align="center">
+
+<?php if ($more_info !=""){ ?>
+<input type="button" onClick="window.open('<?php echo $more_info;?>');" value='MORE INFO'/> 
+<?php	} ?>
+
+<?php if ($outside_reg ="Y"){ ?>
+<input type="button" onClick="window.open('<?php echo $external_site;?>');" value='External Registration'/> 
+<?php	}  else {?>
                         <input type="button" onClick="location.href='<?php echo evr_permalink($company_options['evr_page_id']);?>action=register&event_id=<?php echo $event_id;?>'" value='REGISTER'/> 
+ <?php } ?>                       
+                        
+                        
                         </p></div>               		
                         
 </div>
