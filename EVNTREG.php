@@ -219,16 +219,20 @@ function evr_public_stylesheets() {
             wp_enqueue_style('evr_public');
             wp_enqueue_style('evr_calendar');
             wp_enqueue_style('evr_pop_style');
+            wp_enqueue_style('thickbox');
 }
 // function to enqueue scripts in public pages
 function evr_public_scripts() {
  wp_register_script($handle = 'evr_public_script', $src = plugins_url('/evr_public_script.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
- wp_enqueue_script('evr_public_script');		
+ wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+ wp_enqueue_script('evr_public_script');
+ wp_enqueue_style('thickbox');
+ wp_enqueue_script('evr_public_fancy');		
  }
 //function to load items to public pages of wordpress site
 function evr_public_header(){
-    wp_enqueue_script('thickbox'); 
-    wp_enqueue_style('thickbox');
+       
+    
     echo "<!--David-->";
 }
 /*********************************   END PUBLIC HEAD   *****************************/

@@ -28,9 +28,9 @@ function evr_payment_page(){
             else {
                 $attendee_id = "0";
                 echo "Failure - please retry!"; 
-                exit;}
+                }
 
-        if ($attendee_id =="") {_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
+        if (($attendee_id =="")||($attendee_id =="0")) {_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
         else {
             
             
@@ -400,7 +400,8 @@ function evr_by_category($atts, $content=null){
 					$end_year = $row ['end_year'];
 					$start_time = $row ['start_time'];
 					$end_time = $row ['end_time'];  
-					
+					 $outside_reg = $row['outside_reg'];  // Yor N
+                    $external_site = $row['external_site'];
 		          
 	    
 		$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
@@ -419,7 +420,12 @@ function evr_by_category($atts, $content=null){
         ?>
             <td class="er_title er_ticket_info"><b>
             <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['event_pop']=="N"){echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=register&event_id='.$event_id.'">';}
+            if ($company_options['event_pop']=="N"){ 
+                if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
+	               }  else {
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=register&event_id='.$event_id.'">';}}
+           
+           
             else {?>
             <a href="#TB_inline?&height=600&width=800&inlineId=popup<?php echo $event_id;?>&modal=false" class="thickbox" title="<?php echo $event_name;?>">
             
