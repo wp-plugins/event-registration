@@ -3,6 +3,13 @@
  * @author David Fleming
  * @copyright 2010
  */
+/*
+6.00.13 -Added fields to event
+send_coord VARCHAR(2) DEFAULT NULL,
+coord_email VARCHAR(65) DEFAULT NULL,
+coord_msg VARCHAR (1000) DEFAULT NULL,
+coord_pay_msg VARCHAR (1000) DEFAULT NULL
+*/
 /* 6.00.12 - Added fields to event table  
 send_mail VARCHAR (2) DEFAULT NULL,
 send_contact VARCHAR (2) DEFAULT NULL,
@@ -31,7 +38,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.12";
+    $cur_build = "6.00.13";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -58,7 +65,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.13";
+    $upgrade_version = "0.13.1";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -172,7 +179,36 @@ function evr_upgrade_tables(){
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }
+            
+        $value = "send_coord";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD send_coord VARCHAR (2) DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+            
+        $value = "coord_email";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD coord_email VARCHAR (65) DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+            
+        $value = "coord_msg";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD coord_msg TEXT DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+            
+        $value = "coord_pay_msg";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD coord_pay_msg TEXT DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
         /*
+        
+                  send_coord VARCHAR(2) DEFAULT NULL,
+                  coord_email VARCHAR(65) DEFAULT NULL,
+                  coord_msg VARCHAR (1000) DEFAULT NULL,
+                  coord_pay_msg VARCHAR (1000) DEFAULT NULL,
         $value = "";
         
         if (!array_key_exists($value, $field_names)) {            
@@ -516,14 +552,18 @@ function evr_event_db()
 				  send_mail VARCHAR (2) DEFAULT NULL,
                   send_contact VARCHAR (2) DEFAULT NULL,
                   contact_email VARCHAR(65) DEFAULT NULL,
-                  contact_msg VARCHAR (1000) DEFAULT NULL,
+                  contact_msg TEXT DEFAULT NULL,
 				  is_active VARCHAR(45) DEFAULT NULL,
-				  conf_mail VARCHAR (1000) DEFAULT NULL,
+				  conf_mail TEXT DEFAULT NULL,
                   use_coupon VARCHAR(2) DEFAULT NULL,
 				  coupon_code VARCHAR(50) DEFAULT NULL,
 				  coupon_code_price decimal(7,2) DEFAULT NULL,
 				  category_id TEXT,
-				  UNIQUE KEY id (id)
+                  send_coord VARCHAR(2) DEFAULT NULL,
+                  coord_email VARCHAR(65) DEFAULT NULL,
+                  coord_msg TEXT DEFAULT NULL,
+                  coord_pay_msg TEXT DEFAULT NULL,
+                  UNIQUE KEY id (id)
 				) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);

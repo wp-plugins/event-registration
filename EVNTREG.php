@@ -13,7 +13,7 @@ It allows you to capture the registering persons contact information to a databa
 It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   
 Detailed payment management system to track and record event payments.  
 Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.00.12
+Version: 6.00.13
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.wordpresseventregister.com
 */
@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.00.12";
+$evr_ver = "6.00.13";
 
 /*
 to change date format in event listing display

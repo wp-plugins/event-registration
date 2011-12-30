@@ -10,12 +10,13 @@ function evr_paypal_txn(){
 	$id=$_REQUEST['id'];//This is the id of the registrant
 	if ($id ==""){
 		echo "ID not supplied.";
-	}else{
-		if ($company_options['use_sandbox'] == 'Y'){
+	}
+    else if ($company_options['use_sandbox'] == 'Y'){
 			evr_sandbox_using_ipn($id=$_REQUEST['id']);
-		}else{
+		}
+    else {
 			$p = new paypal_class;// initiate an instance of the class
-			if ($p->validate_ipn()) {
+			$p->validate_ipn(); 
 				//store the results in reusable variables
 				$payer_id = $p->ipn_data['payer_id'];
 				$payment_date = $p->ipn_data['payment_date'];
@@ -48,29 +49,16 @@ function evr_paypal_txn(){
 				$reason_code = $p->ipn_data['reason_code'];
 				$txn_type = $p->ipn_data['txn_type'];
 			
-				
-				$sql="UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id ='$id'";
-				$wpdb->query($wpdb->prepare($sql));
+				global $wpdb;
+			$events_attendee_tbl = get_option('evr_attendee');
+			
+			$today = date("m-d-Y");	
+			$sql="UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id ='$id'";
+            $wpdb->query($wpdb->prepare($sql));
+                          
                 
                 
-                //Works fine to here!!  the breaks??
                 
-				
-				 $query  = "SELECT * FROM ". $events_attendee_tbl ." WHERE id ='".$id."'";
-				 $result = mysql_query($query) or die('Error : ' . mysql_error());
-					while ($row = mysql_fetch_assoc ($result)){
-						$attendee_email = $row['email'];
-                        $fname = $row['fname'];
-				 }
-				 
-				    	$email_subject = $company_options['payment_subj'];
-						$email_body = $company_options['payment_message'];
-						$default_mail=$company_options['send_confirm'];
-						$Organization = $company_options['company'];
-						$contact =$company_options['company_email'];
-				 
-               
-				//$event_id = $_REQUEST['event_id'];
 				(is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
                 $events_detail_tbl = get_option('evr_event');
 				$query  = "SELECT * FROM ".$events_detail_tbl." WHERE id='$event_id'";
@@ -87,34 +75,14 @@ function evr_paypal_txn(){
                     		$end_time       = $row['end_time'];
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
+                            //added 6.00.13
+                            $send_coord = $row['send_coord'];
+                            $coord_email = $row['coord_email'];
+                            $coord_msg = stripcslashes($row['coord_msg']);
+                            $coord_pay_msg = stripslashes($row['coord_pay_msg']);
                             
 					}
-				
-                $payment_link = evr_permalink($company_options['return_url']). "id=".$id."&fname=".$fname;	
-                    						
-				//Replace the tags
-				$tags = array("[id]","[fname]", "[lname]", "[payer_email]", "[event_name]", "[amnt_pd]", "[txn_id]", "[address_street]", "[address_city]", "[address_state]", "[address_zip]", "[address_country]", "[start_date]", "[start_time]", "[end_date]", "[end_time]", "[payment_url]" );
-				$vals = array($id, $first_name, $last_name, $payer_email, $event_name, $amount_pd, $txn_id, $address_street, $address_city, $address_state, $address_zip, $address_country, $start_date, $start_time, $end_date, $end_time, $payment_link);
-				
-                
-                
-                
-				
-				$headers = "MIME-Version: 1.0\r\n";
-				$headers .= "From: " . $Organization . " <". $contact . ">\r\n";
-				$headers .= "Reply-To: " . $Organization . "  <" . $contact . ">\r\n";
-				$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n"; 
-				$message_top = "<html><body>"; 
-				$message_bottom = "</html></body>";
-				$email_body = $message_top.$email_body.$message_bottom;
-				
-				$subject = str_replace($tags,$vals,$email_subject);
-				$body    = str_replace($tags,$vals,$email_body);
-				if ($default_mail == 'Y'){ if($email_body != ""){ wp_mail($attendee_email, html_entity_decode($subject), html_entity_decode($body), $headers);}}
-                
-                
-                
-                
+
                 
                 
 				
@@ -136,34 +104,116 @@ function evr_paypal_txn(){
         		
      $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
      '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
+     
+     $query  = "SELECT * FROM ". $events_attendee_tbl ." WHERE id ='".$id."'";
+			 $result = mysql_query($query) or die('Error : ' . mysql_error());
+				while ($row = mysql_fetch_assoc ($result)){
+					$attendee_email = $row['email'];
+                    $f_name = $row['fname'];
+                    $l_name = $row['lname'];
+			 }
         	
         
     //$wpdb->insert( get_option('evr_payment'), $sql, $sql_data );
-      if ($wpdb->insert( get_option('evr_payment'), $sql, $sql_data )){ 
+      if ($wpdb->insert( get_option('evr_payment'), $sql, $sql_data )){
+            $headers = "From: " . $company_options['company'] . " <". $company_options['company_email'] . ">\r\n";
+			$headers .= "Reply-To: " . $company_options['company'] . "  <" . $company_options['company_email'] . ">\r\n";
+          $details = "";
+          foreach ($p->ipn_data as $key => $value) { $details .= "\n$key: $value"; }
+          $paydate = date('m/d/Y');
+          $paytime = date('g:i A');
+          $SearchValues =  array( "[payer_email]","[fname]","[lname]","[attendee_email]","[event_name]", "[event_id]","[details]","[pay_date]", "[pay_time]");
+          $ReplaceValues = array($p->ipn_data['payer_email'],$f_name, $l_name, $attendee_email, $event_name, $event_id, $details, $paydate, $paytime);
+         
+                if ($send_coord == "Y") {
+                 $subject = 'Instant Payment Notification - Success';
+		         $email_content = str_replace($SearchValues, $ReplaceValues, $coord_pay_msg ); 
+                 wp_mail($coord_email, html_entity_decode($subject), html_entity_decode($email_content),$headers);
+                }
+                else {       
+        
                 $subject = 'Instant Payment Notification - Success';
 				 $body =  "An instant payment notification was successfully posted\n";
-				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
+				  $body .= "from ".$p->ipn_data['payer_email']." on behalf of ".$f_name." ".$l_name;
+                 $body .= " for event ".$event_name."(".$event_id.")"." on ".date('m/d/Y');
 				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
 				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
-				 wp_mail($contact, $subject, $body);} 
+				 wp_mail($contact, $subject, $body,$headers);} 
+                 }
                  else {
+                    if ($send_coord == "Y") {
+                 $subject = 'Instant Payment Notification - Failure';
+				 $body =  "An instant payment notification was received but not posted!\n";
+				 $body .= "from ".$p->ipn_data['payer_email']." on behalf of ".$f_name." ".$l_name;
+                 $body .= " for event ".$event_name."(".$event_id.")"." on ".date('m/d/Y');
+				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
+				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
+                 wp_mail($coord_email, $subject, $body,$headers);
+                }
+                else {       
+        
                      $subject = 'Instant Payment Notification - Failure';
 				 $body =  "An instant payment notification was received but not posted!\n";
-				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
+				  $body .= "from ".$p->ipn_data['payer_email']." on behalf of ".$f_name." ".$l_name;
+                 $body .= " for event ".$event_name."(".$event_id.")"." on ".date('m/d/Y');
 				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
 				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
-				 wp_mail($contact, $subject, $body);
-                 };         
+				 wp_mail($contact, $subject, $body,$headers);
+                 }
+                 }  
+                 
+ 		 
+			 			 
+                       //$attendee_email   = "consultant@avdude.com";
+				    	$email_subject    = $company_options['payment_subj'];
+						$payment_msg      = stripslashes($company_options['payment_message']);
+						$pay_confirm      = $company_options['pay_confirm'];
+						$Organization     = $company_options['company'];
+						$contact          = $company_options['company_email'];
+     	      
+			$headers .= "From: " . $Organization . " <". $contact . ">\r\n";
+			$headers .= "Reply-To: " . $Organization . "  <" . $contact . ">\r\n";
+            
+            
+            
+            if ($send_coord == "Y") {$contact = $coord_email;} else {$contact = $company_options['company_email'];}
+            $payment_link = evr_permalink($company_options['return_url']). "id=".$id."&fname=".$f_name;
+         
+            $SearchValues = array(  "[id]","[fname]", "[lname]", "[contact]", "[payer_email]", "[event_name]", 
+                          "[event_id]","[location]","[event_city]","[amnt_pd]", "[txn_id]",
+                          "[payment_url]","[start_date]", "[start_time]", "[end_date]","[end_time]",
+                          "[email]");
+
+            $ReplaceValues = array($id, $f_name, $l_name, $contact, $payer_email,$event_name,
+                          $event_id, $event_location, $event_city, $amount_pd,$txn_id,
+                          $payment_link, $start_date,$start_time, $end_date, $end_time,
+                          $attendee_email);
+                          
+                
+            //Replace the tags
+            $email_content = str_replace($SearchValues, $ReplaceValues, $payment_msg );            
+
+                       
+											
+				
+			
+				
+
+            if ($pay_confirm =='Y'){ 
+            wp_mail($attendee_email, html_entity_decode($email_subject),html_entity_decode($email_content),$headers);
+			 }
+                             
+             
 				 
 			}
-		}
-	}
-
 }
+
+
 
 //Using Sandbox
 function evr_sandbox_using_ipn($id){
 	$company_options = get_option('evr_company_settings');
+    
         $email_subject = $company_options['payment_subj'];
     	$email_body = $company_options['payment_message'];
     	$default_mail=$company_options['send_confirm'];
@@ -225,14 +275,9 @@ function evr_sandbox_using_ipn($id){
 			$sql="UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id ='$id'";
             $wpdb->query($wpdb->prepare($sql));
 			
-			 $query  = "SELECT * FROM ". $events_attendee_tbl ." WHERE id ='".$id."'";
-			 $result = mysql_query($query) or die('Error : ' . mysql_error());
-				while ($row = mysql_fetch_assoc ($result)){
-					$attendee_email = $row['email'];
-			 }
-			 			 
-			//$event_id = $_REQUEST['event_id'];
-			(is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
+			 
+            $event_id = $_REQUEST['event_id'];
+			//(is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
             $query  = "SELECT * FROM ".$events_detail_tbl." WHERE id='$event_id'";
 				$result = mysql_query($query) or die('Error : ' . mysql_error());
 				while ($row = mysql_fetch_assoc ($result)){
@@ -247,25 +292,14 @@ function evr_sandbox_using_ipn($id){
                     		$end_time       = $row['end_time'];
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
+                            //added 6.00.13
+                            $send_coord = $row['send_coord'];
+                            $coord_email = $row['coord_email'];
+                            $coord_msg = stripcslashes($row['coord_msg']);
+                            $coord_pay_msg = stripslashes($row['coord_pay_msg']);
                             
-					}
-											
-				//Replace the tags
-				$tags = array("[id]","[fname]", "[contact]","[lname]", "[payer_email]", "[event_name]", "[amnt_pd]", "[txn_id]", "[address_street]", "[address_city]", "[address_state]", "[address_zip]", "[address_country]", "[start_date]", "[start_time]", "[end_date]", "[end_time]" );
-				$vals = array($id, $first_name, $company_options('company_email'),$last_name, $payer_email, $event_name, $amount_pd, $txn_id, $address_street, $address_city, $address_state, $address_zip, $address_country, $start_date, $start_time, $end_date, $end_time);
-				
-			$headers = "MIME-Version: 1.0\r\n";
-			$headers .= "From: " . $Organization . " <". $contact . ">\r\n";
-			$headers .= "Reply-To: " . $Organization . "  <" . $contact . ">\r\n";
-			$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n"; 
-			$message_top = "<html><body>"; 
-			$message_bottom = "</html></body>";
-			$email_body = $message_top.$email_body.$message_bottom;
-			
-			$subject = str_replace($tags,$vals,$email_subject);
-			$body    = str_replace($tags,$vals,$email_body);
-			if ($default_mail =='Y'){ if($email_body != ""){ wp_mail($attendee_email, html_entity_decode($subject), html_entity_decode($body), $headers);}}
-			
+					} 
+             	
 			$events_paypal_transactions_tbl = get_option('evr_payment');
 				//Store transaction details in the database
 			              
@@ -284,22 +318,104 @@ function evr_sandbox_using_ipn($id){
         		
      $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
      '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
-        	
+     
+     $query  = "SELECT * FROM ". $events_attendee_tbl ." WHERE id ='".$id."'";
+			 $result = mysql_query($query) or die('Error : ' . mysql_error());
+				while ($row = mysql_fetch_assoc ($result)){
+					$attendee_email = $row['email'];
+                    $f_name = $row['fname'];
+                    $l_name = $row['lname'];
+			 }
+			    	
         
-    if ($wpdb->insert( get_option('evr_payment'), $sql, $sql_data )){ 
-                $subject = 'Instant Payment Notification - Success';
+      if ($wpdb->insert( get_option('evr_payment'), $sql, $sql_data )){
+        $headers = "From: " . $company_options['company'] . " <". $company_options['company_email'] . ">\r\n";
+			$headers .= "Reply-To: " . $company_options['company'] . "  <" . $company_options['company_email'] . ">\r\n";
+          $details = "";
+          foreach ($p->ipn_data as $key => $value) { $details .= "\n$key: $value"; }
+          $paydate = date('m/d/Y');
+          $paytime = date('g:i A');
+          $SearchValues =  array( "[payer_email]","[fname]","[lname]","[attendee_email]","[event_name]", "[event_id]","[details]","[pay_date]", "[pay_time]");
+          $ReplaceValues = array($p->ipn_data['payer_email'],$f_name, $l_name, $attendee_email, $event_name, $event_id, $details, $paydate, $paytime);
+         
+                if ($send_coord == "Y") {
+                 $subject = 'Sandbox Instant Payment Notification - Success';
+		         $email_content = str_replace($SearchValues, $ReplaceValues, $coord_pay_msg ); 
+                 wp_mail($coord_email, html_entity_decode($subject), html_entity_decode($email_content),$headers);
+                }
+                else {       
+                  
+        
+                $subject = 'Sandbox Instant Payment Notification - Success';
 				 $body =  "An instant payment notification was successfully posted\n";
 				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
 				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
 				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
 				 wp_mail($contact, $subject, $body);} 
+                 }
                  else {
-                     $subject = 'Instant Payment Notification - Failure';
+                    if ($send_coord == "Y") {
+                 $subject = 'Sandbox Instant Payment Notification - Failure';
+				 $body =  "An instant payment notification was received but not posted!\n";
+				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
+				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
+				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
+                 wp_mail($coord_email, $subject, $body);
+                }
+                else {       
+        
+                     $subject = 'Sandbox Instant Payment Notification - Failure';
 				 $body =  "An instant payment notification was received but not posted!\n";
 				 $body .= "from ".$p->ipn_data['payer_email']." on ".date('m/d/Y');
 				 $body .= " at ".date('g:i A')."\n\nDetails:\n";
 				 foreach ($p->ipn_data as $key => $value) { $body .= "\n$key: $value"; }
 				 wp_mail($contact, $subject, $body);
-                 };
+                 }
+                 }
+                 
+     
+   
+     			 
+                      
+				    	$email_subject    = $company_options['payment_subj'];
+						$payment_msg      = stripslashes($company_options['payment_message']);
+						$pay_confirm      = $company_options['pay_confirm'];
+						$Organization     = $company_options['company'];
+						$contact          = $company_options['company_email'];
+     	      
+			$headers .= "From: " . $Organization . " <". $contact . ">\r\n";
+			$headers .= "Reply-To: " . $Organization . "  <" . $contact . ">\r\n";
+            
+            if ($send_coord == "Y") {$contact = $coord_email;} else {$contact = $company_options['company_email'];}
+            $payment_link = evr_permalink($company_options['return_url']). "id=".$id."&fname=".$f_name;
+         
+  $SearchValues = array(  "[id]","[fname]", "[lname]", "[contact]", "[payer_email]", "[event_name]", 
+                          "[event_id]","[location]","[event_city]","[amnt_pd]", "[txn_id]",
+                          "[payment_url]","[start_date]", "[start_time]", "[end_date]","[end_time]",
+                          "[email]");
+
+   $ReplaceValues = array($id, $f_name, $l_name, $contact, $payer_email,$event_name,
+                          $event_id, $event_location, $event_city, $amount_pd,$txn_id,
+                          $payment_link, $start_date,$start_time, $end_date, $end_time,
+                          $attendee_email);
+                          
+                
+
+    $email_content = str_replace($SearchValues, $ReplaceValues, $payment_msg );            
+
+                       
+											
+				//Replace the tags
+			
+				
+
+            if ($pay_confirm =='Y'){ 
+            wp_mail($attendee_email, html_entity_decode($email_subject),html_entity_decode($email_content),$headers);
+			 }
+            
+			     
+           
+		 
+    
 }
 ?>

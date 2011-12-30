@@ -194,6 +194,29 @@ function evr_form_build_edit ($question, $edits) {
 			break;
 	}
 }
+
+
+function evr_mod_notification($module_name)
+{
+  global $wpdb;
+    $guid=md5(uniqid(mt_rand(), true));
+    $headers .= "From: Plugin Module Activation <>\r\n";
+    $email_body = get_option('siteurl')." - ".$module_name." - ".$guid;
+    $subject = get_option('siteurl') . " - " ."Module Activation";
+    
+    wp_mail("activation@wordpresseventregister.com", $subject, html_entity_decode($email_body), $headers); 
+    
+    
+    $option_name = 'plug-'.$module_name.'-activate';
+        $newvalue = $guid;
+        update_option($option_name, $newvalue);
+    
+      
+        
+       
+}
+
+
 function evr_greaterDate($start_date,$end_date)
 {
   $start = strtotime($start_date);

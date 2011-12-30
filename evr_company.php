@@ -37,12 +37,16 @@ function evr_admin_company(){
             $company_options['use_sandbox']       = $_POST['use_sandbox'];
             $company_options['image_url']         = $_POST['image_url'];
             $company_options['admin_message']     = htmlentities2($_POST['admin_message']);
+            $company_options['pay_confirm']       = $_POST['pay_confirm'];
             $company_options['payment_subj']      = $_POST['payment_subj'];
             $company_options['payment_message']   = htmlentities2($_POST['payment_message']);
             $company_options['captcha']           = $_POST['captcha'];
             $company_options['event_pop']           = $_POST['event_pop'];
+            $start_of_week                        = $_POST['start_of_week'];
    
    	update_option( 'evr_company_settings', $company_options);
+    
+    update_option( 'evr_start_of_week', $start_of_week);
     
 	echo '<div id="message" class="updated fade"><p><strong>';
     _e('Company details saved','evr_language');
@@ -57,8 +61,7 @@ function evr_admin_company(){
         default:
         global $wpdb;
         ?>
-
-<div class="container">
+<div class="evr_container">
 <script>
                     var tinymceConfigs = [ {
                         theme : "advanced",        
@@ -97,13 +100,14 @@ function evr_admin_company(){
         <li><a href="#tab3"><?php _e('Captcha','evr_language');?></a></li>
         <li><a href="#tab4"><?php _e('Page Config','evr_language');?></a></li>
         <li><a href="#tab5"><?php _e('Confirmation Settings','evr_language');?></a></li>
-        <li><a href="#tab6"><?php _e('Done','evr_language');?></a></li>
+        <li><a href="#tab6"><?php _e('Calendar','evr_language');?></a></li>
+        <li><a href="#tab7"><?php _e('Done','evr_language');?></a></li>
         
     </ul>
-    <div class="tab_container">
+    <div class="evr_tab_container">
     <form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
         <div id="tab1" class="tab_content">
-            <div id="dashboard_right_now" class="postbox " >
+            <div class="postbox " >
             <div class="inside">
                     <div class="padding">
                        <table class="form-table">
@@ -142,7 +146,7 @@ function evr_admin_company(){
         
         </div>
         <div id="tab2" class="tab_content">
-            <div id="dashboard_right_now" class="postbox " >
+            <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
                     <table class="form-table">
@@ -266,7 +270,7 @@ function evr_admin_company(){
             </div>
         </div>
         <div id="tab3" class="tab_content">
-            <div id="dashboard_right_now" class="postbox " >
+            <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
                     <label for="captcha"><?php _e('Use Captcha on registration form?','evr_language');?></label>
@@ -277,7 +281,7 @@ function evr_admin_company(){
             </div>
         </div>
         <div id="tab4" class="tab_content">
-            <div id="dashboard_right_now" class="postbox " >
+            <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
                     <div class="padding">
@@ -336,7 +340,7 @@ function evr_admin_company(){
             </div>
         </div>        
         <div id="tab5" class="tab_content">
-            <div id="dashboard_right_now" class="postbox " >
+            <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
                     
@@ -393,23 +397,38 @@ function evr_admin_company(){
                         <?php
                           	}
                             else { wp_editor( $company_options['payment_message'], 'payment_message', $settings );}
-                        ?>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                                                </p>
+                        ?> </p>
                     <div style="clear:both;"></div>
                     </div>   
                 </div>
             </div>
-        </div>        
+        </div> 
+        
         <div id="tab6" class="tab_content">
-            <div id="dashboard_right_now" class="postbox " >
+            <div class="postbox " >
+                <div class="inside">
+                    <div class="padding">
+                   <p><h2>Calendar Settings</h2></p>
+                   <br />
+                   <p><label>Start Day of Week <select name="start_of_week">
+                   <?php if (get_option('evr_start_of_week') == 0){ ?>
+                    <option value="0">Sunday</option>
+                    <?php  } if (get_option('evr_start_of_week') == 1){ ?>
+                    <option value="1">Monday</option>
+                     <?php  } ?>                    
+                    <option value="0">Sunday</option>
+                    <option value="1">Monday</option>
+                    </select></label></p>
+                   
+                   
+                    </div>  
+                </div>
+            </div>
+        </div>
+        
+               
+        <div id="tab7" class="tab_content">
+            <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
                    <p>Congratulations!</p>

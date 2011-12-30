@@ -15,6 +15,7 @@ function evr_process_confirmation(){
     else {echo "Failure - please retry!"; exit;}
     
     $attendee_array = $_POST['attendee'];
+    $ticket_array = unserialize($reg_form['tickets']);
     $attendee_list = serialize($attendee_array);
        
     
@@ -74,10 +75,10 @@ function evr_process_confirmation(){
                             }
                         $use_coupon = $row['use_coupon'];
                         $reg_limit = $row['reg_limit'];
-                   	    $event_name = stripslashes($row['event_name']);
+                   	    $event_name = html_entity_decode(stripslashes($row['event_name']));
         					$event_identifier = stripslashes($row['event_identifier']);
         					$display_desc = $row['display_desc'];  // Y or N
-                            $event_desc = stripslashes($row['event_desc']);
+                            $event_desc = html_entity_decode(stripslashes($row['event_desc']));
                             $event_category = unserialize($_REQUEST['event_category']);
         					$reg_limit = $row['reg_limit'];
         					$event_location = $row['event_location'];
@@ -108,7 +109,11 @@ function evr_process_confirmation(){
         					$conf_mail = stripslashes($row['conf_mail']);
         					$start_date = $row['start_date'];
                             $end_date = $row['end_date'];
-                        
+                            //added 6.00.13
+                            $send_coord = $row['send_coord'];
+                            $coord_email = $row['coord_email'];
+                            $coord_msg = stripcslashes($row['coord_msg']);
+                            $coord_pay_msg = stripslashes($row['coord_pay_msg']);
                             
                             $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                              $result2 = mysql_query($sql2);
@@ -146,19 +151,29 @@ function evr_process_confirmation(){
                  ++$i;
                  } while ($i < count($attendee_array));
             }
+            
+    $row_count = count($ticket_array);
+    for ($row = 0; $row < $row_count; $row++) {
+    if ($ticket_array[$row]['ItemQty'] >= "1"){ $ticket_list.= $ticket_array[$row]['ItemQty']." ".$ticket_array[$row]['ItemCat']."-".$ticket_array[$row]['ItemName']." ".$ticket_array[$row]['ItemCurrency'] . " " . $ticket_array[$row]['ItemCost']."<br \>";}
+    } 
+      
+                           
          
     $payment_link = evr_permalink($company_options['return_url']). "id=".$reg_id."&fname=".$reg_form['fname'];
     //search and replace tags
-    $SearchValues = array("[id]","[fname]", "[lname]", "[phone]", "[event]",
-        "[description]", "[cost]", "[currency]",
-        "[contact]", "[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]",
-        "[co_zip]", "[payment_url]", "[start_date]", "[start_time]", "[end_date]",
-        "[end_time]", "[snum]", "[num_people]","[attendees]");
+    $SearchValues = array(  "[id]","[fname]", "[lname]", "[phone]", 
+                            "[address]","[city]","[state]","[zip]","[email]",
+                            "[event]","[description]", "[cost]", "[currency]",
+                            "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]","[co_zip]", 
+                            "[payment_url]", "[start_date]", "[start_time]", "[end_date]","[end_time]", 
+                            "[num_people]","[attendees]","[tickets]");
 
-    $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], $event_name, $event_desc, $reg_form['payment'],
-        $custom_cur, $company_options['company_email'], $company_options['company'], $company_options['company_street1'], $company_options['company_street2'],
-        $company_options['city'], $company_options['state'], $company_options['postal'],$payment_link , $start_date,
-        $start_time, $end_date, $end_time, $attnum, $reg_form['quantity'],$attendee_names);
+    $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], 
+                            $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
+                            $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
+                            $company_options['company_email'], $coord_email, $company_options['company'], $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'], $company_options['company_state'], $company_options['company_postal'],
+                            $payment_link , $start_date,$start_time, $end_date, $end_time, 
+                            $reg_form['num_people'],$attendee_names, $ticket_list);
 
     $email_content = str_replace($SearchValues, $ReplaceValues, $confirmation_email_body);
     $message_top = "<html><body>"; 
@@ -169,13 +184,11 @@ function evr_process_confirmation(){
     You will be notified by email should a seat become available.",'evr_language').'</p><p>'.__("Thank You",'evr_language').'</p></font>';
     
     if ($reg_form['reg_type']=="WAIT"){$email_content = $wait_message;}
-    $email_body = $message_top.$email_content.$message_bottom;
+    $email_body = $email_content;
             
-    $headers = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= 'From: "' . $company_options['company'] . '" <' . $company_options['company_email'] . ">\r\n";
+    $headers .= 'From: "' . html_entity_decode($company_options['company']) . '" <' . $company_options['company_email'] . ">\r\n";
     
-    wp_mail($reg_form['email'], $event_name, html_entity_decode($email_body), $headers);
+    wp_mail($reg_form['email'], html_entity_decode($event_name), html_entity_decode($email_body), $headers);
     
     _e("A confirmation email has been sent to:",'evr_language'); 
     echo " ";
@@ -183,7 +196,53 @@ function evr_process_confirmation(){
     
 }
 //End Send Confirmation Email    
-   
+
+//Send Coordinator AlertEmail   
+   //Select the default message
+if ($send_coord =="Y"){
+      
+    
+    if ( count($attendee_array)>"0"){
+                $attendee_names="";
+                $i = 0;
+                 do {
+                    $attendee_names .= $attendee_array[$i]["first_name"]." ".$attendee_array[$i]['last_name'].",";
+                    
+                   
+                 ++$i;
+                 } while ($i < count($attendee_array));
+            }
+         
+    $payment_link = evr_permalink($company_options['return_url']). "id=".$reg_id."&fname=".$reg_form['fname'];
+    //search and replace tags
+    $SearchValues = array(  "[id]","[fname]", "[lname]", "[phone]", 
+                            "[address]","[city]","[state]","[zip]","[email]",
+                            "[event]","[description]", "[cost]", "[currency]",
+                            "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]","[co_zip]", 
+                            "[payment_url]", "[start_date]", "[start_time]", "[end_date]","[end_time]", 
+                            "[num_people]","[attendees]","[tickets]");
+
+    $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], 
+                            $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
+                            $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
+                            $company_options['company_email'], $coord_email, $company_options['company'], $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'], $company_options['company_state'], $company_options['company_postal'],
+                            $payment_link , $start_date,$start_time, $end_date, $end_time, 
+                            $reg_form['num_people'],$attendee_names, $ticket_list);
+
+    $email_content = str_replace($SearchValues, $ReplaceValues, $coord_msg);
+    $message_top = "<html><body>"; 
+    $message_bottom = "</html></body>";
+    
+    $email_body = $message_top.$email_content.$message_bottom;
+            
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+    $headers .= 'From: "' . $company_options['company'] . '" <' . $company_options['company_email'] . ">\r\n";
+    
+    wp_mail($coord_email, $event_name, html_entity_decode($email_body), $headers);
+  
+}
+//End Send Coordinator Email     
    
 //Provide screen feedback on registration process   
 //If registration is at capacity and attendee is waitlisted, notify attendee of waitlist.

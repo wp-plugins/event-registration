@@ -4,7 +4,7 @@ Donate link: http://www.wordpresseventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
 Tested up to: 3.2.1
-Stable tag: 6.00.12
+Stable tag: 6.00.13
 
 This plugin is designed to allow you to take online registrations for events and classes. Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 

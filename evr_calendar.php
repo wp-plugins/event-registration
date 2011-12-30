@@ -137,7 +137,7 @@ function evr_np_of_day($date){
 function evr_display_calendar(){
     global $wpdb,$week_no;
     unset($week_no);
-    if (get_option('start_of_week') == 0){
+    if (get_option('evr_start_of_week') == 0){
 				$name_days = array(1=>__('Sun','evr_language'),__('Mon','evr_language'),__('Tue','evr_language'),__('Wed','evr_language'),__('Thu','evr_language'),__('Fri','evr_language'),__('Sat','evr_language'));
     }
     else{
@@ -182,7 +182,7 @@ function evr_display_calendar(){
         $c_day = date("d",evr_time_offset());
     }
 
-    if (get_option('start_of_week') == 0){
+    if (get_option('evr_start_of_week') == 0){
 				$first_weekday = date("w",mktime(0,0,0,$c_month,1,$c_year));
         $first_weekday = ($first_weekday==0?1:$first_weekday+1);
     }
@@ -258,7 +258,7 @@ function evr_display_calendar(){
 
     $calendar_body .= '<tr>';
     for ($i=1; $i<=7; $i++) {
-				if (get_option('start_of_week') == 0){
+				if (get_option('evr_start_of_week') == 0){
 	    			$calendar_body .= '<td class="'.($i<7&&$i>1?'normal-day-heading':'weekend-heading').'">'.$name_days[$i].'</td>';
 	  		}
 				else{
@@ -277,7 +277,7 @@ function evr_display_calendar(){
 								$go = FALSE;
 	      		}
             if ($go) {
-								if (get_option('start_of_week') == 0){
+								if (get_option('evr_start_of_week') == 0){
 		    						$grabbed_events = evr_fetch_events($c_year,$c_month,$i);
 		    						$no_events_class = '';
 		    						if (!count($grabbed_events)){

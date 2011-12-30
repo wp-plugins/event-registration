@@ -137,11 +137,7 @@ else {
     
 
 
-<form id="attendee_reg" class="evr_regform" method="post" 
-<?php /* get_permalink(
-action="<?php echo get_option('siteurl')?>/?page_id=<?php echo $company_options['evr_page_id'];?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
-*/ ?>
-action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
+<form id="attendee_reg" class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
 <ul id="evrRegForm">
 <li>
 <label for="fname"><?php _e('First Name','evr_language');?></label>
