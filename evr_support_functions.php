@@ -87,7 +87,7 @@ function _utf8_to_html ($data)
  }
  
 
-function evr_form_build(&$question, $answer = "") {
+function evr_form_build($question, $answer = "") {
 
 	$required = '';
 	if ($question->required == "Y") {
@@ -95,11 +95,11 @@ function evr_form_build(&$question, $answer = "") {
 	}
 	switch ($question->question_type) {
 		case "TEXT" :
-			echo "<input type=\"text\"$required id=\"TEXT_$question->id\"  name=\"TEXT_$question->id\" size=\"40\" title=\"$question->question\" value=\"$answer\" />\n";
+			echo "<span class=\"fieldbox\"><input type=\"text\"$required id=\"TEXT_$question->id\"  name=\"TEXT_$question->id\" size=\"40\" title=\"$question->question\" value=\"$answer\" /></span>\n";
 			break;
 		
 		case "TEXTAREA" :
-			echo "<textarea id=\"TEXTAREA_$question->id\"$required name=\"TEXTAREA_$question->id\" title=\"$question->question\" cols=\"30\" rows=\"5\">$answer</textarea>\n";
+			echo "<span class=\"msgbox\"><textarea id=\"TEXTAREA_$question->id\"$required name=\"TEXTAREA_$question->id\" title=\"$question->question\" cols=\"30\" rows=\"5\">$answer</textarea></span>\n";
 			break;
 		
 		case "SINGLE" :
@@ -109,7 +109,7 @@ function evr_form_build(&$question, $answer = "") {
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
 				//echo "<label><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</label><br/>\n";
-			 echo "<input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value<br/>\n";
+			 echo "<span class=\"radio\"><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</span>\n";
 			
             }
 			break;
@@ -121,7 +121,7 @@ function evr_form_build(&$question, $answer = "") {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
 			/*	echo "<label><input type=\"checkbox\"$required id=\"MULTIPLE_$question->id_$key\" name=\"MULTIPLE_$question->id_$key\" title=\"$question->question\" value=\"$value\"$checked /> $value</label><br/>\n"; */
 			//echo "<label><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value</label><br/>\n";
-			echo "<input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value<br/>\n";
+			echo "<span class=\"radio\"><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value</span>\n";
 			
             }
 			break;
@@ -129,7 +129,7 @@ function evr_form_build(&$question, $answer = "") {
 		case "DROPDOWN" :
 			$values = explode ( ",", $question->response );
 			$answers = explode ( ",", $answer );
-			echo "<select name=\"DROPDOWN_$question->id\"$required id=\"DROPDOWN_$question->id\" title=\"$question->question\" />".BR;
+			echo "<select name=\"DROPDOWN_$question->id\"$required id=\"DROPDOWN_$question->id\" title=\"$question->question\" />";
 			echo "<option value=''>Select One </option><br/>";
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " selected =\" selected\"" : "";
@@ -151,11 +151,11 @@ function evr_form_build_edit ($question, $edits) {
 	}
 	switch ($question->question_type) {
 		case "TEXT" :
-			echo "<input type=\"text\"$required id=\"TEXT_$question->id\"  name=\"TEXT_$question->id\" size=\"40\" title=\"$question->question\" value=\"$edits\" />\n";
+			echo "<span class=\"fieldbox\"><input type=\"text\"$required id=\"TEXT_$question->id\"  name=\"TEXT_$question->id\" size=\"40\" title=\"$question->question\" value=\"$edits\" /></span>";
 			break;
 		
 		case "TEXTAREA" :
-			echo "<textarea id=\"TEXTAREA_$question->id\"$required name=\"TEXTAREA_$question->id\" title=\"$question->question\" cols=\"30\" rows=\"5\">".$edits."</textarea>\n";
+			echo "<span class=\"msgbox\"><textarea id=\"TEXTAREA_$question->id\"$required name=\"TEXTAREA_$question->id\" title=\"$question->question\" cols=\"30\" rows=\"5\">".$edits."</textarea></span>";
 			break;
 		
 		case "SINGLE" :
@@ -163,9 +163,9 @@ function evr_form_build_edit ($question, $edits) {
 			$answers = explode ( ",", $edits );
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
-				echo "<input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value  ";
+				echo "<p class=\"hanging-indent radio_rows\"><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value  </p>";
 			}
-			echo "</br>\n";
+			
 			break;
 		
 		case "MULTIPLE" :
@@ -174,9 +174,8 @@ function evr_form_build_edit ($question, $edits) {
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
 			/*	echo "<label><input type=\"checkbox\"$required id=\"MULTIPLE_$question->id_$key\" name=\"MULTIPLE_$question->id_$key\" title=\"$question->question\" value=\"$value\"$checked /> $value</label><br/>\n"; */
-			echo " <input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value  ";
+			echo " <p class=\"hanging-indent radio_rows\"><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value  </p>";
 			}
-			echo "</br>\n";
 			break;
 		
 		case "DROPDOWN" :
@@ -195,6 +194,29 @@ function evr_form_build_edit ($question, $edits) {
 			break;
 	}
 }
+
+
+function evr_mod_notification($module_name)
+{
+  global $wpdb;
+    $guid=md5(uniqid(mt_rand(), true));
+    $headers .= "From: Plugin Module Activation <>\r\n";
+    $email_body = get_option('siteurl')." - ".$module_name." - ".$guid;
+    $subject = get_option('siteurl') . " - " ."Module Activation";
+    
+    wp_mail("activation@wordpresseventregister.com", $subject, html_entity_decode($email_body), $headers); 
+    
+    
+    $option_name = 'plug-'.$module_name.'-activate';
+        $newvalue = $guid;
+        update_option($option_name, $newvalue);
+    
+      
+        
+       
+}
+
+
 function evr_greaterDate($start_date,$end_date)
 {
   $start = strtotime($start_date);

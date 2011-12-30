@@ -33,7 +33,7 @@ function ReadMap($enc)
 	return $cc2gn;
 }
 
-function ReadAFM($file, &$map)
+function ReadAFM($file,$map)
 {
 	//Read a font metric file
 	$a=file($file);

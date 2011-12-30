@@ -64,6 +64,7 @@ global $wpdb;
                             <th>City</th>
                             <th>Status</th>
                             <th># Attendees</th>
+                            <th>Reports</th>
                             <th>Manage</th>
                             </tr>
                         </thead>
@@ -76,6 +77,7 @@ global $wpdb;
                             <th>City</th>
                             <th>Status</th>
                             <th># Attendees</th>
+                            <th>Reports</th>
                             <th>Manage</th>
                             </tr>
                         </tfoot>
@@ -128,7 +130,7 @@ global $wpdb;
                             <td><?php echo $event_city; ?></td>
                             <td><?php echo $active_event ; ?></td>
                             <td><?php echo $number_attendees?> / <?php echo $reg_limit?></td>
-                            <td>
+                            <td><?php evr_excel_export($event_id);?></td><td>
                             <div style="float:left">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="view_attendee"/>

@@ -4,7 +4,7 @@ Donate link: http://www.wordpresseventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
 Tested up to: 3.2.1
-Stable tag: 6.00.01
+Stable tag: 6.00.13
 
 This plugin is designed to allow you to take online registrations for events and classes. Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 
@@ -102,6 +102,28 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.12 =
+* Resolved issue with Coupon Code not deducting
+* Resolved table format issue when upgrading EventRegistration caused by Event Expresso.
+* Changed excel and CSV reporting function to ensure more universal site compatibility
+* Added fields to event table for coordinator emails
+* Modified upgrade of attendee to conditionalize adding columns.
+* Changed WYSIWG Editor to support multiple instances on a page - events, company
+* Repaired Admin style - container width for tabs 
+* Added enqueue farbtastic for colorpicker
+* Added text editor to category description
+* Replaced background color picker for categories with larger variety
+* Resolved issue prevent categories from deletion
+* Modified registration form styles
+* Added enqueue thickbox in public header
+* Resolved strange error wher & symbol appeared randomly throughout plugin.
+* Resolved wrapping issue on extra questions radio and checkbox
+* Resolved global variable missing in  categgory shortcode replacement listing
+* Resolved issue with adding name boxes alignment
+* Resolved issue with confirmation pushing sidebar down page
+* Resolved category listing display to follow same format as all event listing.
+* Changed google map size, widen price list on event popup
 
 = Version 6.00.10 =
 * Fixed Issue created by 6.00.09 - all attendees go to waitlist

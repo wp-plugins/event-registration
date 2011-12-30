@@ -25,7 +25,7 @@ function evr_confirm_form(){
     $reg_type = $_POST['reg_type'];
     $attendee_name = $fname." ".$lname;
     
-    echo "Registration Type is: ".$reg_type."!";
+    //echo "Registration Type is: ".$reg_type."!";
     
     
    
@@ -44,7 +44,7 @@ function evr_confirm_form(){
             $item_start_date  = $row['item_available_start_date'];
             $item_end_date    = $row['item_available_end_date'];
             $item_custom_cur  = $row['item_custom_cur'];
-                 
+                             
             $item_post = str_replace(".", "_", $row['item_price']);
             $item_qty = $_REQUEST['PROD_' . $event_id . '-' . $item_id . '_' . $item_post];
             
@@ -62,11 +62,7 @@ function evr_confirm_form(){
     
     $ticket_data = serialize($item_order);
 
-     $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city'=>$city, 
-                'state'=>$state, 'zip'=>$zip, 'reg_type'=>$reg_type, 'email'=>$email,
-                'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,
-                'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment);
-                
+                  
                 
      $reg_id = $wpdb->get_var("SELECT LAST_INSERT_ID()");
      $qanda=array();
@@ -104,18 +100,32 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                     		$result = mysql_query ($sql);
                             while ($row = mysql_fetch_assoc ($result)){  
                          
-                            $event_id       = $row['id'];
-            				$event_name     = $row['event_name'];
-            				$event_location = $row['event_location'];
-                            $event_address  = $row['event_address'];
-                            $event_city     = $row['event_city'];
-                            $event_postal   = $row['event_postal'];
-                            $reg_limit      = $row['reg_limit'];
-                    		$start_time     = $row['start_time'];
-                    		$end_time       = $row['end_time'];
-                    		$start_date     = $row['start_date'];
-                    		$end_date       = $row['end_date'];
+                            $event_id           = $row['id'];
+            				$event_name         = $row['event_name'];
+            				$event_location     = $row['event_location'];
+                            $event_address      = $row['event_address'];
+                            $event_city         = $row['event_city'];
+                            $event_postal       = $row['event_postal'];
+                            $reg_limit          = $row['reg_limit'];
+                    		$start_time         = $row['start_time'];
+                    		$end_time           = $row['end_time'];
+                    		$start_date         = $row['start_date'];
+                    		$end_date           = $row['end_date'];
+                            $use_coupon         = $row['use_coupon'];
+                            $coupon_code        = $row['coupon_code'];
+                            $coupon_code_price  = $row['coupon_code_price'];
+                            
                             }
+
+// GT Validate coupon code and deduct discount	
+if ($use_coupon == "Y"){
+    if ($coupon == $coupon_code) { $payment = ($payment + $coupon_code_price);}
+}
+
+$posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city'=>$city, 
+                'state'=>$state, 'zip'=>$zip, 'reg_type'=>$reg_type, 'email'=>$email,
+                'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,
+                'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment);
        
 
 ?>
@@ -124,7 +134,7 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                     <table width="95%" border="0">
                       <tr>
                         <td><strong>Event Name/Cost:</strong></td>
-                        <td><?php echo $event_name?> - <?php echo $item_order[0]['ItemCurrency'];?><?php echo $payment?></td>
+                        <td><?php echo $event_name?> - <?php echo $item_order[0]['ItemCurrency'];?>&nbsp;<?php echo $payment?></td>
                       </tr>
                       <tr>
                         <td><strong>Attendee Name:</strong></td>
@@ -146,6 +156,19 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
     for ($row = 0; $row < $row_count; $row++) {
     if ($item_order[$row]['ItemQty'] >= "1"){ echo $item_order[$row]['ItemQty']." ".$item_order[$row]['ItemCat']."-".$item_order[$row]['ItemName']." ".$item_order[$row]['ItemCurrency'] . " " . $item_order[$row]['ItemCost']."<br \>";}
     } }?></td>
+                      </tr>
+                      <tr>
+                       <?php 
+                       if ($use_coupon == "Y"){
+                           if($coupon == $coupon_code) {echo '<td><strong>Coupon:</strong></td><td>'; echo $coupon_code_price;'</td>';}
+                           elseif ($coupon != $coupon_code) {echo '<td><strong>Coupon:</strong></td><td>Invalid Code!</td>';}
+                       }
+                       ?>
+                      </tr>
+                      <tr><td><hr></td><td> <hr></td></tr>
+                      <tr>
+                        <td><strong>Event Name / Total Cost:</strong></td>
+                        <td><?php echo $event_name?>: <?php echo $item_order[0]['ItemCurrency'];?> <strong><?php echo number_format($payment,2)?> </strong></td>
                       </tr>
                     </table>
                     

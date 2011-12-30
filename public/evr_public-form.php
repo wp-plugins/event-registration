@@ -137,60 +137,57 @@ else {
     
 
 
-<form id="attendee_reg" class="evr_regform" method="post" 
-<?php /* get_permalink(
-action="<?php echo get_option('siteurl')?>/?page_id=<?php echo $company_options['evr_page_id'];?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
-*/ ?>
-action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
-<p>
+<form id="attendee_reg" class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
+<ul id="evrRegForm">
+<li>
 <label for="fname"><?php _e('First Name','evr_language');?></label>
-<input type="text" id="fname" name="fname" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="fname" name="fname" value="" /></span>
+</li>
 
-<p>
+<li>
 <label for="lname"><?php _e('Last Name','evr_language');?></label>
-<input type="text" id="lname" name="lname" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="lname" name="lname" value="" /></span>
+</li>
 
-<p>
+<li>
 <label for="emailaddress"><?php _e('Email Address','evr_language');?></label>
-<input type="text" id="email" name="email" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="email" name="email" value="" /></span>
+</li>
 
 
 <?php if ($inc_phone == "Y") { ?>
-<p>
+<li>
 <label for="phone"><?php _e('Phone Number','evr_language');?></label>
-<input type="text" id="phone" name="phone" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="phone" name="phone" value="" /></span>
+</li>
 <?php } ?>
 
 <?php if ($inc_address == "Y") { ?>
-<p>
+<li>
 <label for="address"><?php _e('Street/PO Address','evr_language');?></label>
-<input type="text" id="address" name="address" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="address" name="address" value="" /></span>
+</li>
 <?php } ?>
 
 <?php if ($inc_city == "Y") { ?>
-<p>
+<li>
 <label for="city"><?php _e('City','evr_language');?></label>
-<input type="text" id="city" name="city" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="city" name="city" value="" /></span>
+</li>
 <?php } ?>
 
 <?php if ($inc_state == "Y") { ?>
-<p>
+<li>
 <label for="state"><?php _e('State','evr_language');?></label>
-<input type="text" id="state" name="state" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="state" name="state" value="" /></span>
+</li>
 <?php } ?>
 
 <?php if ($inc_zip == "Y") { ?>
-<p>
+<li>
 <label for="zip"><?php _e('Postal/Zip Code','evr_language');?></label>
-<input type="text" id="zip" name="zip" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="zip" name="zip" value="" /></span>
+</li>
 <?php } ?>
 
 <?php
@@ -199,14 +196,14 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
     if ($questions) {
         foreach ($questions as $question) {
             ?>
-            <p>
+            <li>
             <label for="question-<?php echo $question->id;?>">
             <?php
             echo $question->question;
             ?>
             </label>
             <?php evr_form_build($question);?>
-            </p>
+            </li>
             <?php
         }
     }
@@ -214,10 +211,10 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
 
 
 <?php if ($use_coupon == "Y") { ?>
-<p>
+<li>
 <label for="coupon"><?php _e('Enter coupon code for discount','evr_language');?></label> 
-<input type="text" id="coupon" name="coupon" value="" />
-</p>
+<span class="couponbox"><input type="text" id="coupon" name="coupon" value="" /></span>
+</li> </ul>
 <?php } ?>
 
 <?php 	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";

@@ -67,7 +67,7 @@ if ($rows){
         echo "<tr><td>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td><td>";
         if ($attendee->attendees ==""){echo "<font color='red'>Please Update This Attendee</font>";}
         else {$attendee_array = unserialize($attendee->attendees);
-        foreach($attendee_array as &$ma) 
+        foreach($attendee_array as $ma) 
             echo $ma["first_name"]." ".$ma["last_name"]."<br/>";}
         
         echo "</td><td>" . $attendee->email . "</td><td>" . $attendee->phone . "</td>";
@@ -83,8 +83,8 @@ if ($rows){
                             </table>
                             <br />
                             <div style="clear:both;"></div>
-                            <button style="background-color: lightgreen"  onclick="window.location='<?php echo EVR_PLUGINFULLURL . "evr_admin_export.php?id=" . $event_id . "&export=report&action=excel&key=5678";?>'"><?php _e('Export Excel','evr_language');?></button>
-                            <button style="background-color: lightgreen" onclick="window.location='<?php echo EVR_PLUGINFULLURL . "evr_admin_export.php?id=" . $event_id. "&action=csv&key=5678";?>'" style="width:180; height: 30"><?php _e('Export CSV','evr_language');?></button>            
+                            
+                            <?php evr_excel_export($event_id);?>
                            
                         </div>
                         </div>
@@ -96,4 +96,93 @@ if ($rows){
 </div>
 <?php
 }
+
+
+function evr_excel_export($event_id){
+    global $wpdb;
+    $today = date("Y-m-d_Hi",time()); 
+$info = array(
+        "dbuser" => $wpdb->dbuser, 
+        "dbpass" => $wpdb->dbpassword, 
+        "db" =>$wpdb->dbname, 
+        "host" =>$wpdb->dbhost
+        );
+
+
+$tables = array(
+        "evr_answer" => get_option('evr_answer'),
+        "evr_question" => get_option('evr_question'),
+        "evr_event" => get_option('evr_event'),
+        "evr_attendee" => get_option('evr_attendee'),
+        "evr_payment" => get_option ('evr_payment')
+        );
+
+
+			
+?>
+<div style="display: inline-block;">
+    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
+                                <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
+                               <input type="hidden" name="export" value="report" /> 
+                               <input type="hidden" name="action" value="excel" />
+                               <input type="hidden" name="key" value="5678" /> 
+                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
+                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
+                               <input type="submit" value="Export Details - Excel"/>
+                                </form>
+    </div>
+    
+<div style="display: inline-block;">
+    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
+                                <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
+                               <input type="hidden" name="export" value="report" /> 
+                               <input type="hidden" name="action" value="csv" />
+                               <input type="hidden" name="key" value="5678" /> 
+                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
+                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
+                               <input type="submit" value="Export Details - CSV"/>
+                                </form>
+    </div>
+
+
+<?php
+}
+
+function evr_payment_export($event_id){
+    global $wpdb;
+    $today = date("Y-m-d_Hi",time()); 
+$info = array(
+        "dbuser" => $wpdb->dbuser, 
+        "dbpass" => $wpdb->dbpassword, 
+        "db" =>$wpdb->dbname, 
+        "host" =>$wpdb->dbhost
+        );
+
+
+$tables = array(
+        "evr_answer" => get_option('evr_answer'),
+        "evr_question" => get_option('evr_question'),
+        "evr_event" => get_option('evr_event'),
+        "evr_attendee" => get_option('evr_attendee'),
+        "evr_payment" => get_option ('evr_payment')
+        );
+
+
+			
+?>
+<div style="display: inline-block;">
+    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
+                                <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
+                               <input type="hidden" name="export" value="report" /> 
+                               <input type="hidden" name="action" value="payment" />
+                               <input type="hidden" name="key" value="5678" /> 
+                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
+                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
+                               <input type="submit" value="Export Payments - Excel"/>
+                                </form>
+    </div>
+    
+
+<?php
+}	
 ?>

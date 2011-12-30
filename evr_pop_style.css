@@ -26,34 +26,40 @@
 #evr_pop_body{
     clear: left;
     float: left;
-    width: 620px;
+    width: 500px;
    
 }
 #evr_pop_image{
     clear: right;
     float: right;
     margin: 0 10px 0 10px;
-    width:125px;
+    width:100px;
     
 }
 .evr_pop_img { 
-  width:  100px; 
+  width:  90px; 
   height: auto; 
 }
 
 #evr_pop_price{
- width: 350px;
+ width: 98%;
  float: left;
  font-weight: bold;
  padding: 10px 0 10px 0;
  }
+ 
 #evr_pop_venue{
- width: 150px;
- float: left;
+ width: 98%;
  font-weight: bold;
  padding: 10px 0 10px 0;
   
 }
+#evr_pop_address{
+ width: 300px;
+ float: left;
+ font-weight: bold;
+ 
+ }
 #evr_pop_map{
  width: 282px;
  float: right;
