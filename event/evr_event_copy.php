@@ -62,9 +62,25 @@ function evr_copy_event(){
             if ($wpdb->insert( get_option('evr_event'), $sql, $sql_data )){ 
                 $lastID = mysql_insert_id();
                 
+                
                 ?>
             	<div id="message" class="updated fade"><p><strong><?php _e('The event ','evr_language'); echo stripslashes($_REQUEST['event_name']); _e('has been added.','evr_language');?> </strong></p></div>
-                <?php
+                
+               <?php 
+                $events_question_tbl = get_option ( 'evr_question' );
+                $questions = $wpdb->get_results ( "SELECT * from $events_question_tbl where event_id = $event_id order by sequence ASC" );
+                if ($questions) {
+         				foreach ( $questions as $question ) {
+         				   $sql = array('event_id'=>$lastID, 'sequence'=>$question->sequence,'question_type'=>$question->question_type, 
+                              'question'=>$question->question,'response'=>$question->response ,'required'=>$question->required );
+                        $sql_data = array('%s','%s','%s','%s','%s','%s');
+                        if ($wpdb->insert( get_option('evr_question'), $sql, $sql_data )){ }
+                                
+                                
+               				   }?>
+                           <div id="message" class="updated fade"><p><strong><?php _e('The questions have been added.','evr_language');?> </strong></p></div>
+                <?php }
+
                 $sql = "SELECT * FROM ". get_option('evr_cost') ." WHERE event_id = " . $event_id;
                 $result = mysql_query ($sql);
         		while ($row = mysql_fetch_assoc ($result)){
