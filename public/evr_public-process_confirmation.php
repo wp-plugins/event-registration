@@ -259,9 +259,10 @@ if ($send_coord =="Y"){
                 _e("You may pay online or by check.  If you are paying by check, please mail your check today to:",'evr_language');
                 echo "<p>".
                 $company_options['company']."<br />".
-                $company_options['company_street1']."<br />".
-                $company_options['company_street2']."<br />".
-                $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."</p>";
+                $company_options['company_street1']."<br />";
+                
+                if ($company_options['company_street2']!=""){echo $company_options['company_street2']."<br />";}
+                echo $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."</p>";
                  _e("Reference ",'evr_language');
                  echo "<b>".$event_name." - ID: ".$reg_id."</b><br/><br/>";
             }     
@@ -279,9 +280,9 @@ if ($send_coord =="Y"){
                 _e("You may donate online or by check.  If you are donating by check, please mail your check to:",'evr_language');
                 echo "<p>".
                 $company_options['company']."<br />".
-                $company_options['company_street1']."<br />".
-                $company_options['company_street2']."<br />".
-                $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."</p>";
+                $company_options['company_street1']."<br />";
+                if ($company_options['company_street2']!=""){echo $company_options['company_street2']."<br />";}
+                echo $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."</p>";
                 _e("Reference: Donation - ",'evr_language');
                  echo "<b>".$event_name."</b><br/><br/>";
             }    
