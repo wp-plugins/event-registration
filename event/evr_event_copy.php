@@ -60,7 +60,7 @@ function evr_copy_event(){
         	
         
             if ($wpdb->insert( get_option('evr_event'), $sql, $sql_data )){ 
-                $lastID = mysql_insert_id();
+                $lastID = $wpdb->insert_id;
                 
                 
                 ?>
