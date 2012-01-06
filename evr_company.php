@@ -42,6 +42,7 @@ function evr_admin_company(){
             $company_options['payment_message']   = htmlentities2($_POST['payment_message']);
             $company_options['captcha']           = $_POST['captcha'];
             $company_options['event_pop']           = $_POST['event_pop'];
+            $company_options['form_css']           = $_POST['form_css'];
             $start_of_week                        = $_POST['start_of_week'];
    
    	update_option( 'evr_company_settings', $company_options);
@@ -277,6 +278,16 @@ function evr_admin_company(){
                         <input name="captcha" type="radio" value="Y" class="regular-radio" <?php if ($company_options['captcha']=="Y"){echo "checked";}?> /><?php _e('Yes','evr_language');?>
                         <input name="captcha" type="radio" value="N" class="regular-radio" <?php if ($company_options['captcha']=="N"){echo "checked";}?> /><?php _e('No','evr_language');?>
                      </div>  
+                     <div class="padding">
+                    <label for="form_css"><?php _e('CSS Overrides for registration form?','evr_language');?></label>
+                    <p><a class="ev_reg-fancylink" href="#css_override_help">Help</a> </p>
+                        
+                    <textarea name="form_css" id="form_css" style="width: 100%; height: 300px;">
+                        <?php echo $company_options['form_css'];?></textarea>
+                        <br /> 
+                    
+                        
+                        </div> 
                 </div>
             </div>
         </div>
@@ -465,7 +476,11 @@ function evr_admin_company(){
     <p>Your unique registration ID is: [id].</p>
     <p>Click here to review your payment information [payment_url].</p>
     <p>Thank You.</p>
-</div>        
+</div>     
+<div id="css_override_help" style="display:none">
+    <p>enter css to override theme css on form</p>
+    <p>D0 NOT use style tags</p>
+</div>    
     
 </div>
 <div style="clear: both; display: block; padding: 10px 0; text-align:center;"><font color="blue"><?php _e('Please make sure you complete each section before submitting!','evr_language');?></font></div>

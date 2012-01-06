@@ -135,10 +135,14 @@ else {
 
 <?php } ?>
     
+<style>
 
+<?php echo   $company_options['form_css'];?>
+    
+</style>
 
-<form id="attendee_reg" class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
-<ul id="evrRegForm">
+<form  id="evrRegForm"  class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
+<ul>
 <li>
 <label for="fname"><?php _e('First Name','evr_language');?></label>
 <span class="fieldbox"><input type="text" id="fname" name="fname" value="" /></span>
@@ -214,9 +218,9 @@ else {
 <li>
 <label for="coupon"><?php _e('Enter coupon code for discount','evr_language');?></label> 
 <span class="couponbox"><input type="text" id="coupon" name="coupon" value="" /></span>
-</li> </ul>
+</li> 
 <?php } ?>
-
+</ul><br />
 <?php 	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                             		$result2 = mysql_query($sql2);
                                     $num = 0;   
@@ -401,7 +405,7 @@ else {
                             
                             <hr />
 
-
+<br />
 <?php if ($company_options['captcha'] == 'Y') { ?>
 <p><?php _e('Enter the security code as it is shown (required)','evr_language');?>:
 <script type="text/javascript">sjcap("altTextField");</script></p>

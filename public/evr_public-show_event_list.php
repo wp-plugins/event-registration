@@ -65,7 +65,7 @@ function evr_show_event_list(){
             if ($company_options['event_pop']=="N"){
                 if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
 	}  else {
-                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=register&event_id='.$event_id.'">';
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
                 
                 
                 

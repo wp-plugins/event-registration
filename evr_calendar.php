@@ -376,7 +376,7 @@ $show_cat="true";
   }
   else { 
   		//$linky = '#';
-        $linky = evr_permalink($company_options['evr_page_id'])."action=register&event_id=".$event->id;   
+        $linky = evr_permalink($company_options['evr_page_id'])."action=evregister&event_id=".$event->id;   
   }
 
   $details = '<span class="calnk"><a href="'.$linky.'" style="'.$style.'" target="_blank">' . stripslashes(html_entity_decode($event->event_name)) . '<span style="'.$style.'">' . $header_details . '<br/>' . stripslashes(html_entity_decode($event->event_desc)) . '</span></a></span>';
@@ -396,8 +396,20 @@ function evr_fetch_events($y,$m,$d){
          foreach($events as $event){
 	   					array_push($arr_events, $event);
          }
+    
     }
- 
+    
+    if (get_option('evr_cal_active')=="Y"){
+    $cal_events = $wpdb->get_results("SELECT * FROM " . get_option('evr_cal_tbl'). " WHERE str_to_date(start_date, '%Y-%m-%e') <= str_to_date('$date', '%Y-%m-%e') AND str_to_date(end_date, '%Y-%m-%e') >= str_to_date('$date', '%Y-%m-%e') ORDER BY id");
+    if (!empty($cal_events)){
+         foreach($cal_events as $cal_event){
+	   					array_push($arr_events, $cal_event);
+         }
+    
+    }
+    }
+    
+    
   	return $arr_events;
 }
 
