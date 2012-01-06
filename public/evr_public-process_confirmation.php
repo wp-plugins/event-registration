@@ -44,7 +44,7 @@ function evr_process_confirmation(){
     } 
     
   
-   _e("You're information has been received.",'evr_language');
+   _e("Your information has been received.",'evr_language');
    echo "<br/>";
    
 /* Comment Out PDF confirmation Option
