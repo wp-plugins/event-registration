@@ -140,8 +140,8 @@ else {
 <?php echo   $company_options['form_css'];?>
     
 </style>
-
-<form  id="evrRegForm"  class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
+<div id="evrRegForm">
+<form    class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
 <ul>
 <li>
 <label for="fname"><?php _e('First Name','evr_language');?></label>
@@ -419,7 +419,7 @@ else {
 </div>
 
 </form>
-
+</div>
     
 <script type="text/javascript">
 function checkInternationalPhone(strPhone){
