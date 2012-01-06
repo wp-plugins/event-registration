@@ -429,7 +429,7 @@ img.btn_close {
                         <input class="desc"  name="item_desc" id="cost_desc"/> 
                     </li>
                     <li>
-                        <label class="er_ticket_info" title="<?php _e('Provide the number of available item/cost types per registration form. If it is a REG item, available seats will impact overall amount available. Leave blank if no limit.','evr_language');?>"><?php _e('Available items/cost per registration/order?','evr_language');?> <a><span>?</span></a></label>
+                        <label class="er_ticket_info" title="<?php _e('Provide the number of available item/cost types per registration form. If it is a REG item, available seats will impact overall amount available. Leave blank if no limit (system will default to 25).','evr_language');?>"><?php _e('Available items/cost per registration/order?','evr_language');?> <a><span>?</span></a></label>
                         <input class="title" name="item_limit"/>
                     </li>
                     <hr />

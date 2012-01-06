@@ -9,7 +9,12 @@ function evr_post_item_to_db(){
             $item_title       = $_REQUEST['item_name'];
             $item_description = $_REQUEST['item_desc']; 
             $item_cat         = $_REQUEST['item_cat'];
-            $item_limit       = $_REQUEST['item_limit'];
+            if ($_REQUEST['item_limit']==""){
+            $item_limit       = "25";    
+            }else {
+            $item_limit       = $_REQUEST['item_limit'];}
+            
+            
             $item_price       = $_REQUEST['item_price'];
             $free_item        = $_REQUEST['item_free'];
             $item_start_month = $_REQUEST['item_start_month'];
