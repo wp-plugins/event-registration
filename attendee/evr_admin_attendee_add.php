@@ -1,5 +1,5 @@
 <?php
-
+//remved date filter on pricing in attendee admin
 
 function evr_admin_add_attendee(){
     global $wpdb;
@@ -73,14 +73,31 @@ function evr_admin_add_attendee(){
                                             }
                                     ?>
                             </ul>
-                            <?php 	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            <?php 	
+                            
+                            $num = 0;                              
+                            $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            
+                            $attendee_count  = $wpdb->get_var($sql2);
+                            
+                            
+                            If ($attendee_count >= 1) {$num = $attendee_count;}
+                            $available = $reg_limit - $num;
+                            //echo "count is ". $attendee_count." !";
+                                                                
+                            if ($available >= "1"){ 
+    
+  /*  
+    $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                             		$result2 = mysql_query($sql2);
                                             $num = 0;   
                             		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
                                     
                                     $available = $reg_limit - $num;
                                     
-                                    if ($available > "1"){ ?>                
+                                    if ($available > "1"){ */
+                                        
+                                        ?>                
                             <hr />
                             <h2 align="center">REGISTRATION FEES</h2><br />
                              <?php
@@ -104,7 +121,7 @@ function evr_admin_add_attendee(){
                                         $item_custom_cur  = $row['item_custom_cur'];
                                    
                                     //if (($item_start_date >= $curdate) && ($item_end_date <= $curdate)) {
-                                     if((evr_greaterDate($curdate,$item_start_date))&& (evr_greaterDate($item_end_date,$curdate))){
+                                    // Remove date filter if((evr_greaterDate($curdate,$item_start_date))&& (evr_greaterDate($item_end_date,$curdate))){
                                
                             ?>
                             <input type="hidden" name="reg_type" value="RGLR"/>
@@ -130,7 +147,10 @@ function evr_admin_add_attendee(){
                             ?>
                             </select>
                             <?php echo $item_title . "    " . $item_custom_cur . " " . $item_price; ?></p>
-                            <?php } }?>
+                            <?php 
+                            // }
+                            
+                             }?>
                             <br /><b>Registration TOTAL  <input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></b>
                             <br />
                             <?php

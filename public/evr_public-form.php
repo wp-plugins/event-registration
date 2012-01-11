@@ -23,6 +23,16 @@ function evr_regform_new($event_id){
     $event_name = stripslashes($row['event_name']);
    	$event_desc =  stripslashes($row ['event_desc']); 
     $display_desc = $row['display_desc'];  // Y or N
+    	$start_date = $row['start_date'];
+                    $end_date = $row['end_date'];
+					$start_month = $row ['start_month'];
+					$start_day = $row ['start_day'];
+					$start_year = $row ['start_year'];
+					$end_month = $row ['end_month'];
+					$end_day = $row ['end_day'];
+					$end_year = $row ['end_year'];
+					$start_time = $row ['start_time'];
+					$end_time = $row ['end_time'];
     
     
                             }
@@ -30,7 +40,9 @@ function evr_regform_new($event_id){
     $md5_url = EVR_PLUGINFULLURL . "md5.js";
     
     echo "<h3>".$event_name."</h3>";
-    
+ //echo date($evr_date_format,strtotime($start_date))." ".$start_time." - ";
+ //if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;
+ //echo "<br />";
     if ($display_desc =="Y"){ echo "<blockquote>".html_entity_decode($event_desc)."</blockquote>"; }
     
     ?>
@@ -221,14 +233,23 @@ else {
 </li> 
 <?php } ?>
 </ul><br />
-<?php 	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+<?php 
+
+/* df change	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                             		$result2 = mysql_query($sql2);
                                     $num = 0;   
                             		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
                                     
                                     $available = $reg_limit - $num;
-                                    
-                                    if ($available > "1"){ 
+                                    */
+$num = 0;                              
+$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+$attendee_count  = $wpdb->get_var($sql2);
+If ($attendee_count >= 1) {$num = $attendee_count;}
+$available = $reg_limit - $num;
+//echo "count is ". $attendee_count." !";
+                                 
+if ($available >= "1"){ 
                                         
                                 $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
                                 $result = mysql_query ( $sql );
@@ -289,7 +310,23 @@ else {
                             <?php if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
                             if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
                             echo $item_title . "    " . $item_custom_cur . " " . $item_price; ?></div>
-                            <?php } }?>
+                            <?php } 
+                            else {
+                                echo "<br/>";
+                                echo "<hr><font color='red'>";
+                                
+                                _e('No Fees/Items available for todays date!','evr_language');
+                                echo "<br/>";
+                                _e('Please update fee dates!','evr_language');
+                                echo "<br/>";
+                                _e('Registrations will be placed on the wait list!','evr_language');
+                                echo "<br/></font>";
+                                ?>
+                                <input type="hidden" name="reg_type" value="WAIT" />
+                                <?php
+                                }
+                            
+                            }?>
                             
                             <br /><br /><b><?php _e('Registration TOTAL','evr_language');?>  <input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></b>
                             <br />

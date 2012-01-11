@@ -119,12 +119,26 @@ function evr_admin_edit_attendee(){
                              ?>
 
                           </ul>
-                            <?php 	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            <?php 
+                            
+                            $num = 0;                              
+                            $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            
+                            $attendee_count  = $wpdb->get_var($sql2);
+                            
+                            
+                            If ($attendee_count >= 1) {$num = $attendee_count;}
+                            $available = $reg_limit - $num;
+                            
+                            
+                            /*	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                             		$result2 = mysql_query($sql2);
                                             $num = 0;   
                             		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
                                     
                                     $available = $reg_limit - $num;
+                                    
+                               */     
                                     
                                    // if ($available > "1"){
                                         ?>                
