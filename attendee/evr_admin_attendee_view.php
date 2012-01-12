@@ -29,17 +29,17 @@ function evr_admin_view_attendee(){
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="add_attendee"/>
                                 <input type="hidden" name="event_id" value="<?php echo $event->id;?>">
-                                <input class="button-secondary" type="submit" name="Add Attendees" value="<?php _e('Add Attendee','evr_language');?>" />
+                                <input class="button-primary" type="submit" name="Add Attendees" value="<?php _e('Add Attendee','evr_language');?>" />
                               </form>
    <form name="form" method="post" action="admin.php?page=attendee">
                                 <input type="hidden" name="action" value=""/>
-                                <input class="button-secondary" type="submit" name="Different Event" value="<?php _e('Select Another Event','evr_language');?>" />
+                                <input class="button-primary" type="submit" name="Different Event" value="<?php _e('Select Another Event','evr_language');?>" />
                               </form></span>
    
     <div id="dashboard-widgets-wrap">
     
         <div id="dashboard-widgets" class="metabox-holder">
-        	<div class='postbox-container' style='width:65%;'>
+        	<div class='postbox-container' style='width:auto;'>
                 <div id='normal-sortables' class='meta-box-sortables'>
                     <div id="dashboard_right_now" class="postbox " >
                          
@@ -48,10 +48,10 @@ function evr_admin_view_attendee(){
                             <div class="padding">        
                             <table class="widefat">
                                 <thead>
-                                <tr><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th><th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
+                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th><th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
                                 </thead>
                                 <tfoot>
-                                <tr><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th><th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
+                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th><th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
                                 </tfoot>
                                 <tbody>
 <?php
@@ -64,7 +64,7 @@ if ($rows){
         
 
 	
-        echo "<tr><td>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td><td>";
+        echo "<tr><td>".$attendee->reg_type."</td><td>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td><td>";
         if ($attendee->attendees ==""){echo "<font color='red'>Please Update This Attendee</font>";}
         else {$attendee_array = unserialize($attendee->attendees);
         foreach($attendee_array as $ma) 
@@ -128,7 +128,7 @@ $tables = array(
                                <input type="hidden" name="key" value="5678" /> 
                                <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
                                <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input type="submit" value="Export Details - Excel"/>
+                               <input class="button-primary type="submit" value="Export Details - Excel"/>
                                 </form>
     </div>
     
@@ -140,7 +140,7 @@ $tables = array(
                                <input type="hidden" name="key" value="5678" /> 
                                <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
                                <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input type="submit" value="Export Details - CSV"/>
+                               <input class="button-primary type="submit" value="Export Details - CSV"/>
                                 </form>
     </div>
 

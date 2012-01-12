@@ -33,12 +33,14 @@ function evr_new_event(){
                         tinyMCE.settings = tinymceConfigs[settingid];    
                         tinyMCE.execCommand('mceAddControl', true, el_id);}
 </script>
+
+
                     
-<a href="#?w=880" rel="popup0" class="poplight"><input type="button" value="<?php _e('ADD EVENT','evr_language');?>"/></a>
+<a href="#?w=900" rel="popup0" class="poplight"><input type="button" value="<?php _e('ADD EVENT','evr_language');?>"/></a>
 
 <?php //evr_check_form_submission();?>
 
-<div id="popup0" class="popup_block">
+<div id="popup0" class="popup_block" style="width:950px;height:80%;overflow:auto;">
 <form id="er_popup_Form" method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">                        
 <div class="evr_container">
 	<h1><?php _e('ADD NEW EVENT','evr_language');?></h1>
@@ -319,7 +321,7 @@ function evr_new_event(){
                                      
 				    }else{ ?>
 					<a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
-                        <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo $body;?></textarea
+                        <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo $body;?></textarea>
                     
                     <?php }  ?>   
                
@@ -342,7 +344,7 @@ function evr_new_event(){
                                      
 				    }else{ ?>
 					<a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
-                        <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $body;?></textarea
+                        <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $body;?></textarea>
                     
                     <?php }  ?>
                 
@@ -386,7 +388,7 @@ function evr_new_event(){
                                      
 				    }else{ ?>
 					<a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
-                        <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $body;?></textarea
+                        <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $body;?></textarea>
                     
                     <?php }  ?>
                  

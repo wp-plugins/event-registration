@@ -13,7 +13,7 @@ global $wpdb;
 <h2><?php _e('Attendee Management','evr_language');?></h2>
 <div id="dashboard-widgets-wrap">
 <div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:90%;'>
+	<div class='postbox-container' style='width:auto;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
                  
@@ -123,7 +123,7 @@ global $wpdb;
                         	?>
                             <tr></tr>
                           <tr>
-                            <td><?php echo $start_date; ?></td>
+                            <td style="white-space: nowrap;"><?php echo $start_date; ?></td>
                             <td><?php echo $event_id; ?></td>
                             <td><?php echo $event_name; ?></td>
                             <td><?php echo $event_location; ?></td>

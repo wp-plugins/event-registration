@@ -24,7 +24,7 @@ function evr_admin_categories(){
 
 <div id="dashboard-widgets-wrap">
 <div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:90%;'>
+	<div class='postbox-container' style='width:auto;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
                  
@@ -266,7 +266,7 @@ function evr_admin_categories(){
                                         <td><?php echo $category_identifier?></td>
                                         <td><?php echo $category_desc?></td>
                                         <td><?php echo $display_category_desc?></td>
-                                        <td>[EVR_CATEGORY event_category_id="<?php echo $category_identifier?>"]</td>
+                                        <td style="white-space: nowrap;">[EVR_CATEGORY event_category_id="<?php echo $category_identifier?>"]</td>
                                         <td><a href="admin.php?page=categories&action=edit&id=<?php echo $category_id;?>"><?php _e('EDIT','evr_language');?></a>  |
                                         <a href="admin.php?page=categories&action=delete&id=<?php echo $category_id;?>" ONCLICK="return confirm('<?php _e('Are you sure you want to delete category?','evr_language');?>')"><?php _e('DELETE','evr_language');?></a></td></tr>
                                     <?php } 

@@ -15,7 +15,7 @@ global $wpdb;
 <?php evr_new_event();?>
 <div id="dashboard-widgets-wrap">
 <div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:90%;'>
+	<div class='postbox-container' style='width:auto;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
                  
@@ -62,6 +62,7 @@ global $wpdb;
                             <th>Start Date</th>
                             <th>Event ID</th>
                             <th>Name</th>
+                            <th>ShortCode</th>
                             <th>Location</th>
                             <th>City</th>
                             <th>Status</th>
@@ -75,6 +76,7 @@ global $wpdb;
                             <th>Start Date</th>
                             <th>Event ID</th>
                             <th>Name</th>
+                            <th>ShortCode</th>
                             <th>Location</th>
                             <th>City</th>
                             <th>Status</th>
@@ -123,9 +125,10 @@ global $wpdb;
                         	?>
                             <tr></tr>
                           <tr>
-                            <td><?php echo $start_date; ?></td>
+                            <td style="white-space: nowrap;"><?php echo $start_date; ?></td>
                             <td><?php echo $event_id; ?></td>
                             <td><a href="#?w=700" rel="popup<?php echo $event_id;?>" class="poplight"><?php echo $event_name; ?></a></td>
+                            <td style="white-space: nowrap;">[EVR_SINGLE event_id="<?php echo $event_id;?>"] </td>
                             <td><?php echo $event_location; ?></td>
                             <td><?php echo $event_city; ?></td>
                             <td><?php echo $active_event ; ?></td>
