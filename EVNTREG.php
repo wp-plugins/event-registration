@@ -13,7 +13,7 @@ It allows you to capture the registering persons contact information to a databa
 It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   
 Detailed payment management system to track and record event payments.  
 Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.00.13
+Version: 6.00.14
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.wordpresseventregister.com
 */
@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.00.13";
+$evr_ver = "6.00.14";
 
 /*
 to change date format in event listing display
@@ -184,13 +184,15 @@ function evr_load_tiny_mce() {
 //function to enqueue styles in admin pages
 function evr_admin_css_all_page() {
        wp_register_style($handle = 'evr_admin_css', $src = plugins_url('/evr_admin_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_register_style($handle = 'evr_fancy_css', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_enqueue_style('evr_admin_css');
+       wp_enqueue_style('evr_fancy_css');
        wp_enqueue_style( 'farbtastic' );
 }
 //function to enqueue scripts in admin pages
 function evr_admin_scripts_all_page() {
        wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_enqueue_script('evr_admin_script');
        wp_enqueue_script('evr_admin_fancy');
@@ -214,6 +216,7 @@ function evr_admin_header(){
 //function to enqueue styles in public pages
 function evr_public_stylesheets() {
     wp_register_style($handle = 'evr_public', $src = plugins_url('/evr_public_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    
 	wp_register_style($handle = 'evr_calendar', $src = plugins_url('/evr_calendar.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_style($handle = 'evr_pop_style', $src = plugins_url('/evr_pop_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');		
             wp_enqueue_style('evr_public');
@@ -224,10 +227,10 @@ function evr_public_stylesheets() {
 // function to enqueue scripts in public pages
 function evr_public_scripts() {
  wp_register_script($handle = 'evr_public_script', $src = plugins_url('/evr_public_script.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
- wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+ //wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
  wp_enqueue_script('evr_public_script');
  wp_enqueue_style('thickbox');
- wp_enqueue_script('evr_public_fancy');		
+ //wp_enqueue_script('evr_public_fancy');		
  }
 //function to load items to public pages of wordpress site
 function evr_public_header(){
