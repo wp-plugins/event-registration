@@ -329,11 +329,11 @@ img.btn_close {
             <br />
             <div style="float: left;">
             <div class="padding">
-            <a href="#?w=500" rel="popup0" class="poplight"><button class="button-secondary"><?php _e('ADD COST/ITEM','evr_language');?></button></a>
+            <a href="#?w=500" rel="popup0" class="poplight"><button class="button-primary"><?php _e('ADD COST/ITEM','evr_language');?></button></a>
             </div></div>
             <div style="float: right;">
             <div class="padding">
-            <a class="button-secondary" href="admin.php?page=events&action=reorder_item&event_id=<?php echo $event_id;?>" title="REARRANGE ITEMS"><?php _e('RE-ARRANGE ITEMS','evr_language');?></a>
+            <a class="button-primary" href="admin.php?page=events&action=reorder_item&event_id=<?php echo $event_id;?>" title="REARRANGE ITEMS"><?php _e('RE-ARRANGE ITEMS','evr_language');?></a>
             </div></div>
             <br /><br />
          </div>
