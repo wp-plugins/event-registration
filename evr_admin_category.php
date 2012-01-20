@@ -19,7 +19,7 @@ function evr_admin_categories(){
 
   <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"];?>">
     <input type="hidden" name="action" value="add_new_category">
-    <input class="button-secondary" type="submit" name="Submit" value="ADD NEW CATEGORY"/>
+    <input class="button-primary" type="submit" name="Submit" value="ADD NEW CATEGORY"/>
   </form>
 
 <div id="dashboard-widgets-wrap">
