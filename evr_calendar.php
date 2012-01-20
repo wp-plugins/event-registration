@@ -43,12 +43,26 @@ function evr_next_link($cur_year,$cur_month){
   $next_year = $cur_year + 1;
 
   if ($cur_month == 12){
-      return '<a href="' . evr_permalink_prefix() . 'month=jan&amp;yr=' . $next_year . '">'.__('Next','evr_language').' &raquo;</a>';
-  }else{
-      $next_month = $cur_month + 1;
-      $month = $mod_rewrite_months[$next_month];
-      return '<a href="' . evr_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '">'.__('Next','evr_language').' &raquo;</a>';
+      $next_links =  '<a href="' . evr_permalink_prefix() . 'month=jan&amp;yr=' . $next_year . '">'.strtoupper(__('Jan','evr_language')).' &raquo;</a>'.
+                     '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+                     '<a href="' . evr_permalink_prefix() . 'month=feb&amp;yr=' . $next_year . '">'.strtoupper(__('Feb','evr_language')).' &raquo;</a>';
   }
+  else if ($cur_month == 11){
+    $next_links = '<a href="' . evr_permalink_prefix() . 'month=dec&amp;yr=' . $cur_year . '">'.strtoupper(__('Dec','evr_language')).' &raquo;</a>'.
+                  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+                  '<a href="' . evr_permalink_prefix() . 'month=jan&amp;yr=' . $next_year . '">'.strtoupper(__('Jan','evr_language')).' &raquo;</a>';
+    }
+  else{
+      $next_month = $cur_month + 1;
+      $next_next_month = $cur_month + 2;
+      $month = $mod_rewrite_months[$next_month];
+      $month_after = $mod_rewrite_months[$next_next_month];
+      
+      $next_links =  '<a href="' . evr_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '">'.strtoupper($month).' &raquo;</a>'.
+                     '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+                     '<a href="' . evr_permalink_prefix() . 'month='.$month_after.'&amp;yr=' . $cur_year . '">'.strtoupper($month_after).' &raquo;</a>';
+  }
+  return $next_links;
 }
 
 /*********  Configure the "Previous" link in the calendar  **************/
@@ -58,12 +72,24 @@ function evr_prev_link($cur_year,$cur_month){
   $last_year = $cur_year - 1;
 
   if ($cur_month == 1){
-      return '<a href="' . evr_permalink_prefix() . 'month=dec&amp;yr='. $last_year .'">&laquo; '.__('Prev','evr_language').'</a>';
-  }else{
-      $next_month = $cur_month - 1;
-      $month = $mod_rewrite_months[$next_month];
-      return '<a href="' . evr_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '">&laquo; '.__('Prev','evr_language').'</a>';
+      $prev_links =  '<a href="' . evr_permalink_prefix() . 'month=nov&amp;yr='. $last_year .'">&laquo; '.strtoupper(__('Nov','evr_language')).'</a>'.
+                     '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+                     '<a href="' . evr_permalink_prefix() . 'month=dec&amp;yr='. $last_year .'">&laquo; '.strtoupper(__('Dec','evr_language')).'</a>';
+  }else if ($cur_month == 2){
+      $prev_links = '<a href="' . evr_permalink_prefix() . 'month=dec&amp;yr='. $last_year .'">&laquo; '.strtoupper(__('Dec','evr_language')).'</a>'.
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+                    '<a href="' . evr_permalink_prefix() . 'month=jan&amp;yr=' . $cur_year . '">'.strtoupper(__('Jan','evr_language')).' &raquo;</a>';
+  }else {
+      $prev_month = $cur_month - 1;
+      $prev_prev_month = $cur_month - 2;
+      $month = $mod_rewrite_months[$prev_month];
+      $prev_month = $mod_rewrite_months[$prev_prev_month];
+      
+      $prev_links = '<a href="' . evr_permalink_prefix() . 'month='.$prev_month.'&amp;yr=' . $cur_year . '">&laquo; '.strtoupper($prev_month).'</a>'.
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+                    '<a href="' . evr_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '">&laquo; '.strtoupper($month).'</a>';
   }
+  return $prev_links;
 }
 
 /******************************* Display the Calendar in a page **************************/
@@ -135,7 +161,50 @@ function evr_np_of_day($date){
 }
 
 function evr_display_calendar(){
-    global $wpdb,$week_no;
+   global $wpdb,$week_no;
+   $company_options = get_option('evr_company_settings'); 
+   
+   
+    $cal_head_clr = $company_options['cal_head_clr'];
+    $cal_day_clr = $company_options['cal_day_clr'];
+    $cal_use_cat = $company_options['cal_use_cat']; 
+    $cal_pop_brdr_clr = $company_options['cal_pop_brdr_clr'];
+    $cal_head_txt_clr = $company_options['cal_head_txt_clr'];
+    $cal_day_txt_clr =  $company_options['cal_day_txt_clr'];
+    $date_switcher = $company_options['evr_date_select'];
+    $cal_day_hdr_clr = $company_options['cal_day_head_clr'];
+    $cal_day_hdr_txt_clr = $company_options['cal_day_head_txt_clr'];
+  
+    
+if ($cal_head_clr != ""){    ?>
+<style type="text/css">
+     .calendar-date-switcher {background-color:<?php echo $cal_head_clr;?>;color: <?php echo $cal_head_txt_clr;?>;}
+</style>
+    <?php } 
+if ($cal_day_clr != ""){?>
+<style type="text/css">
+    .current-day { background-color:<?php echo $cal_day_clr;?>;color: <?php echo $cal_day_txt_clr;?>;}
+</style>
+    <?php } 
+if ($cal_day_hdr_clr != ""){?>
+<style type="text/css">
+
+.normal-day-heading { background-color:<?php echo $cal_day_hdr_clr;?>;color: <?php echo $cal_day_hdr_txt_clr;?>;}
+.weekend-heading { background-color:<?php echo $cal_day_hdr_clr;?>;color: <?php echo $cal_day_hdr_txt_clr;?>;}
+
+</style>
+    <?php }       
+    
+?>
+<style>
+.catgry h3 {
+	/* class title */
+	font-weight: normal;
+	font-size: .90em;
+	margin: 0;
+	padding: 2px 2px 2px 4px;
+}</style>
+<?php
     unset($week_no);
     if (get_option('evr_start_of_week') == 0){
 				$name_days = array(1=>__('Sun','evr_language'),__('Mon','evr_language'),__('Tue','evr_language'),__('Wed','evr_language'),__('Thu','evr_language'),__('Fri','evr_language'),__('Sat','evr_language'));
@@ -194,9 +263,9 @@ function evr_display_calendar(){
     $days_in_month = date("t", mktime (0,0,0,$c_month,1,$c_year));
 
     $calendar_body .= '<table class="calendar-table" id="calendar-table" >';
-    //$date_switcher = $wpdb->get_var("SELECT config_value FROM ".WP_LIVE_CALENDAR_CONFIG_TABLE." WHERE config_item='display_jump'",0,0);
-    $date_switcher="true";
-    if ($date_switcher == 'true'){
+    
+    //$date_switcher="true";
+    if ($date_switcher == 'Y'){
         
 				$calendar_body .= '<tr><td colspan="7" class="calendar-date-switcher"><form method="get" action="'.htmlspecialchars($_SERVER['REQUEST_URI']).'">';
 				$qsa = array();
@@ -253,7 +322,7 @@ function evr_display_calendar(){
                     <tr>
                     <td colspan="2" class="calendar-prev">' . evr_prev_link($c_year,$c_month) . '</td>
                     <td colspan="3" class="calendar-month">'.$name_months[(int)$c_month].' '.$c_year.'</td>
-                    <td colspan="2" class="calendar-next">' . evr_next_link($c_year,$c_month) . '</td>
+                    <td colspan="2" class="calendar-next">'. evr_next_link($c_year,$c_month) .'</td>
                     </tr>';
 
     $calendar_body .= '<tr>';
@@ -313,21 +382,28 @@ function evr_display_calendar(){
         
         $calendar_body .= '</tr>';
     }
-    
-    //$show_cat = $wpdb->get_var("SELECT config_value FROM ".WP_LIVE_CALENDAR_CONFIG_TABLE." WHERE config_item='enable_categories'",0,0);
 
-    if ($show_cat == 'true'){
-				$sql = "SELECT * FROM " . WP_LIVE_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_name ASC";
-				$cat_details = $wpdb->get_results($sql);
-				$tr_flag	=	0;
-        foreach($cat_details as $cat_detail){
-        		$cat_each_count = $wpdb->get_var("SELECT count(event_id) as has_events FROM " . WP_LIVE_CALENDAR_TABLE . " where event_category = '".$cat_detail->category_id."'",0,0);
+  global $wpdb;
+  $company_options = get_option('evr_company_settings');  
+  $cal_use_cat = $company_options['cal_use_cat']; 
+  
+    if ($show_cat == 'Y'){
+                $sql = "SELECT * FROM ". get_option('evr_category') ." ORDER BY id ASC";
+                      $result = mysql_query ($sql);
+                      if (mysql_num_rows($result) > 0 ) {
+                      while ($row = mysql_fetch_assoc ($result)){
+                 					$category_id= $row['id'];
+                 					$category_name=$row['category_name'];
+                 					$category_identifier=$row['category_identifier'];
+                 					$category_desc=$row['category_desc'];
+                 					$display_category_desc=$row['display_desc'];
+                                    $category_color = $row['category_color'];
+                                    $font_color = $row['font_color'];
+                                    
+                                    
+              $calendar_body .= '<td colspan="1" style="background-color:'.$category_color.';font-size:0.9em; color:'.$font_color.'; ">'.$category_name.'</td>';
+        }}
 
-        		if($tr_flag%7 == 0) $calendar_body .= '<tr>';
-        		$calendar_body .= '<td colspan="1" style="background-color:'.$cat_detail->category_colour.';font-size:0.9em; color:'.$cat_detail->font_colour.'; ">'.$cat_detail->category_name.'('.$cat_each_count.')</td>';
-        		if($tr_flag%7 == 6 || $tr_flag == (count($cat_details)-1)) $calendar_body .= '</tr>';
-        		$tr_flag	=	$tr_flag+1;
-	  		}    
     }
     $calendar_body .= '</table>';
    echo $calendar_body;
@@ -347,39 +423,62 @@ function evr_show_events($events){
 function evr_show_event($event){
     
   global $wpdb;
-  $company_options = get_option('evr_company_settings');                                    
+  $company_options = get_option('evr_company_settings');  
+  $cal_head_clr = $company_options['cal_head_clr'];
+    $cal_day_clr = $company_options['cal_day_clr'];
+    $cal_use_cat = $company_options['cal_use_cat']; 
+    $cal_pop_brdr_clr = $company_options['cal_pop_brdr_clr'];
+  
+                                    
   //$show_cat = $wpdb->get_var("SELECT config_value FROM ".WP_LIVE_CALENDAR_CONFIG_TABLE." WHERE config_item='enable_categories'",0,0);
-$show_cat="true";
-  if ($show_cat == 'true'){
+$show_cat= $cal_use_cat;
+  if ($show_cat == 'Y'){
       $cat_array = unserialize($event->category_id);
+      
+      
       $cat_id = $cat_array[0];
-      $sql = "SELECT * FROM " . get_option('evr_category') . " WHERE id=".$cat_id;
+      
+      $sql = "SELECT * FROM " . get_option('evr_category') . " WHERE id='".$cat_id."'";
+      
       $cat_details = $wpdb->get_row($sql);
-      if ($cat_details !=""){ $style = "background-color:".stripslashes($cat_details->category_color)." ; color:".stripslashes($cat_details->font_color)." ;";
-      } else { $style = "background-color:#F6F79B;color:"."#000000"." ;";
+      if ($cat_details !=""){ $style = "background: white; border: 2px solid ".stripslashes($cat_details->category_color)."; "; $edge=$cat_details->category_color;
+      } else { $style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; $edge=$cal_pop_brdr_clr;
       }
       
   }
   else{
-      $sql = "SELECT * FROM " . get_option('evr_category') . " WHERE id=1";
-      $cat_details = $wpdb->get_row($sql);
-      //$style = "background-color:".stripslashes($cat_details->category_color).";color:".stripslashes($cat_details->font_color)." ;";
-      $style = "background-color:#F6F79B;color:"."#000000"." ;";
+      if ($cal_pop_brdr_clr !=""){$style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; $edge=$cal_pop_brdr_clr;}
+      else {$style = "background: white; border: 2px solid #2BB0D7;"; $edge='#b8ced6';}
+      
   }
-  $header_details .=  '<span class="event-title" style="color:'."#000000".'">'.stripslashes(html_entity_decode($event->event_name));
-  $header_details .=  '</span><br/>';
-  if ($event->event_time != "00:00:00"){
-      $header_details .= '<span class="time"><strong>'.__('Time','evr_language').':</strong> ' . date(get_option('time_format'), strtotime(stripslashes($event->start_time))) . ' - '. date(get_option('time_format'), strtotime(stripslashes($event->end_time))) . ', '.__('In ','evr_language').''.stripslashes($event->event_location).'</span><br />';
-  }
+  
+    $num = 0;                              
+    $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event->id'";
+    $attendee_count  = $wpdb->get_var($sql2);
+    If ($attendee_count >= 1) {$num = $attendee_count;}
+    If ($num < $event->reg_limit) {$available = $event->reg_limit - $num;} else {$available = 0;}
+    If ($available >= 1){$seats = $available." Seats";}
+    If ($available == 0){$seats = "Event Full";}
+    
+    
+
+ 
   if ($event->event_link != '') { 
   		$linky = stripslashes($event->more_info); 
   }
   else { 
-  		//$linky = '#';
+  		
         $linky = evr_permalink($company_options['evr_page_id'])."action=evregister&event_id=".$event->id;   
   }
 
-  $details = '<span class="calnk"><a href="'.$linky.'" style="'.$style.'" target="_blank">' . stripslashes(html_entity_decode($event->event_name)) . '<span style="'.$style.'">' . $header_details . '<br/>' . stripslashes(html_entity_decode($event->event_desc)) . '</span></a></span>';
+  $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';"><a class="tooltip" href="'.$linky.'" target="_blank" style="text-decoration:none"><h3>' . stripslashes(html_entity_decode($event->event_name)) .
+   '</h3><span class="help" style ="';
+   
+   
+   $details .= $style;
+   $details .= '"><em>'.stripslashes(html_entity_decode($event->event_name)).'</em>' . stripslashes(html_entity_decode($event->event_desc)) . '</span></a>'.
+   '<p class="time">'.date(get_option('time_format'), strtotime(stripslashes($event->start_time))).'</p>'.
+   '<p class="seats">'.$seats.'</p>'.'</div>';
 
   return $details;
 }

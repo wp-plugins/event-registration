@@ -41,9 +41,21 @@ function evr_admin_company(){
             $company_options['payment_subj']      = $_POST['payment_subj'];
             $company_options['payment_message']   = htmlentities2($_POST['payment_message']);
             $company_options['captcha']           = $_POST['captcha'];
-            $company_options['event_pop']           = $_POST['event_pop'];
-            $company_options['form_css']           = $_POST['form_css'];
+            $company_options['event_pop']         = $_POST['event_pop'];
+            $company_options['form_css']          = $_POST['form_css'];
             $start_of_week                        = $_POST['start_of_week'];
+            
+            $company_options['start_of_week']     = $_POST['start_of_week'];
+            $company_options['cal_head_clr']      = $_POST['evr_cal_head'];
+            $company_options['cal_day_clr']       = $_POST['evr_cal_cur_day'];
+            $company_options['cal_use_cat']       = $_POST['evr_cal_use_cat']; //true-false
+            $company_options['cal_pop_brdr_clr']  = $_POST['evr_cal_pop_border'];
+            $company_options['cal_head_txt_clr']  = $_POST['cal_head_txt_clr'];
+            $company_options['cal_day_txt_clr']   = $_POST['cal_day_txt_clr'];
+            $company_options['evr_date_select']   = $_POST['evr_date_select'];
+            $company_options['cal_day_head_clr']      = $_POST['evr_cal_day_head'];
+            $company_options['cal_day_head_txt_clr']  = $_POST['cal_day_head_txt_clr'];
+
    
    	update_option( 'evr_company_settings', $company_options);
     
@@ -430,7 +442,76 @@ function evr_admin_company(){
                     <option value="0">Sunday</option>
                     <option value="1">Monday</option>
                     </select></label></p>
-                   
+                    
+                    <p>Do you want to use Category color coding?
+                        <input type="radio" name="evr_cal_use_cat" class="regular-radio" value="Y"  <?php if ($company_options['cal_use_cat'] == "Y"){echo "checked";}?> />Yes
+                        <input type="radio" name="evr_cal_use_cat" class="regular-radio" value="N"  <?php if ($company_options['cal_use_cat'] == "N"){echo "checked";}?> />No<br />  
+                        </p>
+                        
+                        <p>Select color for Calendar Display:</p>
+                                        <script type="text/javascript" charset="utf-8">
+                                         jQuery(document).ready(function() {    
+                                                jQuery('#picker').hide();    
+                                                /* jQuery('#picker').farbtastic("#cat_back"); */
+                                                jQuery.farbtastic('#picker').linkTo('#evr_cal_head');   
+                                                jQuery("#evr_cal_head").click(function(){jQuery('#picker').slideToggle()});  
+                                                });
+                                         jQuery(document).ready(function() {    
+                                                jQuery('#daypicker').hide();    
+                                                jQuery.farbtastic('#daypicker').linkTo('#evr_cal_cur_day');   
+                                                jQuery("#evr_cal_cur_day").click(function(){jQuery('#daypicker').slideToggle()});  
+                                                });
+                                         jQuery(document).ready(function() {    
+                                                jQuery('#brdrpicker').hide();    
+                                                /* jQuery('#picker').farbtastic("#cat_back"); */
+                                                jQuery.farbtastic('#brdrpicker').linkTo('#evr_cal_pop_border');   
+                                                jQuery("#evr_cal_pop_border").click(function(){jQuery('#brdrpicker').slideToggle()});  
+                                                });
+                                         jQuery(document).ready(function() {    
+                                                jQuery('#hdrpicker').hide();    
+                                                jQuery.farbtastic('#hdrpicker').linkTo('#evr_cal_day_head');   
+                                                jQuery("#evr_cal_day_head").click(function(){jQuery('#hdrpicker').slideToggle()});  
+                                                });
+                                        </script>
+                                        <small>Click on each field to display the color picker. Click again to close it.</small>
+                                        <hr />
+                                        <p>Do you want to use the Date selector?
+                        <input type="radio" name="evr_date_select" class="regular-radio" value="Y"  <?php if ($company_options['evr_date_select'] == "Y"){echo "checked";}?> />Yes
+                        <input type="radio" name="evr_date_select" class="regular-radio" value="N"  <?php if ($company_options['evr_date_select'] == "N"){echo "checked";}?> />No<br />  
+                        </p>
+                                        
+                                        <p><label for="color">Calender Date Selector Background Color: 
+                                        <input type="text" id="evr_cal_head" name="evr_cal_head" value="<?php  echo $company_options['cal_head_clr'];?>"  style="width: 195px"/>
+                                        </label><div id="picker" style="margin-bottom: 1em;"></div></p><p>Selector Text Color: <select style="width:70px;" name='cal_head_txt_clr' >
+                                        <option value="<?php  echo $company_options['cal_head_txt_clr'];?>"><?php if ($company_options['cal_head_txt_clr']=="#000000"){echo "Black";} if ($company_options['cal_head_txt_clr']=="#FFFFFF"){echo "White";} ?></option>
+                                        <option value="#000000">Black</option>
+                                        <option value="#FFFFFF">White</option></select></p>
+                                        <hr />
+                                        <p><label for="color">Calender Day Header Background Color: 
+                                        <input type="text" id="evr_cal_day_head" name="evr_cal_day_head" value="<?php  echo $company_options['cal_day_head_clr'];?>"  style="width: 195px"/>
+                                        </label><div id="hdrpicker" style="margin-bottom: 1em;"></div></p>
+                                        <p>Selector Text Color: <select style="width:70px;" name='cal_day_head_txt_clr' >
+                                        <option value="<?php  echo $company_options['cal_day_head_txt_clr'];?>"><?php if ($company_options['cal_day_head_txt_clr']=="#000000"){echo "Black";} if ($company_options['cal_day_head_txt_clr']=="#FFFFFF"){echo "White";} ?></option>
+                                        <option value="#000000">Black</option>
+                                        <option value="#FFFFFF">White</option></select></p>
+                                        <hr />
+                                        <p><label for="color">Current Day Background Color: 
+                                        <input type="text" id="evr_cal_cur_day" name="evr_cal_cur_day" value="<?php  echo $company_options['cal_day_clr'];?>"  style="width: 195px"/>
+                                        </label><div id="daypicker" style="margin-bottom: 1em;"></div></p>
+                                        <p>Current Day Text Color: <select style="width:70px;" name='cal_day_txt_clr' >
+                                        <option value="<?php  echo $company_options['cal_day_txt_clr'];?>"><?php if ($company_options['cal_day_txt_clr']=="#000000"){echo "Black";} if ($company_options['cal_day_txt_clr']=="#FFFFFF"){echo "White";} ?></option>
+                                        <option value="#000000">Black</option>
+                                        <option value="#FFFFFF">White</option></select></p>
+                                        <hr />
+                                        <p><label for="color">Description Pop Border Color: 
+                                        <input type="text" id="evr_cal_pop_border" name="evr_cal_pop_border" value="<?php  echo $company_options['cal_pop_brdr_clr'];?>"  style="width: 195px"/>
+                                        </label><div id="brdrpicker" style="margin-bottom: 1em;"></div></p>
+                                        
+                                        
+                                        
+                                        
+                                        
+                  
                    
                     </div>  
                 </div>
@@ -448,13 +529,13 @@ function evr_admin_company(){
                 </div>
             </div>
         </div>        
-<div id="custom_email_settings" style="display:none">
+<div style="display:none;"><div id="custom_email_settings" style="width:650px;height:350px;overflow:auto;">
     <h2>Email Settings</h2><p><strong>Email Confirmations:</strong><br>
     For customized confirmation emails, the following tags can be placed in the email form and they will pull data from the database to include in the email.</p>
     <p>[id},[fname], [lname], [phone], [event],[description], [cost], [company], [co_add1], [co_add2], [co_city],[co_state], [co_zip],[contact], [payment_url], [start_date], [start_time], [end_date], [end_time]</p>
 </div>
-    
-<div id="custom_email_example" style="display:none">
+</div>   
+<div style="display:none;"><div id="custom_email_example" style="width:650px;height:350px;overflow:auto;">
     <h2>Sample Mail Send:</h2>
     <p>***This is an automated response - Do Not Reply***</p>
     <p>Thank you [fname] [lname] for registering for [event]. We hope that you will find this event both informative and enjoyable. Should have any questions, please contact [contact].</p>
@@ -463,24 +544,24 @@ function evr_admin_company(){
     <p>Click here to review your payment information [payment_url].</p>
     <p>Thank You.</p>
 </div>
-
-<div id="custom_payment_email_settings" style="display:none">
+</div>
+<div style="display:none;"><div id="custom_payment_email_settings" style="width:650px;height:350px;overflow:auto;">
     <h2>Payment Confirmation Email Settings</h2><p><strong>Payment Confirmations:</strong><br>
     For customized payment confirmation emails, the following tags can be placed in the email form and they will pull data from the database to include in the email.</p>
     <p>[id],[fname], [lname], [payer_email], [event_name],[amnt_pd], [txn_id],[address_street],[address_city],[address_state],[address_zip],[address_country],[start_date],[start_time],[end_date],[end_time] 
-</div>
-<div id="custom_payment_email_example" style="display:none">
+</div></div> 
+<div style="display:none;"><div id="custom_payment_email_example" style="width:650px;height:350px;overflow:auto;">
     <h2>Sample Payment Mail Send:</h2>
     <p>***This is an automated response - Do Not Reply***</p>
     <p>Thank you [fname] [lname] for your recent payment of [amnt_pd] ([txn_id]) for [event_name]. We hope that you will find this event both informative and enjoyable. Should have any questions, please contact [contact].</p>
     <p>Your unique registration ID is: [id].</p>
     <p>Click here to review your payment information [payment_url].</p>
     <p>Thank You.</p>
-</div>     
-<div id="css_override_help" style="display:none">
+</div> </div>     
+<div style="display:none;"><div id="css_override_help" style="width:650px;height:350px;overflow:auto;">
     <p>enter css to override theme css on form</p>
-    <p>D0 NOT use style tags</p>
-</div>    
+    <p>D0 NOT use style  tags (< style > </ style >)</p>
+</div></div>     
     
 </div>
 <div style="clear: both; display: block; padding: 10px 0; text-align:center;"><font color="blue"><?php _e('Please make sure you complete each section before submitting!','evr_language');?></font></div>
