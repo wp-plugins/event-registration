@@ -19,7 +19,7 @@ function evr_clean_old_db(){
                      <p>If you have verified the data migration and you wish to remove all the previous data tables (new tables were created during the installation/upgrade.</p>
                      <p><font color="red">NOTE: There is no way to recover the old data once you complete this process.</font></p>
                       <p><input name="purge_confirm" type="checkbox" value="1" />Yes, I want to remove the previous version Event Registration Data. Please confirm before proceeding </p>
-                      <input class="button-secondary" name="purge" type="submit" value="PURGE" onclick="return confirm('<?php _e('Are you sure you want to purge the old data from a previous version?','evr_language');?>')"/>
+                      <input class="button-primary" name="purge" type="submit" value="PURGE" onclick="return confirm('<?php _e('Are you sure you want to purge the old data from a previous version?','evr_language');?>')"/>
                      </form>
                      </div>
                 </div>  		
@@ -53,7 +53,7 @@ function evr_remove_db_menu(){
                      <p>If you wish to remove all Event Registration plugin information from your database, be sure to run this uninstall utility first.</p>
                      <p><font color="red">NOTE: There is no way to recover data once you complete this process.</font></p>
                       <p><input name="uninstall_confirm" type="checkbox" value="1" />Yes, I want to remove all Event Registration Data. Please confirm before proceeding </p>
-                      <input class="button-secondary" name="uninstall" type="submit" value="Uninstall" onclick="return confirm('<?php _e('Are you sure you want to delete all Event Registratin data','evr_language');?>')"/>
+                      <input class="button-primary" name="uninstall" type="submit" value="Uninstall" onclick="return confirm('<?php _e('Are you sure you want to delete all Event Registratin data','evr_language');?>')"/>
                      </form>
                      </div>
                 </div>  		
