@@ -65,7 +65,9 @@ if ($rows){
 
 	
         echo "<tr><td>".$attendee->reg_type."</td><td>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td><td>";
-        if ($attendee->attendees ==""){echo "<font color='red'>Please Update This Attendee</font>";}
+        /*if ($attendee->attendees ==""){echo "<font color='red'>Please Update This Attendee</font>";}*/
+        /* Glenn Tate: */
+        if ($attendee->attendees =="" || $attendee->attendees =="N;"){echo "<font color='red'>Please Update This Attendee</font>";}
         else {$attendee_array = unserialize($attendee->attendees);
         foreach($attendee_array as $ma) 
             echo $ma["first_name"]." ".$ma["last_name"]."<br/>";}
