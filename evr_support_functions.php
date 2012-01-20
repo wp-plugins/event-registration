@@ -268,7 +268,7 @@ function evr_validate_key(){
                      <p>Note: Each key is specific to your website/installation.</p>
                      <p><input name="donated" type="checkbox" value="1" />Yes, I have donated to Event Registration.</p>
                      <p>Paste Activation Key<input name="key"/></p>
-                      <input class="button-secondary" name="disable_pop" type="submit" value="Disable Popup"/>
+                      <input class="button-primary" name="disable_pop" type="submit" value="Disable Popup"/>
                      </form>
                      </div>
                 </div>
