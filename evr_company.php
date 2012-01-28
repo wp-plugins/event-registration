@@ -46,14 +46,18 @@ function evr_admin_company(){
             $start_of_week                        = $_POST['start_of_week'];
             
             $company_options['start_of_week']     = $_POST['start_of_week'];
-            $company_options['cal_head_clr']      = $_POST['evr_cal_head'];
-            $company_options['cal_day_clr']       = $_POST['evr_cal_cur_day'];
-            $company_options['cal_use_cat']       = $_POST['evr_cal_use_cat']; //true-false
-            $company_options['cal_pop_brdr_clr']  = $_POST['evr_cal_pop_border'];
-            $company_options['cal_head_txt_clr']  = $_POST['cal_head_txt_clr'];
-            $company_options['cal_day_txt_clr']   = $_POST['cal_day_txt_clr'];
+            
             $company_options['evr_date_select']   = $_POST['evr_date_select'];
-            $company_options['cal_day_head_clr']      = $_POST['evr_cal_day_head'];
+            $company_options['evr_cal_head']      = $_POST['evr_cal_head'];
+            $company_options['cal_head_txt_clr']  = $_POST['cal_head_txt_clr'];
+             
+            $company_options['evr_cal_cur_day']       = $_POST['evr_cal_cur_day'];
+            $company_options['evr_cal_use_cat']       = $_POST['evr_cal_use_cat']; //true-false
+            $company_options['evr_cal_pop_border']  = $_POST['evr_cal_pop_border'];
+           
+            $company_options['cal_day_txt_clr']   = $_POST['cal_day_txt_clr'];
+            
+            $company_options['evr_cal_day_head']      = $_POST['evr_cal_day_head'];
             $company_options['cal_day_head_txt_clr']  = $_POST['cal_day_head_txt_clr'];
 
    
@@ -444,8 +448,8 @@ function evr_admin_company(){
                     </select></label></p>
                     
                     <p>Do you want to use Category color coding?
-                        <input type="radio" name="evr_cal_use_cat" class="regular-radio" value="Y"  <?php if ($company_options['cal_use_cat'] == "Y"){echo "checked";}?> />Yes
-                        <input type="radio" name="evr_cal_use_cat" class="regular-radio" value="N"  <?php if ($company_options['cal_use_cat'] == "N"){echo "checked";}?> />No<br />  
+                        <input type="radio" name="evr_cal_use_cat" class="regular-radio" value="Y"  <?php if ($company_options['evr_cal_use_cat'] == "Y"){echo "checked";}?> />Yes
+                        <input type="radio" name="evr_cal_use_cat" class="regular-radio" value="N"  <?php if ($company_options['evr_cal_use_cat'] == "N"){echo "checked";}?> />No<br />  
                         </p>
                         
                         <p>Select color for Calendar Display:</p>
@@ -481,14 +485,15 @@ function evr_admin_company(){
                         </p>
                                         
                                         <p><label for="color">Calender Date Selector Background Color: 
-                                        <input type="text" id="evr_cal_head" name="evr_cal_head" value="<?php  echo $company_options['cal_head_clr'];?>"  style="width: 195px"/>
+                                        <input type="text" id="evr_cal_head" name="evr_cal_head" value="<?php if ($company_options['evr_cal_head'] !="") {echo $company_options['evr_cal_head'];} else {echo "#583c32";}?>"  style="width: 195px"/>
                                         </label><div id="picker" style="margin-bottom: 1em;"></div></p><p>Selector Text Color: <select style="width:70px;" name='cal_head_txt_clr' >
                                         <option value="<?php  echo $company_options['cal_head_txt_clr'];?>"><?php if ($company_options['cal_head_txt_clr']=="#000000"){echo "Black";} if ($company_options['cal_head_txt_clr']=="#FFFFFF"){echo "White";} ?></option>
                                         <option value="#000000">Black</option>
                                         <option value="#FFFFFF">White</option></select></p>
                                         <hr />
                                         <p><label for="color">Calender Day Header Background Color: 
-                                        <input type="text" id="evr_cal_day_head" name="evr_cal_day_head" value="<?php  echo $company_options['cal_day_head_clr'];?>"  style="width: 195px"/>
+                                        <input type="text" id="evr_cal_day_head" name="evr_cal_day_head" value="<?php  if ($company_options['evr_cal_day_head'] !=""){
+                                        echo $company_options['evr_cal_day_head'];} else {echo "#b8ced6";}?>"  style="width: 195px"/>
                                         </label><div id="hdrpicker" style="margin-bottom: 1em;"></div></p>
                                         <p>Selector Text Color: <select style="width:70px;" name='cal_day_head_txt_clr' >
                                         <option value="<?php  echo $company_options['cal_day_head_txt_clr'];?>"><?php if ($company_options['cal_day_head_txt_clr']=="#000000"){echo "Black";} if ($company_options['cal_day_head_txt_clr']=="#FFFFFF"){echo "White";} ?></option>
@@ -496,7 +501,8 @@ function evr_admin_company(){
                                         <option value="#FFFFFF">White</option></select></p>
                                         <hr />
                                         <p><label for="color">Current Day Background Color: 
-                                        <input type="text" id="evr_cal_cur_day" name="evr_cal_cur_day" value="<?php  echo $company_options['cal_day_clr'];?>"  style="width: 195px"/>
+                                        <input type="text" id="evr_cal_cur_day" name="evr_cal_cur_day" value="<?php if ($company_options['evr_cal_cur_day'] !="") {echo $company_options['evr_cal_cur_day'];} else {echo  "#b8ced6"; }
+                                        ?>"  style="width: 195px"/>
                                         </label><div id="daypicker" style="margin-bottom: 1em;"></div></p>
                                         <p>Current Day Text Color: <select style="width:70px;" name='cal_day_txt_clr' >
                                         <option value="<?php  echo $company_options['cal_day_txt_clr'];?>"><?php if ($company_options['cal_day_txt_clr']=="#000000"){echo "Black";} if ($company_options['cal_day_txt_clr']=="#FFFFFF"){echo "White";} ?></option>
@@ -504,7 +510,7 @@ function evr_admin_company(){
                                         <option value="#FFFFFF">White</option></select></p>
                                         <hr />
                                         <p><label for="color">Description Pop Border Color: 
-                                        <input type="text" id="evr_cal_pop_border" name="evr_cal_pop_border" value="<?php  echo $company_options['cal_pop_brdr_clr'];?>"  style="width: 195px"/>
+                                        <input type="text" id="evr_cal_pop_border" name="evr_cal_pop_border" value="<?php  if ($company_options['evr_cal_pop_border'] !=""){ echo $company_options['evr_cal_pop_border'];} else {echo  "#b8ced6";}?>"  style="width: 195px"/>
                                         </label><div id="brdrpicker" style="margin-bottom: 1em;"></div></p>
                                         
                                         

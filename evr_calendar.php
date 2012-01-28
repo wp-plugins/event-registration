@@ -165,15 +165,27 @@ function evr_display_calendar(){
    $company_options = get_option('evr_company_settings'); 
    
    
-    $cal_head_clr = $company_options['cal_head_clr'];
-    $cal_day_clr = $company_options['cal_day_clr'];
-    $cal_use_cat = $company_options['cal_use_cat']; 
-    $cal_pop_brdr_clr = $company_options['cal_pop_brdr_clr'];
+    $cal_head_clr = $company_options['evr_cal_head'];
     $cal_head_txt_clr = $company_options['cal_head_txt_clr'];
+    
+   
+    
+    $cal_use_cat = $company_options['evr_cal_use_cat']; 
+   
+    $cal_pop_brdr_clr = $company_options['evr_cal_pop_border'];
+    
+     $cal_day_clr = $company_options['evr_cal_cur_day'];
     $cal_day_txt_clr =  $company_options['cal_day_txt_clr'];
+    
     $date_switcher = $company_options['evr_date_select'];
-    $cal_day_hdr_clr = $company_options['cal_day_head_clr'];
+    
+    $cal_day_hdr_clr = $company_options['evr_cal_day_head'];
     $cal_day_hdr_txt_clr = $company_options['cal_day_head_txt_clr'];
+    
+  
+
+            
+    
   
     
 if ($cal_head_clr != ""){    ?>
