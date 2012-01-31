@@ -393,7 +393,7 @@ function evr_admin_company(){
                         <?php
                           	}
                             else {
-                        wp_editor( $company_options['message'], 'message', $settings );}
+                        wp_editor( htmlspecialchars_decode($company_options['message']), 'message', $settings );}
                         ?>
                         
                         
@@ -423,7 +423,8 @@ function evr_admin_company(){
                         <br /> 
                         <?php
                           	}
-                            else { wp_editor( $company_options['payment_message'], 'payment_message', $settings );}
+                            /*else { wp_editor( $company_options['payment_message'], 'payment_message', $settings );}*/
+                            else { wp_editor(  htmlspecialchars_decode($company_options['payment_message']), 'payment_message', $settings );}
                         ?> </p>
                     <div style="clear:both;"></div>
                     </div>   
