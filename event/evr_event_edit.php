@@ -172,7 +172,7 @@ To create new display lines just press Enter.','evr_language');?>">
                    <?php
                     if (function_exists('wp_editor')){
                         echo "</td></tr></table>";
-                        wp_editor( $event_desc, 'event_desc', $editor_settings );
+                        wp_editor( htmlspecialchars_decode($event_desc), 'event_desc', $editor_settings );
                     } else {  ?>
                     <a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
                     </td></tr></table>
@@ -476,7 +476,7 @@ To create new display lines just press Enter.','evr_language');?>">
              
              
               if (function_exists('wp_editor')){
-              wp_editor( $conf_mail, 'conf_mail', $editor_settings ); 
+              wp_editor( htmlspecialchars_decode($conf_mail), 'conf_mail', $editor_settings ); 
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
                <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $conf_mail;?></textarea>

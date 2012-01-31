@@ -137,7 +137,7 @@ global $wpdb;
                                 <input class="fees_btn" type="submit" name="items" value="<?php _e('Fees/Items','evr_language');?>" />
                               </form>
                             </div>
-                            <div style="float:left; margin-left:20px;">
+                            <div style="float:left; margin-left:10px;">
                                         <form name="form" method="post" action="admin.php?page=questions">
                                           <input type="hidden" name="action" value="new">
                                           <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
@@ -146,7 +146,7 @@ global $wpdb;
                                         </form>
                                         
                                     </div>
-                                    <div style="float:left; margin-left:20px;">
+                                    <div style="float:left; margin-left:10px;">
                                         <form name="form" method="post" action="admin.php?page=attendee">
                                           <input type="hidden" name="action" value="view_attendee">
                                           <input type="hidden" name="event_id" value="<?php echo $event_id?>">
