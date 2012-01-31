@@ -130,7 +130,7 @@ $tables = array(
                                <input type="hidden" name="key" value="5678" /> 
                                <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
                                <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input class="button-primary type="submit" value="Export Details - Excel"/>
+                               <input class="button-primary" type="submit" value="Export Details - Excel"/>
                                 </form>
     </div>
     
@@ -142,7 +142,7 @@ $tables = array(
                                <input type="hidden" name="key" value="5678" /> 
                                <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
                                <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input class="button-primary type="submit" value="Export Details - CSV"/>
+                               <input class="button-primary" type="submit" value="Export Details - CSV"/>
                                 </form>
     </div>
 
