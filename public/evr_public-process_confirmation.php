@@ -186,9 +186,14 @@ function evr_process_confirmation(){
     if ($reg_form['reg_type']=="WAIT"){$email_content = $wait_message;}
     $email_body = $email_content;
             
+    
+    
+    $email_body = $message_top.$email_content.$message_bottom;        
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
     $headers .= 'From: "' . html_entity_decode($company_options['company']) . '" <' . $company_options['company_email'] . ">\r\n";
     
-    wp_mail($reg_form['email'], html_entity_decode($event_name), html_entity_decode($email_body), $headers);
+    wp_mail($reg_form['email'], html_entity_decode($event_name), html_entity_decode(nl2br($email_body)), $headers);
     
     _e("A confirmation email has been sent to:",'evr_language'); 
     echo " ";
@@ -239,7 +244,7 @@ if ($send_coord =="Y"){
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
     $headers .= 'From: "' . $company_options['company'] . '" <' . $company_options['company_email'] . ">\r\n";
     
-    wp_mail($coord_email, $event_name, html_entity_decode($email_body), $headers);
+    wp_mail($coord_email, html_entity_decode($event_name), html_entity_decode(nl2br($email_body)), $headers);
   
 }
 //End Send Coordinator Email     
