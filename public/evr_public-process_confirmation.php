@@ -178,10 +178,12 @@ function evr_process_confirmation(){
     $email_content = str_replace($SearchValues, $ReplaceValues, $confirmation_email_body);
     $message_top = "<html><body>"; 
     $message_bottom = "</html></body>";
+   if ($company_options['wait_message'] != ""){ $wait_message = $company_options['wait_message'];}
+    else {
     $wait_message =  '<font color="red"><p>'.__("Thank you for registering for",'evr_language')." ".$event_name.". ".__("At this time, all seats for the event have been taken.  
     Your information has been placed on our waiting list.  
     The waiting list is on a first come, first serve basis.  
-    You will be notified by email should a seat become available.",'evr_language').'</p><p>'.__("Thank You",'evr_language').'</p></font>';
+    You will be notified by email should a seat become available.",'evr_language').'</p><p>'.__("Thank You",'evr_language').'</p></font>';}
     
     if ($reg_form['reg_type']=="WAIT"){$email_content = $wait_message;}
     $email_body = $email_content;
