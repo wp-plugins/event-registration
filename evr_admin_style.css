@@ -1,3 +1,44 @@
+.edit_btn {    
+    display:block;    
+    width:49px;    
+    height:49px;   
+    background:url(images/evr_edit.png) 0 0 no-repeat;    
+    text-indent:-999em; }
+
+.copy_btn {    
+    display:block;    
+    width:49px;    
+    height:49px;   
+    background:url(images/evr_copy.png) 0 0 no-repeat;    
+    text-indent:-999em; }
+.delete_btn {    
+    display:block;    
+    width:49px;    
+    height:49px;   
+    background:url(images/evr_delete.png) 0 0 no-repeat;    
+    text-indent:-999em; }
+
+.attendee_btn {    
+    display:block;    
+    width:49px;    
+    height:49px;   
+    background:url(images/evr_attendees.png) 0 0 no-repeat;    
+    text-indent:-999em; }
+    
+.fees_btn {    
+    display:block;    
+    width:49px;    
+    height:49px;   
+    background:url(images/evr_fees.png) 0 0 no-repeat;    
+    text-indent:-999em; }
+    
+.question_btn {    
+    display:block;    
+    width:49px;    
+    height:49px;   
+    background:url(images/evr_questions.png) 0 0 no-repeat;    
+    text-indent:-999em; }
+
 #dashboard_right_now table td {
 padding: 3px 6px;
 \\white-space: nowrap;
@@ -380,7 +421,7 @@ table.evr_evntpop {
 h1 {font-size: 3em; margin: 20px 0;}
 
 .evr_container {
-    width: 900px; 
+    width: 90%; 
     margin: 10px auto;
     float: left;
     
