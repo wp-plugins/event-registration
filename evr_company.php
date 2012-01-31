@@ -21,6 +21,7 @@ function evr_admin_company(){
     		$company_options['splash']            = $_POST['splash'];
             $company_options['send_confirm']      = $_POST['send_confirm'];
     		$company_options['message']           = htmlentities2($_POST['message']);
+            $company_options['wait_message']      = htmlentities2($_POST['wait_message']);
             $company_options['thumbnail']         = $_POST['thumbnail'];
             $company_options['calendar_url']      = $_POST['evr_page_id'];            //$_POST['calendar_url';
             $company_options['default_currency']  = $_POST['default_currency'];
@@ -117,8 +118,9 @@ function evr_admin_company(){
         <li><a href="#tab3"><?php _e('Captcha','evr_language');?></a></li>
         <li><a href="#tab4"><?php _e('Page Config','evr_language');?></a></li>
         <li><a href="#tab5"><?php _e('Confirmation Settings','evr_language');?></a></li>
-        <li><a href="#tab6"><?php _e('Calendar','evr_language');?></a></li>
-        <li><a href="#tab7"><?php _e('Done','evr_language');?></a></li>
+        <li><a href="#tab6"><?php _e('Waitlist Settings','evr_language');?></a></li>
+        <li><a href="#tab7"><?php _e('Calendar','evr_language');?></a></li>
+        <li><a href="#tab8"><?php _e('Done','evr_language');?></a></li>
         
     </ul>
     <div class="evr_tab_container">
@@ -385,7 +387,7 @@ function evr_admin_company(){
                                 		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
                                 	);
                         
-                        if (!version_compare($wp_version, '3.3', '>=')) { ?>
+                      /*  if (!version_compare($wp_version, '3.3', '>=')) { ?>
                             <a href="javascript:void(0)" onclick="tinyfy(1,'message')"><input type="button" value="WYSIWG"/></a>
                             <br />
                             <textarea name="message" id="message" style="width: 100%; height: 200px;">
@@ -394,6 +396,21 @@ function evr_admin_company(){
                           	}
                             else {
                         wp_editor( htmlspecialchars_decode($company_options['message']), 'message', $settings );}
+                        
+                        */
+                        
+                    if (function_exists('wp_editor')){
+				
+                    wp_editor( htmlspecialchars_decode($company_options['message']), 'message', $settings );}
+                                     
+				    else{ ?>
+                     <a href="javascript:void(0)" onclick="tinyfy(1,'message')"><input type="button" value="WYSIWG"/></a>
+                     <br />
+                     <textarea name="message" id="message" style="width: 100%; height: 200px;">
+                     <?php echo htmlspecialchars_decode($company_options['message']);?></textarea>       
+                     
+                    <?php } 
+                        
                         ?>
                         
                         
@@ -414,25 +431,62 @@ function evr_admin_company(){
                         <p><label for="payment_subj"><?php _e('Payment Message Subject','evr_language');?></label><input name="payment_subj" value="<?php  echo $company_options['payment_subj'];?>" class="regular-text" /></p>
                         <p>Email Body:   
                         <?php
-                                               
-                        if (!version_compare($wp_version, '3.3', '>=')) { ?>
-                           <a href="javascript:void(0)" onclick="tinyfy(1,'payment_message')"><input type="button" value="WYSIWG"/></a><br />
-                        
-                         <textarea name="payment_message" id="payment_message" style="width: 100%; height: 200px;">
+                                                 
+                        if (function_exists('wp_editor')){  
+                            wp_editor(  htmlspecialchars_decode($company_options['payment_message']), 'payment_message', $settings );}
+                        else { 
+                        ?>
+                        <a href="javascript:void(0)" onclick="tinyfy(1,'payment_message')"><input type="button" value="WYSIWG"/></a><br />
+                        <textarea name="payment_message" id="payment_message" style="width: 100%; height: 200px;">
                         <?php echo $company_options['payment_message'];?></textarea>
                         <br /> 
                         <?php
-                          	}
-                            /*else { wp_editor( $company_options['payment_message'], 'payment_message', $settings );}*/
-                            else { wp_editor(  htmlspecialchars_decode($company_options['payment_message']), 'payment_message', $settings );}
-                        ?> </p>
+                       	}
+                        ?> 
+                        </p>
                     <div style="clear:both;"></div>
                     </div>   
                 </div>
             </div>
         </div> 
-        
-        <div id="tab6" class="tab_content">
+         <div id="tab6" class="tab_content">
+            <div class="postbox " >
+                <div class="inside">
+                    <div class="padding">
+                    
+                        
+                        <p><a class="ev_reg-fancylink" href="#custom_wait_settings">Settings</a> | <a class="ev_reg-fancylink" href="#custom_wait_example">Example</a></p>
+                        <p>Waitlist Email Body:   
+                        
+                        
+                        <?php
+                        $settings = array(
+                                		'media_buttons' => false,
+                                        'quicktags' => array('buttons' => 'b,i,ul,ol,li,link,close'),
+                                		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
+                                	);
+                        
+                    
+                        
+                    if (function_exists('wp_editor')){
+				
+                    wp_editor( htmlspecialchars_decode($company_options['wait_message']), 'wait_message', $settings );}
+                                     
+				    else{ ?>
+                     <a href="javascript:void(0)" onclick="tinyfy(1,'wait_message')"><input type="button" value="WYSIWG"/></a>
+                     <br />
+                     <textarea name="wait_message" id="wait_message" style="width: 100%; height: 200px;">
+                     <?php echo htmlspecialchars_decode($company_options['wait_message']);?></textarea>       
+                     
+                    <?php } 
+                        
+                        ?>
+                        </p>
+                   </div>     
+                </div>
+            </div>
+        </div> 
+        <div id="tab7" class="tab_content">
             <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
@@ -526,7 +580,7 @@ function evr_admin_company(){
         </div>
         
                
-        <div id="tab7" class="tab_content">
+        <div id="tab8" class="tab_content">
             <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
@@ -550,6 +604,21 @@ function evr_admin_company(){
     <p>Your unique registration ID is: [id].</p>
     <p>Click here to review your payment information [payment_url].</p>
     <p>Thank You.</p>
+</div>
+</div>
+<div style="display:none;"><div id="custom_wait_settings" style="width:650px;height:350px;overflow:auto;">
+    <h2>Email Settings</h2><p><strong>Waitlist:</strong><br>
+    For customized wait list emails, the following tags can be placed in the email form and they will pull data from the database to include in the email.</p>
+    <p>[fname], [lname], [event]</p>
+</div>
+</div>
+<div style="display:none;"><div id="custom_wait_example" style="width:650px;height:350px;overflow:auto;">
+    <p>Thank you [fname] [lname] for your interest in registering for [event].</p>
+    <p>At this time, all seats for the event have been taken.  
+    Your information has been placed on our waiting list.  
+    The waiting list is on a first come, first serve basis.</p>  
+    <p>You will be notified by email with directions for completing registration and payment should a seat become available.</p>
+    <p>Thank You</p>
 </div>
 </div>
 <div style="display:none;"><div id="custom_payment_email_settings" style="width:650px;height:350px;overflow:auto;">
