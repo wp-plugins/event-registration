@@ -6,7 +6,7 @@
 
 /*
 6.00.14 -
-
+added tax to attendee
 */
 /*
 6.00.13 -Added fields to event
@@ -43,7 +43,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.14";
+    $cur_build = "6.00.141";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -70,7 +70,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.14.0";
+    $upgrade_version = "0.14.1";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -124,9 +124,13 @@ function evr_upgrade_tables(){
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }
+        $value = "tax";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD atax VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL AFTER quantity";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
             
-        
-            
+                    
 //
 // Event Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -459,6 +463,7 @@ function evr_attendee_db()
                       attendees MEDIUMTEXT DEFAULT NULL,
                       tickets MEDIUMTEXT DEFAULT NULL,
                       payment VARCHAR(45) DEFAULT NULL,
+                      tax VARCHAR(45) DEFAULT NULL,
                       payment_status VARCHAR(45) DEFAULT NULL,
                       amount_pd VARCHAR (45) DEFAULT NULL,
                       payment_date varchar(30) DEFAULT NULL,
