@@ -1,43 +1,73 @@
 .edit_btn {    
     display:block;    
-    width:49px;    
-    height:49px;   
+    width:75px;;    
+    height:24px;   
     background:url(images/evr_edit.png) 0 0 no-repeat;    
     text-indent:-999em; }
 
 .copy_btn {    
     display:block;    
-    width:49px;    
-    height:49px;   
+    width:75px;    
+    height:24px;   
     background:url(images/evr_copy.png) 0 0 no-repeat;    
     text-indent:-999em; }
 .delete_btn {    
     display:block;    
-    width:49px;    
-    height:49px;   
+    width:75px;    
+    height:24px;   
     background:url(images/evr_delete.png) 0 0 no-repeat;    
     text-indent:-999em; }
 
 .attendee_btn {    
     display:block;    
-    width:49px;    
-    height:49px;   
+    width:75px;    
+    height:24px;   
     background:url(images/evr_attendees.png) 0 0 no-repeat;    
     text-indent:-999em; }
     
 .fees_btn {    
     display:block;    
-    width:49px;    
-    height:49px;   
+    width:75px;    
+    height:24px;   
     background:url(images/evr_fees.png) 0 0 no-repeat;    
     text-indent:-999em; }
     
 .question_btn {    
     display:block;    
-    width:49px;    
-    height:49px;   
+    width:75px;    
+    height:24px;   
     background:url(images/evr_questions.png) 0 0 no-repeat;    
     text-indent:-999em; }
+
+    
+.xls_btn {    
+    display:block;    
+    width:48px;    
+    height:24px;   
+    background:url(images/evr_xls.png) 0 0 no-repeat;    
+    text-indent:-999em; }
+    
+    
+.csv_btn {    
+    display:block;    
+    width:48px;    
+    height:24px;   
+    background:url(images/evr_csv.png) 0 0 no-repeat;    
+    text-indent:-999em; } 
+    
+.view_all_btn {    
+    display:block;    
+    width:75px;    
+    height:24px;   
+    background:url(images/evr_view_all.png) 0 0 no-repeat;    
+    text-indent:-999em; }   
+
+.delete_all_btn {    
+    display:block;    
+    width:75px;    
+    height:24px;   
+    background:url(images/evr_delete_all.png) 0 0 no-repeat;    
+    text-indent:-999em; }    
 
 #dashboard_right_now table td {
 padding: 3px 6px;
@@ -421,7 +451,7 @@ table.evr_evntpop {
 h1 {font-size: 3em; margin: 20px 0;}
 
 .evr_container {
-    width: 90%; 
+    width: 900px; 
     margin: 10px auto;
     float: left;
     
@@ -471,7 +501,7 @@ ul.tabs li a {
     	text-decoration: none;
     	color: #000;
     	display: block;
-    	font-size: 1.2em;
+    	font-size: .95em;
     	padding: 0 20px;
     	border: 1px solid #fff;
     	outline: none;
