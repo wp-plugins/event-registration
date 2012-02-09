@@ -6,7 +6,6 @@ $record_limit = 15;
 $curdate = date("Y-m-d");
 //initiate connection to wordpress database.
 global $wpdb;
-
 ?>
 <div class="wrap">
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -135,14 +134,14 @@ global $wpdb;
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="view_attendee"/>
                                 <input type="hidden" name="event_id" value="<?php echo $event_id?>">
-                                <input class="button-primary" type="submit" name="Attendees" value="<?php _e('View Attendees','evr_language');?>" />
+                                <input class="view_all_btn" type="submit" name="Attendees" value="<?php _e('View Attendees','evr_language');?>" />
                               </form>
                             </div>
                             <div style="float:left; margin-left:20px;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="delete_all_attendees">
                                 <input type="hidden" name="e_id" value="<?php echo $event_id?>">
-                                <input class="button-primary" type="submit" name="delete" value="<?php
+                                <input class="delete_all_btn" type="submit" name="delete" value="<?php
                                  _e('Delete All Attendees','evr_language');?>" id="delete_event-<?php echo $event_id?>" 
                                  onclick="return confirm('<?php _e('Are you sure you want to delete all attendees? This process is not reversable!','evr_language');echo " -"; echo $event_name?>?')"/>
                               </form>
