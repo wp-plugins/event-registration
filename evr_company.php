@@ -46,6 +46,10 @@ function evr_admin_company(){
             $company_options['form_css']          = $_POST['form_css'];
             $start_of_week                        = $_POST['start_of_week'];
             
+            $company_options['use_sales_tax']     = $_POST['use_sales_tax'];
+            $company_options['sales_tax_rate']    = $_POST['sales_tax_rate'];
+            
+            
             $company_options['start_of_week']     = $_POST['start_of_week'];
             
             $company_options['evr_date_select']   = $_POST['evr_date_select'];
@@ -114,13 +118,14 @@ function evr_admin_company(){
     <h2><?php _e('Company Settings','evr_language');?></h2>
     <ul class="tabs">
         <li><a href="#tab1"><?php _e('Contact Info','evr_language');?></a></li>
-        <li><a href="#tab2"><?php _e('Payment Settings','evr_language');?></a></li>
+        <li><a href="#tab2"><?php _e('Payment Info','evr_language');?></a></li>
         <li><a href="#tab3"><?php _e('Captcha','evr_language');?></a></li>
         <li><a href="#tab4"><?php _e('Page Config','evr_language');?></a></li>
-        <li><a href="#tab5"><?php _e('Confirmation Settings','evr_language');?></a></li>
-        <li><a href="#tab6"><?php _e('Waitlist Settings','evr_language');?></a></li>
+        <li><a href="#tab5"><?php _e('Confirmation Info','evr_language');?></a></li>
+        <!--  <li><a href="#tab6"><?php _e('Waitlist Info','evr_language');?></a></li> -->
         <li><a href="#tab7"><?php _e('Calendar','evr_language');?></a></li>
-        <li><a href="#tab8"><?php _e('Done','evr_language');?></a></li>
+       <!-- <li><a href="#tab8"><?php _e('Tax','evr_language');?></a></li> -->
+        <li><a href="#tab9"><?php _e('Done','evr_language');?></a></li>
         
     </ul>
     <div class="evr_tab_container">
@@ -579,8 +584,30 @@ function evr_admin_company(){
             </div>
         </div>
         
-               
-        <div id="tab8" class="tab_content">
+         <div id="tab8" class="tab_content">
+            <div class="postbox " >
+                <div class="inside">
+                    <div class="padding">
+                    <?php /*
+                   $company_options['use_sales_tax']     = $_POST['use_sales_tax'];
+            $company_options['sales_tax_rate']    = $_POST['sales_tax_rate'];
+            */
+            ?>
+            <p>Do you want to charge sales tax <input type="radio" name="use_sales_tax" class="regular-radio" value="Y"  <?php if ($company_options['use_sales_tax'] == "Y"){echo "checked";}?> />Yes
+                        <input type="radio" name="use_sales_tax" class="regular-radio" value="N"  <?php if (($company_options['use_sales_tax'] == "N")||($company_options['use_sales_tax'] != "Y")){echo "checked";}?> />No<br />  
+                        <font size="-5" color="red">(This option must be enable to charge sales tax)</font></p>
+                    <table class="form-table">
+                        <tr valign="top">
+                        <th scope="row"><label for="sales_tax_rate"><?php _e('Sales Tax Rate: ','evr_language');?><br />(must be decimal, i.e. .085 )</label></th>
+                        <td><input name="sales_tax_rate" type="text"  value="<?php echo $company_options['sales_tax_rate'];?>" class="regular-text" /></td>
+                        </tr>
+                        
+                        </table>  
+                    </div>  
+                </div>
+            </div>
+        </div>                  
+        <div id="tab9" class="tab_content">
             <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
@@ -625,6 +652,8 @@ function evr_admin_company(){
     <h2>Payment Confirmation Email Settings</h2><p><strong>Payment Confirmations:</strong><br>
     For customized payment confirmation emails, the following tags can be placed in the email form and they will pull data from the database to include in the email.</p>
     <p>[id],[fname], [lname], [payer_email], [event_name],[amnt_pd], [txn_id],[address_street],[address_city],[address_state],[address_zip],[address_country],[start_date],[start_time],[end_date],[end_time] 
+
+
 </div></div> 
 <div style="display:none;"><div id="custom_payment_email_example" style="width:650px;height:350px;overflow:auto;">
     <h2>Sample Payment Mail Send:</h2>
