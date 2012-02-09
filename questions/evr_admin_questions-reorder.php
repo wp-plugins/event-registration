@@ -90,7 +90,7 @@ margin-left: -1.3em;
                         <div class="inside">
                             <div class="padding">
                             
-                            <a class="button-secondary" href="admin.php?page=questions&action=new&event_id=<?php echo $event_id;?>" title="Process Change"><?php _e('Apply Changes','evr_language');?></a>
+                            <a class="button-primary" href="admin.php?page=questions&action=new&event_id=<?php echo $event_id;?>" title="Process Change"><?php _e('Apply Changes','evr_language');?></a>
                             
                             </div>
                         </div>
