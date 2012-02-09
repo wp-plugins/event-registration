@@ -143,7 +143,7 @@ global $wpdb;
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="view_payments"/>
                                 <input type="hidden" name="event_id" value="<?php echo $event_id?>">
-                                <input class="button-secondary" type="submit" name="Payments" value="<?php _e('Payments','evr_language');?>" />
+                                <input class="button-primary" type="submit" name="Payments" value="<?php _e('Payments','evr_language');?>" />
                               </form>
                             </div>
                             </td>
