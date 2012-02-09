@@ -22,9 +22,9 @@ function evr_process_confirmation(){
     $sql=array('lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 'city'=>$reg_form['city'], 
                 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 'email'=>$reg_form['email'],
                 'phone'=>$reg_form['phone'], 'email'=>$reg_form['email'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],
-                'quantity'=>$reg_form['num_people'], 'tickets'=>$reg_form['tickets'], 'payment'=>$reg_form['payment'], 'attendees'=>$attendee_list);
+                'quantity'=>$reg_form['num_people'], 'tickets'=>$reg_form['tickets'], 'payment'=>$reg_form['payment'], 'tax'=>$reg_form['tax'],'attendees'=>$attendee_list);
  
-    $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
+    $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
     if ($wpdb->insert( get_option('evr_attendee'), $sql, $sql_data )){ 
     // Insert Extra From Post Here
             $reg_id = $wpdb->get_var("SELECT LAST_INSERT_ID()");
@@ -43,22 +43,11 @@ function evr_process_confirmation(){
             }
     } 
     
-  
+    
    _e("Your information has been received.",'evr_language');
    echo "<br/>";
    
-/* Comment Out PDF confirmation Option
 
-?>
-<form id="pdf out" class="evr_regform" method="post" action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/event-registration/evr_pdf_out.php'?>">
-
-<input type="hidden" name="reg_form" value="<?php echo $_POST["reg_form"];?>" />
-<input type="hidden" name="attendee_list" value="<?php echo $attendee_list;?>" />
-<input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('PDF Confirmation','evr_language');?>" /> 
-</form>
-<?php
- 
- */
     
    $sql= "SELECT * FROM ". get_option('evr_event')." WHERE id=".$event_id; 
    
@@ -76,6 +65,7 @@ function evr_process_confirmation(){
                         $use_coupon = $row['use_coupon'];
                         $reg_limit = $row['reg_limit'];
                    	    $event_name = html_entity_decode(stripslashes($row['event_name']));
+                        $invoice_event = $row['event_name'];
         					$event_identifier = stripslashes($row['event_identifier']);
         					$display_desc = $row['display_desc'];  // Y or N
                             $event_desc = html_entity_decode(stripslashes($row['event_desc']));
@@ -131,7 +121,28 @@ function evr_process_confirmation(){
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
                                }
-   
+ 
+ //create array for invoice
+$invoice_data = array('reg_id'=>$reg_id,'lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 
+                'city'=>$reg_form['city'], 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 
+                'email'=>$reg_form['email'], 'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],
+                'event_name'=>$invoice_event, 'quantity'=>$reg_form['num_people'], 'tickets'=>$reg_form['tickets'], 
+                'payment'=>$reg_form['payment'], 'tax'=>$reg_form['tax'],'attendees'=>$attendee_list);
+                
+$invoice_post = urlencode(serialize($invoice_data));
+
+/* Comment Out PDF confirmation Option
+
+?>
+<form id="pdf out" class="evr_regform" method="post" action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/event-registration/evr_pdf_out.php'?>">
+
+<input type="hidden" name="reg_form" value="<?php echo $_POST["reg_form"];?>" />
+<input type="hidden" name="attendee_list" value="<?php echo $attendee_list;?>" />
+<input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('PDF Confirmation','evr_language');?>" /> 
+</form>
+<?php
+ 
+ */   
 //Send Confirmation Email   
    //Select the default message
    if ($company_options['send_confirm']=="Y"){
@@ -299,8 +310,13 @@ if ($send_coord =="Y"){
            evr_registration_donation($event_id, $reg_id);
            }
 
-
-
-
+/*
+?>
+<form id="invoice" class="evr_regform" method="post" target=_blank action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/event-registration/evr_invoice.php'?>">
+<input type="hidden" name="reg_form" value="<?php echo $invoice_post;?>" />
+<input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Print Invoice','evr_language');?>" /> 
+</form>
+<?php 
+*/
 }
 ?>

@@ -56,6 +56,7 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
                         			$date = $row ['date'];
                         			$reg_type = $row['reg_type'];
                                     $ticket_order = unserialize($row['tickets']);
+                                    $tax = $row['tax'];
                                     $payment= $row['payment'];
                                     $event_id = $row['event_id'];
                                     $coupon = $row['coupon'];
@@ -126,7 +127,16 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
     if ($ticket_order[$row]['ItemQty'] >= "1"){ echo $ticket_order[$row]['ItemQty']." ".$ticket_order[$row]['ItemCat']."-".$ticket_order[$row]['ItemName']." ".$ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']."<br \>";}
     } ?></td>
                       </tr>
+                     <?php if ($company_options['use_sales_tax'] == "Y"){ ?>
+                     <tr><td></td>
+                        <td><?php _e('Sales Tax  ','evr_language'); echo ':  '.$tax;?></td></tr>
+                     <?php } ?>  
+                     <tr>
+                        <td><strong>Total Cost:</strong></td>
+                        <td><?php echo $ticket_order[0]['ItemCurrency'];?> <strong><?php echo number_format($payment,2)?> </strong></td>
+                      </tr>
                     </table><br />
+                    
                 <?php
 					 $p->submit_paypal_post($pay_now); // submit the fields to paypal
 				  if ($company_options['use_sandbox'] == "Y") {

@@ -20,6 +20,8 @@ function evr_confirm_form(){
     $zip = $_POST['zip'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
+    $fees = $_POST['fees'];
+    $tax = $_POST['tax'];
     $payment = $_POST['total'];
     $coupon = $_POST['coupon'];
     $reg_type = $_POST['reg_type'];
@@ -125,7 +127,7 @@ if ($use_coupon == "Y"){
 $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city'=>$city, 
                 'state'=>$state, 'zip'=>$zip, 'reg_type'=>$reg_type, 'email'=>$email,
                 'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,
-                'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment);
+                'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment, 'fees'=>$fees, 'tax'=>$tax);
        
 
 ?>
@@ -165,7 +167,10 @@ $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city
                        }
                        ?>
                       </tr>
-                      <tr><td><hr></td><td> <hr></td></tr>
+                      <?php if ($company_options['use_sales_tax'] == "Y"){ ?>
+                      <tr><td></td><td><?php _e('Sales Tax  ','evr_language'); echo ':  '.$tax;?></td></tr>
+                      <?php }?>
+                      <tr><td colspan="2"> </td></tr>
                       <tr>
                         <td><strong>Event Name / Total Cost:</strong></td>
                         <td><?php echo $event_name?>: <?php echo $item_order[0]['ItemCurrency'];?> <strong><?php echo number_format($payment,2)?> </strong></td>

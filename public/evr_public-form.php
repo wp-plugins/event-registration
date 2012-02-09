@@ -328,7 +328,17 @@ if ($available >= "1"){
                             
                             }?>
                             
-                            <br /><br /><b><?php _e('Registration TOTAL','evr_language');?>  <input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></b>
+                            <br />
+                            <?php if ($company_options['use_sales_tax'] == "Y"){ ?>
+                            <table>
+                            <tr><td><b><?php _e('Registration Fees','evr_language');?></b></td><td><input type="text" name="fees" id="fees" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                            <tr><td><b><?php _e('Sales Tax','evr_language');?></b></td><td><input type="text" name="tax" id="tax" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                            <tr><td><b><?php _e('Total','evr_language');?></b></td><td><input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                            </table>
+                            <?php } else { ?>
+                            <br />
+                            <b><?php _e('Total   ','evr_language');?><input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></b>
+                            <?php } ?>
                             <br />
                             <?php
                                
@@ -355,7 +365,10 @@ if ($available >= "1"){
                                 <?php   
                             }
                             ?>
-                            
+                            <?php if ($company_options['use_sales_tax'] == "Y"){ 
+                            $tax_rate = .0875;
+                            if ($company_options['sales_tax_rate'] != "") { $tax_rate = $company_options['sales_tax_rate'];}
+                            ?>
                             <script language="JavaScript" type="text/javascript">
                             <!--
                             
@@ -366,6 +379,7 @@ if ($available >= "1"){
                             
                             function CalculateTotal(frm) {
                                 var order_total = 0
+                                var tax_rate = <?php echo $tax_rate;?>
                             
                                 // Run through all the form fields
                                 for (var i=0; i < frm.elements.length; ++i) {
@@ -388,12 +402,103 @@ if ($available >= "1"){
                                         // Update the order total
                                         if (item_quantity >= 0) {
                                             order_total += item_quantity * item_price
+                                            
+                                        }
+                                    }
+                                }
+                            
+                                // Display the total rounded to two decimal places
+                                frm.fees.value = round_decimals(order_total, 2)
+                                    tax_total = order_total * tax_rate
+                                frm.tax.value = round_decimals(tax_total, 2)
+                                    grand_total = order_total + tax_total
+                                frm.total.value = round_decimals(grand_total, 2)    
+                            }
+                            function round_decimals(original_number, decimals) {
+                                var result1 = original_number * Math.pow(10, decimals)
+                                var result2 = Math.round(result1)
+                                var result3 = result2 / Math.pow(10, decimals)
+                                return pad_with_zeros(result3, decimals)
+                            }
+                            
+                            function pad_with_zeros(rounded_value, decimal_places) {
+                            
+                                // Convert the number to a string
+                                var value_string = rounded_value.toString()
+                                
+                                // Locate the decimal point
+                                var decimal_location = value_string.indexOf(".")
+                            
+                                // Is there a decimal point?
+                                if (decimal_location == -1) {
+                                    
+                                    // If no, then all decimal places will be padded with 0s
+                                    decimal_part_length = 0
+                                    
+                                    // If decimal_places is greater than zero, tack on a decimal point
+                                    value_string += decimal_places > 0 ? "." : ""
+                                }
+                                else {
+                            
+                                    // If yes, then only the extra decimal places will be padded with 0s
+                                    decimal_part_length = value_string.length - decimal_location - 1
+                                }
+                                
+                                // Calculate the number of decimal places that need to be padded with 0s
+                                var pad_total = decimal_places - decimal_part_length
+                                
+                                if (pad_total > 0) {
+                                    
+                                    // Pad the string with 0s
+                                    for (var counter = 1; counter <= pad_total; counter++) 
+                                        value_string += "0"
+                                    }
+                                return value_string
+                            }
+                            
+                            //-->
+                            </script>
+                            <?php } else { ?>
+                               <script language="JavaScript" type="text/javascript">
+                            <!--
+                            
+                            /* This script is Copyright (c) Paul McFedries and 
+                            Logophilia Limited (http://www.mcfedries.com/).
+                            Permission is granted to use this script as long as 
+                            this Copyright notice remains in place.*/
+                            
+                            function CalculateTotal(frm) {
+                                var order_total = 0
+                                                           
+                                // Run through all the form fields
+                                for (var i=0; i < frm.elements.length; ++i) {
+                            
+                                    // Get the current field
+                                    form_field = frm.elements[i]
+                            
+                                    // Get the field's name
+                                    form_name = form_field.name
+                            
+                                    // Is it a "product" field?
+                                    if (form_name.substring(0,4) == "PROD") {
+                            
+                                        // If so, extract the price from the name
+                                        item_price = parseFloat(form_name.substring(form_name.lastIndexOf("_") + 1))
+                            
+                                        // Get the quantity
+                                        item_quantity = parseInt(form_field.value)
+                            
+                                        // Update the order total
+                                        if (item_quantity >= 0) {
+                                            order_total += item_quantity * item_price
+                                            
                                         }
                                     }
                                 }
                             
                                 // Display the total rounded to two decimal places
                                 frm.total.value = round_decimals(order_total, 2)
+                                   
                             }
                             function round_decimals(original_number, decimals) {
                                 var result1 = original_number * Math.pow(10, decimals)
@@ -440,6 +545,7 @@ if ($available >= "1"){
                             //-->
                             </script>
                             
+                            <?php } ?>
                             <hr />
 
 <br />
