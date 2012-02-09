@@ -59,16 +59,22 @@ jQuery(document).ready(function($){
         jQuery(document).ready(function($j) {
         $j("a.ev_reg-fancylink").fancybox({
         		'padding':		10,
-        		'imageScale':	true,
+        		'autoScale'		: false,
+                'imageScale':	true,
         		'zoomSpeedIn':	250, 
         		'zoomSpeedOut':	250,
         		'zoomOpacity':	true, 
         		'overlayShow':	false,
-        		'frameHeight':	250,
+                'width'		: 680,
+                'height'		: 495,
+        		
         		'hideOnContentClick': false
         	});
         });
         
+        
+
+
         
 //used for the tabbing feature in the admin page for company settins and event configuration and event edititing
 
