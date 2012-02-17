@@ -122,7 +122,7 @@ function evr_admin_company(){
         <li><a href="#tab3"><?php _e('Captcha','evr_language');?></a></li>
         <li><a href="#tab4"><?php _e('Page Config','evr_language');?></a></li>
         <li><a href="#tab5"><?php _e('Confirmation Info','evr_language');?></a></li>
-        <!--  <li><a href="#tab6"><?php _e('Waitlist Info','evr_language');?></a></li> -->
+        <li><a href="#tab6"><?php _e('Waitlist','evr_language');?></a></li> 
         <li><a href="#tab7"><?php _e('Calendar','evr_language');?></a></li>
        <!-- <li><a href="#tab8"><?php _e('Tax','evr_language');?></a></li> -->
         <li><a href="#tab9"><?php _e('Done','evr_language');?></a></li>
@@ -179,7 +179,7 @@ function evr_admin_company(){
                         <td><select name="payment_vendor" class="regular-select">
                             <option value="<?php  echo $company_options['payment_vendor'];?>"><?php  echo $company_options['payment_vendor'];?></option>
                             <option value="NONE">NONE</option>
-                            <option value="AUTHORIZE.NET">AUTHORIZE.NET</option>
+                            <option value="AUTHORIZE">AUTHORIZE.NET</option>
                             <option value="GOOGLE">GOOGLE</option>
                             <option value="PAYPAL">PAYPAL</option>
                             <option value="MONSTER">MONSTER PAY</option>

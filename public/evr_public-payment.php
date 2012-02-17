@@ -150,7 +150,7 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
  
  
 //Authorize.Net Payment Section
-if ($company_options['payment_vendor']=="AUHTHORIZE"){
+if ($company_options['payment_vendor']=="AUTHORIZE"){
         //Authorize.Net Payment 
         // This sample code requires the mhash library for PHP versions older than
         // 5.1.2 - http://hmhash.sourceforge.net/
