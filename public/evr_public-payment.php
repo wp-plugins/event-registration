@@ -157,7 +157,7 @@ if ($company_options['payment_vendor']=="AUTHORIZE"){
         // the parameters for the payment can be configured here
         // the API Login ID and Transaction Key must be replaced with valid values
         $loginID		= $company_options['payment_vendor_id'];
-        $transactionKey = $company_options['$txn_key'];
+        $transactionKey = $company_options['payment_vendor_key'];
         $amount 		= $payment;
         $description 	= $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;
         $label 			= $pay_now; // The is the label on the 'submit' button
