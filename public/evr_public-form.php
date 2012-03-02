@@ -17,6 +17,12 @@ function evr_regform_new($event_id){
                             if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
                             if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
                             if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+                            if (in_array("Company", $reg_form_defaults)) {$inc_comp = "Y";}
+                            if (in_array("CoAddress", $reg_form_defaults)) {$inc_coadd = "Y";}
+                            if (in_array("CoCity", $reg_form_defaults)) {$inc_cocity = "Y";}
+                            if (in_array("CoState", $reg_form_defaults)) {$inc_costate = "Y";}
+                            if (in_array("CoPostal", $reg_form_defaults)) {$inc_copostal = "Y";}
+                            if (in_array("CoPhone", $reg_form_defaults)) {$inc_cophone = "Y";}
                             }
     $use_coupon = $row['use_coupon'];
     $reg_limit = $row['reg_limit'];
@@ -205,6 +211,48 @@ else {
 <span class="fieldbox"><input type="text" id="zip" name="zip" value="" /></span>
 </li>
 <?php } ?>
+<hr />
+<?php if ($inc_comp == "Y") { ?>
+
+<li>
+<label for="company"><?php _e('Company Name','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="company" name="company" value="" /></span>
+</li>
+<?php } ?>
+
+<?php if ($inc_coadd == "Y") { ?>
+<li>
+<label for="co_address"><?php _e('Company Address','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_address" name="co_address" value="" /></span>
+</li>
+<?php } ?>
+
+<?php if ($inc_cocity == "Y") { ?>
+<li>
+<label for="co_city"><?php _e('Company City','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_city" name="co_city" value="" /></span>
+</li>
+<?php } ?>
+<?php if ($inc_costate == "Y") { ?>
+<li>
+<label for="co_state"><?php _e('Company State/Province','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_state" name="co_state" value="" /></span>
+</li>
+<?php } ?>
+<?php if ($inc_copostal == "Y") { ?>
+<li>
+<label for="co_zip"><?php _e('Company Postal Code','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_zip" name="co_zip" value="" /></span>
+</li>
+<?php } ?>
+<?php if ($inc_cophone == "Y") { ?>
+<li>
+<label for="co_phone"><?php _e('Company Phone','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_phone" name="co_phone" value="" /></span>
+</li>
+<?php } ?>
+<hr />
+
 
 <?php
 //Additional Questions

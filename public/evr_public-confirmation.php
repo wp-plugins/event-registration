@@ -25,6 +25,12 @@ function evr_confirm_form(){
     $payment = $_POST['total'];
     $coupon = $_POST['coupon'];
     $reg_type = $_POST['reg_type'];
+    $company = $_POST['company'];
+    $coadd = $_POST['co_address'];
+    $cocity = $_POST['co_city'];
+    $costate = $_POST['co_state'];
+    $cozip = $_POST['co_zip'];
+    
     $attendee_name = $fname." ".$lname;
     
     //echo "Registration Type is: ".$reg_type."!";
@@ -127,6 +133,7 @@ if ($use_coupon == "Y"){
 $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city'=>$city, 
                 'state'=>$state, 'zip'=>$zip, 'reg_type'=>$reg_type, 'email'=>$email,
                 'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,
+                'company'=>$company, 'co_add'=>$coadd, 'co_city'=>$cocity, 'co_state'=>$costate, 'co_zip'=>$cozip,
                 'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment, 'fees'=>$fees, 'tax'=>$tax);
        
 
@@ -206,17 +213,28 @@ $i = 0;
 
 ?>
 <br /><div style="float:left;"><input type="button" value=" &lt;-- BACK " onclick="history.go(-1);return false;" /></div>
+
+<?php 
+$count = (int)$quantity;
+if ( $count <= 0){
+    echo '<br/><font color="red"><b>You must select at least one registration item.  Please go back and select an item!</b></font>';
+    
+    } 
+    else {
+ ?>
 <input type="hidden" name="reg_form" value="<?php echo $form_post;?>" />
 <input type="hidden" name="questions" value="<?php echo $question_post;?>" />
 <input type="hidden" name="action" value="post"/>
 <input type="hidden" name="event_id" value="<?php echo $event_id;?>" />
 <div style="margin-left: 150px;">
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Confirmed','evr_language');?>" /> 
-</form>
 </div>
-
-
 <?php
+} 
+?>
+</form>
+
+<?php 
 }
 
 ?>

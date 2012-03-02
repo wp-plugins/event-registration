@@ -17,7 +17,7 @@ function evr_process_confirmation(){
     $attendee_array = $_POST['attendee'];
     $ticket_array = unserialize($reg_form['tickets']);
     $attendee_list = serialize($attendee_array);
-       
+    $business =   serialize($company_options); 
     
     $sql=array('lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 'city'=>$reg_form['city'], 
                 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 'email'=>$reg_form['email'],
@@ -122,12 +122,15 @@ function evr_process_confirmation(){
                                $available_spaces = $reg_limit;
                                }
  
+ //'company'=>$company, 'co_add'=>$coadd, 'co_city'=>$cocity, 'co_state'=>$costate, 'co_zip'=>$cozip,
+ 
  //create array for invoice
 $invoice_data = array('reg_id'=>$reg_id,'lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 
                 'city'=>$reg_form['city'], 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 
-                'email'=>$reg_form['email'], 'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],
+                'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_add'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
+                'co_zip'=>$reg_form['co_zip'], 'email'=>$reg_form['email'], 'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],
                 'event_name'=>$invoice_event, 'quantity'=>$reg_form['num_people'], 'tickets'=>$reg_form['tickets'], 
-                'payment'=>$reg_form['payment'], 'tax'=>$reg_form['tax'],'attendees'=>$attendee_list);
+                'payment'=>$reg_form['payment'], 'tax'=>$reg_form['tax'],'attendees'=>$attendee_list,'business'=>$business);
                 
 $invoice_post = urlencode(serialize($invoice_data));
 
@@ -196,7 +199,25 @@ $invoice_post = urlencode(serialize($invoice_data));
     The waiting list is on a first come, first serve basis.  
     You will be notified by email should a seat become available.",'evr_language').'</p><p>'.__("Thank You",'evr_language').'</p></font>';}
     
-    if ($reg_form['reg_type']=="WAIT"){$email_content = $wait_message;}
+     $SearchValues = array(  "[id]","[fname]", "[lname]", "[phone]", 
+                            "[address]","[city]","[state]","[zip]","[email]",
+                            "[event]","[description]", "[cost]", "[currency]",
+                            "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]","[co_zip]", 
+                            "[payment_url]", "[start_date]", "[start_time]", "[end_date]","[end_time]", 
+                            "[num_people]","[attendees]","[tickets]");
+
+    $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], 
+                            $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
+                            $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
+                            $company_options['company_email'], $coord_email, $company_options['company'], $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'], $company_options['company_state'], $company_options['company_postal'],
+                            $payment_link , $start_date,$start_time, $end_date, $end_time, 
+                            $reg_form['num_people'],$attendee_names, $ticket_list);
+
+    $wait_message_replaced = str_replace($SearchValues, $ReplaceValues, $wait_message);
+   
+    
+    
+    if ($reg_form['reg_type']=="WAIT"){$email_content = $wait_message_replaced;}
     $email_body = $email_content;
             
     
@@ -291,7 +312,7 @@ if ($send_coord =="Y"){
            
  // If Accept Donations is yes and Event Fees are 0, then make Donation Offer
           
-        if (($company_options['donations']=="Yes") && (($reg_form['payment'] < "1")||($reg_form['payment'] == ""))) {
+        if (($company_options['donations']=="Yes") && (($reg_form['payment'] < "1")||($reg_form['payment'] == ""))&&($reg_form['reg_type']!="WAIT")) {
             _e("While there is no fee for this event, we gladly accept donations.",'evr_language');
               echo "<br/>";
               if ($company_options['checks']=="Yes"){
@@ -310,13 +331,15 @@ if ($send_coord =="Y"){
            evr_registration_donation($event_id, $reg_id);
            }
 
-/*
+
+if ($company_options['evr_invoice'] == "Y"){
 ?>
-<form id="invoice" class="evr_regform" method="post" target=_blank action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/event-registration/evr_invoice.php'?>">
+<form id="invoice" class="evr_regform" method="post" target=_blank action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/event-registration/tcpdf/examples/invoice.php'?>">
 <input type="hidden" name="reg_form" value="<?php echo $invoice_post;?>" />
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Print Invoice','evr_language');?>" /> 
 </form>
 <?php 
-*/
+}
+
 }
 ?>
