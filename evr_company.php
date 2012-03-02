@@ -64,6 +64,8 @@ function evr_admin_company(){
             
             $company_options['evr_cal_day_head']      = $_POST['evr_cal_day_head'];
             $company_options['cal_day_head_txt_clr']  = $_POST['cal_day_head_txt_clr'];
+            
+            //$company_options['evr_invoice'] = $_POST['evr_invoice'];
 
    
    	update_option( 'evr_company_settings', $company_options);
