@@ -3,10 +3,11 @@ Contributors: David Fleming
 Donate link: http://www.wordpresseventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
-Tested up to: 3.2.1
-Stable tag: 6.00.13
+Tested up to: 3.3.1
+Stable tag: 6.00.14
 
-This plugin is designed to allow you to take online registrations for events and classes. Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
+This plugin is designed to allow you to take online registrations for events and classes. 
+Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
 
 == Description ==
 
@@ -102,6 +103,30 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.14 =
+* Reinstated Widget - Event Listing
+* Resolved Authorize.Net Payment button issues
+* Changed icons in Admin listings
+* Resolved issue where registering 0 people
+* Change admin pages to better fit various screen sizes (more to come!)
+* Added more control from admin panel for event calendar style and colors
+* Added sales tax capability - optional feature
+* Added tax calculation if enabled to reg form.
+* Resolved bug in coordinator fields
+* Added copy questions when copying events
+* Changed check address to optional display address line 2 - no more blank line
+* Resolved attendee count/waitlist bug
+* Spelling Error corrections
+* Added forum feed to plugin dashboard, other dashboard changes
+* Added Event Shortcode to event listing in admin panel
+* Modified send mail to resolve html display issues.
+* Added ability to customize waitlist message in company settings
+* Resolved bug in export attendee info 
+* Payment email notification layout and field changes
+
+= Version 6.00.13 =
+* various bug fixes
 
 = Version 6.00.12 =
 * Resolved issue with Coupon Code not deducting

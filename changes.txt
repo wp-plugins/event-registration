@@ -1,6 +1,27 @@
 Changes:
 =========
 
+= Version 6.00.14 =
+* Reinstated Widget - Event Listing
+* Resolved Authorize.Net Payment button issues
+* Changed icons in Admin listings
+* Resolved issue where registering 0 people
+* Change admin pages to better fit various screen sizes (more to come!)
+* Added more control from admin panel for event calendar style and colors
+* Added sales tax capability - optional feature
+* Added tax calculation if enabled to reg form.
+* Resolved bug in coordinator fields
+* Added copy questions when copying events
+* Changed check address to optional display address line 2 - no more blank line
+* Resolved attendee count/waitlist bug
+* Spelling Error corrections
+* Added forum feed to plugin dashboard, other dashboard changes
+* Added Event Shortcode to event listing in admin panel
+* Modified send mail to resolve html display issues.
+* Added ability to customize waitlist message in company settings
+* Resolved bug in export attendee info 
+* Payment email notification layout and field changes
+
 = Version 6.00.12 =
 * Resolved issue with Coupon Code not deducting
 * Resolved table format issue when upgrading EventRegistration caused by Event Expresso.
