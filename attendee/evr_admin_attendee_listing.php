@@ -58,9 +58,8 @@ global $wpdb;
                           <tr>
                             <th>Start Date</th>
                             <th>Event ID</th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>City</th>
+                            <th>Name / Location, City</th>
+                         
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Reports</th>
@@ -71,9 +70,8 @@ global $wpdb;
                           <tr>
                             <th>Start Date</th>
                             <th>Event ID</th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>City</th>
+                            <th>Name / Location, City</th>
+                            
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Reports</th>
@@ -124,20 +122,18 @@ global $wpdb;
                           <tr>
                             <td style="white-space: nowrap;"><?php echo $start_date; ?></td>
                             <td><?php echo $event_id; ?></td>
-                            <td><?php echo $event_name; ?></td>
-                            <td><?php echo $event_location; ?></td>
-                            <td><?php echo $event_city; ?></td>
+                            <td><b><?php echo $event_name; ?></b><br /><?php echo $event_location; ?>, <?php echo $event_city; ?> </td>
                             <td><?php echo $active_event ; ?></td>
                             <td><?php echo $number_attendees?> / <?php echo $reg_limit?></td>
                             <td><?php evr_excel_export($event_id);?></td><td>
-                            <div style="float:left">
+                            <div style="float:left; margin-right:10px;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="view_attendee"/>
                                 <input type="hidden" name="event_id" value="<?php echo $event_id?>">
                                 <input class="view_all_btn" type="submit" name="Attendees" value="<?php _e('View Attendees','evr_language');?>" />
                               </form>
                             </div>
-                            <div style="float:left; margin-left:20px;">
+                            <div style="float:left;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="delete_all_attendees">
                                 <input type="hidden" name="e_id" value="<?php echo $event_id?>">

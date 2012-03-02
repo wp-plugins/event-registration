@@ -122,7 +122,7 @@ $tables = array(
 
 			
 ?>
-<div style="display: inline-block;">
+<div style="float:left; margin-right:10px;">
     <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
                                 <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
                                <input type="hidden" name="export" value="report" /> 
@@ -134,7 +134,7 @@ $tables = array(
                                 </form>
     </div>
     
-<div style="display: inline-block;">
+<div style="float:left;">
     <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
                                 <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
                                <input type="hidden" name="export" value="report" /> 
