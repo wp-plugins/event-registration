@@ -94,6 +94,7 @@ require ("paypal.class.php"); //used for paypal IPN
 require ("evr_ipn.php"); //used for paypal IPN
 require ("evr_calendar.php"); //holds functions for calendar page
 require ("evr_clean_db.php");
+require ("evr_three_cal.php");
 //require ("evrtest.php");
 //require ("evr_pdf.php"); //creates pdf of reg details
 //
@@ -129,6 +130,7 @@ add_action('wp_print_scripts', 'evr_public_scripts');
 add_filter('plugin_action_links', 'evr_quick_action', 10, 2);
 add_filter('the_content', 'evr_content_replace');
 add_filter('the_content', 'evr_calendar_replace');
+add_filter('the_content', 'evr_mini_cal_calendar_replace');
 //add_filter('the_content', 'evr_rotator_replace');
 add_filter('the_content', 'evr_upcoming_event_list');
 //
@@ -194,14 +196,13 @@ function evr_admin_scripts_all_page() {
        wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_enqueue_script('evr_admin_script');
+       wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_enqueue_script('evr_admin_script');
        wp_enqueue_script('evr_admin_fancy');
        wp_enqueue_script('evr_tab_script');
-         
+       wp_enqueue_script('evr_tooltip_script');  
        wp_enqueue_script( 'farbtastic' );
-       ?>
-       <script type='text/javascript' src='http://test.wordpresseventregister.com/wp-includes/js/thickbox/thickbox.js'></script>
-<?php
+       
        
 }
 //function to load items to header of wordpress admin
@@ -228,6 +229,9 @@ function evr_public_stylesheets() {
 function evr_public_scripts() {
  wp_register_script($handle = 'evr_public_script', $src = plugins_url('/evr_public_script.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
  //wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+  wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    wp_enqueue_script('evr_tooltip_script');    
+        
  wp_enqueue_script('evr_public_script');
  wp_enqueue_style('thickbox');
  //wp_enqueue_script('evr_public_fancy');		
@@ -260,8 +264,8 @@ function evr_admin_menu()
     add_submenu_page(__file__, 'Manage Payments', 'Payments', $role, 'payments','evr_admin_payments');
     add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $role, 'uninstall','evr_remove_db_menu');
     add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $role, 'purge','evr_clean_old_db');
-    add_submenu_page(__file__, 'Disable Popup', 'Disable Popup', $role, 'popup','evr_validate_key');
-     add_submenu_page(__file__, 'Function Testing', 'Function Testing', $role, 'testing','evr_testing');
+    add_submenu_page(__file__, 'Disable Donate Popup', 'Disable Donate Popup', $role, 'popup','evr_validate_key');
+  //   add_submenu_page(__file__, 'Function Testing', 'Function Testing', $role, 'testing','evr_testing');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
     //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
@@ -293,7 +297,7 @@ wp_register_sidebar_widget(
     'Event List',          // widget name
     'evr_widget_content',  // callback function
     array(                  // options
-        'description' => 'Lists all the active events currently in Event Registration Plugin'
+        'description' => 'Lists the next 5 future events currently in Event Registration Plugin'
     )
 );
 

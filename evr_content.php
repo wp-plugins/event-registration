@@ -13,7 +13,7 @@ function evr_main_content(){
 function evr_widget_content(){
     global $wpdb;    
     $curdate = date("Y-m-d");
-    $record_limit = 10;
+    $record_limit = 5;
     echo '<div id="evr_widget">';
         echo "<U><h3>UPCOMING EVENTS</H3></U><br/>";
         $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e') LIMIT 0,".$record_limit;    
