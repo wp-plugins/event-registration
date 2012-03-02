@@ -1,7 +1,8 @@
 <?php
 //function to edit an existing event built into event listing page.
 function evr_edit_event(){
-    global $wpdb;
+    global $wpdb, $wp_version;
+    $editor_settings= array('wpautop','media_buttons' => false,'textarea_rows' => '4');   
     $event_id = $_REQUEST['id'];
 	$sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
                     		$result = mysql_query ($sql);
@@ -49,7 +50,10 @@ function evr_edit_event(){
                             $event_category =  unserialize($row ['category_id']);
                             if ($event_category ==""){$event_category = array();}
              
-                            
+                            $coord_email = $row['coord_email'];
+                            $send_coord = $row['send_coord'];
+                            $coord_msg = stripslashes($row['coord_msg']);
+                            $coord_pay_msg = stripslashes($row['coord_pay_msg']);
                             $reg_form_defaults = unserialize($row['reg_form_defaults']);
                             if ($reg_form_defaults !=""){
                             if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
@@ -57,6 +61,12 @@ function evr_edit_event(){
                             if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
                             if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
                             if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+                            if (in_array("Company", $reg_form_defaults)) {$inc_comp = "Y";}
+                            if (in_array("CoAddress", $reg_form_defaults)) {$inc_coadd = "Y";}
+                            if (in_array("CoCity", $reg_form_defaults)) {$inc_cocity = "Y";}
+                            if (in_array("CoState", $reg_form_defaults)) {$inc_costate = "Y";}
+                            if (in_array("CoPostal", $reg_form_defaults)) {$inc_copostal = "Y";}
+                            if (in_array("CoPhone", $reg_form_defaults)) {$inc_cophone = "Y";}
                             }
                         
                             //set reg limit if not set
@@ -88,21 +98,54 @@ function evr_edit_event(){
 	
 	    
 ?>
-	
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <br />
-<div class="container">
+<form id="er_popup_Form" method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+<div class="evr_container">
 	<h2><?php _e('EDIT','evr_language');?> <?php echo $event_name." ".$active_event;?></h2>
     <ul class="tabs">
+    <script type="text/javascript">
+ /* <![CDATA[ */
+
+                    var tinymceConfigs = [ {
+                        theme : "advanced",        
+                        mode : "none",        
+                        language : "en",        
+                        height:"200",        
+                        width:"100%",        
+                        theme_advanced_layout_manager : "SimpleLayout",        
+                        theme_advanced_toolbar_location : "top",        
+                        theme_advanced_toolbar_align : "left",        
+                        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",        
+                        theme_advanced_buttons2 : "",        
+                        theme_advanced_buttons3 : "" },
+                            { 
+                                theme : "advanced",        
+                                mode : "none",
+                                skin : "o2k7",        
+                                language : "en",
+                                height:"300",        
+                                width:"100%",        
+                                theme_advanced_layout_manager : "SimpleLayout",        
+                                theme_advanced_toolbar_location : "top",        
+                                theme_advanced_toolbar_align : "left"
+                                }];
+                    function tinyfy(settingid,el_id) {    
+                        tinyMCE.settings = tinymceConfigs[settingid];    
+                        tinyMCE.execCommand('mceAddControl', true, el_id);}
+
+/* ]]> */
+</script>	
         <li><a href="#tab1"><?php _e('Event Description','evr_language');?></a></li>
         <li><a href="#tab2"><?php _e('Event Venue','evr_language');?></a></li>
         <li><a href="#tab3"><?php _e('Event Date/Time','evr_language');?></a></li>
         <li><a href="#tab4"><?php _e('Options','evr_language');?></a></li>
-        <li><a href="#tab5"><?php _e('Confirmation Mail','evr_language');?></a></li>
+        <li><a href="#tab5"><?php _e('Coordinator','evr_language');?></a></li>
+        <li><a href="#tab6"><?php _e('Confirmation Mail','evr_language');?></a></li>
     </ul>
-    <div class="tab_container">
- <div id="tab1"class="tab_content">
-            <form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+    <div class="evr_tab_container">
+ <div id="tab1" class="tab_content">
+            
             <input type="hidden" name="action" value="update">
             <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
             <table>
@@ -136,49 +179,20 @@ function evr_edit_event(){
                     <label for="event_desc" class="tooltip" title="<?php _e('Provide a detailed description of the event, include key details other than when and where. Do not use any html code. This is a text only display. 
 To create new display lines just press Enter.','evr_language');?>">
                     <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                                       
-                       <script type="text/javascript">    
-                       jQuery(document).ready(function($) {        
-                        idi = 'event_desc';        
-                        jQuery('#descButtonPreview').click(            
-                        function() {                
-                            tinyMCE.execCommand('mceAddControl', false, idi);                
-                            jQuery('#descButtonPreview').addClass('active');                
-                            jQuery('#descButtonHTML').removeClass('active');            
-                            }        
-                            );        
-                            jQuery('#descButtonHTML').click(            
-                            function() {                
-                                tinyMCE.execCommand('mceRemoveControl', false, idi);                
-                                jQuery('#descButtonPreview').removeClass('active');                
-                                jQuery('#descButtonHTML').addClass('active');            
-                                }        
-                                );    
-                                });    
-                        </script>
-
-                    
-                      
-                   <a id="descButtonHTML"><button type="button">HTML CODE</button></a>    
-                   <a id="descButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
                    
-                    <textarea rows="5" cols="90" name="event_desc" id="event_desc"  class="edit_class">
-          
-                    <?php echo $event_desc?></textarea>
+                   <?php
+                    if (function_exists('wp_editor')){
+                        echo "</td></tr></table>";
+                        wp_editor( htmlspecialchars_decode($event_desc), 'event_desc', $editor_settings );
+                    } else {  ?>
+                    <a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
+                    </td></tr></table>
+                    <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"><?php echo $event_desc;?></textarea>
+                    <?php }  ?>
+                   
+                    <br />
                     
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                    
-                    </td>
-                </tr>
-              <tr></tr></table>
-              <hr />
+	            <hr />
               <table><tr></tr>
                 
                 <tr>
@@ -320,8 +334,8 @@ To create new display lines just press Enter.','evr_language');?>">
                 <tr>
                     <td colspan="2">
                     <br />
-                    <legend  class="tooltip" title="<?php _e('If you will accept checks or cash, usually when accepting payment at event/on-site.','evr_language');?>">
-   					<?php _e('Will you accept checks/cash for this event? ','evr_language');?><a><span>?</span></a></legend>
+                    <label  class="tooltip" title="<?php _e('If you will accept checks or cash, usually when accepting payment at event/on-site.','evr_language');?>">
+   					<?php _e('Will you accept checks/cash for this event? ','evr_language');?><a><span>?</span></a></label>
                     <label for="accept_checks"><input type="radio" name="allow_checks" class="radio" id="accept_checks_yes" value="Y" <?php if ($allow_checks == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?></label>
                     <label for="free_event_no"><input type="radio" name="allow_checks" class="radio" id="accept_checks_no" value="N" <?php if ($allow_checks == "N"){echo "checked";};?> /><?php _e('No ','evr_language');?></label>
                     </td>
@@ -333,14 +347,17 @@ To create new display lines just press Enter.','evr_language');?>">
                     <br />
                     <label class="tooltip" title="<?php _e('You can point your register now button to an external registration site/page by selecting yes and entering the url!','evr_language');?>">
                     <?php _e('Are you using an external registration?','evr_language');?> <a><span>?</span></a></label>
+                    <label>
                     <input type="radio" name="outside_reg" class="radio" id="outside_reg_yes" value="Y" <?php if ($outside_reg == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?> 
+                    </label><label>
                     <input type="radio" name="outside_reg" class="radio" id="outside_reg_no" value="N" <?php if ($outside_reg == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
+                    </label>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td colspan="2">
                     <label class="tooltip" title="<?php _e('Enter the url hyperlink to another webpage or website external registration','evr_language');?>">
-                    <?php _e('External registration URL','evr_language');?> <a><span> ?</span></a></td><td><input class= "title" id="external_site" name="external_site" type="text" value="<?php echo $external_site;?>" /></label> 
+                    <?php _e('External registration URL','evr_language');?> <a><span> ?</span></a><input class= "title" id="external_site" name="external_site" type="text" value="<?php echo $external_site;?>" /></label> 
                     </td>
                 </tr>
                 <tr></tr>
@@ -359,6 +376,14 @@ To create new display lines just press Enter.','evr_language');?>">
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="State" <?php if ($inc_state == "Y"){echo "checked";};?> /><?php _e('State or Province','evr_language');?></label>
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Zip" <?php if ($inc_zip == "Y"){echo "checked";};?> /><?php _e('Zip or Postal Code','evr_language');?></label>
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Phone" <?php if ($inc_phone == "Y"){echo "checked";};?> /><?php _e('Phone Number','evr_language');?></label>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Company" <?php if ($inc_comp == "Y"){echo "checked";};?>  /><?php _e('Company','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoAddress" <?php if ($inc_coadd == "Y"){echo "checked";};?> /><?php _e('Co. Addr','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoCity" <?php if ($inc_cocity == "Y"){echo "checked";};?> /><?php _e('Co. City','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoState" <?php if ($inc_costate == "Y"){echo "checked";};?>  /><?php _e('Co. State/Prov','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoPostal" <?php if ($inc_copostal == "Y"){echo "checked";};?> /><?php _e('Co. Postal','evr_language');?></label>
                     </td>
                 </tr>
                 <tr>
@@ -396,45 +421,88 @@ To create new display lines just press Enter.','evr_language');?>">
             </tr>
         </table>
     </div>
-        <div id="tab5"class="tab_content">
+     <?php if (get_option('evr_coordinator_active')=="Y"){ ?>
+    <div id="tab5" class="tab_content">
+            <h2><?php _e('Coordinator Options','evr_language');?></h2>
+            <label  class="tooltip" title="<?php _e('If you want to send alerts to a unique event coordinator','evr_language');?>">
+            <?php _e('Do you want to send alerts to a coordinator for this event?','evr_language');?> <a><span>?</span></a></label>
+            <label>
+            <input type="radio" name="send_coord" class="radio" id="send_coord_yes" value="Y" <?php if($send_coord == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?>
+            </label><label>
+            <input type="radio" name="send_coord" class="radio" id="send_coord_no"  value="N" <?php if($send_coord == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
+            </label><br />
+            <br /> 
+            <table>
+            <tr>
+            <td colspan="2">
+            <label for="contact"><?php _e('Coordinator email:','evr_language');?></label>
+            <input name="coord_email" type="text" size="65" value="<?php echo $coord_email;?>" class="regular-text" /></td>
+        </tr></table>
+            <br />
+            <br />
+            <label  class="tooltip" title="<?php _e('Enter the text for the registration alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
+            <?php _e('Coordinator Registration Alert Email','evr_language');?> <a><span>?</span></a></label>
+            <?php
+              
+                
+               if (function_exists('wp_editor')){
+               wp_editor( $coord_msg, 'coord_msg', $editor_settings );
+                    } else {  ?>
+               <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+               <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo $coord_msg;?></textarea>
+                    <?php } ?>
+            
+            <br />
+            <br />
+            
+            <label  class="tooltip" title="<?php _e('Enter the text for the payment alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
+            <?php _e('Coordinator Payment Alert Email','evr_language');?> <a><span>?</span></a></label>
+            <?php
+                if (function_exists('wp_editor')){
+               wp_editor( $coord_pay_msg, 'coord_pay_msg', $editor_settings );
+                    } else {  ?>
+               <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+               <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $coord_pay_msg;?></textarea>
+                    <?php } ?>
+               
+        </div>
+    <?php } else { ?>
+             <div id="tab5" class="tab_content">
+                <h2><?php _e('Coordinator Options','evr_language');?></h2>
+                <font color="red">This feature is available in an add on module.</font>
+                <ul>
+                <li>Option to send unique email to a unique coordinators email address for each event registration.</li>
+                <li>WYSIWYG editor for coordinator's email registration alert.</li>
+                <li>Option to send unique email to a unique coordinators email address for each event payment recieved via PayPal IPN.</li>
+                <li>WYSIWYG editor for coordinator's email payment notification alert.</li>
+                </ul>
+            </div>
+      <?php  } ?>
+        <div id="tab6"class="tab_content">
             <h2><?php _e('Confirmation eMail','evr_language');?></h2>
             <label  class="tooltip" title="<?php _e('If you have send mail option enabled in the company settings, you can override the default mail by creating a custom mail for this event.','evr_language');?>">
             <?php _e('Do you want to use a custom email for this event?','evr_language');?> <a><span>?</span></a></label>
+            <label>
             <input type="radio" name="send_mail" class="radio" value="Y" <?php if($send_mail == "Y"){echo "checked";};?> /><?php _e('Yes','evr_language');?>
+            </label><label>
             <input type="radio" name="send_mail" class="radio" value="N" <?php if($send_mail == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
+            </label>
             <br />
             <br />          
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
             <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a></label>
-            
-            <script type="text/javascript">    
-                       jQuery(document).ready(function($) {        
-                        id = 'conf_mail';        
-                        jQuery('#mailButtonPreview').click(            
-                        function() {                
-                            tinyMCE.execCommand('mceAddControl', false, id);                
-                            jQuery('#mailButtonPreview').addClass('active');                
-                            jQuery('#mailButtonHTML').removeClass('active');            
-                            }        
-                            );        
-                            jQuery('#mailButtonHTML').click(            
-                            function() {                
-                                tinyMCE.execCommand('mceRemoveControl', false, id);                
-                                jQuery('#mailButtonPreview').removeClass('active');                
-                                jQuery('#mailButtonHTML').addClass('active');            
-                                }        
-                                );    
-                                });    
-                        </script>
-
-                    
-                       
-                   <a id="mailButtonHTML"><button type="button">HTML CODE</button></a>    
-                   <a id="mailButtonPreview" class="active"><button type="button">WYSIWYG</button></a>
-                   
-            <textarea rows='10' cols='90' name='conf_mail' id="conf_mail" class="edit_class">
-            <?php echo $conf_mail;?></textarea>
-              <br />
+              <?php
+             
+             
+              if (function_exists('wp_editor')){
+              wp_editor( htmlspecialchars_decode($conf_mail), 'conf_mail', $editor_settings ); 
+                    } else {  ?>
+               <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+               <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $conf_mail;?></textarea>
+                    <?php } ?>
+             
+             
+            <br />
             <br />         
             <input  type="submit" name="Submit" value="<?php _e('Update Event','evr_language'); ?>" id="add_new_event" />
             </form>

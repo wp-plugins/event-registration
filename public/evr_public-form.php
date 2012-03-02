@@ -17,12 +17,28 @@ function evr_regform_new($event_id){
                             if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
                             if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
                             if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+                            if (in_array("Company", $reg_form_defaults)) {$inc_comp = "Y";}
+                            if (in_array("CoAddress", $reg_form_defaults)) {$inc_coadd = "Y";}
+                            if (in_array("CoCity", $reg_form_defaults)) {$inc_cocity = "Y";}
+                            if (in_array("CoState", $reg_form_defaults)) {$inc_costate = "Y";}
+                            if (in_array("CoPostal", $reg_form_defaults)) {$inc_copostal = "Y";}
+                            if (in_array("CoPhone", $reg_form_defaults)) {$inc_cophone = "Y";}
                             }
     $use_coupon = $row['use_coupon'];
     $reg_limit = $row['reg_limit'];
     $event_name = stripslashes($row['event_name']);
    	$event_desc =  stripslashes($row ['event_desc']); 
     $display_desc = $row['display_desc'];  // Y or N
+    	$start_date = $row['start_date'];
+                    $end_date = $row['end_date'];
+					$start_month = $row ['start_month'];
+					$start_day = $row ['start_day'];
+					$start_year = $row ['start_year'];
+					$end_month = $row ['end_month'];
+					$end_day = $row ['end_day'];
+					$end_year = $row ['end_year'];
+					$start_time = $row ['start_time'];
+					$end_time = $row ['end_time'];
     
     
                             }
@@ -30,7 +46,9 @@ function evr_regform_new($event_id){
     $md5_url = EVR_PLUGINFULLURL . "md5.js";
     
     echo "<h3>".$event_name."</h3>";
-    
+ //echo date($evr_date_format,strtotime($start_date))." ".$start_time." - ";
+ //if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;
+ //echo "<br />";
     if ($display_desc =="Y"){ echo "<blockquote>".html_entity_decode($event_desc)."</blockquote>"; }
     
     ?>
@@ -135,63 +153,106 @@ else {
 
 <?php } ?>
     
+<style>
 
-
-<form id="attendee_reg" class="evr_regform" method="post" 
-<?php /* get_permalink(
-action="<?php echo get_option('siteurl')?>/?page_id=<?php echo $company_options['evr_page_id'];?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
-*/ ?>
-action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
-<p>
+<?php echo   $company_options['form_css'];?>
+    
+</style>
+<div id="evrRegForm">
+<form    class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
+<ul>
+<li>
 <label for="fname"><?php _e('First Name','evr_language');?></label>
-<input type="text" id="fname" name="fname" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="fname" name="fname" value="" /></span>
+</li>
 
-<p>
+<li>
 <label for="lname"><?php _e('Last Name','evr_language');?></label>
-<input type="text" id="lname" name="lname" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="lname" name="lname" value="" /></span>
+</li>
 
-<p>
+<li>
 <label for="emailaddress"><?php _e('Email Address','evr_language');?></label>
-<input type="text" id="email" name="email" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="email" name="email" value="" /></span>
+</li>
 
 
 <?php if ($inc_phone == "Y") { ?>
-<p>
+<li>
 <label for="phone"><?php _e('Phone Number','evr_language');?></label>
-<input type="text" id="phone" name="phone" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="phone" name="phone" value="" /></span>
+</li>
 <?php } ?>
 
 <?php if ($inc_address == "Y") { ?>
-<p>
+<li>
 <label for="address"><?php _e('Street/PO Address','evr_language');?></label>
-<input type="text" id="address" name="address" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="address" name="address" value="" /></span>
+</li>
 <?php } ?>
 
 <?php if ($inc_city == "Y") { ?>
-<p>
+<li>
 <label for="city"><?php _e('City','evr_language');?></label>
-<input type="text" id="city" name="city" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="city" name="city" value="" /></span>
+</li>
 <?php } ?>
 
 <?php if ($inc_state == "Y") { ?>
-<p>
+<li>
 <label for="state"><?php _e('State','evr_language');?></label>
-<input type="text" id="state" name="state" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="state" name="state" value="" /></span>
+</li>
 <?php } ?>
 
 <?php if ($inc_zip == "Y") { ?>
-<p>
+<li>
 <label for="zip"><?php _e('Postal/Zip Code','evr_language');?></label>
-<input type="text" id="zip" name="zip" value="" />
-</p>
+<span class="fieldbox"><input type="text" id="zip" name="zip" value="" /></span>
+</li>
 <?php } ?>
+<hr />
+<?php if ($inc_comp == "Y") { ?>
+
+<li>
+<label for="company"><?php _e('Company Name','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="company" name="company" value="" /></span>
+</li>
+<?php } ?>
+
+<?php if ($inc_coadd == "Y") { ?>
+<li>
+<label for="co_address"><?php _e('Company Address','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_address" name="co_address" value="" /></span>
+</li>
+<?php } ?>
+
+<?php if ($inc_cocity == "Y") { ?>
+<li>
+<label for="co_city"><?php _e('Company City','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_city" name="co_city" value="" /></span>
+</li>
+<?php } ?>
+<?php if ($inc_costate == "Y") { ?>
+<li>
+<label for="co_state"><?php _e('Company State/Province','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_state" name="co_state" value="" /></span>
+</li>
+<?php } ?>
+<?php if ($inc_copostal == "Y") { ?>
+<li>
+<label for="co_zip"><?php _e('Company Postal Code','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_zip" name="co_zip" value="" /></span>
+</li>
+<?php } ?>
+<?php if ($inc_cophone == "Y") { ?>
+<li>
+<label for="co_phone"><?php _e('Company Phone','evr_language');?></label>
+<span class="fieldbox"><input type="text" id="co_phone" name="co_phone" value="" /></span>
+</li>
+<?php } ?>
+<hr />
+
 
 <?php
 //Additional Questions
@@ -199,14 +260,14 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
     if ($questions) {
         foreach ($questions as $question) {
             ?>
-            <p>
+            <li>
             <label for="question-<?php echo $question->id;?>">
             <?php
             echo $question->question;
             ?>
             </label>
             <?php evr_form_build($question);?>
-            </p>
+            </li>
             <?php
         }
     }
@@ -214,20 +275,29 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
 
 
 <?php if ($use_coupon == "Y") { ?>
-<p>
+<li>
 <label for="coupon"><?php _e('Enter coupon code for discount','evr_language');?></label> 
-<input type="text" id="coupon" name="coupon" value="" />
-</p>
+<span class="couponbox"><input type="text" id="coupon" name="coupon" value="" /></span>
+</li> 
 <?php } ?>
+</ul><br />
+<?php 
 
-<?php 	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+/* df change	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                             		$result2 = mysql_query($sql2);
                                     $num = 0;   
                             		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
                                     
                                     $available = $reg_limit - $num;
-                                    
-                                    if ($available > "1"){ 
+                                    */
+$num = 0;                              
+$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+$attendee_count  = $wpdb->get_var($sql2);
+If ($attendee_count >= 1) {$num = $attendee_count;}
+$available = $reg_limit - $num;
+//echo "count is ". $attendee_count." !";
+                                 
+if ($available >= "1"){ 
                                         
                                 $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
                                 $result = mysql_query ( $sql );
@@ -288,9 +358,35 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
                             <?php if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
                             if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
                             echo $item_title . "    " . $item_custom_cur . " " . $item_price; ?></div>
-                            <?php } }?>
+                            <?php } 
+                            else {
+                                echo "<br/>";
+                                echo "<hr><font color='red'>";
+                                
+                                _e('No Fees/Items available for todays date!','evr_language');
+                                echo "<br/>";
+                                _e('Please update fee dates!','evr_language');
+                                echo "<br/>";
+                                _e('Registrations will be placed on the wait list!','evr_language');
+                                echo "<br/></font>";
+                                ?>
+                                <input type="hidden" name="reg_type" value="WAIT" />
+                                <?php
+                                }
                             
-                            <br /><br /><b><?php _e('Registration TOTAL','evr_language');?>  <input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></b>
+                            }?>
+                            
+                            <br />
+                            <?php if ($company_options['use_sales_tax'] == "Y"){ ?>
+                            <table>
+                            <tr><td><b><?php _e('Registration Fees','evr_language');?></b></td><td><input type="text" name="fees" id="fees" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                            <tr><td><b><?php _e('Sales Tax','evr_language');?></b></td><td><input type="text" name="tax" id="tax" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                            <tr><td><b><?php _e('Total','evr_language');?></b></td><td><input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                            </table>
+                            <?php } else { ?>
+                            <br />
+                            <b><?php _e('Total   ','evr_language');?><input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></b>
+                            <?php } ?>
                             <br />
                             <?php
                                
@@ -317,7 +413,10 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
                                 <?php   
                             }
                             ?>
-                            
+                            <?php if ($company_options['use_sales_tax'] == "Y"){ 
+                            $tax_rate = .0875;
+                            if ($company_options['sales_tax_rate'] != "") { $tax_rate = $company_options['sales_tax_rate'];}
+                            ?>
                             <script language="JavaScript" type="text/javascript">
                             <!--
                             
@@ -328,6 +427,7 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
                             
                             function CalculateTotal(frm) {
                                 var order_total = 0
+                                var tax_rate = <?php echo $tax_rate;?>
                             
                                 // Run through all the form fields
                                 for (var i=0; i < frm.elements.length; ++i) {
@@ -350,12 +450,103 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
                                         // Update the order total
                                         if (item_quantity >= 0) {
                                             order_total += item_quantity * item_price
+                                            
+                                        }
+                                    }
+                                }
+                            
+                                // Display the total rounded to two decimal places
+                                frm.fees.value = round_decimals(order_total, 2)
+                                    tax_total = order_total * tax_rate
+                                frm.tax.value = round_decimals(tax_total, 2)
+                                    grand_total = order_total + tax_total
+                                frm.total.value = round_decimals(grand_total, 2)    
+                            }
+                            function round_decimals(original_number, decimals) {
+                                var result1 = original_number * Math.pow(10, decimals)
+                                var result2 = Math.round(result1)
+                                var result3 = result2 / Math.pow(10, decimals)
+                                return pad_with_zeros(result3, decimals)
+                            }
+                            
+                            function pad_with_zeros(rounded_value, decimal_places) {
+                            
+                                // Convert the number to a string
+                                var value_string = rounded_value.toString()
+                                
+                                // Locate the decimal point
+                                var decimal_location = value_string.indexOf(".")
+                            
+                                // Is there a decimal point?
+                                if (decimal_location == -1) {
+                                    
+                                    // If no, then all decimal places will be padded with 0s
+                                    decimal_part_length = 0
+                                    
+                                    // If decimal_places is greater than zero, tack on a decimal point
+                                    value_string += decimal_places > 0 ? "." : ""
+                                }
+                                else {
+                            
+                                    // If yes, then only the extra decimal places will be padded with 0s
+                                    decimal_part_length = value_string.length - decimal_location - 1
+                                }
+                                
+                                // Calculate the number of decimal places that need to be padded with 0s
+                                var pad_total = decimal_places - decimal_part_length
+                                
+                                if (pad_total > 0) {
+                                    
+                                    // Pad the string with 0s
+                                    for (var counter = 1; counter <= pad_total; counter++) 
+                                        value_string += "0"
+                                    }
+                                return value_string
+                            }
+                            
+                            //-->
+                            </script>
+                            <?php } else { ?>
+                               <script language="JavaScript" type="text/javascript">
+                            <!--
+                            
+                            /* This script is Copyright (c) Paul McFedries and 
+                            Logophilia Limited (http://www.mcfedries.com/).
+                            Permission is granted to use this script as long as 
+                            this Copyright notice remains in place.*/
+                            
+                            function CalculateTotal(frm) {
+                                var order_total = 0
+                                                           
+                                // Run through all the form fields
+                                for (var i=0; i < frm.elements.length; ++i) {
+                            
+                                    // Get the current field
+                                    form_field = frm.elements[i]
+                            
+                                    // Get the field's name
+                                    form_name = form_field.name
+                            
+                                    // Is it a "product" field?
+                                    if (form_name.substring(0,4) == "PROD") {
+                            
+                                        // If so, extract the price from the name
+                                        item_price = parseFloat(form_name.substring(form_name.lastIndexOf("_") + 1))
+                            
+                                        // Get the quantity
+                                        item_quantity = parseInt(form_field.value)
+                            
+                                        // Update the order total
+                                        if (item_quantity >= 0) {
+                                            order_total += item_quantity * item_price
+                                            
                                         }
                                     }
                                 }
                             
                                 // Display the total rounded to two decimal places
                                 frm.total.value = round_decimals(order_total, 2)
+                                   
                             }
                             function round_decimals(original_number, decimals) {
                                 var result1 = original_number * Math.pow(10, decimals)
@@ -402,9 +593,10 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
                             //-->
                             </script>
                             
+                            <?php } ?>
                             <hr />
 
-
+<br />
 <?php if ($company_options['captcha'] == 'Y') { ?>
 <p><?php _e('Enter the security code as it is shown (required)','evr_language');?>:
 <script type="text/javascript">sjcap("altTextField");</script></p>
@@ -418,7 +610,7 @@ action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="
 </div>
 
 </form>
-
+</div>
     
 <script type="text/javascript">
 function checkInternationalPhone(strPhone){

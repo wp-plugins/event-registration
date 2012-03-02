@@ -9,7 +9,7 @@ function evr_registration_main(){
     }
     switch ($action) {
             
-            case "register":
+            case "evregister":
             if (is_numeric($event_id)){
               evr_regform_new($event_id);}
 			  else {evr_show_event_list();}

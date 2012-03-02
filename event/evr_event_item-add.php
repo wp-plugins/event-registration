@@ -329,11 +329,11 @@ img.btn_close {
             <br />
             <div style="float: left;">
             <div class="padding">
-            <a href="#?w=500" rel="popup0" class="poplight"><button class="button-secondary"><?php _e('ADD COST/ITEM','evr_language');?></button></a>
+            <a href="#?w=500" rel="popup0" class="poplight"><button class="button-primary"><?php _e('ADD COST/ITEM','evr_language');?></button></a>
             </div></div>
             <div style="float: right;">
             <div class="padding">
-            <a class="button-secondary" href="admin.php?page=events&action=reorder_item&event_id=<?php echo $event_id;?>" title="REARRANGE ITEMS"><?php _e('RE-ARRANGE ITEMS','evr_language');?></a>
+            <a class="button-primary" href="admin.php?page=events&action=reorder_item&event_id=<?php echo $event_id;?>" title="REARRANGE ITEMS"><?php _e('RE-ARRANGE ITEMS','evr_language');?></a>
             </div></div>
             <br /><br />
          </div>
@@ -355,7 +355,8 @@ img.btn_close {
 					<?php _e('Enter the Code','evr_language');?> <a><span> ?</span></a></label> 
 					<input id="coupon_code" name="coupon_code" type="text" value="<?php echo $coupon_code;?>"/></li>
 				    
-                     <li><label class="tooltip" title="<?php _e('Enter the amount with two decimal places.  Do not put a - sign, as that is done during calculations  ','evr_language');?>">
+                     <li><label class="tooltip" title="<?php _e('Enter the amount with two decimal places.  You MUST put a - sign before the value, otherwise this will add to the total
+                     during calculations. i.e. -10.00  ','evr_language');?>">
 					<?php _e('Discount amount for Coupon Code','evr_language');?> <a><span> ?</span></a></label>
 					<input id="coupon_code_price" name="coupon_code_price" type="text" value="<?php echo $coupon_code_price;?>"/>
 				     </li>
@@ -428,7 +429,7 @@ img.btn_close {
                         <input class="desc"  name="item_desc" id="cost_desc"/> 
                     </li>
                     <li>
-                        <label class="er_ticket_info" title="<?php _e('Provide the number of available item/cost types per registration form. If it is a REG item, available seats will impact overall amount available. Leave blank if no limit.','evr_language');?>"><?php _e('Available items/cost per registration/order?','evr_language');?> <a><span>?</span></a></label>
+                        <label class="er_ticket_info" title="<?php _e('Provide the number of available item/cost types per registration form. If it is a REG item, available seats will impact overall amount available. Leave blank if no limit (system will default to 25).','evr_language');?>"><?php _e('Available items/cost per registration/order?','evr_language');?> <a><span>?</span></a></label>
                         <input class="title" name="item_limit"/>
                     </li>
                     <hr />

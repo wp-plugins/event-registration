@@ -11,9 +11,27 @@ function evr_main_content(){
 }
 //function that provides the content in the content replacement for widget
 function evr_widget_content(){
-    echo "<U><h3>UPCOMING EVENTS</H3></U>";
-    echo "This feature currently not available";
-    
+    global $wpdb;    
+    $curdate = date("Y-m-d");
+    $record_limit = 5;
+    echo '<div id="evr_widget">';
+        echo "<U><h3>UPCOMING EVENTS</H3></U><br/>";
+        $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e') LIMIT 0,".$record_limit;    
+        $rows = $wpdb->get_results( $sql );
+        if ($rows){
+            foreach ($rows as $event){
+                                       
+                $bottomdate = date("j",strtotime($event->start_date));
+                $topdate = date("M",strtotime($event->start_date));
+               echo '<div id="evr_eventitem">';
+                echo '<div id="datebg"><div id="topdate">'.$topdate.'</div><div id="bottomdate">'.$bottomdate.'</div></div>';
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event->id.'">';
+                echo '<div id="evr_eventitem_title">'.stripslashes($event->event_name).'</div></a>';
+                echo '</div><hr/>';
+                }
+        
+        }
+    echo '</div>';
 }
 //function to add payment shortcode option page on public page for plugin
 function evr_payment_page(){
@@ -28,9 +46,9 @@ function evr_payment_page(){
             else {
                 $attendee_id = "0";
                 echo "Failure - please retry!"; 
-                exit;}
+                }
 
-        if ($attendee_id =="") {_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
+        if (($attendee_id =="")||($attendee_id =="0")) {_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
         else {
             
             
@@ -400,7 +418,8 @@ function evr_by_category($atts, $content=null){
 					$end_year = $row ['end_year'];
 					$start_time = $row ['start_time'];
 					$end_time = $row ['end_time'];  
-					
+					 $outside_reg = $row['outside_reg'];  // Yor N
+                    $external_site = $row['external_site'];
 		          
 	    
 		$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
@@ -419,7 +438,12 @@ function evr_by_category($atts, $content=null){
         ?>
             <td class="er_title er_ticket_info"><b>
             <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['event_pop']=="N"){echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=register&event_id='.$event_id.'">';}
+            if ($company_options['event_pop']=="N"){ 
+                if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
+	               }  else {
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';}}
+           
+           
             else {?>
             <a href="#TB_inline?&height=600&width=800&inlineId=popup<?php echo $event_id;?>&modal=false" class="thickbox" title="<?php echo $event_name;?>">
             
@@ -567,7 +591,7 @@ function evr_attendee_list($event_id){
 //sort array of all attendees
 
  $tmp = Array();
- foreach($people as &$aSingleArray)    $tmp[] = &$aSingleArray["last_name"];
+ foreach($people as &$aSingleArray)    $tmp[] = $aSingleArray["last_name"];
  $tmp = array_map('strtolower', $tmp);
  array_multisort($tmp, $people);
  if ( count($people)>"0"){

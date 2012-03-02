@@ -102,32 +102,22 @@ function evr_splash(){
     			</ul>            
     		</div>
     	</div> 
-    	<div class="evr_content_third" style="margin-right:0; float:right;">
-    		<h3>Sites Using Event Registration</h3>
+    	        <div class="evr_content_third" style="margin-right:0; float:right;">
+    		<h3>Support Event Registration</h3>
     		<div class="inside">
-                 <table width="300">
-                     <th width="200">Website</th>
-                     <th width="4"></th>
-                     <th width="62">Version</th>
-                     <th width="4"></th>
-                     <th width="30">Donated?</th>
-                     <?php
-                        $url = "http://www.wordpresseventregister.com/?feed=customfeed";
-                        $xml = evr_xml2array($url, $get_attributes = 1, $priority = 'tag');
-                        foreach($xml['rss']['channel']['item'] as $item) {
-                            if($item['url']!=""){echo '<tr><td><a href="'.$item['url'].'">'.$item['company'].'</a></td><td></td>';}
-                                else {echo '<tr><td>'.$item['company'].'</td><td></td>';}
-                            if($item['version']!=""){echo '<td>'.$item['version'].'</td><td></td>';}  
-                                else {echo '<td>Unknown</td><td></td>';} 
-                            if ($item['donated']=='Y'){echo '<td align="center"><img src="'.EVR_PLUGINFULLURL.'images/yes.png" width="23" height="24" /></td></tr>';}
-                                elseif ($item['donated']=='N'){echo '<td align="center"><img src="'.EVR_PLUGINFULLURL.'images/no.png" width="23" height="24" /></td></tr>';}
-                                else {echo '<td></td><tr>';}
-                	       }
-                    ?>
-        		</table>        
-    		</div>
-    	</div> 
-        
+    			<div style="clear: both; display: block; padding: 10px 0; text-align:center;"><br />If you find this plugin useful,<br /> please contribute to enable its continued development!<br /><br />
+                    <p align="center">
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                    </form></p>
+    		    </div>
+            </div>		
+		  <div class="clear"></div>
+	   </div>
+    
 
 	
 </div>
@@ -160,22 +150,41 @@ function evr_splash(){
     	       </div>		
 		  <div class="clear"></div>
         </div>
-       
-        <div class="evr_content_third" style="margin-right:0; float:right;">
-    		<h3>Support Event Registration</h3>
+       <div class="evr_content_third" style="margin-right:0; float:right;">
+    		<h3>From the Forum</h3>
     		<div class="inside">
-    			<div style="clear: both; display: block; padding: 10px 0; text-align:center;"><br />If you find this plugin useful,<br /> please contribute to enable its continued development!<br /><br />
-                    <p align="center">
-                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                    <input type="hidden" name="cmd" value="_s-xclick">
-                    <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
-                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-                    </form></p>
-    		    </div>
-            </div>		
-		  <div class="clear"></div>
-	   </div>
+                 <?php
+                    // import rss feed
+                    if(function_exists('fetch_feed')) {
+                    	// fetch feed items
+                    	$rss = fetch_feed('http://wordpresseventregister.com/forum/index.php?type=rss;action=.xml;limit=10');
+                    	if(!is_wp_error($rss)) : // error check
+                    		$maxitems = $rss->get_item_quantity(10); // number of items
+                    		$rss_items = $rss->get_items(0, $maxitems);
+                    	endif;
+                    	// display feed items ?>
+                    	
+                    	<dl>
+                    	<?php if($maxitems == 0) echo '<dt>Feed not available.</dt>'; // if empty
+                    	else foreach ($rss_items as $item) : ?>
+                    
+                    		<dt>
+                    			<a href="<?php echo $item->get_permalink(); ?>" 
+                    			title="<?php echo $item->get_date('j F Y @ g:i a'); ?>">
+                    			<?php echo $item->get_title(); ?>
+                    			</a>
+                    		</dt>
+                    		<dd>
+                    			<?php echo $item->get_description(); ?>
+                    		</dd>
+                    
+                    	<?php endforeach; ?>
+                    	</dl>
+                    <?php } ?>
+                 
+    		</div>
+    	</div> 
+
               
     </div>     	
 

@@ -45,7 +45,12 @@ function evr_post_event_to_db(){
                     //build end date
 					$end_date = $end_year."-".$end_month."-".$end_day;
                     //set reg limit if not set
-                    if ($reg_limit == ''){$reg_limit = 999;} 
+                    if ($reg_limit == ''){$reg_limit = 999;}
+                    //added ver 6.00.13 
+                    $send_coord = $_REQUEST ['send_coord'];  // Y or N
+                    $coord_email = $_REQUEST ['coord_email'];
+                    $coord_msg = esc_html($_REQUEST ['coord_msg']);
+                    $coord_pay_msg = esc_html($_REQUEST ['coord_pay_msg']);
                         
             
                     
@@ -82,13 +87,17 @@ function evr_post_event_to_db(){
             'send_mail'=>$send_mail, 
             'conf_mail'=>$conf_mail, 
             'is_active'=>$is_active, 
-            'category_id'=>$event_category); 
+            'category_id'=>$event_category,
+            'send_coord'=>$send_coord,
+            'coord_email'=>$coord_email,
+            'coord_msg'=>$coord_msg,
+            'coord_pay_msg'=>$coord_pay_msg); 
                           
         		
             $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-                              '%s','%s','%s');
+                              '%s','%s','%s','%s','%s','%s','%s');
         	
         
             if ($wpdb->insert( get_option('evr_event'), $sql, $sql_data )){ ?>

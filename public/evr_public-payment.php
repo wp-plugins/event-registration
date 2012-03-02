@@ -35,6 +35,9 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
                     		$end_time       = $row['end_time'];
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
+                            $use_coupon         = $row['use_coupon'];
+                            $coupon_code        = $row['coupon_code'];
+                            $coupon_code_price  = $row['coupon_code_price'];
                             }
     //Get Attendee Info
     $sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE id=".$attendee_id;
@@ -53,6 +56,7 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
                         			$date = $row ['date'];
                         			$reg_type = $row['reg_type'];
                                     $ticket_order = unserialize($row['tickets']);
+                                    $tax = $row['tax'];
                                     $payment= $row['payment'];
                                     $event_id = $row['event_id'];
                                     $coupon = $row['coupon'];
@@ -123,7 +127,16 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
     if ($ticket_order[$row]['ItemQty'] >= "1"){ echo $ticket_order[$row]['ItemQty']." ".$ticket_order[$row]['ItemCat']."-".$ticket_order[$row]['ItemName']." ".$ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']."<br \>";}
     } ?></td>
                       </tr>
+                     <?php if ($company_options['use_sales_tax'] == "Y"){ ?>
+                     <tr><td></td>
+                        <td><?php _e('Sales Tax  ','evr_language'); echo ':  '.$tax;?></td></tr>
+                     <?php } ?>  
+                     <tr>
+                        <td><strong>Total Cost:</strong></td>
+                        <td><?php echo $ticket_order[0]['ItemCurrency'];?> <strong><?php echo number_format($payment,2)?> </strong></td>
+                      </tr>
                     </table><br />
+                    
                 <?php
 					 $p->submit_paypal_post($pay_now); // submit the fields to paypal
 				  if ($company_options['use_sandbox'] == "Y") {
@@ -137,14 +150,14 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
  
  
 //Authorize.Net Payment Section
-if ($company_options['payment_vendor']=="AUHTHORIZE"){
+if ($company_options['payment_vendor']=="AUTHORIZE"){
         //Authorize.Net Payment 
         // This sample code requires the mhash library for PHP versions older than
         // 5.1.2 - http://hmhash.sourceforge.net/
         // the parameters for the payment can be configured here
         // the API Login ID and Transaction Key must be replaced with valid values
         $loginID		= $company_options['payment_vendor_id'];
-        $transactionKey = $company_options['$txn_key'];
+        $transactionKey = $company_options['payment_vendor_key'];
         $amount 		= $payment;
         $description 	= $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;
         $label 			= $pay_now; // The is the label on the 'submit' button
@@ -367,6 +380,9 @@ function evr_registration_donation($passed_event_id, $passed_attendee_id){
                     		$end_time       = $row['end_time'];
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
+                            $use_coupon         = $row['use_coupon'];
+                            $coupon_code        = $row['coupon_code'];
+                            $coupon_code_price  = $row['coupon_code_price'];
                             }
     //Get Attendee Info
     $sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE id=".$attendee_id;

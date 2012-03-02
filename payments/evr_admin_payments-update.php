@@ -51,6 +51,14 @@ function evr_admin_payment_update(){
                             'address_street'=>$address_street, 'address_city'=>$address_city, 'address_state'=>$address_state, 'address_zip'=>$address_zip,
                             'address_country'=>$address_country, 'address_status'=>$address_status, 'payer_business_name'=>$payer_business_name, 'payment_status'=>$payment_status,
                             'pending_reason'=>$pending_reason, 'reason_code'=>$reason_code, 'txn_type'=>$txn_type);
+                            
+                 $payment_dtl=array('payer_id'=>$payer_id, 'event_id'=>$event_id, 'payment_date'=>$payment_date, 'txn_id'=>$txn_id, 
+                            'first_name'=>$first_name, 'last_name'=>$last_name, 'payer_email'=>$payer_email, 'payer_status'=>$payer_status,
+                            'payment_type'=>$payment_type, 'memo'=>$memo, 'item_name'=>$item_name, 'item_number'=>$item_number,
+                            'quantity'=>$quantity, 'mc_gross'=>$mc_gross, 'mc_currency'=>$mc_currency, 'address_name'=>$address_name,
+                            'address_street'=>$address_street, 'address_city'=>$address_city, 'address_state'=>$address_state, 'address_zip'=>$address_zip,
+                            'address_country'=>$address_country, 'address_status'=>$address_status, 'payer_business_name'=>$payer_business_name, 'payment_status'=>$payment_status,
+                            'pending_reason'=>$pending_reason, 'reason_code'=>$reason_code, 'txn_type'=>$txn_type);              
 					  
 	   
         		
@@ -70,48 +78,54 @@ function evr_admin_payment_update(){
                 </div>
                 <?php } 
     			
-       
-                
- 		if ($send_payment_rec == "Y") {					
-					$sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE id ='$payer_id'";
-					$result = mysql_query ( $sql );
-					while ( $row = mysql_fetch_assoc ( $result ) ) {
-						$attendee_id = $row ['id'];
-						$lname = $row ['lname'];
-						$fname = $row ['fname'];
-						$address = $row ['address'];
-						$city = $row ['city'];
-						$state = $row ['state'];
-						$zip = $row ['zip'];
-						$email = $row ['email'];
-						$phone = $row ['phone'];
-						$date = $row ['date'];
-						$event_id = $row ['event_id'];
-                        $coupon= $row['coupon'];
-				
-					}
+   
+   
+   	if ($send_payment_rec == "Y") {	
+ 		 
 					$company_options = get_option('evr_company_settings');
                     
+                    $sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE id ='$payer_id'";
+					$result = mysql_query ( $sql );
+					$attendee_dtl = mysql_fetch_assoc ( $result );
+					
+                    $sql= "SELECT * FROM ". get_option('evr_event')." WHERE id=".$event_id; 
+                    $result = mysql_query ( $sql );
+                    $event_dtl = mysql_fetch_assoc ($result);  
 				
 					//get return URL
-                   $return_url = $company_options['return_url'];
-					
-					if($return_url !=""){$payment_link = $return_url . "&id=" . $attendee_id;}
-                    $payment_cue = __("To make payment or view your payment information go to",'evr_language');
-                    $payment_text = $payment_cue.": " . $payment_link;
-					$subject = $company_options['payment_subj'];
-					$distro = $email;
+                                       
+					$payment_link = evr_permalink($company_options['return_url']). "id=".$payment_dtl['payer_id']."&fname=".$payment_dtl['first_name'];
                     
-					$message = $company_options['payment_message'];
-                    /*
-                    ("***This Is An Automated Response***   Thank You $fname $lname.  We have received a payment in the amount of $ ".$amount_pd." for your event registration.  " . $payment_text);
-					*/
-					wp_mail ( $distro, $subject, $message );
-					?>
+					$subject = "Updated " .$company_options['payment_subj'];
+					$distro = $email;              
+					$message = html_entity_decode(nl2br($company_options['payment_message']));
+                    //search and replace tags
+                    $SearchValues = array("[id]","[fname]","[lname]","[payer_email]","[event_name]", "[contact]",
+                        "[payment_url]", "[amnt_pd]","[txn_id]","[txn_type]","[address_street]","[address_city]",
+                        "[address_state]","[address_zip]","[address_country]","
+                        [start_date]","[start_time]","[end_date]","[end_time]" );
+                    $ReplaceValues = array($payment_dtl['payer_id'], $payment_dtl['first_name'],$payment_dtl['last_name'],$payment_dtl['payer_email'],stripslashes($event_dtl['event_name']), $company_options['company_email'], 
+                       $payment_link, $payment_dtl['mc_gross'], $payment_dtl['txn_id'], $payment_dtl['txn_type'],$payment_dtl['address_street'], $payment_dtl['address_city'], 
+                       $payment_dtl['address_state'],$payment_dtl['address_zip'],$payment_dtl['address_country'], 
+                       $event_dtl['start_date'], $event_dtl['start_time'],$event_dtl['end_date'],$event_dtl['end_time'], );     
+                
+                    $email_content = str_replace($SearchValues, $ReplaceValues, $message);
+                    $message_top = "<html><body>"; 
+                    $message_bottom = "</html></body>";
+                    $email_body = $message_top.$email_content.$message_bottom;
+                            
+                    $headers = "MIME-Version: 1.0\r\n";
+                    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+                    $headers .= 'From: "' . $company_options['company'] . '" <' . $company_options['company_email'] . ">\r\n";
+                    
+                    wp_mail($attendee_dtl['email'], $subject, html_entity_decode($email_body), $headers);
+                    
+                   ?>
 				<div id="message" class="updated fade"><p><strong><?php _e('Payment Received Notification sent.','evr_language');?> </strong></p></div>
                 <?php
 				}
-				
+   
+		
 			
             ?>
 

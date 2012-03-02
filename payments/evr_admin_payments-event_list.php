@@ -59,9 +59,8 @@ global $wpdb;
                           <tr>
                             <th>Start Date</th>
                             <th>Event ID</th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>City</th>
+                            <th>Event</th>
+                            <th>Location / City</th>
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Sales</th>
@@ -72,9 +71,8 @@ global $wpdb;
                           <tr>
                             <th>Start Date</th>
                             <th>Event ID</th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>City</th>
+                            <th>Event</th>
+                            <th>Location / City</th>
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Sales</th>
@@ -130,11 +128,10 @@ global $wpdb;
                         	?>
                             <tr></tr>
                           <tr>
-                            <td><?php echo $start_date; ?></td>
+                            <td style="white-space: nowrap;"><?php echo $start_date; ?></td>
                             <td><?php echo $event_id; ?></td>
                             <td><?php echo $event_name; ?></td>
-                            <td><?php echo $event_location; ?></td>
-                            <td><?php echo $event_city; ?></td>
+                            <td><?php echo $event_location; ?><br /><?php echo $event_city; ?></td>
                             <td><?php echo $active_event ; ?></td>
                             <td><?php echo $number_attendees?> / <?php echo $reg_limit?></td>
                             <td><?php echo $payment_due?></td>
@@ -143,7 +140,7 @@ global $wpdb;
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="view_payments"/>
                                 <input type="hidden" name="event_id" value="<?php echo $event_id?>">
-                                <input class="button-secondary" type="submit" name="Payments" value="<?php _e('Payments','evr_language');?>" />
+                                <input class="button-primary" type="submit" name="Payments" value="<?php _e('Payments','evr_language');?>" />
                               </form>
                             </div>
                             </td>

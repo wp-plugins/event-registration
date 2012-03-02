@@ -20,12 +20,20 @@ function evr_confirm_form(){
     $zip = $_POST['zip'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
+    $fees = $_POST['fees'];
+    $tax = $_POST['tax'];
     $payment = $_POST['total'];
     $coupon = $_POST['coupon'];
     $reg_type = $_POST['reg_type'];
+    $company = $_POST['company'];
+    $coadd = $_POST['co_address'];
+    $cocity = $_POST['co_city'];
+    $costate = $_POST['co_state'];
+    $cozip = $_POST['co_zip'];
+    
     $attendee_name = $fname." ".$lname;
     
-    echo "Registration Type is: ".$reg_type."!";
+    //echo "Registration Type is: ".$reg_type."!";
     
     
    
@@ -44,7 +52,7 @@ function evr_confirm_form(){
             $item_start_date  = $row['item_available_start_date'];
             $item_end_date    = $row['item_available_end_date'];
             $item_custom_cur  = $row['item_custom_cur'];
-                 
+                             
             $item_post = str_replace(".", "_", $row['item_price']);
             $item_qty = $_REQUEST['PROD_' . $event_id . '-' . $item_id . '_' . $item_post];
             
@@ -62,11 +70,7 @@ function evr_confirm_form(){
     
     $ticket_data = serialize($item_order);
 
-     $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city'=>$city, 
-                'state'=>$state, 'zip'=>$zip, 'reg_type'=>$reg_type, 'email'=>$email,
-                'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,
-                'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment);
-                
+                  
                 
      $reg_id = $wpdb->get_var("SELECT LAST_INSERT_ID()");
      $qanda=array();
@@ -104,18 +108,33 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                     		$result = mysql_query ($sql);
                             while ($row = mysql_fetch_assoc ($result)){  
                          
-                            $event_id       = $row['id'];
-            				$event_name     = $row['event_name'];
-            				$event_location = $row['event_location'];
-                            $event_address  = $row['event_address'];
-                            $event_city     = $row['event_city'];
-                            $event_postal   = $row['event_postal'];
-                            $reg_limit      = $row['reg_limit'];
-                    		$start_time     = $row['start_time'];
-                    		$end_time       = $row['end_time'];
-                    		$start_date     = $row['start_date'];
-                    		$end_date       = $row['end_date'];
+                            $event_id           = $row['id'];
+            				$event_name         = $row['event_name'];
+            				$event_location     = $row['event_location'];
+                            $event_address      = $row['event_address'];
+                            $event_city         = $row['event_city'];
+                            $event_postal       = $row['event_postal'];
+                            $reg_limit          = $row['reg_limit'];
+                    		$start_time         = $row['start_time'];
+                    		$end_time           = $row['end_time'];
+                    		$start_date         = $row['start_date'];
+                    		$end_date           = $row['end_date'];
+                            $use_coupon         = $row['use_coupon'];
+                            $coupon_code        = $row['coupon_code'];
+                            $coupon_code_price  = $row['coupon_code_price'];
+                            
                             }
+
+// GT Validate coupon code and deduct discount	
+if ($use_coupon == "Y"){
+    if ($coupon == $coupon_code) { $payment = ($payment + $coupon_code_price);}
+}
+
+$posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city'=>$city, 
+                'state'=>$state, 'zip'=>$zip, 'reg_type'=>$reg_type, 'email'=>$email,
+                'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,
+                'company'=>$company, 'co_add'=>$coadd, 'co_city'=>$cocity, 'co_state'=>$costate, 'co_zip'=>$cozip,
+                'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment, 'fees'=>$fees, 'tax'=>$tax);
        
 
 ?>
@@ -124,7 +143,7 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                     <table width="95%" border="0">
                       <tr>
                         <td><strong>Event Name/Cost:</strong></td>
-                        <td><?php echo $event_name?> - <?php echo $item_order[0]['ItemCurrency'];?><?php echo $payment?></td>
+                        <td><?php echo $event_name?> - <?php echo $item_order[0]['ItemCurrency'];?>&nbsp;<?php echo $payment?></td>
                       </tr>
                       <tr>
                         <td><strong>Attendee Name:</strong></td>
@@ -146,6 +165,22 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
     for ($row = 0; $row < $row_count; $row++) {
     if ($item_order[$row]['ItemQty'] >= "1"){ echo $item_order[$row]['ItemQty']." ".$item_order[$row]['ItemCat']."-".$item_order[$row]['ItemName']." ".$item_order[$row]['ItemCurrency'] . " " . $item_order[$row]['ItemCost']."<br \>";}
     } }?></td>
+                      </tr>
+                      <tr>
+                       <?php 
+                       if ($use_coupon == "Y"){
+                           if($coupon == $coupon_code) {echo '<td><strong>Coupon:</strong></td><td>'; echo $coupon_code_price;'</td>';}
+                           elseif ($coupon != $coupon_code) {echo '<td><strong>Coupon:</strong></td><td>Invalid Code!</td>';}
+                       }
+                       ?>
+                      </tr>
+                      <?php if ($company_options['use_sales_tax'] == "Y"){ ?>
+                      <tr><td></td><td><?php _e('Sales Tax  ','evr_language'); echo ':  '.$tax;?></td></tr>
+                      <?php }?>
+                      <tr><td colspan="2"> </td></tr>
+                      <tr>
+                        <td><strong>Event Name / Total Cost:</strong></td>
+                        <td><?php echo $event_name?>: <?php echo $item_order[0]['ItemCurrency'];?> <strong><?php echo number_format($payment,2)?> </strong></td>
                       </tr>
                     </table>
                     
@@ -178,17 +213,28 @@ $i = 0;
 
 ?>
 <br /><div style="float:left;"><input type="button" value=" &lt;-- BACK " onclick="history.go(-1);return false;" /></div>
+
+<?php 
+$count = (int)$quantity;
+if ( $count <= 0){
+    echo '<br/><font color="red"><b>You must select at least one registration item.  Please go back and select an item!</b></font>';
+    
+    } 
+    else {
+ ?>
 <input type="hidden" name="reg_form" value="<?php echo $form_post;?>" />
 <input type="hidden" name="questions" value="<?php echo $question_post;?>" />
 <input type="hidden" name="action" value="post"/>
 <input type="hidden" name="event_id" value="<?php echo $event_id;?>" />
 <div style="margin-left: 150px;">
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Confirmed','evr_language');?>" /> 
-</form>
 </div>
-
-
 <?php
+} 
+?>
+</form>
+
+<?php 
 }
 
 ?>

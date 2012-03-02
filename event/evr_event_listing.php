@@ -15,7 +15,7 @@ global $wpdb;
 <?php evr_new_event();?>
 <div id="dashboard-widgets-wrap">
 <div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:90%;'>
+	<div class='postbox-container' style='width:auto;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
                  
@@ -62,8 +62,7 @@ global $wpdb;
                             <th>Start Date</th>
                             <th>Event ID</th>
                             <th>Name</th>
-                            <th>Location</th>
-                            <th>City</th>
+                            <th>ShortCode</th>
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Manage</th>
@@ -75,8 +74,7 @@ global $wpdb;
                             <th>Start Date</th>
                             <th>Event ID</th>
                             <th>Name</th>
-                            <th>Location</th>
-                            <th>City</th>
+                            <th>ShortCode</th>
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Manage</th>
@@ -116,64 +114,65 @@ global $wpdb;
             				
             					
             			if ($start_date <= date('Y-m-d')){
-            					$active_event = '<span style="color: #F00; font-weight:bold;">EXPIRED EVENT</span>';
+            					$active_event = '<span style="color: #F00; font-weight:bold;">EXPIRED</span>';
             				} else{
-            					$active_event = '<span style="color: #090; font-weight:bold;">ACTIVE EVENT</span>';
+            					$active_event = '<span style="color: #090; font-weight:bold;">ACTIVE</span>';
             				} 
                         	?>
                             <tr></tr>
                           <tr>
-                            <td><?php echo $start_date; ?></td>
+                            <td style="white-space: nowrap;"><?php echo $start_date; ?></td>
                             <td><?php echo $event_id; ?></td>
-                            <td><a href="#?w=700" rel="popup<?php echo $event_id;?>" class="poplight"><?php echo $event_name; ?></a></td>
-                            <td><?php echo $event_location; ?></td>
-                            <td><?php echo $event_city; ?></td>
+                            <td><a href="#?w=700" rel="popup<?php echo $event_id;?>" class="poplight"><?php echo $event_name; ?></a><br />
+                            <?php echo $event_location; ?><?php echo ", ".$event_city; ?>
+                            </td>
+                            <td style="white-space: nowrap;">[EVR_SINGLE event_id="<?php echo $event_id;?>"] </td>
                             <td><?php echo $active_event ; ?></td>
                             <td><?php echo $number_attendees;?> / <?php echo $reg_limit?></td>
                             <td>
-                            <div style="float:left">
+                            <div style="float:left; margin-right:10px;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="add_item"/>
                                 <input type="hidden" name="event_id" value="<?php echo $event_id?>">
-                                <input class="button-secondary" type="submit" name="items" value="<?php _e('Fees/Items','evr_language');?>" />
+                                <input class="fees_btn" type="submit" name="items" value="<?php _e('Fees/Items','evr_language');?>" />
                               </form>
                             </div>
-                            <div style="float:left; margin-left:20px;">
+                            <div style="float:left; margin-right:10px;">
                                         <form name="form" method="post" action="admin.php?page=questions">
                                           <input type="hidden" name="action" value="new">
                                           <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
                                           <input type="hidden" name="event_name" value="<?php echo $event_name;?>">
-                                          <input class="button-secondary" type="submit" name="questions" value="<?php _e('Questions','evr_language');?>" />
+                                          <input class="question_btn" type="submit" name="questions" value="<?php _e('Questions','evr_language');?>" />
                                         </form>
                                         
                                     </div>
-                                    <div style="float:left; margin-left:20px;">
+                                    <div style="float:left;">
                                         <form name="form" method="post" action="admin.php?page=attendee">
                                           <input type="hidden" name="action" value="view_attendee">
                                           <input type="hidden" name="event_id" value="<?php echo $event_id?>">
-                                          <input class="button-secondary" type="submit" name="Attendees" value="<?php _e('Attendees','evr_language');?>" />
+                                          <input class="attendee_btn" type="submit" name="Attendees" value="<?php _e('Attendees','evr_language');?>" />
                                         </form>
                                     </div>
                             </td><td>
-                            <div style="float:left">
+                            <div style="float:left; margin-right:10px;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="edit">
                                 <input type="hidden" name="id" value="<?php echo $event_id?>">
-                                <input class="button-secondary" type="submit" name="edit" value="<?php _e('Edit','evr_language');?>" id="edit_event_setting-<?php echo $event_id?>" />
+                                <input class="edit_btn" type="submit" name="edit" value="<?php _e('Edit','evr_language');?>" id="edit_event_setting-<?php echo $event_id?>" />
                               </form>
                             </div>
-                            <div style="float:left; margin-left:20px;">
+                            <div style="float:left; margin-right:10px;">
                                         <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                           <input type="hidden" name="action" value="copy_event">
                                           <input type="hidden" name="id" value="<?php echo $event_id?>">
-                                          <input class="button-secondary" type="submit" name="copy" value="<?php _e('Copy','evr_language');?>" id="copy_event_setting-<?php echo $event_id?>"  onclick="return confirm('<?php _e('Are you sure you want to copy','evr_language');?> <?php echo $event_name?>?')"/>
+                                          <input class="copy_btn" type="submit" name="copy" value="<?php _e('Copy','evr_language');?>" id="copy_event_setting-<?php echo $event_id?>"  onclick="return confirm('<?php _e('Are you sure you want to copy','evr_language');?> <?php echo $event_name?>?')"/>
                                         </form>
                                     </div>
-                            <div style="float:left; margin-left:20px;">
+                            <div style="float:left;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?php echo $event_id?>">
-                                <input class="button-secondary" type="submit" name="delete" value="<?php _e('Delete','evr_language');?>" id="delete_event-<?php echo $event_id?>" onclick="return confirm('<?php _e('Are you sure you want to delete','evr_language');?> <?php echo $event_name?>?')"/>
+                                <input class="delete_btn" type="submit" name="delete" value="<?php _e('Delete','evr_language');?>" id="delete_event-<?php echo $event_id?>" onclick="return confirm('<?php _e('Are you sure you want to delete','evr_language');?> <?php echo $event_name?>?')"/>
                               </form>
                             </div>
                             </td>

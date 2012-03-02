@@ -94,7 +94,7 @@
         			     <?php	} ?>
                         
                                     	
-						<input type="button" onClick="location.href='<?php echo evr_permalink($company_options['evr_page_id']);?>action=register&event_id=<?php echo $event_id;?>'" value='REGISTER'/> 
+						<input type="button" onClick="location.href='<?php echo evr_permalink($company_options['evr_page_id']);?>action=evregister&event_id=<?php echo $event_id;?>'" value='REGISTER'/> 
 
 
 				</td>

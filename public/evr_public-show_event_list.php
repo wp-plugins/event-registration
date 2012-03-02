@@ -10,7 +10,11 @@ function evr_show_event_list(){
     
    //$sql = "SELECT * FROM " . get_option('evr_event');
     $result = mysql_query ( $sql );
+    
 ?>
+<style>
+.thickbox{height:300px;width:300px;}
+</style>
 <div class="evr_event_list">
 <b>Click on Event Name for description/registration</b>
 <table class="evr_events">
@@ -36,7 +40,9 @@ function evr_show_event_list(){
 					$end_day = $row ['end_day'];
 					$end_year = $row ['end_year'];
 					$start_time = $row ['start_time'];
-					$end_time = $row ['end_time'];  
+					$end_time = $row ['end_time'];
+                    $outside_reg = $row['outside_reg'];  // Yor N
+                            $external_site = $row['external_site'];  
 					
 		          
 	    
@@ -56,9 +62,19 @@ function evr_show_event_list(){
         ?>
             <td class="er_title er_ticket_info"><b>
             <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['event_pop']=="N"){echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=register&event_id='.$event_id.'">';}
+            if ($company_options['event_pop']=="N"){
+                if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
+	}  else {
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
+                
+                
+                
+                }}
             else {?>
-            <a href="#TB_inline?&height=600&width=800&inlineId=popup<?php echo $event_id;?>&modal=false" class="thickbox" title="<?php echo $event_name;?>">
+            
+           <a class="thickbox" href="#TB_inline?height=640&width=650&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
+          <!--  //use this for fancybox window
+          <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
             
             <?php } echo $event_name;?></a></b></td>
             <td></td><td></td>

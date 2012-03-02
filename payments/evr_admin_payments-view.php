@@ -24,7 +24,7 @@ function evr_admin_view_payments(){
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Payment Management','evr_language');?></h2>
 <form name="form" method="post" action="admin.php?page=payments">
-                                    <input class="button-secondary" type="submit" name="Select Different" value="<?php _e('Select A Different Event','evr_language');?>" />
+                                    <input class="button-primary" type="submit" name="Select Different" value="<?php _e('Select A Different Event','evr_language');?>" />
                                 </form>  
     <div id="dashboard-widgets-wrap">
         <div id="dashboard-widgets" class="metabox-holder">
@@ -129,14 +129,13 @@ function evr_admin_view_payments(){
                                 <input type="hidden" name="action" value="add_payment"/>
                                 <input type="hidden" name="event_id" value="<?php echo $event_id?>">
                                 <input type="hidden" name="attendee_id" value="<?php echo $attendee_id?>">
-                                <input class="button-secondary" type="submit" name="Add Payment" value="<?php _e('Add Payment','evr_language');?>" />
+                                <input class="button-primary" type="submit" name="Add Payment" value="<?php _e('Add Payment','evr_language');?>" />
                                 </form>
                                 </td> </tr>
                                 <?php   }  
                             echo "</table>";
                             ?>
-                            <button style="background-color: lightgreen" onclick="window.location='<?php echo EVR_PLUGINFULLURL . "evr_admin_export.php?id=" . $event_id. "&action=payment";?>'" style="width:180; height: 30">Export Payment to Excel</button>            
-
+                             <?php evr_payment_export($event_id);?>
                             <div class="tablenav">
                         <div class='tablenav-pages'>
                             <?php echo $p->show();  // Echo out the list of paging. ?>

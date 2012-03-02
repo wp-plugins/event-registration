@@ -47,6 +47,12 @@ function evr_admin_edit_attendee(){
 <div class="wrap">
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Attendee Management','evr_language');?></h2>
+ <form name="form" method="post" action="admin.php?page=attendee">
+                                <input type="hidden" name="action" value="view_attendee"/>
+                                <input type="hidden" name="event_id" value="<?php echo $event_id?>">
+                                <input class="button-primary" type="submit" name="items" value="<?php _e('Select Another Attendee','evr_language');?>" />
+                              </form>
+
     <div id="dashboard-widgets-wrap">
         <div id="dashboard-widgets" class="metabox-holder">
         	<div class='postbox-container' style='width:65%;'>
@@ -119,12 +125,26 @@ function evr_admin_edit_attendee(){
                              ?>
 
                           </ul>
-                            <?php 	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            <?php 
+                            
+                            $num = 0;                              
+                            $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            
+                            $attendee_count  = $wpdb->get_var($sql2);
+                            
+                            
+                            If ($attendee_count >= 1) {$num = $attendee_count;}
+                            $available = $reg_limit - $num;
+                            
+                            
+                            /*	$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                             		$result2 = mysql_query($sql2);
                                             $num = 0;   
                             		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
                                     
                                     $available = $reg_limit - $num;
+                                    
+                               */     
                                     
                                    // if ($available > "1"){
                                         ?>                
@@ -138,7 +158,8 @@ function evr_admin_edit_attendee(){
                                 $open_seats = $available;
                                 $curdate = date("Y-m-d");
                                 
-                                $row_count = count($ticket_order);
+                               $row_count = count($ticket_order);
+                                if ($ticket_order != ""){
                                     for ($row = 0; $row < $row_count; $row++) {
                                         
                                         ?>
@@ -166,7 +187,60 @@ function evr_admin_edit_attendee(){
                                         ?>
                                         </select>
                                         <?php echo $ticket_order[$row]['ItemName'] . "    " . $ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']; ?></p>
-                                        <?php } ?>
+                                        <?php } }
+                                        
+                                  if ($ticket_order == ""){?> <font color="red">Update total ticket count!</font><?php      
+                                        
+                                        
+                                $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
+                                $result = mysql_query ( $sql );
+                            	while ($row = mysql_fetch_assoc ($result)){
+                            	        $item_id          = $row['id'];
+                                        $item_sequence    = $row['sequence'];
+                            			$event_id         = $row['event_id'];
+                                        $item_title       = $row['item_title'];
+                                        $item_description = $row['item_description']; 
+                                        $item_cat         = $row['item_cat'];
+                                        $item_limit       = $row['item_limit'];
+                                        $item_price       = $row['item_price'];
+                                        $free_item        = $row['free_item'];
+                                        $item_start_date  = $row['item_available_start_date'];
+                                        $item_end_date    = $row['item_available_end_date'];
+                                        $item_custom_cur  = $row['item_custom_cur'];
+                                   
+                                    //if (($item_start_date >= $curdate) && ($item_end_date <= $curdate)) {
+                                    // Remove date filter if((evr_greaterDate($curdate,$item_start_date))&& (evr_greaterDate($item_end_date,$curdate))){
+                               
+                            ?>
+                            <input type="hidden" name="reg_type" value="RGLR"/>
+                            <p><select name="PROD_<?php echo $event_id . "-" . $item_id . "_" . $item_price; ?>" id = "PROD_<?php echo
+                                    $event_id . "-" . $item_id . "_" . $item_price; ?>" onChange="CalculateTotal(this.form)"  >
+                            <option value="0">0</option>
+                            <?php
+                            if ($item_cat == "REG"){
+                             if ($ticket_limit != ""){
+                                if ($available >= $item_limit){$available = $item_limit;}
+                                }
+                             for($i=1; $i<$available+1; $i++) { ?>
+                                    <option value="<?php echo($i); ?>"><?php echo($i); ?></option>
+                            	<?php } }
+                            if ($item_cat != "REG"){
+                            $num_select = "10";    
+                            if ($ticket_limit != ""){
+                                $num_select = $item_limit;}
+                                
+                             for($i=1; $i<$num_select+1; $i++) { ?>
+                                    <option value="<?php echo($i); ?>"><?php echo($i); ?></option>
+                            	<?php } } 
+                            ?>
+                            </select>
+                            <?php echo $item_title . "    " . $item_custom_cur . " " . $item_price; ?></p>
+                            <?php 
+                            // }
+                            
+                             } }?>
+                                        
+                   
                                         
                                         
                                         
