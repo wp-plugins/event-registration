@@ -11,9 +11,27 @@ function evr_main_content(){
 }
 //function that provides the content in the content replacement for widget
 function evr_widget_content(){
-    echo "<U><h3>UPCOMING EVENTS</H3></U>";
-    echo "This feature currently not available";
-    
+    global $wpdb;    
+    $curdate = date("Y-m-d");
+    $record_limit = 10;
+    echo '<div id="evr_widget">';
+        echo "<U><h3>UPCOMING EVENTS</H3></U><br/>";
+        $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e') LIMIT 0,".$record_limit;    
+        $rows = $wpdb->get_results( $sql );
+        if ($rows){
+            foreach ($rows as $event){
+                                       
+                $bottomdate = date("j",strtotime($event->start_date));
+                $topdate = date("M",strtotime($event->start_date));
+               echo '<div id="evr_eventitem">';
+                echo '<div id="datebg"><div id="topdate">'.$topdate.'</div><div id="bottomdate">'.$bottomdate.'</div></div>';
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event->id.'">';
+                echo '<div id="evr_eventitem_title">'.stripslashes($event->event_name).'</div></a>';
+                echo '</div><hr/>';
+                }
+        
+        }
+    echo '</div>';
 }
 //function to add payment shortcode option page on public page for plugin
 function evr_payment_page(){

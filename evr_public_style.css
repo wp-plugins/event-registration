@@ -485,3 +485,40 @@ img.btn_close {
 *html .popup_block {
 	position: absolute;
 }
+
+#topdate {
+    color: #FFFFFF;
+    margin-bottom: auto;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: auto;
+    text-align: center;
+    width: 45px;
+}
+
+#bottomdate {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: auto;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: auto;
+    padding-top: 3px;
+    text-align: center;
+    width: 45px;
+}
+
+#datebg {
+    background: url("images/calicon_blue.png") no-repeat;
+    float: left;
+    height: 55px;
+    margin-left: 0px;
+    margin-right: 5px;
+    width: 55px;
+}
+
+#evr_eventitem {
+    float: none;
+    width: 200px;
+    height: 65px;
+}
