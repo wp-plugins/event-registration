@@ -61,6 +61,12 @@ function evr_edit_event(){
                             if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
                             if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
                             if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+                            if (in_array("Company", $reg_form_defaults)) {$inc_comp = "Y";}
+                            if (in_array("CoAddress", $reg_form_defaults)) {$inc_coadd = "Y";}
+                            if (in_array("CoCity", $reg_form_defaults)) {$inc_cocity = "Y";}
+                            if (in_array("CoState", $reg_form_defaults)) {$inc_costate = "Y";}
+                            if (in_array("CoPostal", $reg_form_defaults)) {$inc_copostal = "Y";}
+                            if (in_array("CoPhone", $reg_form_defaults)) {$inc_cophone = "Y";}
                             }
                         
                             //set reg limit if not set
@@ -97,7 +103,10 @@ function evr_edit_event(){
 <form id="er_popup_Form" method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
 <div class="evr_container">
 	<h2><?php _e('EDIT','evr_language');?> <?php echo $event_name." ".$active_event;?></h2>
-    <ul class="tabs"><script>
+    <ul class="tabs">
+    <script type="text/javascript">
+ /* <![CDATA[ */
+
                     var tinymceConfigs = [ {
                         theme : "advanced",        
                         mode : "none",        
@@ -124,6 +133,8 @@ function evr_edit_event(){
                     function tinyfy(settingid,el_id) {    
                         tinyMCE.settings = tinymceConfigs[settingid];    
                         tinyMCE.execCommand('mceAddControl', true, el_id);}
+
+/* ]]> */
 </script>	
         <li><a href="#tab1"><?php _e('Event Description','evr_language');?></a></li>
         <li><a href="#tab2"><?php _e('Event Venue','evr_language');?></a></li>
@@ -365,6 +376,14 @@ To create new display lines just press Enter.','evr_language');?>">
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="State" <?php if ($inc_state == "Y"){echo "checked";};?> /><?php _e('State or Province','evr_language');?></label>
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Zip" <?php if ($inc_zip == "Y"){echo "checked";};?> /><?php _e('Zip or Postal Code','evr_language');?></label>
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Phone" <?php if ($inc_phone == "Y"){echo "checked";};?> /><?php _e('Phone Number','evr_language');?></label>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Company" <?php if ($inc_comp == "Y"){echo "checked";};?>  /><?php _e('Company','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoAddress" <?php if ($inc_coadd == "Y"){echo "checked";};?> /><?php _e('Co. Addr','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoCity" <?php if ($inc_cocity == "Y"){echo "checked";};?> /><?php _e('Co. City','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoState" <?php if ($inc_costate == "Y"){echo "checked";};?>  /><?php _e('Co. State/Prov','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoPostal" <?php if ($inc_copostal == "Y"){echo "checked";};?> /><?php _e('Co. Postal','evr_language');?></label>
                     </td>
                 </tr>
                 <tr>

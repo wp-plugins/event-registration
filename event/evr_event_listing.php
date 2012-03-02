@@ -130,14 +130,14 @@ global $wpdb;
                             <td><?php echo $active_event ; ?></td>
                             <td><?php echo $number_attendees;?> / <?php echo $reg_limit?></td>
                             <td>
-                            <div style="float:left">
+                            <div style="float:left; margin-right:10px;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="add_item"/>
                                 <input type="hidden" name="event_id" value="<?php echo $event_id?>">
                                 <input class="fees_btn" type="submit" name="items" value="<?php _e('Fees/Items','evr_language');?>" />
                               </form>
                             </div>
-                            <div style="float:left; margin-left:10px;">
+                            <div style="float:left; margin-right:10px;">
                                         <form name="form" method="post" action="admin.php?page=questions">
                                           <input type="hidden" name="action" value="new">
                                           <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
@@ -146,7 +146,7 @@ global $wpdb;
                                         </form>
                                         
                                     </div>
-                                    <div style="float:left; margin-left:10px;">
+                                    <div style="float:left;">
                                         <form name="form" method="post" action="admin.php?page=attendee">
                                           <input type="hidden" name="action" value="view_attendee">
                                           <input type="hidden" name="event_id" value="<?php echo $event_id?>">
@@ -154,21 +154,21 @@ global $wpdb;
                                         </form>
                                     </div>
                             </td><td>
-                            <div style="float:left">
+                            <div style="float:left; margin-right:10px;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="edit">
                                 <input type="hidden" name="id" value="<?php echo $event_id?>">
                                 <input class="edit_btn" type="submit" name="edit" value="<?php _e('Edit','evr_language');?>" id="edit_event_setting-<?php echo $event_id?>" />
                               </form>
                             </div>
-                            <div style="float:left; margin-left:10px;">
+                            <div style="float:left; margin-right:10px;">
                                         <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                           <input type="hidden" name="action" value="copy_event">
                                           <input type="hidden" name="id" value="<?php echo $event_id?>">
                                           <input class="copy_btn" type="submit" name="copy" value="<?php _e('Copy','evr_language');?>" id="copy_event_setting-<?php echo $event_id?>"  onclick="return confirm('<?php _e('Are you sure you want to copy','evr_language');?> <?php echo $event_name?>?')"/>
                                         </form>
                                     </div>
-                            <div style="float:left; margin-left:10px;">
+                            <div style="float:left;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?php echo $event_id?>">

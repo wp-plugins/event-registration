@@ -249,13 +249,21 @@ function evr_new_event(){
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
+                   <td colspan="2">
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Address" checked /><?php _e('Street Address','evr_language');?></label>
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="City" checked /><?php _e('City','evr_language');?></label>
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="State" checked /><?php _e('State or Province','evr_language');?></label>
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Zip" checked /><?php _e('Zip or Postal Code','evr_language');?></label>
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Phone" checked /><?php _e('Phone Number','evr_language');?></label>
-                    </td>
+                 </tr>
+                 <tr>
+                   <td colspan="2">
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Company" checked /><?php _e('Company','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoAddress" checked /><?php _e('Co. Addr','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoCity" checked /><?php _e('Co. City','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoState" checked /><?php _e('Co. State/Prov','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoPostal" checked /><?php _e('Co. Postal','evr_language');?></label>
+                   </td>
                 </tr>
                 <tr>
                     <td>
@@ -320,7 +328,7 @@ function evr_new_event(){
 					wp_editor( $body, 'coord_msg', $editor_settings );
                                      
 				    }else{ ?>
-					<a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+					<a href="javascript:void(0)" onclick="tinyfy(1,'coord_msg')"><input type="button" value="WYSIWG"/></a>
                         <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo $body;?></textarea>
                     
                     <?php }  ?>   
@@ -343,7 +351,7 @@ function evr_new_event(){
 					wp_editor( $body, 'coord_pay_msg', $editor_settings );
                                      
 				    }else{ ?>
-					<a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+					<a href="javascript:void(0)" onclick="tinyfy(1,'coord_pay_msg')"><input type="button" value="WYSIWG"/></a>
                         <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $body;?></textarea>
                     
                     <?php }  ?>
