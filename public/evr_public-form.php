@@ -305,7 +305,8 @@ if ($available >= "1"){
                                 
                                         ?>                
                             <hr />
-                            <h2 ><?php _e('REGISTRATION FEES','evr_language');?></h2><br />
+                            <br /><h2 ><?php _e('REGISTRATION FEES','evr_language');?></h2><br />
+                            <p><font color="red">You must select at least one item!</font></p>
                              <?php
                                 
                                 $open_seats = $available;
@@ -327,6 +328,7 @@ if ($available >= "1"){
                                    
                                     
                             if((evr_greaterDate($curdate,$item_start_date))&& (evr_greaterDate($item_end_date,$curdate))){
+                                $req = ''
                                
                             ?>
                             <input type="hidden" name="reg_type" value="RGLR"/>
