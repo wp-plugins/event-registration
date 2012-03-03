@@ -21,10 +21,12 @@ function evr_process_confirmation(){
     
     $sql=array('lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 'city'=>$reg_form['city'], 
                 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 'email'=>$reg_form['email'],
-                'phone'=>$reg_form['phone'], 'email'=>$reg_form['email'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],
-                'quantity'=>$reg_form['num_people'], 'tickets'=>$reg_form['tickets'], 'payment'=>$reg_form['payment'], 'tax'=>$reg_form['tax'],'attendees'=>$attendee_list);
+                'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],'quantity'=>$reg_form['num_people'],
+                'tickets'=>$reg_form['tickets'], 'payment'=>$reg_form['payment'],'tax'=>$reg_form['tax'],'attendees'=>$attendee_list,
+                'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_add'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
+                'co_zip'=>$reg_form['co_zip'],);
  
-    $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
+    $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
     if ($wpdb->insert( get_option('evr_attendee'), $sql, $sql_data )){ 
     // Insert Extra From Post Here
             $reg_id = $wpdb->get_var("SELECT LAST_INSERT_ID()");
