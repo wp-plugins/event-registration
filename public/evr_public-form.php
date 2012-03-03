@@ -58,6 +58,7 @@ function evr_regform_new($event_id){
 
 <?php if ($company_options['captcha'] == 'Y') { ?>
 <script type="text/javascript">
+/* <![CDATA[ */
 var imgdir = "<?php echo $cap_url; ?>"; // identify directory where captcha images are located
 var jfldid = "uword"; // identify word field id name
 var jfldsz = 15; // identify word field size
@@ -149,6 +150,7 @@ else {
    return false;
   }
 }
+/* ]]> */
 </script>
 
 <?php } ?>
@@ -212,6 +214,7 @@ else {
 </li>
 <?php } ?>
 <hr />
+
 <?php if ($inc_comp == "Y") { ?>
 
 <li>
@@ -420,8 +423,7 @@ if ($available >= "1"){
                             if ($company_options['sales_tax_rate'] != "") { $tax_rate = $company_options['sales_tax_rate'];}
                             ?>
                             <script language="JavaScript" type="text/javascript">
-                            <!--
-                            
+                                                        
                             /* This script is Copyright (c) Paul McFedries and 
                             Logophilia Limited (http://www.mcfedries.com/).
                             Permission is granted to use this script as long as 
@@ -506,11 +508,11 @@ if ($available >= "1"){
                                 return value_string
                             }
                             
-                            //-->
+                            /* ]]> */
                             </script>
                             <?php } else { ?>
                                <script language="JavaScript" type="text/javascript">
-                            <!--
+                           /* <![CDATA[ */
                             
                             /* This script is Copyright (c) Paul McFedries and 
                             Logophilia Limited (http://www.mcfedries.com/).
@@ -592,7 +594,7 @@ if ($available >= "1"){
                                 return value_string
                             }
                             
-                            //-->
+                             /* ]]> */
                             </script>
                             
                             <?php } ?>
@@ -615,6 +617,8 @@ if ($available >= "1"){
 </div>
     
 <script type="text/javascript">
+/* <![CDATA[ */
+
 function checkInternationalPhone(strPhone){
 
 // Declaring required variables
@@ -852,7 +856,7 @@ if (jcap() == false){
 	return true;   
 
 }
-
+/* ]]> */
 </script>    
     
     <?php
