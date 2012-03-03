@@ -43,7 +43,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.141";
+    $cur_build = "6.00.142";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -70,7 +70,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.14.1";
+    $upgrade_version = "0.14.2";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -125,7 +125,7 @@ function evr_upgrade_tables(){
              $wpdb->query($sql);
             }
         $value = "tax";
-        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD atax VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL AFTER quantity";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD tax VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL AFTER quantity";
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }
@@ -445,6 +445,7 @@ function evr_attendee_db()
     $table_name = $wpdb->prefix . "evr_attendee";
     $evr_attendee_version = $cur_build;
     //check the SQL database for the existence of the Event Attendee Database - if it does not exist create it.
+  
     $sql = "CREATE TABLE " . $table_name . " (
 					  id MEDIUMINT NOT NULL AUTO_INCREMENT,
 					  lname VARCHAR(45) DEFAULT NULL,
