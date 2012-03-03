@@ -13,6 +13,7 @@ function evr_main_content(){
 function evr_widget_content(){
     global $wpdb;    
     $curdate = date("Y-m-d");
+    $company_options = get_option('evr_company_settings');
     $record_limit = 5;
     echo '<div id="evr_widget">';
         echo "<U><h3>UPCOMING EVENTS</H3></U><br/>";
@@ -25,7 +26,7 @@ function evr_widget_content(){
                 $topdate = date("M",strtotime($event->start_date));
                echo '<div id="evr_eventitem">';
                 echo '<div id="datebg"><div id="topdate">'.$topdate.'</div><div id="bottomdate">'.$bottomdate.'</div></div>';
-                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event->id.'">';
+                echo '<a href="'.evr_permalink_prefix()."page_id=".$company_options['evr_page_id'].'&action=evregister&event_id='.$event->id.'">';
                 echo '<div id="evr_eventitem_title">'.stripslashes($event->event_name).'</div></a>';
                 echo '</div><hr/>';
                 }
