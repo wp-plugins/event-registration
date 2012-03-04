@@ -111,13 +111,25 @@ global $wpdb;
             				if ($reg_limit == "" || $reg_limit == " "){
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
+                               
+                               $exp_date = $end_date;
+                               $todays_date = date("Y-m-d");
+                               $today = strtotime($todays_date);
+                               $expiration_date = strtotime($exp_date);
+                               
+                             if ($expiration_date <= $today){
+            					$active_event = '<span style="color: #F00; font-weight:bold;">EXPIRED</span>';
+            				} else{
+            					$active_event = '<span style="color: #090; font-weight:bold;">ACTIVE</span>';
+            				}   
             				
-            					
+            		/*			
             			if ($start_date <= date('Y-m-d')){
             					$active_event = '<span style="color: #F00; font-weight:bold;">EXPIRED</span>';
             				} else{
             					$active_event = '<span style="color: #090; font-weight:bold;">ACTIVE</span>';
             				} 
+                            */
                         	?>
                             <tr></tr>
                           <tr>
