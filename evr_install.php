@@ -5,6 +5,15 @@
  */
 
 /*
+6.00.16 -
+No db changes
+*/
+/*
+6.00.15 -
+added company fields to attendee
+*/
+
+/*
 6.00.14 -
 added tax to attendee
 */
@@ -43,7 +52,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.142";
+    $cur_build = "6.00.16";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -70,7 +79,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.14.2";
+    $upgrade_version = "0.16";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -125,12 +134,41 @@ function evr_upgrade_tables(){
              $wpdb->query($sql);
             }
         $value = "tax";
-        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD tax VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL AFTER quantity";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD tax VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }
-            
-                    
+         //added for 6.00.15   
+        $value = "company";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD company VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        
+        $value = "co_address";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_address VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+                
+        $value = "co_city";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_city VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }       
+
+        $value = "co_state";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_state VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }       
+
+        $value = "co_zip";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_zip VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }       
+                 
 //
 // Event Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -455,9 +493,14 @@ function evr_attendee_db()
 					  state VARCHAR(45) DEFAULT NULL,
 					  zip VARCHAR(45) DEFAULT NULL,
 					  reg_type VARCHAR (45) DEFAULT NULL,
-					  email VARCHAR(65) DEFAULT NULL,
+					  email VARCHAR(85) DEFAULT NULL,
 					  phone VARCHAR(45) DEFAULT NULL,
-					  date timestamp NOT NULL default CURRENT_TIMESTAMP,
+                      company VARCHAR(45) DEFAULT NULL,
+                      co_address VARCHAR(45) DEFAULT NULL,
+                      co_city VARCHAR(45) DEFAULT NULL,
+                      co_state VARCHAR(45) DEFAULT NULL,
+                      co_zip VARCHAR(45) DEFAULT NULL,
+                      date timestamp NOT NULL default CURRENT_TIMESTAMP,
 					  event_id VARCHAR(45) DEFAULT NULL,
                       coupon VARCHAR(45) DEFAULT NULL,
 					  quantity VARCHAR(45) DEFAULT NULL,

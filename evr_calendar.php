@@ -482,19 +482,28 @@ $show_cat= $cal_use_cat;
   		
         $linky = evr_permalink($company_options['evr_page_id'])."action=evregister&event_id=".$event->id;   
   }
-
-  $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';"><a class="tooltip" href="'.$linky.'" target="_blank" style="text-decoration:none"><h3>' . stripslashes(html_entity_decode($event->event_name)) .
-   '</h3><span class="help" style ="';
-   
-   
-   $details .= $style;
-   $details .= '"><em>'.stripslashes(html_entity_decode($event->event_name)).'</em>' . stripslashes(html_entity_decode($event->event_desc)) . '</span></a>'.
+    $allow = '<p><ul><li><b><strong><i>';
+    $tool_desc = strip_tags(stripslashes(html_entity_decode($event->event_desc)),$allow); 
+  
+  $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';">';
+  $details .='<a class="tooltip" href="'.$linky.'" style="text-decoration:none"><h3>' . stripslashes(html_entity_decode($event->event_name)) .'</h3>';
+  $details .='<span class="help" style ="'.$style.'">';
+  $details .= '<em>'.stripslashes(html_entity_decode($event->event_name)).'</em>' .evr_clean_inside_tags($tool_desc,$allow) . '</span></a>'.
    '<p class="time">'.date(get_option('time_format'), strtotime(stripslashes($event->start_time))).'</p>'.
    '<p class="seats">'.$seats.'</p>'.'</div>';
 
   return $details;
 }
-
+function evr_clean_inside_tags($txt,$tags){
+     
+    preg_match_all("/<([^>]+)>/i",$tags,$allTags,PREG_PATTERN_ORDER);
+ 
+    foreach ($allTags[1] as $tag){
+         $txt = preg_replace("/<".$tag."[^>]*>/i","<".$tag.">",$txt);
+     }
+ 
+    return $txt;
+ }
 
 function evr_fetch_events($y,$m,$d){
     global $wpdb,$tod_no,$cal_no;
