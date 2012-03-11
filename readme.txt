@@ -104,6 +104,17 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 == Change Log ==
 
+= Version 6.00.15
+* Modified Registration form to deactivate submit button unitl item is selected
+* Modified Registration form to provide visual prompt to select at lease one item
+* Moved javascript from registration form to external files to avoid conflicts
+* Modified confirmation page to deactivate confirmation button and provide visual prompt if no items were selected on registration form
+* Modified the install script to fix error in tax field on upgrade
+* Modified the install script to add fields to attendee table for company information
+* Modified registration processing script to add company details to database
+* Modified the calendar links to open on same page instead new page
+* Modified the calendar tooltip window to striptags to display properly and avoid <a> conflicts in description
+
 = Version 6.00.14 =
 * Reinstated Widget - Event Listing
 * Resolved Authorize.Net Payment button issues
