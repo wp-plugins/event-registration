@@ -1,6 +1,10 @@
 Changes:
 =========
 
+= Version 6.00.16
+* Fixed bug on events not showing expired in admin panel
+* Fixed bug in Category description not showing html properly
+
 = Version 6.00.15
 * Modified Registration form to deactivate submit button unitl item is selected
 * Modified Registration form to provide visual prompt to select at lease one item

@@ -5,6 +5,10 @@
  */
 
 /*
+6.00.16 -
+No db changes
+*/
+/*
 6.00.15 -
 added company fields to attendee
 */
@@ -48,7 +52,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.15";
+    $cur_build = "6.00.16";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -75,7 +79,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.15";
+    $upgrade_version = "0.16";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
