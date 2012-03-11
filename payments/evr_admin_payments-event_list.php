@@ -118,13 +118,16 @@ global $wpdb;
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
             				
-            			$expired = __( 'EXPIRED EVENT','evr_language' );
-                        $active = __( 'ACTIVE EVENT','evr_language' );		
-            			if ($start_date <= date('Y-m-d')){
-            					$active_event = '<span style="color: #F00; font-weight:bold;">'.$expired.'</span>';
+            			 $exp_date = $end_date;
+                               $todays_date = date("Y-m-d");
+                               $today = strtotime($todays_date);
+                               $expiration_date = strtotime($exp_date);
+                               
+                             if ($expiration_date <= $today){
+            					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED EVENT','evr_language').'</span>';
             				} else{
-            					$active_event = '<span style="color: #090; font-weight:bold;">'.$active.'</span>';
-            				} 
+            					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE EVENT','evr_language').'</span>';
+            				}   
                         	?>
                             <tr></tr>
                           <tr>

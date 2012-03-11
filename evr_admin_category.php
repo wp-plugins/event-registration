@@ -93,9 +93,9 @@ function evr_admin_categories(){
                                     
                                     while ($row = mysql_fetch_assoc ($result)){
                                     	$category_id= $row['id'];
-                                    	$category_name=$row['category_name'];
-                                    	$category_identifier=$row['category_identifier'];
-                                    	$category_desc=$row['category_desc'];
+                                    	$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
+                                    	$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
+                                    	$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
                                     	$display_category_desc=$row['display_desc'];
                                         $category_color = $row['category_color'];
                                         $font_color = $row['font_color'];
@@ -253,9 +253,9 @@ function evr_admin_categories(){
                                     if (mysql_num_rows($result) > 0 ) {
                                     while ($row = mysql_fetch_assoc ($result)){
                                     					$category_id= $row['id'];
-                                    					$category_name=$row['category_name'];
-                                    					$category_identifier=$row['category_identifier'];
-                                    					$category_desc=$row['category_desc'];
+                                    					$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
+                                    					$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
+                                    					$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
                                     					$display_category_desc=$row['display_desc'];
                                                         $category_color = $row['category_color'];
                                                         $font_color = $row['font_color'];

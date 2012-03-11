@@ -85,13 +85,19 @@ function evr_edit_event(){
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
             				
-            					
-            			if ($start_date <= date('Y-m-d')){
+            	                        
+                            
+                            
+                            $exp_date = $end_date;
+                               $todays_date = date("Y-m-d");
+                               $today = strtotime($todays_date);
+                               $expiration_date = strtotime($exp_date);
+                               
+                             if ($expiration_date <= $today){
             					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED EVENT','evr_language').'</span>';
             				} else{
             					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE EVENT','evr_language').'</span>';
-            				} 
-                            
+            				}   
                             }
                             
 	
