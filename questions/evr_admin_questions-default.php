@@ -8,7 +8,7 @@ function evr_questions_default(){
 <h2><?php _e('Event Questions','evr_language');?></h2>
 <div id="dashboard-widgets-wrap">
 <div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:90%;'>
+	<div class='postbox-container' style='width:auto;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
                  
