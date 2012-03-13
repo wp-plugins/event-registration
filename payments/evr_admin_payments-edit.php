@@ -100,7 +100,7 @@ function evr_admin_payments_edit(){
 <h2><?php _e('Payment Management','evr_language');?></h2>
     <div id="dashboard-widgets-wrap">
         <div id="dashboard-widgets" class="metabox-holder">
-        	<div class='postbox-container' style='width:50%;'>
+        	<div class='postbox-container' style='width:auto;'>
                 <div id='normal-sortables' class='meta-box-sortables'>
                     <div id="dashboard_right_now" class="postbox " >
                          
@@ -179,7 +179,8 @@ function evr_admin_payments_edit(){
                         				echo "<input type='hidden' name='event_id' value='" . $event_id . "'>";
                         				echo "<input type='hidden' name='action' value='update_payment'>";
                         				?>
-                        </hr><p><input type="submit" name="Submit" value="<?php _e('UPDATE PAYMENT','evr_language');?>"></p>
+                        <hr/><p><input type="submit" name="Submit" value="<?php _e('UPDATE PAYMENT','evr_language');?>"/></p>
+                       
                         </form>
                         
                         </p></ul>
@@ -191,7 +192,7 @@ function evr_admin_payments_edit(){
             </div>
         </div>            
     </div>
-</div> 
+ 
 <?php    
     
 }

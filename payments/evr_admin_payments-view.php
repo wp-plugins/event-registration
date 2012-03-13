@@ -28,7 +28,7 @@ function evr_admin_view_payments(){
                                 </form>  
     <div id="dashboard-widgets-wrap">
         <div id="dashboard-widgets" class="metabox-holder">
-        	<div class='postbox-container' style='width:85%;'>
+        	<div class='postbox-container' style='width:auto;'>
                 <div id='normal-sortables' class='meta-box-sortables'>
                     <div id="dashboard_right_now" class="postbox " >
                          
