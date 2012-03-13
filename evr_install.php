@@ -786,11 +786,12 @@ function evr_answer_db()
 
 function evr_notification()
 {
+    global $evr_date_format, $evr_ver, $wpdb;
     $guid=md5(uniqid(mt_rand(), true));
     $headers = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
     $headers .= "From: Plugin Activation <>\r\n";
-    $email_body = get_option('siteurl')." - ".$guid;
+    $email_body = get_option('siteurl')." - ".$guid." - Version:".$evr_ver;
     
     wp_mail("activation@wordpresseventregister.com", get_option('siteurl') . " - " .
         $cur_build, html_entity_decode($email_body), $headers);
