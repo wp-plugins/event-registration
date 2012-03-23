@@ -36,7 +36,7 @@ function evr_new_event(){
 
 
                     
-<a href="#?w=900" rel="popup0" class="poplight"><input type="button" value="<?php _e('ADD EVENT','evr_language');?>"/></a>
+<a href="#?w=900" rel="popup0" class="poplight evr_button evr_add"><?php _e('ADD EVENT','evr_language');?></a>
 
 <?php //evr_check_form_submission();?>
 
