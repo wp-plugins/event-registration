@@ -289,11 +289,10 @@ if ($expiration_date <= $today){
                                     	<?php } } 
                                     ?>
                                     </select>
-                                    
-                                    
+                                                                        
                                     <?php if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
                                     if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
-                                    echo $item_title . "    " . $item_custom_cur . " " . $item_price; ?></div>
+                                    echo '<span title"'.stripslashes($item_description).'">'. $item_title . "    " . $item_custom_cur . " " . $item_price.'</span></a>'; ?></div>
                                     <?php 
                                     
                                     } 
@@ -350,6 +349,8 @@ if ($expiration_date <= $today){
                                         echo '</b></font>';
                                         ?>
                                         <input type="hidden" name="reg_type" value="WAIT" />
+                                        <br />
+                                        <input name = "accept" value="Waitlist" onclick="alert('You will be placed on the waiting list.');mySubmit.disabled=false" type="radio">Waitlist Me!<br/>
                                         <?php   
                                     }
                                     ?>
