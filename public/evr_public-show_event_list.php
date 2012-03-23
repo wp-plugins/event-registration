@@ -186,7 +186,7 @@ section
 	display: block;
 } 
 
-.accordion
+.evr_accordion
 {
 	background-color: #eee;
  	border: 1px solid #ccc;
@@ -203,7 +203,7 @@ section
 	box-shadow: 0 1px 0 #999;
 }
  
-.accordion section 
+.evr_accordion section 
 {
  	border-bottom: 1px solid #ccc;
 	margin: 5px;
@@ -221,19 +221,19 @@ section
 	border-radius: 5px;
 }
 
-.accordion h2,
- .accordion p
+.evr_accordion h2,
+ .evr_accordion p
 {
 	margin: 0;
 	
 }
 
-.accordion p
+.evr_accordion p
 {
 	padding: 10px;
 }
  
-.accordion h2 a 
+.evr_accordion h2 a 
 {
 	display: block;
 	position: relative;
@@ -246,12 +246,12 @@ section
 	border-radius: 5px;
 }
 
-.accordion h2 a:hover 
+.evr_accordion h2 a:hover 
 {
 	background: #fff;
 }
  
-.accordion h2 + div 
+.evr_accordion h2 + div 
 {
 	height: 0;
 	overflow: hidden;
@@ -261,7 +261,7 @@ section
 	transition: height 0.3s ease-in-out;	
 }
 
-.accordion :target h2 a:after 
+.evr_accordion :target h2 a:after 
 {  
     content: '';
 	position: absolute;
@@ -273,14 +273,14 @@ section
 	border-right: 5px solid transparent;	
 }
 
-.accordion :target h2 + div 
+.evr_accordion :target h2 + div 
 {
 /*	height: 100px; */
 height: auto;
 }
 
 </style>
-<div class="accordion">
+<div class="evr_accordion">
 		
 <section id="close">
 				<h2><a href="#Close">Click on Event for Details - Click Here to Collaspe All</a></h2>
