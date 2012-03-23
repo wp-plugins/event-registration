@@ -10,17 +10,10 @@ global $wpdb;
 
 ?>
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2 style="font-family: segoe;"><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Event Management','evr_language');?></h2>
 <?php evr_new_event();?>
-<div id="dashboard-widgets-wrap">
-<div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:auto;'>
-        <div id='normal-sortables' class='meta-box-sortables'>
-            <div id="dashboard_right_now" class="postbox " >
-                 
-                <h3 class='hndle'><span><?php _e('Active Events','evr_language');?></span></h3>
-                <?php
+ <?php
                 //check database for number of records with date of today or in the future
                 $sql = "SELECT * FROM ".get_option('evr_event');
                 $records = mysql_query($sql);
@@ -49,7 +42,7 @@ global $wpdb;
                 	echo "No Record Found";
                 }//End pagination
                 ?>
-                <div class="inside">
+                
                     <div class="padding">
                     <div class="tablenav">
                         <div class='tablenav-pages'>
@@ -123,24 +116,18 @@ global $wpdb;
             					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE','evr_language').'</span>';
             				}   
             				
-            		/*			
-            			if ($start_date <= date('Y-m-d')){
-            					$active_event = '<span style="color: #F00; font-weight:bold;">EXPIRED</span>';
-            				} else{
-            					$active_event = '<span style="color: #090; font-weight:bold;">ACTIVE</span>';
-            				} 
-                            */
+            		
                         	?>
                             <tr></tr>
                           <tr>
                             <td style="white-space: nowrap;"><?php echo $start_date; ?></td>
                             <td><?php echo $event_id; ?></td>
-                            <td><a href="#?w=700" rel="popup<?php echo $event_id;?>" class="poplight"><?php echo $event_name; ?></a><br />
+                            <td><a href="#?w=700" rel="popup<?php echo $event_id;?>" class="poplight"><?php echo evr_truncateWords($event_name, 8, "..."); ?></a><br />
                             <?php echo $event_location; ?><?php echo ", ".$event_city; ?>
                             </td>
                             <td style="white-space: nowrap;">[EVR_SINGLE event_id="<?php echo $event_id;?>"] </td>
                             <td><?php echo $active_event ; ?></td>
-                            <td><?php echo $number_attendees;?> / <?php echo $reg_limit?></td>
+                            <td><?php echo $number_attendees;?> / <?php echo $reg_limit; ?></td>
                             <td>
                             <div style="float:left; margin-right:10px;">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
@@ -204,11 +191,7 @@ global $wpdb;
                             <?php if($items > 0) {echo $p->show();}  // Echo out the list of paging. ?>
                         </div>
                     </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                  
     <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
