@@ -73,12 +73,17 @@ if ($company_options['captcha'] == 'Y') {$captcha = "Y";} else {$captcha="N";}
 
 <div id="evrRegForm">
 <?php
+//$current_dt= date('Y-m-d H:i a',current_time('timestamp',0));
+$current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+    $close_dt = $start_date." ".$start_time;
+$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+$expiration_date = strtotime($stp);
+$today = strtotime($current_dt);
 
-$exp_date = $end_date;
-$todays_date = date("Y-m-d");
-$today = strtotime($todays_date);
-$expiration_date = strtotime($exp_date);
-                               
+//echo "The current date and time is: ".$current_dt."<br/>";
+//echo "Registration closes at: ". $stp."<br/>";                              
+
+
 if ($expiration_date <= $today){
     echo '<br/><font color="red">Registration is closed for this event.  <br/>For more information or questions, please email: </font><a href="mailto:'.$company_options['company_email'].'">'.$company_options['company_email'].'</a>';
     } 
@@ -232,7 +237,7 @@ if ($expiration_date <= $today){
                                                 ?>                
                                     <hr />
                                     <br /><h2 ><?php _e('REGISTRATION FEES','evr_language');?></h2><br />
-                                    <p><font color="red">You must select at least one item!</font></p>
+                                    <p><font color="red">Please select at least one item.</font></p>
                                      <?php
                                         
                                         $open_seats = $available;
