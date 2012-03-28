@@ -432,7 +432,16 @@ function evr_by_category($atts, $content=null){
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
 	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "UNLIMITED";}
      
-     
+          $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+$close_dt = $end_date." ".$end_time;
+$today = strtotime($current_dt);
+
+
+$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+$expiration_date = strtotime($stp);
+
+                           
+if ($stp >= $current_dt){
 
 
       if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
@@ -455,7 +464,7 @@ function evr_by_category($atts, $content=null){
             
            
             <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}
-        }
+        }}
         ?>
     </tbody></table></div>
     
