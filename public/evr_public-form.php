@@ -237,7 +237,7 @@ if ($expiration_date <= $today){
                                                 ?>                
                                     <hr />
                                     <br /><h2 ><?php _e('REGISTRATION FEES','evr_language');?></h2><br />
-                                    <p><font color="red">Please select at least one item.</font></p>
+                                    <p style="color:#ff0000;">Please select at least one item.</p>
                                      <?php
                                         
                                         $open_seats = $available;
