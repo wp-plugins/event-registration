@@ -74,7 +74,7 @@ function evr_install()
     evr_payment_db();
     evr_question_db();
     evr_answer_db();
-    evr_notification();
+    evr_generator();
 }
 
 function evr_upgrade_tables(){
@@ -738,7 +738,7 @@ function evr_question_db()
           response text NOT NULL,
           required enum('Y','N') NOT NULL DEFAULT 'N',
           UNIQUE KEY id (id)
-        ) TYPE=MyISAM AUTO_INCREMENT=1 ;";
+        ) TYPE=InnoDB AUTO_INCREMENT=1 ;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
         //create option in the wordpress options tale for the event question table name
@@ -767,7 +767,7 @@ function evr_answer_db()
           question_id int(11) NOT NULL DEFAULT '0',
           answer text NOT NULL,
           UNIQUE KEY id (registration_id,question_id)
-        ) TYPE=MyISAM DEFAULT CHARSET=utf8;";
+        ) TYPE=InnoDB DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
    //create option in the wordpress options tale for the event answer table name
@@ -784,21 +784,12 @@ function evr_answer_db()
 
 }
 
-function evr_notification()
+function evr_generator()
 {
     global $evr_date_format, $evr_ver, $wpdb;
     $guid=md5(uniqid(mt_rand(), true));
-    $headers = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= "From: Plugin Activation <>\r\n";
-    $email_body = get_option('siteurl')." - ".$guid." - Version:".$evr_ver;
-    
-    wp_mail("activation@wordpresseventregister.com", get_option('siteurl') . " - " .
-        $cur_build, html_entity_decode($email_body), $headers);
-        
-        $option_name = 'plug-evr-activate';
-        $newvalue = $guid;
-        update_option($option_name, $newvalue);
-
+    $option_name = 'plug-evr-activate';
+    $newvalue = $guid;
+    update_option($option_name, $newvalue);
 }
 ?>
