@@ -1,6 +1,7 @@
 <?php
 function evr_regform_new($event_id){
-    global $wpdb;
+    global $wpdb,$evr_date_format;
+$curdate = date ( "Y-m-j" );
     $company_options = get_option('evr_company_settings');
     $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
     $result = mysql_query ($sql);
@@ -20,29 +21,107 @@ function evr_regform_new($event_id){
                             if (in_array("CoPhone", $reg_form_defaults)) {$inc_cophone = "Y";}
                             }
             $use_coupon = $row['use_coupon'];
-            $reg_limit = $row['reg_limit'];
-            $event_name = stripslashes($row['event_name']);
-   	        $event_desc =  stripslashes($row ['event_desc']); 
-            $display_desc = $row['display_desc'];  // Y or N
-            $start_date = $row['start_date'];
-                    $end_date = $row['end_date'];
-					$start_month = $row ['start_month'];
-					$start_day = $row ['start_day'];
-					$start_year = $row ['start_year'];
-					$end_month = $row ['end_month'];
-					$end_day = $row ['end_day'];
-					$end_year = $row ['end_year'];
-					$start_time = $row ['start_time'];
-					$end_time = $row ['end_time'];
+                        $reg_limit = $row['reg_limit'];
+                   	    $event_name = stripslashes($row['event_name']);
+        					$event_identifier = stripslashes($row['event_identifier']);
+        					$display_desc = $row['display_desc'];  // Y or N
+                            $event_desc = stripslashes($row['event_desc']);
+                            $event_category = unserialize($_REQUEST['event_category']);
+        					$reg_limit = $row['reg_limit'];
+        					$event_location = stripslashes($row['event_location']);
+                            $event_address = $row['event_address'];
+                            $event_city = $row['event_city'];
+                            $event_state =$row['event_state'];
+                            $event_postal=$row['event_postcode'];
+                            $google_map = $row['google_map'];  // Y or N
+                            $start_month = $row['start_month'];
+        					$start_day = $row['start_day'];
+        					$start_year = $row['start_year'];
+                            $end_month = $row['end_month'];
+        					$end_day = $row['end_day'];
+        					$end_year = $row['end_year'];
+                            $start_time = $row['start_time'];
+        					$end_time = $row['end_time'];
+                            $allow_checks = $row['allow_checks'];
+                            $outside_reg = $row['outside_reg'];  // Yor N
+                            $external_site = $row['external_site'];
+                            
+                            $more_info = $row['more_info'];
+        					$image_link = $row['image_link'];
+        					$header_image = $row['header_image'];
+                            $event_cost = $row['event_cost'];
+                            $allow_checks = $row['allow_checks'];
+        					$is_active = $row['is_active'];
+        					$send_mail = $row['send_mail'];  // Y or N
+        					$conf_mail = stripslashes($row['conf_mail']);
+        					$start_date = $row['start_date'];
+                            $end_date = $row['end_date'];
+                        
     }
     $cap_url = EVR_PLUGINFULLURL . "cimg/";
     $md5_url = EVR_PLUGINFULLURL . "md5.js";
 //Begin Page Content    
-    echo "<h3>".$event_name."</h3>";
+    echo "<h2>".strtoupper($event_name)."</h2>";
  //echo date($evr_date_format,strtotime($start_date))." ".$start_time." - ";
  //if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;
  //echo "<br />";
-    if ($display_desc =="Y"){ echo "<blockquote>".html_entity_decode($event_desc)."</blockquote>"; }
+ ?>
+
+   <style type="text/css">
+      .show {display: none; }
+      .hide:focus + .show {display: inline; }
+      .hide:focus { display: none; }
+      .hide:focus ~ #details { display:none; }
+      @media print { .hide, .show { display: none; } }
+   </style>
+ <div>    <a href="#" class="hide">[Hide Details]</a>
+         <a href="#" class="show">[Show Details]</a>
+<div id="details">
+		
+
+<?php
+echo '<div><div>'.date($evr_date_format,strtotime($start_date))."  -  ";
+                        if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));}
+                        echo __('&nbsp;&nbsp;&nbsp;&nbsp;Time: ','evr_language')." ".$start_time." - ".$end_time.'</div>';
+                            
+                			?>	
+
+ <div class="evr_spacer"></div>    
+ <div style="text-align: justify;">
+    <p><?php echo html_entity_decode($event_desc);?></p>
+</div>
+<span style="float:right;">
+        <a href="<?php echo EVR_PLUGINFULLURL."evr_ics.php";?>?event_id=<?php echo $event_id;?>"><img src="<?php echo EVR_PLUGINFULLURL;?>images/ical-logo.jpg" /></a>
+    </span>
+
+                                              
+<div class="evr_spacer"><hr /></div>  
+
+
+<div style="float: left;width: auto;"><p><b><u>Location</u></b><br/><br/>
+                        <?php echo stripslashes($event_location);?><br />
+                        <?php echo $event_address;?><br />
+                        <?php echo $event_city.", ".$event_state." ".$event_postal;?><br /></p>
+                        </div>
+<div style="float: right;width: 280px;"> <div id="evr_pop_map"><?php if ($google_map == "Y"){?>
+                        <img border="0" src="http://maps.google.com/maps/api/staticmap?center=<?php echo $event_address.",".$event_city.",".$event_state;?>&zoom=14&size=280x180&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|<?php echo $event_address.",".$event_city;?>&sensor=false" />
+                        <?php } ?>
+                        </div></div>
+                        <div class="evr_spacer"></div>
+<div id="evr_pop_foot"><p align="center">
+
+<?php if ($more_info !=""){ ?>
+<input type="button" onClick="window.open('<?php echo $more_info;?>');" value='MORE INFO'/> 
+<?php	} ?>
+</p></div>
+<hr />               	
+                				</div>
+    
+ </div>                           
+<?php
+
+
+ //   if ($display_desc =="Y"){ echo "<blockquote>".html_entity_decode($event_desc)."</blockquote>"; }
     ?>
 <script type="text/javascript" src="<?php echo $md5_url; ?>"></script>
 <?php if ($company_options['captcha'] == 'Y') { ?>
@@ -237,7 +316,7 @@ if ($expiration_date <= $today){
                                                 ?>                
                                     <hr />
                                     <br /><h2 ><?php _e('REGISTRATION FEES','evr_language');?></h2><br />
-                                    <p style="color:#ff0000;">Please select at least one item.</p>
+                                    <p><font color="red">You must select at least one item!</font></p>
                                      <?php
                                         
                                         $open_seats = $available;
@@ -294,10 +373,11 @@ if ($expiration_date <= $today){
                                     	<?php } } 
                                     ?>
                                     </select>
-                                                                        
+                                    
+                                    
                                     <?php if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
                                     if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
-                                    echo '<span title"'.stripslashes($item_description).'">'. $item_title . "    " . $item_custom_cur . " " . $item_price.'</span></a>'; ?></div>
+                                    echo $item_title . "    " . $item_custom_cur . " " . $item_price; ?></div>
                                     <?php 
                                     
                                     } 
@@ -354,8 +434,6 @@ if ($expiration_date <= $today){
                                         echo '</b></font>';
                                         ?>
                                         <input type="hidden" name="reg_type" value="WAIT" />
-                                        <br />
-                                        <input name = "accept" value="Waitlist" onclick="alert('You will be placed on the waiting list.');mySubmit.disabled=false" type="radio">Waitlist Me!<br/>
                                         <?php   
                                     }
                                     ?>
