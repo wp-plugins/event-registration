@@ -258,11 +258,11 @@ function evr_new_event(){
                  </tr>
                  <tr>
                    <td colspan="2">
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Company" checked /><?php _e('Company','evr_language');?></label>
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoAddress" checked /><?php _e('Co. Addr','evr_language');?></label>
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoCity" checked /><?php _e('Co. City','evr_language');?></label>
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoState" checked /><?php _e('Co. State/Prov','evr_language');?></label>
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoPostal" checked /><?php _e('Co. Postal','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Company" /><?php _e('Company','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoAddress"  /><?php _e('Co. Addr','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoCity"  /><?php _e('Co. City','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoState"  /><?php _e('Co. State/Prov','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoPostal"  /><?php _e('Co. Postal','evr_language');?></label>
                    </td>
                 </tr>
                 <tr>
