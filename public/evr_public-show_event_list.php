@@ -55,7 +55,16 @@ function evr_show_event_list(){
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
 	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "UNLIMITED";}
      
-     
+   $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+$close_dt = $end_date." ".$end_time;
+$today = strtotime($current_dt);
+
+
+$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+$expiration_date = strtotime($stp);
+
+                           
+if ($stp >= $current_dt){
 
 
         if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
@@ -72,10 +81,10 @@ function evr_show_event_list(){
                 }}
             else {?>
             
-         <!--   <a class="thickbox" href="#TB_inline?height=640&width=650&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
-           //use this for fancybox window-->
-          <a href="#?w=700" rel="popup<?php echo $event_id;?>" class="poplight"> 
-            
+         <a class="thickbox" href="#TB_inline?height=640&width=650&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
+          <!--  //use this for fancybox window
+          <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
+
             <?php } echo $event_name;?></a></b></td>
             <td></td><td></td>
             <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
@@ -83,7 +92,7 @@ function evr_show_event_list(){
             
            
             <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}
-        }
+        }}
         ?>
     </tbody></table></div>
    
