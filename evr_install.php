@@ -75,6 +75,8 @@ function evr_install()
     evr_question_db();
     evr_answer_db();
     evr_generator();
+    //evr_notification();removed automatic notification of plugin activation
+    
 }
 
 function evr_upgrade_tables(){
@@ -791,5 +793,25 @@ function evr_generator()
     $option_name = 'plug-evr-activate';
     $newvalue = $guid;
     update_option($option_name, $newvalue);
+    $installed_date = strtotime('now');
+    update_option('evr_date_installed', $installed_date);
 }
+/*
+Removed this function per Wordpress Directive
+function evr_notification()
+{
+
+    $guid= get_option('plug-evr-activate');
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: Plugin Activation <>\r\n";
+    $email_body = get_option('siteurl')." - ".$guid;
+    
+    wp_mail("activation@wordpresseventregister.com", get_option('siteurl') . " - " .
+        $cur_build, html_entity_decode($email_body), $headers);
+
+
+}
+
+*/
 ?>

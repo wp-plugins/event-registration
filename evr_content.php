@@ -637,10 +637,21 @@ function evr_quick_action($links, $file)
 //function to replace content on public page for plugin
 function evr_content_replace($content)
 {
+   global $wpdb;
+   $company_options = get_option('evr_company_settings');
     if (preg_match('{EVRREGIS}', $content)) {
         ob_start();
         //event_regis_run($event_single_ID);
-        evr_registration_main(); //function with main content
+        if ($company_options['require_login'] == "Y"){
+        if (is_user_logged_in()){
+            evr_registration_main(); //function with main content
+            }
+        else
+            echo 'You must be logged in to register for events!';
+        }
+        else {
+             evr_registration_main(); //function with main content
+        }
         $buffer = ob_get_contents();
         ob_end_clean();
         $content = str_replace('{EVRREGIS}', $buffer, $content);
@@ -685,5 +696,17 @@ function evr_truncateWords($input, $numwords, $padding="...")
     if($output != $input) $output .= $padding;
     return $output;
   }
+function evr_admin_warnings() {
+	if ( get_option('evr_is_registered') != "Y") {
+		function evr_warning() {
+			echo "
+			<div id='evr-warning' class='updated fade'><p><strong>".__('Event Registration is not registered.')."</strong> ".sprintf(__('<a href="%1$s">Register your installation of Event Registration</a> for it to work.'), "admin.php?page=evr_register")."</p></div>
+			";
+		}
+		add_action('admin_notices', 'evr_warning');
+		return;
+	} 
+}
+
 
 ?>

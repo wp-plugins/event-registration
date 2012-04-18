@@ -1,11 +1,9 @@
 <?php
 function evr_admin_company(){
-
 		global $wpdb, $wp_version;
         $company_options = get_option('evr_company_settings');
         $update_company = $_POST['update_company'];
         switch ($update_company) {
-        
         case "update" : 
     	    if ($_POST['company_name'] !=""){
     		$company_options = get_option('evr_company_settings');
@@ -45,33 +43,21 @@ function evr_admin_company(){
             $company_options['event_pop']         = $_POST['event_pop'];
             $company_options['form_css']          = $_POST['form_css'];
             $start_of_week                        = $_POST['start_of_week'];
-            
             $company_options['use_sales_tax']     = $_POST['use_sales_tax'];
             $company_options['sales_tax_rate']    = $_POST['sales_tax_rate'];
-            
-            
             $company_options['start_of_week']     = $_POST['start_of_week'];
-            
             $company_options['evr_date_select']   = $_POST['evr_date_select'];
             $company_options['evr_cal_head']      = $_POST['evr_cal_head'];
             $company_options['cal_head_txt_clr']  = $_POST['cal_head_txt_clr'];
-             
             $company_options['evr_cal_cur_day']       = $_POST['evr_cal_cur_day'];
             $company_options['evr_cal_use_cat']       = $_POST['evr_cal_use_cat']; //true-false
             $company_options['evr_cal_pop_border']  = $_POST['evr_cal_pop_border'];
-           
             $company_options['cal_day_txt_clr']   = $_POST['cal_day_txt_clr'];
-            
             $company_options['evr_cal_day_head']      = $_POST['evr_cal_day_head'];
             $company_options['cal_day_head_txt_clr']  = $_POST['cal_day_head_txt_clr'];
-            
             //$company_options['evr_invoice'] = $_POST['evr_invoice'];
-
-   
    	update_option( 'evr_company_settings', $company_options);
-    
     update_option( 'evr_start_of_week', $start_of_week);
-    
 	echo '<div id="message" class="updated fade"><p><strong>';
     _e('Company details saved','evr_language');
        echo '</p></strong></div>';}
@@ -81,7 +67,6 @@ function evr_admin_company(){
         <p><strong><?php _e(' . . .Now refreshing company settings . . ','evr_language');?><meta http-equiv="Refresh" content="1; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p>
 <?php 
         break;
-        
         default:
         global $wpdb;
         ?>
@@ -116,7 +101,6 @@ function evr_admin_company(){
                     </script>	
 <div class="wrap">
 <h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
-	
     <h2><?php _e('Company Settings','evr_language');?></h2>
     <ul class="tabs">
         <li><a href="#tab1"><?php _e('Contact Info','evr_language');?></a></li>
@@ -126,9 +110,8 @@ function evr_admin_company(){
         <li><a href="#tab5"><?php _e('Confirmation Info','evr_language');?></a></li>
         <li><a href="#tab6"><?php _e('Waitlist','evr_language');?></a></li> 
         <li><a href="#tab7"><?php _e('Calendar','evr_language');?></a></li>
-       <!-- <li><a href="#tab8"><?php _e('Tax','evr_language');?></a></li> -->
+        <li><a href="#tab8"><?php _e('Tax','evr_language');?></a></li>
         <li><a href="#tab9"><?php _e('Done','evr_language');?></a></li>
-        
     </ul>
     <div class="evr_tab_container">
     <form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
@@ -169,7 +152,6 @@ function evr_admin_company(){
                       </div>  
                 </div>
         </div>
-        
         </div>
         <div id="tab2" class="tab_content">
             <div class="postbox " >
@@ -248,14 +230,11 @@ function evr_admin_company(){
                         <hr /> 
                         <table class="form-table">
                         <tr><td colspan="2"><font color="red"><u>For Paypal Users Only</u></font></td></tr>
-                        
                         <tr valign="top">
                         <th scope="row"><label for="image_url"><?php _e('Image URL','evr_language');?><br /><font size="-6"><?php _e('(For your logo on PayPal page)','evr_language');?></font></label></th>
                         <td><input name="image_url" value="<?php  echo $company_options['image_url'];?>" class="regular-text" /></td>
                         </tr>
                         <tr><td colspan="2"></td></tr>    
-                        
-                   
                             <?php /* //comment out this and uncomment the other for IPN support! ?>
                             <input type="hidden" value="" name="cancel_return">	
                             <input type="hidden" value="" name="notify_url">
@@ -264,7 +243,6 @@ function evr_admin_company(){
                             <?php */
                             //Uncomment this code if you use Paypal IPN Support  
                             ?>
-                            
                         <tr valign="top">
                         <th scope="row"><label for="cancel_return"><?php _e('Cancel Return URL','evr_language');?><br /><font size="-6"><?php _e('(page you setup for cancelled payment)','evr_language');?></font></label></th>
                         <td><input name="cancel_return" value="<?php  echo $company_options['cancel_return'];?>" class="regular-text" /></td>
@@ -306,12 +284,9 @@ function evr_admin_company(){
                      <div class="padding">
                     <label for="form_css"><?php _e('CSS Overrides for registration form?','evr_language');?></label>
                     <p><a class="ev_reg-fancylink" href="#css_override_help">Help</a> </p>
-                        
                     <textarea name="form_css" id="form_css" style="width: 100%; height: 300px;">
                         <?php echo $company_options['form_css'];?></textarea>
                         <br /> 
-                    
-                        
                         </div> 
                 </div>
             </div>
@@ -362,14 +337,12 @@ function evr_admin_company(){
                         <input name="event_pop" type="radio" value="Y" class="regular-radio" <?php if ($company_options['event_pop']=="Y"){echo "checked";}
                         if ($company_options['event_pop']==""){echo "checked";}?> /><?php _e('Yes','evr_language');?>
                         <input name="event_pop" type="radio" value="N" class="regular-radio" <?php if ($company_options['event_pop']=="N"){echo "checked";}?> /><?php _e('No','evr_language');?>
-                     
                     <div id="popup_info" style="display:none">
                                 <h2>Disable Event Popup</h2>
                                 <p>The events are designed to provide details and register button via a popup window</p>
                                 <p>This may conflict with some themes or just not wanted</p>
                                 <p>Select no to disable popup on event registration page.</p>
                             </div> 
-                    
                     </div>
                     </div>  
                 </div>
@@ -379,21 +352,17 @@ function evr_admin_company(){
             <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
-                    
                         <p>Do you want to send Registration Confirmation emails?<input type="radio" name="send_confirm" class="regular-radio" value="Y"  <?php if ($company_options['send_confirm'] == "Y"){echo "checked";}?> />Yes
                         <input type="radio" name="send_confirm" class="regular-radio" value="N"  <?php if ($company_options['send_confirm'] == "N"){echo "checked";}?> />No<br />  
                         <font size="-5" color="red">(This option must be enable to send custom mails in events)</font></p>
                         <p><a class="ev_reg-fancylink" href="#custom_email_settings">Settings</a> | <a class="ev_reg-fancylink" href="#custom_email_example">Example</a></p>
                         <p>Email Body:   
-                        
-                        
                         <?php
                         $settings = array(
                                 		'media_buttons' => false,
                                         'quicktags' => array('buttons' => 'b,i,ul,ol,li,link,close'),
                                 		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
                                 	);
-                        
                       /*  if (!version_compare($wp_version, '3.3', '>=')) { ?>
                             <a href="javascript:void(0)" onclick="tinyfy(1,'message')"><input type="button" value="WYSIWG"/></a>
                             <br />
@@ -403,42 +372,30 @@ function evr_admin_company(){
                           	}
                             else {
                         wp_editor( htmlspecialchars_decode($company_options['message']), 'message', $settings );}
-                        
                         */
-                        
                     if (function_exists('wp_editor')){
-				
                     wp_editor( htmlspecialchars_decode($company_options['message']), 'message', $settings );}
-                                     
 				    else{ ?>
                      <a href="javascript:void(0)" onclick="tinyfy(1,'message')"><input type="button" value="WYSIWG"/></a>
                      <br />
                      <textarea name="message" id="message" style="width: 100%; height: 200px;">
                      <?php echo htmlspecialchars_decode($company_options['message']);?></textarea>       
-                     
                     <?php } 
-                        
                         ?>
-                        
-                        
-                        
                         </p>
                         </div> 
                     <hr />
                     <div class="padding">
-
                         <p>Do you want to send Payment Confirmation emails?
                         <input type="radio" name="pay_confirm" class="regular-radio" value="Y"  <?php if ($company_options['pay_confirm'] == "Y"){echo "checked";}?> />Yes
                         <input type="radio" name="pay_confirm" class="regular-radio" value="N"  <?php if ($company_options['pay_confirm'] == "N"){echo "checked";}?> />No<br />  
                         <font size="-5" color="red">(This option must be enable to send payment confrimation emails)</font>
                         </p>
-                        
                         <p><a class="ev_reg-fancylink" href="#custom_payment_email_settings">Settings</a> | <a class="ev_reg-fancylink" href="#custom_payment_email_example">Example</a></p>
                         <br />
                         <p><label for="payment_subj"><?php _e('Payment Message Subject','evr_language');?></label><input name="payment_subj" value="<?php  echo $company_options['payment_subj'];?>" class="regular-text" /></p>
                         <p>Email Body:   
                         <?php
-                                                 
                         if (function_exists('wp_editor')){  
                             wp_editor(  htmlspecialchars_decode($company_options['payment_message']), 'payment_message', $settings );}
                         else { 
@@ -460,33 +417,22 @@ function evr_admin_company(){
             <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
-                    
-                        
                         <p><a class="ev_reg-fancylink" href="#custom_wait_settings">Settings</a> | <a class="ev_reg-fancylink" href="#custom_wait_example">Example</a></p>
                         <p>Waitlist Email Body:   
-                        
-                        
                         <?php
                         $settings = array(
                                 		'media_buttons' => false,
                                         'quicktags' => array('buttons' => 'b,i,ul,ol,li,link,close'),
                                 		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
                                 	);
-                        
-                    
-                        
                     if (function_exists('wp_editor')){
-				
                     wp_editor( htmlspecialchars_decode($company_options['wait_message']), 'wait_message', $settings );}
-                                     
 				    else{ ?>
                      <a href="javascript:void(0)" onclick="tinyfy(1,'wait_message')"><input type="button" value="WYSIWG"/></a>
                      <br />
                      <textarea name="wait_message" id="wait_message" style="width: 100%; height: 200px;">
                      <?php echo htmlspecialchars_decode($company_options['wait_message']);?></textarea>       
-                     
                     <?php } 
-                        
                         ?>
                         </p>
                    </div>     
@@ -508,12 +454,10 @@ function evr_admin_company(){
                     <option value="0">Sunday</option>
                     <option value="1">Monday</option>
                     </select></label></p>
-                    
                     <p>Do you want to use Category color coding?
                         <input type="radio" name="evr_cal_use_cat" class="regular-radio" value="Y"  <?php if ($company_options['evr_cal_use_cat'] == "Y"){echo "checked";}?> />Yes
                         <input type="radio" name="evr_cal_use_cat" class="regular-radio" value="N"  <?php if ($company_options['evr_cal_use_cat'] == "N"){echo "checked";}?> />No<br />  
                         </p>
-                        
                         <p>Select color for Calendar Display:</p>
                                         <script type="text/javascript" charset="utf-8">
                                          jQuery(document).ready(function() {    
@@ -545,7 +489,6 @@ function evr_admin_company(){
                         <input type="radio" name="evr_date_select" class="regular-radio" value="Y"  <?php if ($company_options['evr_date_select'] == "Y"){echo "checked";}?> />Yes
                         <input type="radio" name="evr_date_select" class="regular-radio" value="N"  <?php if ($company_options['evr_date_select'] == "N"){echo "checked";}?> />No<br />  
                         </p>
-                                        
                                         <p><label for="color">Calender Date Selector Background Color: 
                                         <input type="text" id="evr_cal_head" name="evr_cal_head" value="<?php if ($company_options['evr_cal_head'] !="") {echo $company_options['evr_cal_head'];} else {echo "#583c32";}?>"  style="width: 195px"/>
                                         </label><div id="picker" style="margin-bottom: 1em;"></div></p><p>Selector Text Color: <select style="width:70px;" name='cal_head_txt_clr' >
@@ -574,28 +517,15 @@ function evr_admin_company(){
                                         <p><label for="color">Description Pop Border Color: 
                                         <input type="text" id="evr_cal_pop_border" name="evr_cal_pop_border" value="<?php  if ($company_options['evr_cal_pop_border'] !=""){ echo $company_options['evr_cal_pop_border'];} else {echo  "#b8ced6";}?>"  style="width: 195px"/>
                                         </label><div id="brdrpicker" style="margin-bottom: 1em;"></div></p>
-                                        
-                                        
-                                        
-                                        
-                                        
-                  
-                   
                     </div>  
                 </div>
             </div>
         </div>
-        
          <div id="tab8" class="tab_content">
             <div class="postbox " >
                 <div class="inside">
                     <div class="padding">
-                    <?php /*
-                   $company_options['use_sales_tax']     = $_POST['use_sales_tax'];
-            $company_options['sales_tax_rate']    = $_POST['sales_tax_rate'];
-            */
-            ?>
-            <p>Do you want to charge sales tax <input type="radio" name="use_sales_tax" class="regular-radio" value="Y"  <?php if ($company_options['use_sales_tax'] == "Y"){echo "checked";}?> />Yes
+                      <p>Do you want to charge sales tax <input type="radio" name="use_sales_tax" class="regular-radio" value="Y"  <?php if ($company_options['use_sales_tax'] == "Y"){echo "checked";}?> />Yes
                         <input type="radio" name="use_sales_tax" class="regular-radio" value="N"  <?php if (($company_options['use_sales_tax'] == "N")||($company_options['use_sales_tax'] != "Y")){echo "checked";}?> />No<br />  
                         <font size="-5" color="red">(This option must be enable to charge sales tax)</font></p>
                     <table class="form-table">
@@ -603,7 +533,6 @@ function evr_admin_company(){
                         <th scope="row"><label for="sales_tax_rate"><?php _e('Sales Tax Rate: ','evr_language');?><br />(must be decimal, i.e. .085 )</label></th>
                         <td><input name="sales_tax_rate" type="text"  value="<?php echo $company_options['sales_tax_rate'];?>" class="regular-text" /></td>
                         </tr>
-                        
                         </table>  
                     </div>  
                 </div>
@@ -654,8 +583,6 @@ function evr_admin_company(){
     <h2>Payment Confirmation Email Settings</h2><p><strong>Payment Confirmations:</strong><br>
     For customized payment confirmation emails, the following tags can be placed in the email form and they will pull data from the database to include in the email.</p>
     <p>[id],[fname], [lname], [payer_email], [event_name],[amnt_pd], [txn_id],[address_street],[address_city],[address_state],[address_zip],[address_country],[start_date],[start_time],[end_date],[end_time] 
-
-
 </div></div> 
 <div style="display:none;"><div id="custom_payment_email_example" style="width:650px;height:350px;overflow:auto;">
     <h2>Sample Payment Mail Send:</h2>
@@ -669,7 +596,6 @@ function evr_admin_company(){
     <p>enter css to override theme css on form</p>
     <p>D0 NOT use style  tags (< style > </ style >)</p>
 </div></div>     
-    
 </div>
 <div style="clear: both; display: block; padding: 10px 0; text-align:center;"><font color="blue"><?php _e('Please make sure you complete each section before submitting!','evr_language');?></font></div>
  <p align="center">

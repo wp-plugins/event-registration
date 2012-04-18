@@ -41,7 +41,7 @@ function evr_new_event(){
 <?php //evr_check_form_submission();?>
 
 <div id="popup0" class="popup_block" style="width:950px;height:80%;overflow:auto;">
-<form id="er_popup_Form" method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">                        
+<form id="er_popup_Form" method="post" action="admin.php?page=events">                        
 <div class="evr_container">
 	<h1><?php _e('ADD NEW EVENT','evr_language');?></h1>
     <ul class="tabs">
