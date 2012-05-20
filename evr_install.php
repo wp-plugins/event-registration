@@ -5,6 +5,12 @@
  */
 
 /*
+6.00.17
+increased field size for Events - Reg_Form_defaults to 200
+Removed type definition for Question and Answer tables
+-removed automatic notification of plugin activation
+*/
+/*
 6.00.16 -
 No db changes
 */
