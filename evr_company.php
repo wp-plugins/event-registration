@@ -55,6 +55,7 @@ function evr_admin_company(){
             $company_options['cal_day_txt_clr']   = $_POST['cal_day_txt_clr'];
             $company_options['evr_cal_day_head']      = $_POST['evr_cal_day_head'];
             $company_options['cal_day_head_txt_clr']  = $_POST['cal_day_head_txt_clr'];
+            $company_options['evr_list_format']   =   $_POST['evr_list_format']; 
             //$company_options['evr_invoice'] = $_POST['evr_invoice'];
    	update_option( 'evr_company_settings', $company_options);
     update_option( 'evr_start_of_week', $start_of_week);
@@ -100,7 +101,7 @@ function evr_admin_company(){
                         tinyMCE.execCommand('mceAddControl', true, el_id);}
                     </script>	
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
     <h2><?php _e('Company Settings','evr_language');?></h2>
     <ul class="tabs">
         <li><a href="#tab1"><?php _e('Contact Info','evr_language');?></a></li>
@@ -276,6 +277,8 @@ function evr_admin_company(){
         <div id="tab3" class="tab_content">
             <div class="postbox " >
                 <div class="inside">
+                    
+                    
                     <div class="padding">
                     <label for="captcha"><?php _e('Use Captcha on registration form?','evr_language');?></label>
                         <input name="captcha" type="radio" value="Y" class="regular-radio" <?php if ($company_options['captcha']=="Y"){echo "checked";}?> /><?php _e('Yes','evr_language');?>
@@ -333,17 +336,14 @@ function evr_admin_company(){
                             </div> 
                     </div>
                     <div class="padding">
-                    <label for="event_pop"><a class="ev_reg-fancylink" href="#popup_info"><img src="<?php echo EVR_PLUGINFULLURL?>/images/question-frame.png" width="16" height="16" /></a><?php _e('Use event detail popup on event listing page?','evr_language');?></label>
-                        <input name="event_pop" type="radio" value="Y" class="regular-radio" <?php if ($company_options['event_pop']=="Y"){echo "checked";}
-                        if ($company_options['event_pop']==""){echo "checked";}?> /><?php _e('Yes','evr_language');?>
-                        <input name="event_pop" type="radio" value="N" class="regular-radio" <?php if ($company_options['event_pop']=="N"){echo "checked";}?> /><?php _e('No','evr_language');?>
-                    <div id="popup_info" style="display:none">
-                                <h2>Disable Event Popup</h2>
-                                <p>The events are designed to provide details and register button via a popup window</p>
-                                <p>This may conflict with some themes or just not wanted</p>
-                                <p>Select no to disable popup on event registration page.</p>
-                            </div> 
+                    <label for="captcha"><?php _e('Select Event Listing Type','evr_language');?></label>
+                        <input name="evr_list_format" type="radio" value="popup" class="regular-radio" <?php if ($company_options['evr_list_format']=="popup"){echo "checked";}?> /><?php _e('PopUp Window','evr_language');?>
+                        <input name="evr_list_format" type="radio" value="accordian" class="regular-radio" <?php if ($company_options['evr_list_format']=="accordian"){echo "checked";}?> /><?php _e('Accordian List','evr_language');?>
+                        <input name="evr_list_format" type="radio" value="link" class="regular-radio" <?php if ($company_options['evr_list_format']=="link"){echo "checked";}?> /><?php _e('Link Only','evr_language');?>
+                        
                     </div>
+                    
+                    
                     </div>  
                 </div>
             </div>
@@ -603,9 +603,10 @@ function evr_admin_company(){
  <input  type="submit" name="update_button" value="<?php _e('Update Company Settings','evr_language'); ?>" id="update_button" /></form></p>
  <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
+<!--New Button for wpeventregister.com-->
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>

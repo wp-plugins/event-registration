@@ -57,18 +57,23 @@ function evr_dashboard_events(){
 	z-index:102;
 }
 </style>
-<div>
-    <ul id="eventsnav">
+<form name="form" method="post" action="admin.php?page=events">
+                                <input type="hidden" name="action" value="new">
+                                <input class="evr_button evr_add" type="submit" name="new" value="<?php  _e('ADD EVENT','evr_language');?>" />
+     </form>    <ul id="eventsnav">
         <li><a href="admin.php?page=events">View Events</a></li>
         <li><a href="admin.php?page=attendee">View Attendees</a></li>
         <li><a href="admin.php?page=payments">Payments</a></li>
+        
     </ul>
-</div>
-<br />
+
+
 <table style="width:auto;" class="events_dashboard_window">
     <thead>
         <tr  style="text-align:left">
-            <th><font color="green"><b>Next 5 Upcoming Events </b></font> </th><th><?php evr_new_event();?></th>
+            <th><font color="green"><b>Next 5 Upcoming Events </b></font> </th><th>
+             
+     </th>
         </tr>
     </thead> 
     <tbody>
@@ -370,7 +375,7 @@ function evr_validate_key(){
     }
     ?>
         <div class="wrap"><br />
-        <a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
+        <a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
         <br />
         <br />
         <div class="evr_plugin">
@@ -398,12 +403,14 @@ function evr_validate_key(){
     		<div class="inside">
     			<div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful,<br /> please contribute to enable its continued development!<br />
                 <br /><p align="center">
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
-                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-                </form></p>
+                <!--New Button for wpeventregister.com-->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+                </p>
     		</div>
            </div>		
 		<div class="clear"></div>
@@ -428,7 +435,7 @@ global $evr_ver, $wpdb;
 
 ?>
 <div class="wrap">
-<h2 style="font-family: segoe;"><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2 style="font-family: segoe;"><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Software Registration - Event Registration for Wordpress','evr_language');?></h2>
 <?php
 if (get_option('evr_is_registered') != "Y"){
@@ -483,12 +490,14 @@ if (get_option('evr_is_registered') != "Y"){
         	<h3>Support Event Registration</h3>
     				<div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful,<br /> please contribute to enable its continued development!<br />
                 <br /><p>
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
-                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-                </form></p>
+                <!--New Button for wpeventregister.com-->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+                </p>
     		</div>
             <?php
     }

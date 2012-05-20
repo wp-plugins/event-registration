@@ -66,58 +66,52 @@ $curdate = date ( "Y-m-j" );
  //if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;
  //echo "<br />";
  ?>
-
-   <style type="text/css">
-      .show {display: none; }
-      .hide:focus + .show {display: inline; }
-      .hide:focus { display: none; }
-      .hide:focus ~ #details { display:none; }
-      @media print { .hide, .show { display: none; } }
-   </style>
- <div>    <a href="#" class="hide">[Hide Details]</a>
-         <a href="#" class="show">[Show Details]</a>
-<div id="details">
-		
-
-<?php
-echo '<div><div>'.date($evr_date_format,strtotime($start_date))."  -  ";
-                        if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));}
-                        echo __('&nbsp;&nbsp;&nbsp;&nbsp;Time: ','evr_language')." ".$start_time." - ".$end_time.'</div>';
+<div>
+         <a href="#" onclick="jQuery('#details').toggle();return false;">Show/Hide Details</a>         
+                   
+          <div id="details" style="display: none;border-style:solid;border-width:2px;border-color:#FF0000;padding: 15px;">
+           <!--Begin Event Details -->
+           <?php
+                    echo '<div>'.date($evr_date_format,strtotime($start_date))."  -  ";
+                                            if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));}
+                                            echo __('&nbsp;&nbsp;&nbsp;&nbsp;Time: ','evr_language')." ".$start_time." - ".$end_time.'</div>';
+                                                
+                                    			?>	
+                    
+                     <div class="evr_spacer"></div>    
+                     <div style="text-align: justify;">
+                        <p><?php echo html_entity_decode($event_desc);?></p>
+                    </div>
+                    <span style="float:right;">
+                            <a href="<?php echo EVR_PLUGINFULLURL."evr_ics.php";?>?event_id=<?php echo $event_id;?>"><img src="<?php echo EVR_PLUGINFULLURL;?>images/ical-logo.jpg" /></a>
+                        </span>
+                    
+                                                                  
+                    <div class="evr_spacer"><hr /></div>  
+                    
+                    
+                    <div style="float: left;width: auto;"><p><b><u>Location</u></b><br/><br/>
+                                            <?php echo stripslashes($event_location);?><br />
+                                            <?php echo $event_address;?><br />
+                                            <?php echo $event_city.", ".$event_state." ".$event_postal;?><br /></p>
+                                            </div>
+                    <div style="float: right;width: 280px;"> <div id="evr_pop_map"><?php if ($google_map == "Y"){?>
+                                            <img border="0" src="http://maps.google.com/maps/api/staticmap?center=<?php echo $event_address.",".$event_city.",".$event_state;?>&zoom=14&size=280x180&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|<?php echo $event_address.",".$event_city;?>&sensor=false" />
+                                            <?php } ?>
+                                            </div></div>
+                                            <div class="evr_spacer"></div>
+                    <div id="evr_pop_foot"><p align="center">
+                    
+                    <?php if ($more_info !=""){ ?>
+                    <input type="button" onClick="window.open('<?php echo $more_info;?>');" value='MORE INFO'/> 
+                    <?php	} ?>
+                    </p></div>
+                    <hr />               
+           <!--End Event Details -->
+                    	
+          </div>
+ </div>   
                             
-                			?>	
-
- <div class="evr_spacer"></div>    
- <div style="text-align: justify;">
-    <p><?php echo html_entity_decode($event_desc);?></p>
-</div>
-<span style="float:right;">
-        <a href="<?php echo EVR_PLUGINFULLURL."evr_ics.php";?>?event_id=<?php echo $event_id;?>"><img src="<?php echo EVR_PLUGINFULLURL;?>images/ical-logo.jpg" /></a>
-    </span>
-
-                                              
-<div class="evr_spacer"><hr /></div>  
-
-
-<div style="float: left;width: auto;"><p><b><u>Location</u></b><br/><br/>
-                        <?php echo stripslashes($event_location);?><br />
-                        <?php echo $event_address;?><br />
-                        <?php echo $event_city.", ".$event_state." ".$event_postal;?><br /></p>
-                        </div>
-<div style="float: right;width: 280px;"> <div id="evr_pop_map"><?php if ($google_map == "Y"){?>
-                        <img border="0" src="http://maps.google.com/maps/api/staticmap?center=<?php echo $event_address.",".$event_city.",".$event_state;?>&zoom=14&size=280x180&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|<?php echo $event_address.",".$event_city;?>&sensor=false" />
-                        <?php } ?>
-                        </div></div>
-                        <div class="evr_spacer"></div>
-<div id="evr_pop_foot"><p align="center">
-
-<?php if ($more_info !=""){ ?>
-<input type="button" onClick="window.open('<?php echo $more_info;?>');" value='MORE INFO'/> 
-<?php	} ?>
-</p></div>
-<hr />               	
-                				</div>
-    
- </div>                           
 <?php
 
 

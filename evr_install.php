@@ -603,7 +603,7 @@ function evr_event_db()
 				  end_time VARCHAR (15) DEFAULT NULL,
 				  reg_limit VARCHAR (15) DEFAULT NULL,
                   custom_cur VARCHAR(10) DEFAULT NULL,
-				  reg_form_defaults VARCHAR(100) DEFAULT NULL,
+				  reg_form_defaults VARCHAR(200) DEFAULT NULL,
 				  allow_checks VARCHAR(45) DEFAULT NULL,
 				  send_mail VARCHAR (2) DEFAULT NULL,
                   send_contact VARCHAR (2) DEFAULT NULL,
@@ -740,7 +740,7 @@ function evr_question_db()
           response text NOT NULL,
           required enum('Y','N') NOT NULL DEFAULT 'N',
           UNIQUE KEY id (id)
-        ) TYPE=InnoDB AUTO_INCREMENT=1 ;";
+        ) AUTO_INCREMENT=1 ;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
         //create option in the wordpress options tale for the event question table name
@@ -769,7 +769,7 @@ function evr_answer_db()
           question_id int(11) NOT NULL DEFAULT '0',
           answer text NOT NULL,
           UNIQUE KEY id (registration_id,question_id)
-        ) TYPE=InnoDB DEFAULT CHARSET=utf8;";
+        )  DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
    //create option in the wordpress options tale for the event answer table name

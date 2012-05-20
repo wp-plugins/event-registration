@@ -3,23 +3,17 @@
 function evr_show_event_list(){
     
      global $wpdb,$evr_date_format;
-	
-    $curdate = date ( "Y-m-j" );
-
-	$sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
-    
-   //$sql = "SELECT * FROM " . get_option('evr_event');
-    $result = mysql_query ( $sql );
+	$curdate = date ( "Y-m-j" );
+     $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
+     $result = mysql_query ( $sql );
     
 ?>
-<style>
-.thickbox{height:300px;width:300px;}
-</style>
 <div class="evr_event_list">
-<b>Click on Event Name for description/registration</b>
-<table class="evr_events">
+<table class="evr_events" cellspacing="0" summary="The list of upcoming events.">
+<caption>Click on Event Name for description/registration</caption>
+<!--<table class="evr_events">-->
 <thead>
-    <tr><th>EVENT</th><th></th><th width="8"><?php echo "     ";?></th><th>START</th><th>-</th><th>END</th></tr>
+    <tr><th >EVENT</th><th></th><th width="8"><?php echo "     ";?></th><th>START</th><th>-</th><th>END</th></tr>
 </thead>
 <tbody>
 <?php
@@ -67,11 +61,12 @@ $expiration_date = strtotime($stp);
 if ($stp >= $current_dt){
 
 
-        if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
+        if($color_row==1){ $td_class = "odd"; } else if($color_row==2){ $td_class = "even"; } 
         ?>
-            <td class="er_title er_ticket_info"><b>
+            <tr>
+            <td class="er_title er_ticket_info <?php echo $td_class;?>" colspan="3"><b>
             <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['event_pop']=="N"){
+            if ($company_options['evr_list_format']=="link"){
                 if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
 	}  else {
                 echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
@@ -81,14 +76,14 @@ if ($stp >= $current_dt){
                 }}
             else {?>
             
-         <a class="thickbox" href="#TB_inline?height=640&width=650&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
-          <!--  //use this for fancybox window
+         <a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
+                  <!--  //use this for fancybox window
           <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
 
             <?php } echo $event_name;?></a></b></td>
-            <td></td><td></td>
-            <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
-            <td class="er_date"><?php if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;?></td></tr>
+            
+            <td class="er_date <?php echo $td_class;?>"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td class="<?php echo $td_class;?>">-</td>
+            <td class="er_date <?php echo $td_class;?>"><?php if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;?></td></tr>
             
            
             <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}

@@ -7,17 +7,17 @@
 
 /*
 Plugin Name: Event Registration
-Plugin URI: http://www.wordpresseventregister.com
+Plugin URI: http://www.wpeventregister.com
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. 
 It allows you to capture the registering persons contact information to a database and provides an association to an events database. 
 It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   
 Detailed payment management system to track and record event payments.  
 Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.00.16
+Version: 6.00.17
 Author: David Fleming - Edge Technology Consulting
-Author URI: http://www.wordpresseventregister.com
+Author URI: http://www.wpeventregister.com
 */
-/*  Copyright 2008 - 2012  DAVID_FLEMING  (email : support@wordpresseventregister.com)
+/*  Copyright 2008 - 2012  DAVID_FLEMING  (email : support@wpeventregister.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -150,12 +150,12 @@ add_shortcode('EVR_ATTENDEE', 'evr_attendee_short');
 function evr_init(){
         //register admin scripts
         wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-        wp_register_script($handle = 'evr_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         //register public scripts
         wp_register_script($handle = 'evr_public_script', $src = plugins_url('/evr_public_script.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-        wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_register_script($handle = 'evr_public_easing', $src = plugins_url('/scripts/fancybox/jquery.easing-1.3.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_register_script($handle = 'evr_public_mouswheel', $src = plugins_url('/scripts/fancybox/jquery.mousewheel-3.0.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         
@@ -202,15 +202,16 @@ function evr_load_tiny_mce() {
 //function to enqueue styles in admin pages
 function evr_admin_css_all_page() {
        wp_register_style($handle = 'evr_admin_css', $src = plugins_url('/evr_admin_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_register_style($handle = 'evr_fancy_css', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_enqueue_style('evr_admin_css');
+       wp_register_style($handle = 'evr_fancy_css', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_enqueue_style('evr_fancy_css');
+       wp_enqueue_style('evr_admin_css');
+       
        wp_enqueue_style( 'farbtastic' );
 }
 //function to enqueue scripts in admin pages
 function evr_admin_scripts_all_page() {
        wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_enqueue_script('evr_admin_script');
@@ -341,7 +342,7 @@ function evr_check_usage_time(){
 
 function evr_footer_text() 
 {
-	echo "<p id='footer' style=\"text-align:center;\">Event Registration created by <a href='http://www.WordpressEventRegister.com'>WordpressEventRegister.com</a></p>";
+	echo "<p id='footer' style=\"text-align:center;\">Event Registration created by <a href='http://www.wpeventregister.com'>wpeventregister.com</a></p>";
 } 
 
 

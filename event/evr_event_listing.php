@@ -1,4 +1,14 @@
 <?php
+function evr_new_event_button(){
+     ?>
+          
+     <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
+                                <input type="hidden" name="action" value="new">
+                                <input class="evr_button evr_add" type="submit" name="new" value="<?php  _e('ADD EVENT','evr_language');?>" />
+     </form>
+     <?php
+     
+}
 //function that displays events with option buttons
 function evr_event_listing(){
 //define # of records to display per page
@@ -10,9 +20,9 @@ global $wpdb;
 
 ?>
 <div class="wrap">
-<h2 style="font-family: segoe;"><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2 style="font-family: segoe;"><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Event Management','evr_language');?></h2>
-<?php evr_new_event();?>
+<?php evr_new_event_button();?>
  <?php
                 //check database for number of records with date of today or in the future
                 $sql = "SELECT * FROM ".get_option('evr_event');
@@ -105,12 +115,17 @@ global $wpdb;
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
                                
-                               $exp_date = $end_date;
-                               $todays_date = date("Y-m-d");
-                               $today = strtotime($todays_date);
-                               $expiration_date = strtotime($exp_date);
-                               
-                             if ($expiration_date <= $today){
+$current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+$close_dt = $start_date." ".$start_time;
+$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+$expiration_date = strtotime($stp);
+$today = strtotime($current_dt);
+
+//echo "The current date and time is: ".$current_dt."<br/>";
+//echo "Registration closes at: ". $stp."<br/>";                              
+
+
+if ($expiration_date <= $today){
             					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED','evr_language').'</span>';
             				} else{
             					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE','evr_language').'</span>';
@@ -122,7 +137,9 @@ global $wpdb;
                           <tr>
                             <td style="white-space: nowrap;"><?php echo $start_date; ?></td>
                             <td><?php echo $event_id; ?></td>
-                            <td><a href="#?w=700" rel="popup<?php echo $event_id;?>" class="poplight"><?php echo evr_truncateWords($event_name, 8, "..."); ?></a><br />
+                            <td>
+                            <a href="#TB_inline?height=600&width=400&inlineId=popup<?php echo $event_id;?>" class="thickbox"><?php echo evr_truncateWords($event_name, 8, "..."); ?></a>
+                            <br />
                             <?php echo $event_location; ?><?php echo ", ".$event_city; ?>
                             </td>
                             <td style="white-space: nowrap;">[EVR_SINGLE event_id="<?php echo $event_id;?>"] </td>
@@ -194,9 +211,10 @@ global $wpdb;
                   
     <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
+<!--New Button for wpeventregister.com-->
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>

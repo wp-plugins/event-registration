@@ -1,3 +1,65 @@
+/**/
+/*Style for Event List Table Layout */
+/**/
+div#evr_event_list {
+
+}
+
+table.evr_events
+ { width: 100%;
+ background-color: #fafafa;
+ border: none;
+ border-collapse: collapse;
+ border-spacing: 0px; }
+  
+
+table.evr_events td.er_date
+ {width:150px;}
+
+table.evr_events caption {
+	padding: 0 0 5px 0;
+	width: 700px;	 
+	font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+table.evr_events th {
+	font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	color: #4f6b72;
+	border: none;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	text-align: left;
+	padding: 6px 6px 6px 12px;
+	background: #CAE8EA;
+}
+table.evr_events td {
+     border: none;
+	background: #fff;
+	padding: 6px 6px 6px 12px;
+	color: #4f6b72;
+}
+
+
+table.evr_events td {
+	background: #F5FAFA;
+	color: #797268;
+}
+
+ table.evr_events td.odd
+ {background-color:#FFFFFF;
+}
+ 
+ table.evr_events td.even
+ {background-color: #F8F8F8;
+ }
+
+/**/
+/*End Style for Event List Table Layout */
+/**/
+
+
+
+
 .evr_ticket_info a{
     cursor:default!important;
     background:url(<?php echo EVNT_RGR_PLUGINFULLURL;?>images/info-icon.png) no-repeat bottom left;
@@ -14,36 +76,7 @@
     text-decoration:none!important
 }
 
-div#evr_event_list {
 
-}
-
-table.evr_events
- { width: 100%;
- background-color: #fafafa;
- border: none;
- border-collapse: collapse;
- border-spacing: 0px; }
- 
-table.evr_events th
- { background-color: #666;
- color: #fff;
- padding: 4px;
- text-align: left;
- border-bottom: 2px #fff solid;
- font-size: 12px;
- font-weight: bold;} 
- 
- table.evr_events tr.odd
- {background-color:#FFFFFF;
-}
- 
- table.evr_events tr.even
- {background-color: #F8F8F8;
- }
- 
- table.evr_events td.er_date
- {width:150px;} 
 
 .padding { padding:10px;	overflow:hidden; }
 

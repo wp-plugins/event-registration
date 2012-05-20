@@ -1,6 +1,6 @@
 === Event Registration ===
 Contributors: David Fleming
-Donate link: http://www.wordpresseventregister.com/donations
+Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
 Tested up to: 3.3.1
