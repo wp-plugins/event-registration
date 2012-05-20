@@ -1,10 +1,10 @@
 === Event Registration ===
 Contributors: David Fleming
-Donate link: http://www.wordpresseventregister.com/donations
+Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
-Tested up to: 3.3.1
-Stable tag: 6.00.14
+Tested up to: 3.3.2
+Stable tag: 6.00.17
 
 This plugin is designed to allow you to take online registrations for events and classes. 
 Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
@@ -103,6 +103,29 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.17
+* Fixed WordPress compliance issues
+* Modified how events expire on the public side: Show on list until the end of the event, close registration form at event start time.
+* Added options no not use popup - added accordian style list capability
+* Changed backend popups to use thickbox
+* Changed create/edit event screens to page format instead of popup format for better screen fit
+* Other minor bug fixes
+
+= Version 6.00.16
+* Fixed bug on events not showing expired in admin panel
+* Fixed bug in Category description not showing html properly
+
+= Version 6.00.15
+* Modified Registration form to deactivate submit button unitl item is selected
+* Modified Registration form to provide visual prompt to select at lease one item
+* Moved javascript from registration form to external files to avoid conflicts
+* Modified confirmation page to deactivate confirmation button and provide visual prompt if no items were selected on registration form
+* Modified the install script to fix error in tax field on upgrade
+* Modified the install script to add fields to attendee table for company information
+* Modified registration processing script to add company details to database
+* Modified the calendar links to open on same page instead new page
+* Modified the calendar tooltip window to striptags to display properly and avoid <a> conflicts in description
 
 = Version 6.00.14 =
 * Reinstated Widget - Event Listing

@@ -15,16 +15,25 @@ function evr_admin_view_attendee(){
                             if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
                             }
     $event_category = unserialize($event->event_category);
-    if ($event->start_date <= date('Y-m-d')){
+   /* if ($event->start_date <= date('Y-m-d')){
             					$active_event = '<span style="color: #F00; font-weight:bold;">EXPIRED EVENT</span>';
             				} else{
             					$active_event = '<span style="color: #090; font-weight:bold;">ACTIVE EVENT</span>';
-            				} 
-       
+            				} */
+                                $exp_date = $event->end_date;
+                               $todays_date = date("Y-m-d");
+                               $today = strtotime($todays_date);
+                               $expiration_date = strtotime($exp_date);
+                               
+                             if ($expiration_date <= $today){
+            					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED','evr_language').'</span>';
+            				} else{
+            					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE','evr_language').'</span>';
+            				}  
 ?>    
 
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Attendee Management','evr_language');?><?php echo " - ";?><?php echo stripslashes($event->event_name); ?></h2> <span>
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="add_attendee"/>
