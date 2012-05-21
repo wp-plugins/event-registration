@@ -109,7 +109,7 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                             while ($row = mysql_fetch_assoc ($result)){  
                          
                             $event_id           = $row['id'];
-            				$event_name         = $row['event_name'];
+            				$event_name         = stripslashes($row['event_name']);
             				$event_location     = $row['event_location'];
                             $event_address      = $row['event_address'];
                             $event_city         = $row['event_city'];
