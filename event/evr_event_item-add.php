@@ -197,7 +197,7 @@ $end = strtotime('11:45pm');
             <br />
             <div style="float: left;">
             <div class="padding">
-            <a href="#TB_inline?inlineId=popup0" class="thickbox"><button class="button-primary"><?php _e('ADD COST/ITEM','evr_language');?></button></a>
+            <a href="#TB_inline?height=600&width=400&inlineId=popup0" class="thickbox"><button class="button-primary"><?php _e('ADD COST/ITEM','evr_language');?></button></a>
             </div></div>
             <div style="float: right;">
             <div class="padding">
@@ -269,7 +269,6 @@ $end = strtotime('11:45pm');
 <!-- PopUp Window Form for Event Cost -->
 <!--POPUP START-->
 <div id="popup0" style="display:none;" >
-<!-- <iframe  src="$3.$4" style="height:'.$pdfbox_height_plus.'px;"></iframe>  -->
 
 <form action="" method="POST" >
     <input type="hidden" name="page" value="events">
