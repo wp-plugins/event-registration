@@ -7,17 +7,13 @@
 
 /*
 Plugin Name: Event Registration
-Plugin URI: http://www.wordpresseventregister.com
-Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. 
-It allows you to capture the registering persons contact information to a database and provides an association to an events database. 
-It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees.   
-Detailed payment management system to track and record event payments.  
-Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.00.14
+Plugin URI: http://www.wpeventregister.com
+Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees. Detailed payment management system to track and record event payments. Reporting features provide a list of events, list of attendees, and excel export. 
+Version: 6.00.18
 Author: David Fleming - Edge Technology Consulting
-Author URI: http://www.wordpresseventregister.com
+Author URI: http://www.wpeventregister.com
 */
-/*  Copyright 2008 - 2012  DAVID_FLEMING  (email : support@wordpresseventregister.com)
+/*  Copyright 2008 - 2012  DAVID_FLEMING  (email : support@wpeventregister.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.00.14";
+$evr_ver = "6.00.18";
 
 /*
 to change date format in event listing display
@@ -122,6 +118,8 @@ add_action('admin_footer', 'evr_footer_text');
 add_action('wp_head', 'evr_public_header');
 add_action('wp_print_styles', 'evr_public_stylesheets');
 add_action('wp_print_scripts', 'evr_public_scripts');
+//add to wordpress dashboard
+add_action('wp_dashboard_setup','evr_dashboard_upcomingevents');
 //
 //
 /*********************************   FILTERS   ********************************/
@@ -146,6 +144,19 @@ add_shortcode('EVR_ATTENDEE', 'evr_attendee_short');
 /*********************************   STARTUP FUNCTIONS   ********************************/
 //
 function evr_init(){
+        //register admin scripts
+        wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        //register public scripts
+        wp_register_script($handle = 'evr_public_script', $src = plugins_url('/evr_public_script.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_public_easing', $src = plugins_url('/scripts/fancybox/jquery.easing-1.3.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_public_mouswheel', $src = plugins_url('/scripts/fancybox/jquery.mousewheel-3.0.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        
+        
+    
   //if (!is_admin()) {wp_enqueue_script('jquery');}
   wp_enqueue_script('jquery');
   wp_enqueue_script('jquery-ui-sortable'); 
@@ -157,7 +168,8 @@ function evr_init(){
   wp_enqueue_style('thickbox');
   wp_enqueue_script(array('tiny_mce','editor','editor-functions', 'thickbox', 'media-upload'));
   //Text Domain support for other languages
-  load_plugin_textdomain('evr_language', false, dirname(plugin_basename(__file__)).'/lang/');      
+  load_plugin_textdomain('evr_language', false, dirname(plugin_basename(__file__)).'/lang/');
+  evr_admin_warnings();      
 }
 //
 function evr_load_tiny_mce() {
@@ -186,15 +198,16 @@ function evr_load_tiny_mce() {
 //function to enqueue styles in admin pages
 function evr_admin_css_all_page() {
        wp_register_style($handle = 'evr_admin_css', $src = plugins_url('/evr_admin_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_register_style($handle = 'evr_fancy_css', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_enqueue_style('evr_admin_css');
+       wp_register_style($handle = 'evr_fancy_css', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_enqueue_style('evr_fancy_css');
+       wp_enqueue_style('evr_admin_css');
+       
        wp_enqueue_style( 'farbtastic' );
 }
 //function to enqueue scripts in admin pages
 function evr_admin_scripts_all_page() {
        wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_enqueue_script('evr_admin_script');
@@ -216,31 +229,36 @@ function evr_admin_header(){
 //
 //function to enqueue styles in public pages
 function evr_public_stylesheets() {
-    wp_register_style($handle = 'evr_public', $src = plugins_url('/evr_public_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    echo "<!--Begin Added by Event Registration-->";
+    //register public styles
+        wp_register_style($handle = 'evr_public', $src = plugins_url('/evr_public_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_style($handle = 'evr_calendar', $src = plugins_url('/evr_calendar.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_style($handle = 'evr_pop_style', $src = plugins_url('/evr_pop_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_style($handle = 'evr_fancy_style', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     
-	wp_register_style($handle = 'evr_calendar', $src = plugins_url('/evr_calendar.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-    wp_register_style($handle = 'evr_pop_style', $src = plugins_url('/evr_pop_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');		
-            wp_enqueue_style('evr_public');
-            wp_enqueue_style('evr_calendar');
-            wp_enqueue_style('evr_pop_style');
-            wp_enqueue_style('thickbox');
+    wp_enqueue_style('evr_public');
+    wp_enqueue_style('evr_calendar');
+    wp_enqueue_style('evr_pop_style');
+    wp_enqueue_style('evr_fancy_style');
+//wp_enqueue_style('thickbox');
+ echo "<!--End Added by Event Registration-->"; 
 }
 // function to enqueue scripts in public pages
 function evr_public_scripts() {
- wp_register_script($handle = 'evr_public_script', $src = plugins_url('/evr_public_script.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
- //wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-  wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    echo "<!--Begin Added by Event Registration-->";
     wp_enqueue_script('evr_tooltip_script');    
-        
- wp_enqueue_script('evr_public_script');
- wp_enqueue_style('thickbox');
- //wp_enqueue_script('evr_public_fancy');		
- }
+    wp_enqueue_script('evr_public_script');
+    //wp_enqueue_style('thickbox');
+    wp_enqueue_script('evr_public_fancy');
+    wp_enqueue_script('evr_public_easing');
+    wp_enqueue_script('evr_public_mouswheel');
+     echo "<!--End Added by Event Registration-->"; 
+}
 //function to load items to public pages of wordpress site
 function evr_public_header(){
-       
-    
-    echo "<!--David-->";
+    echo "<!--Begin Added by Event Registration-->";
+
+    echo "<!--End Added by Event Registration-->";   
 }
 /*********************************   END PUBLIC HEAD   *****************************/
 //
@@ -262,9 +280,11 @@ function evr_admin_menu()
     add_submenu_page(__file__, 'Questions', 'Questions', $role, 'questions','evr_admin_questions');
     add_submenu_page(__file__, 'Manage Attendees', 'Attendees', $role, 'attendee','evr_attendee_admin');
     add_submenu_page(__file__, 'Manage Payments', 'Payments', $role, 'payments','evr_admin_payments');
-    add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $role, 'uninstall','evr_remove_db_menu');
-    add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $role, 'purge','evr_clean_old_db');
+    //aDMINSTRATIVE MENU OPTIONS
+    add_submenu_page(__file__, 'Register Plugin', 'Register Plugin', $role, 'evr_register','evr_registration');
     add_submenu_page(__file__, 'Disable Donate Popup', 'Disable Donate Popup', $role, 'popup','evr_validate_key');
+    add_submenu_page(__file__, 'Remove Old Data', 'Remove Old Data', $role, 'purge','evr_clean_old_db');
+    add_submenu_page(__file__, 'UnInstall Plugin', 'Uninstall', $role, 'uninstall','evr_remove_db_menu');
   //   add_submenu_page(__file__, 'Function Testing', 'Function Testing', $role, 'testing','evr_testing');
     //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
     //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
@@ -318,6 +338,8 @@ function evr_check_usage_time(){
 
 function evr_footer_text() 
 {
-	echo "<p id='footer' style=\"text-align:center;\">Event Registration created by <a href='http://www.WordpressEventRegister.com'>WordpressEventRegister.com</a></p>";
+	echo "<p id='footer' style=\"text-align:center;\">Event Registration created by <a href='http://www.wpeventregister.com'>wpeventregister.com</a></p>";
 } 
+
+
 ?>

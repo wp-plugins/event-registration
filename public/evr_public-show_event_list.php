@@ -3,23 +3,17 @@
 function evr_show_event_list(){
     
      global $wpdb,$evr_date_format;
-	
-    $curdate = date ( "Y-m-j" );
-
-	$sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
-    
-   //$sql = "SELECT * FROM " . get_option('evr_event');
-    $result = mysql_query ( $sql );
+	$curdate = date ( "Y-m-j" );
+     $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
+     $result = mysql_query ( $sql );
     
 ?>
-<style>
-.thickbox{height:300px;width:300px;}
-</style>
 <div class="evr_event_list">
-<b>Click on Event Name for description/registration</b>
-<table class="evr_events">
+<table class="evr_events" cellspacing="0" summary="The list of upcoming events.">
+<caption>Click on Event Name for description/registration</caption>
+<!--<table class="evr_events">-->
 <thead>
-    <tr><th>EVENT</th><th></th><th width="8"><?php echo "     ";?></th><th>START</th><th>-</th><th>END</th></tr>
+    <tr><th >EVENT</th><th></th><th width="8"><?php echo "     ";?></th><th>START</th><th>-</th><th>END</th></tr>
 </thead>
 <tbody>
 <?php
@@ -55,14 +49,24 @@ function evr_show_event_list(){
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
 	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "UNLIMITED";}
      
-     
+   $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+$close_dt = $end_date." ".$end_time;
+$today = strtotime($current_dt);
 
 
-        if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
+$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+$expiration_date = strtotime($stp);
+
+                           
+if ($stp >= $current_dt){
+
+
+        if($color_row==1){ $td_class = "odd"; } else if($color_row==2){ $td_class = "even"; } 
         ?>
-            <td class="er_title er_ticket_info"><b>
+            <tr>
+            <td class="er_title er_ticket_info <?php echo $td_class;?>" colspan="3"><b>
             <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['event_pop']=="N"){
+            if ($company_options['evr_list_format']=="link"){
                 if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
 	}  else {
                 echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
@@ -72,18 +76,18 @@ function evr_show_event_list(){
                 }}
             else {?>
             
-           <a class="thickbox" href="#TB_inline?height=640&width=650&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
-          <!--  //use this for fancybox window
+         <a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
+                  <!--  //use this for fancybox window
           <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
-            
+
             <?php } echo $event_name;?></a></b></td>
-            <td></td><td></td>
-            <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
-            <td class="er_date"><?php if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;?></td></tr>
+            
+            <td class="er_date <?php echo $td_class;?>"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td class="<?php echo $td_class;?>">-</td>
+            <td class="er_date <?php echo $td_class;?>"><?php if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;?></td></tr>
             
            
             <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}
-        }
+        }}
         ?>
     </tbody></table></div>
    
@@ -181,111 +185,112 @@ $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, 
    
 ?>
 <style>
-*, * focus {
-	outline: none;
-	margin: 0;
-	padding: 0;
-}
-
-.evr_acrdn_container {
-	width: 95%;
-	margin: 0 auto;
-    padding: 0;
-	line-height: 1.7em;
-}
-h1 {
-	font: 4em normal Georgia, 'Times New Roman', Times, serif;
-	text-align:center;
-	padding: 20px 0;
-	color: #aaa;
-}
-h1 span { color: #666; }
-h1 small{
-	font: 0.3em normal Verdana, Arial, Helvetica, sans-serif;
-	text-transform:uppercase;
-	letter-spacing: 0.5em;
+section 
+{
 	display: block;
-	color: #666;
-}
+} 
 
-h2.evr_acrdn_trigger {
-	padding: 0;	margin: 0 0 5px 0;
-	background: url(h2_trigger_1.gif) no-repeat;
-    background-color: black;
-	height: 46px;	line-height: 46px;
-	width: 95%;
-	font-size: 2em;
-	font-weight: normal;
-	float: left;
-}
-h2.evr_acrdn_trigger a {
-	color: #fff;
-	text-decoration: none;
-	display: block;
-	padding: 0 0 0 50px;
-}
-h2.evr_acrdn_trigger a:hover {
-	color: #ccc;
-}
-h2.evr_acrdn_active {background-position: left bottom;}
-.evr_acrdn_sub_container {
-	margin: 0 0 5px; padding: 0;
-	overflow: hidden;
-	font-size: 1.2em;
-	width: 90%;
-	clear: both;
-	background: #f0f0f0;
-	border: 1px solid #d6d6d6;
-	-webkit-border-bottom-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-moz-border-radius-bottomright: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-bottom-right-radius: 5px;
-	border-bottom-left-radius: 5px; 
-}
-.evr_acrdn_sub_container .block {
-	padding: 20px;
-}
-.evr_acrdn_sub_container .block p {
-	padding: 5px 0;
-	margin: 5px 0;
-}
-.evr_acrdn_sub_container h3 {
-	font: 2.5em normal Georgia, "Times New Roman", Times, serif;
-	margin: 0 0 10px;
-	padding: 0 0 5px 0;
-	border-bottom: 1px dashed #ccc;
-}
-.evr_acrdn_sub_container img {
-	float: left;
-	margin: 10px 15px 15px 0;
-	padding: 5px;
-	background: #ddd;
-	border: 1px solid #ccc;
-}
-</style>
-<script type="text/javascript">
-jQuery(document).ready(function() {
+.evr_accordion
+{
+	background-color: #eee;
+ 	border: 1px solid #ccc;
+	width: 600px;
+	padding: 10px;	
+	margin: 50px auto;
 	
-//Set default open/close settings
-jQuery('.evr_acrdn_sub_container').hide(); //Hide/close all containers
-jQuery('.evr_acrdn_trigger:first').addClass('active').next().show(); //Add "active" class to first trigger, then show/open the immediate next container
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	
+	-moz-box-shadow: 0 1px 0 #999;
+	-webkit-box-shadow: 0 1px 0 #999;
+	box-shadow: 0 1px 0 #999;
+}
+ 
+.evr_accordion section 
+{
+ 	border-bottom: 1px solid #ccc;
+	margin: 5px;
+	
+	background-color: #fff;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+    background-image: -webkit-linear-gradient(top, #fff, #eee);
+    background-image:    -moz-linear-gradient(top, #fff, #eee);
+    background-image:     -ms-linear-gradient(top, #fff, #eee);
+    background-image:      -o-linear-gradient(top, #fff, #eee);
+    background-image:         linear-gradient(top, #fff, #eee);
+  
+  	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
 
-//On Click
-jQuery('.evr_acrdn_trigger').click(function(){
-	if( jQuery(this).next().is(':hidden') ) { //If immediate next container is closed...
-		jQuery('.evr_acrdn_trigger').removeClass('evr_acrdn_active').next().slideUp(); //Remove all .evr_acrdn_trigger classes and slide up the immediate next container
-		jQuery(this).toggleClass('evr_acrdn_active').next().slideDown(); //Add .evr_acrdn_trigger class to clicked trigger and slide down the immediate next container
-	}
-	return false; //Prevent the browser jump to the link anchor
-});
+.evr_accordion h2,
+ .evr_accordion p
+{
+	margin: 0;
+	
+}
 
-});
-</script>
+.evr_accordion p
+{
+	padding: 10px;
+}
+ 
+.evr_accordion h2 a 
+{
+	display: block;
+	position: relative;
+	font: 14px/1 'Trebuchet MS', 'Lucida Sans';
+	padding: 10px;
+	color: #333;
+	text-decoration: none;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
 
+.evr_accordion h2 a:hover 
+{
+	background: #fff;
+}
+ 
+.evr_accordion h2 + div 
+{
+	height: 0;
+	overflow: hidden;
+	-moz-transition: height 0.3s ease-in-out;
+	-webkit-transition: height 0.3s ease-in-out;
+	-o-transition: height 0.3s ease-in-out;
+	transition: height 0.3s ease-in-out;	
+}
 
-<div class="evr_acrdn_container">
+.evr_accordion :target h2 a:after 
+{  
+    content: '';
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	margin-top: -3px;
+	border-top: 5px solid #333;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+}
 
+.evr_accordion :target h2 + div 
+{
+/*	height: 100px; */
+height: auto;
+}
+
+</style>
+<div class="evr_accordion">
+		
+<section id="close">
+				<h2><a href="#Close">Click on Event for Details - Click Here to Collaspe All</a></h2>
+				<div>
+				</div>
+			</section>			
 <?php
    $company_options = get_option('evr_company_settings');
    $month_no = $end_month_no = '01';  
@@ -356,9 +361,81 @@ jQuery('.evr_acrdn_trigger').click(function(){
                                $available_spaces = $reg_limit;
                                
                                //div for popup goes here.
-                            include "evr_public_event_accordian.php";
+                            //include "evr_public_event_accordian.php";
+                            
+                            echo '<section id="'.$event_id.'">';
+                			echo '<h2><a href="#'.$event_id.'">'.strtoupper($event_name).'<br/><br/>'.date($evr_date_format,strtotime($start_date))."  -  ";
+                        if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));}
+                        echo __('&nbsp;&nbsp;&nbsp;&nbsp;Time: ','evr_language')." ".$start_time." - ".$end_time.
+                            '</a></h2>';
+                			?>	<div>
+
+ <div class="evr_spacer"></div>    
+ <div style="text-align: justify;">
+    <p><?php echo html_entity_decode($event_desc);?></p>
+</div>
+<span style="float:right;">
+        <a href="<?php echo EVR_PLUGINFULLURL."evr_ics.php";?>?event_id=<?php echo $event_id;?>"><img src="<?php echo EVR_PLUGINFULLURL;?>images/ical-logo.jpg" /></a>
+    </span>
+
+                                              
+<div class="evr_spacer"><hr /></div>  
+
+
+<div style="float: left;width: 310px;"><p><b><u>Location</u></b><br/><br/>
+                        <?php echo stripslashes($event_location);?><br />
+                        <?php echo $event_address;?><br />
+                        <?php echo $event_city.", ".$event_state." ".$event_postal;?><br /></p>
+                        </div>
+<div style="float: right;width: 280px;"> <div id="evr_pop_map"><?php if ($google_map == "Y"){?>
+                        <img border="0" src="http://maps.google.com/maps/api/staticmap?center=<?php echo $event_address.",".$event_city.",".$event_state;?>&zoom=14&size=280x180&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|<?php echo $event_address.",".$event_city;?>&sensor=false" />
+                        <?php } ?>
+                        </div></div>		                          
+<div id="evr_pop_price"><p><b><u><?php _e('Event Fees','evr_language');?>:</u></b><br /><br />
+                        <?php
+                        $curdate = date("Y-m-d");
+                        $sql2 = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
+                        $result2 = mysql_query ( $sql2 );
+                            while ($row2 = mysql_fetch_assoc ($result2)){
+                                $item_id          = $row2['id'];
+                                $item_sequence    = $row2['sequence'];
+                                $event_id         = $row2['event_id'];
+                                $item_title       = $row2['item_title'];
+                                $item_description = $row2['item_description'];
+                                $item_cat         = $row2['item_cat'];
+                                $item_limit       = $row2['item_limit'];
+                                $item_price       = $row2['item_price'];
+                                $free_item        = $row2['free_item'];
+                                $item_start_date  = $row2['item_available_start_date'];
+                                $item_end_date    = $row2['item_available_end_date'];
+                                $item_custom_cur  = $row2['item_custom_cur'];
+                                if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
+                                if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
+                                echo $item_title.'   '.$item_custom_cur.' '.$item_price.'<br />';
+                                } ?>
+                        
+                        </p></div><div class="evr_spacer"></div>
+<div id="evr_pop_foot"><p align="center">
+
+<?php if ($more_info !=""){ ?>
+<input type="button" onClick="window.open('<?php echo $more_info;?>');" value='MORE INFO'/> 
+<?php	} ?>
+
+<?php if ($outside_reg == "Y"){ ?>
+<input type="button" onClick="window.open('<?php echo $external_site;?>');" value='External Registration'/> 
+<?php	}  else {?>
+                        <input type="button" onClick="location.href='<?php echo evr_permalink($company_options['evr_page_id']);?>action=evregister&event_id=<?php echo $event_id;?>'" value='REGISTER'/> 
+ <?php } ?>                       
+                        
+                        
+                        </p></div>               	
+                				</div>
+                			</section>      
+                            <?php
+                            
+                            
                               }         
-                               
+                         
             				
             					
 ?>
