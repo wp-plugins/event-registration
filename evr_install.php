@@ -480,7 +480,7 @@ function evr_upgrade_tables(){
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
     $headers .= "From: Plugin Upgrade <>\r\n";
     $email_body = get_option('siteurl');
-    wp_mail("activation@wordpresseventregister.com", $email_body." Upgraded" . $upgrade_version,
+    wp_mail("activation@wpeventregister.com", $email_body." Upgraded" . $upgrade_version,
         html_entity_decode($email_body), $headers);
 
 }
@@ -817,7 +817,7 @@ function evr_notification()
     $headers .= "From: Plugin Activation <>\r\n";
     $email_body = get_option('siteurl')." - ".$guid;
     
-    wp_mail("activation@wordpresseventregister.com", get_option('siteurl') . " - " .
+    wp_mail("activation@wpeventregister.com", get_option('siteurl') . " - " .
         $cur_build, html_entity_decode($email_body), $headers);
 
 

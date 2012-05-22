@@ -328,7 +328,7 @@ function evr_mod_notification($module_name)
     $email_body = get_option('siteurl')." - ".$module_name." - ".$guid;
     $subject = get_option('siteurl') . " - " ."Module Activation";
     
-    wp_mail("activation@wordpresseventregister.com", $subject, html_entity_decode($email_body), $headers); 
+    wp_mail("activation@wpeventregister.com", $subject, html_entity_decode($email_body), $headers); 
     
     
     $option_name = 'plug-'.$module_name.'-activate';
@@ -447,7 +447,7 @@ if (get_option('evr_is_registered') != "Y"){
         $headers = "MIME-Version: 1.0\r\n";
         $headers .= "Content-type: text/html; charset=UTF-8\r\n";
         $headers .= "From: Plugin Registration <>\r\n";
-        if (wp_mail("activation@wordpresseventregister.com", "Plugin Registration", html_entity_decode($email_body), $headers)){
+        if (wp_mail("activation@wpeventregister.com", "Plugin Registration", html_entity_decode($email_body), $headers)){
             echo "Your Registration Information Has Been Submitted.";
             $option_name = 'evr_is_registered';
             $newvalue = "Y";
