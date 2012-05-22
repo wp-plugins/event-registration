@@ -267,7 +267,7 @@ $show_cat=false;
 				//Future Add
     }
     $calendar_body .= '</table>';
-   echo $calendar_body;
+     echo $calendar_body;
     return $calendar_body;
 }
 

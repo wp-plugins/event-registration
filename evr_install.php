@@ -5,6 +5,10 @@
  */
 
 /*
+6.00.18 -
+No db changes
+*/
+/*
 6.00.17
 increased field size for Events - Reg_Form_defaults to 200
 Removed type definition for Question and Answer tables
@@ -58,7 +62,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.16";
+    $cur_build = "6.00.18";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -87,7 +91,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.16";
+    $upgrade_version = "0.18";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //

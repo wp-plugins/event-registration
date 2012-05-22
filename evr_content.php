@@ -700,7 +700,7 @@ function evr_admin_warnings() {
 	if ( get_option('evr_is_registered') != "Y") {
 		function evr_warning() {
 			echo "
-			<div id='evr-warning' class='updated fade'><p><strong>".__('Event Registration is not registered.')."</strong> ".sprintf(__('<a href="%1$s">Register your installation of Event Registration</a> for it to work.'), "admin.php?page=evr_register")."</p></div>
+			<div id='evr-warning' class='updated fade'><p><strong>".__('Event Registration is not registered.')."</strong> ".sprintf(__('<a href="%1$s">Please register your installation of Event Registration</a>.'), "admin.php?page=evr_register")."</p></div>
 			";
 		}
 		add_action('admin_notices', 'evr_warning');

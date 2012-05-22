@@ -1,6 +1,19 @@
 Changes:
 =========
 
+= Version 6.00.18
+* Fixed ADD FEE no content issue
+* Fixed slashes in Company Name on Email
+* Add patch for Coordinator Email to support custom questions	
+
+= Version 6.00.17
+* Fixed WordPress compliance issues
+* Modified how events expire on the public side: Show on list until the end of the event, close registration form at event start time.
+* Added options no not use popup - added accordian style list capability
+* Changed backend popups to use thickbox
+* Changed create/edit event screens to page format instead of popup format for better screen fit
+* Other minor bug fixes
+
 = Version 6.00.16
 * Fixed bug on events not showing expired in admin panel
 * Fixed bug in Category description not showing html properly

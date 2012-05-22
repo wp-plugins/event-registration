@@ -4,7 +4,7 @@ Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
 Tested up to: 3.3.2
-Stable tag: 6.00.17
+Stable tag: 6.00.18
 
 This plugin is designed to allow you to take online registrations for events and classes. 
 Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
@@ -21,7 +21,7 @@ Reporting features provide a export list(s) of events, attendees, payments in ex
 
 If you like the plugin and find it useful, please donate.  
 Your donations help me keep it going and improve it.  
-You can find online information at http://wordpresseventregister.com/
+You can find online information at http://wpeventregister.com/
 
 Also if you could rate the plugin that would also be helpful.
 
@@ -104,6 +104,11 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 == Change Log ==
 
+= Version 6.00.18
+* Fixed ADD FEE no content issue
+* Fixed slashes in Company Name on Email
+* Add patch for Coordinator Email to support custom questions	
+
 = Version 6.00.17
 * Fixed WordPress compliance issues
 * Modified how events expire on the public side: Show on list until the end of the event, close registration form at event start time.
@@ -125,7 +130,7 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 * Modified the install script to add fields to attendee table for company information
 * Modified registration processing script to add company details to database
 * Modified the calendar links to open on same page instead new page
-* Modified the calendar tooltip window to striptags to display properly and avoid <a> conflicts in description
+* Modified the calendar tooltip window to striptags to display properly and avoid conflicts in description
 
 = Version 6.00.14 =
 * Reinstated Widget - Event Listing
