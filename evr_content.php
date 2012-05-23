@@ -447,16 +447,21 @@ if ($stp >= $current_dt){
       if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
         ?>
             <td class="er_title er_ticket_info"><b>
-            <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['event_pop']=="N"){ 
+           <?php $company_options = get_option('evr_company_settings');
+            if ($company_options['evr_list_format']=="link"){
                 if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
-	               }  else {
-                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';}}
-           
-           
+	}  else {
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
+                
+                
+                
+                }}
             else {?>
-            <a href="#TB_inline?&height=600&width=800&inlineId=popup<?php echo $event_id;?>&modal=false" class="thickbox" title="<?php echo $event_name;?>">
             
+         <a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
+                  <!--  //use this for fancybox window
+          <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
+
             <?php } echo $event_name;?></a></b></td>
             <td></td><td></td>
             <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
