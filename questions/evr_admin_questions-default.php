@@ -90,7 +90,7 @@ function evr_questions_default(){
                         
                             ?>
                             
-            			    <tr><td><?php echo $start_date;?></td><td><a href="admin.php?page=questions&action=new&event_id=<?php echo $id;?>&event_name=<?php echo stripslahes($event_name);?>">
+            			    <tr><td><?php echo $start_date;?></td><td><a href="admin.php?page=questions&action=new&event_id=<?php echo $id;?>&event_name=<?php echo stripslashes($event_name);?>">
                                 <?php echo $event_name;?> (<?php echo $event_identifier;?>)</a></td><td><?php echo $event_location.", ".$event_city.", ".$event_state;?></td><td>
                                 <?php
                              $questions = $wpdb->get_results ( "SELECT * from ".get_option('evr_question')." where event_id = $id order by sequence" );
