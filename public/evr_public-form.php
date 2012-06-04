@@ -20,43 +20,43 @@ $curdate = date ( "Y-m-j" );
                             if (in_array("CoPostal", $reg_form_defaults)) {$inc_copostal = "Y";}
                             if (in_array("CoPhone", $reg_form_defaults)) {$inc_cophone = "Y";}
                             }
-            $use_coupon = $row['use_coupon'];
-                        $reg_limit = $row['reg_limit'];
-                   	    $event_name = stripslashes($row['event_name']);
-        					$event_identifier = stripslashes($row['event_identifier']);
-        					$display_desc = $row['display_desc'];  // Y or N
-                            $event_desc = stripslashes($row['event_desc']);
-                            $event_category = unserialize($_REQUEST['event_category']);
-        					$reg_limit = $row['reg_limit'];
-        					$event_location = stripslashes($row['event_location']);
-                            $event_address = $row['event_address'];
-                            $event_city = $row['event_city'];
-                            $event_state =$row['event_state'];
-                            $event_postal=$row['event_postcode'];
-                            $google_map = $row['google_map'];  // Y or N
-                            $start_month = $row['start_month'];
-        					$start_day = $row['start_day'];
-        					$start_year = $row['start_year'];
-                            $end_month = $row['end_month'];
-        					$end_day = $row['end_day'];
-        					$end_year = $row['end_year'];
-                            $start_time = $row['start_time'];
-        					$end_time = $row['end_time'];
-                            $allow_checks = $row['allow_checks'];
-                            $outside_reg = $row['outside_reg'];  // Yor N
-                            $external_site = $row['external_site'];
-                            
-                            $more_info = $row['more_info'];
-        					$image_link = $row['image_link'];
-        					$header_image = $row['header_image'];
-                            $event_cost = $row['event_cost'];
-                            $allow_checks = $row['allow_checks'];
-        					$is_active = $row['is_active'];
-        					$send_mail = $row['send_mail'];  // Y or N
-        					$conf_mail = stripslashes($row['conf_mail']);
-        					$start_date = $row['start_date'];
-                            $end_date = $row['end_date'];
-                        
+          $use_coupon = $row['use_coupon'];
+          $reg_limit = $row['reg_limit'];
+          $event_name = stripslashes($row['event_name']);
+          $event_identifier = stripslashes($row['event_identifier']);
+          $display_desc = $row['display_desc'];  // Y or N
+          $event_desc = stripslashes($row['event_desc']);
+          $event_category = unserialize($_REQUEST['event_category']);
+          $reg_limit = $row['reg_limit'];
+          $event_location = stripslashes($row['event_location']);
+          $event_address = $row['event_address'];
+          $event_city = $row['event_city'];
+          $event_state =$row['event_state'];
+          $event_postal=$row['event_postcode'];
+          $google_map = $row['google_map'];  // Y or N
+          $start_month = $row['start_month'];
+          $start_day = $row['start_day'];
+          $start_year = $row['start_year'];
+          $end_month = $row['end_month'];
+          $end_day = $row['end_day'];
+          $end_year = $row['end_year'];
+          $start_time = $row['start_time'];
+          $end_time = $row['end_time'];
+          $event_close = $row['close'];
+          $allow_checks = $row['allow_checks'];
+          $outside_reg = $row['outside_reg'];  // Yor N
+          $external_site = $row['external_site'];
+          $more_info = $row['more_info'];
+          $image_link = $row['image_link'];
+          $header_image = $row['header_image'];
+          $event_cost = $row['event_cost'];
+          $allow_checks = $row['allow_checks'];
+          $is_active = $row['is_active'];
+          $send_mail = $row['send_mail'];  // Y or N
+          $conf_mail = stripslashes($row['conf_mail']);
+          $start_date = $row['start_date'];
+          $end_date = $row['end_date'];
+
     }
     $cap_url = EVR_PLUGINFULLURL . "cimg/";
     $md5_url = EVR_PLUGINFULLURL . "md5.js";
@@ -148,7 +148,12 @@ if ($company_options['captcha'] == 'Y') {$captcha = "Y";} else {$captcha="N";}
 <?php
 //$current_dt= date('Y-m-d H:i a',current_time('timestamp',0));
 $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
-    $close_dt = $start_date." ".$start_time;
+
+if ($event_close = "start"){$close_dt = $start_date." ".$start_time;}
+else if ($event_close = "end"){$close_dt = $end_date." ".$end_time;}
+else if ($event_close = ""){$close_dt = $start_date." ".$start_time;}
+
+
 $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
 $expiration_date = strtotime($stp);
 $today = strtotime($current_dt);

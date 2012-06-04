@@ -46,7 +46,7 @@ function evr_edit_event(){
         					
                             $start_date = $row['start_date'];
                             $end_date = $row['end_date'];
-                            
+                            $close = $row['close'];
                             $event_category =  unserialize($row ['category_id']);
                             if ($event_category ==""){$event_category = array();}
              
@@ -332,6 +332,11 @@ To create new display lines just press Enter.','evr_language');?>">
                         	{ echo '<option>' . date('g:i a', $i); }
                         echo '</select>';?></label></td>
                         </tr>
+                        <tr></tr>
+                        <tr><td>Close Registration on </td><td><select name="close">
+                         if ($close == "start"){echo '<option value="start">Start of Event</option>';}
+                         if ($close == "end"){echo '<option value="end">End of Event</option>';}
+                        <option value="start">Start of Event</option><option value="end">End of Event</option></select></td></tr>
                     </table>
         </div>
 

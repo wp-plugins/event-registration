@@ -211,6 +211,8 @@ function evr_new_event(){
                             { echo '<option>' . date('g:i a', $i); }
                             echo '</select>';?></label></td>
                         </tr>
+                        <tr></tr>
+                        <tr><td>Close Registration on </td><td><select name="close"><option value="start">Start of Event</option><option value="end">Close of Event</option></select></td></tr>
                     </table>
         </div>
 

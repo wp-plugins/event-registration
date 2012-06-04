@@ -5,6 +5,10 @@
  */
 
 /*
+6.00.19 -
+Added close field to events to signify when events close, start or end date.
+*/
+/*
 6.00.18 -
 No db changes
 */
@@ -262,6 +266,12 @@ function evr_upgrade_tables(){
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }
+            
+        $value = "close";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD close VARCHAR (65) DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }    
         /*
         
                   send_coord VARCHAR(2) DEFAULT NULL,
@@ -585,52 +595,53 @@ function evr_event_db()
     $evr_event_version = $cur_build;
    
         $sql = "CREATE TABLE " . $table_name . " (
-				  id MEDIUMINT NOT NULL AUTO_INCREMENT,
-				  event_name VARCHAR(100) DEFAULT NULL,
-				  event_desc TEXT DEFAULT NULL,
-				  event_location VARCHAR(300) DEFAULT NULL,
-                  event_address VARCHAR(100) DEFAULT NULL,
-                  event_city VARCHAR(100) DEFAULT NULL,
-                  event_state VARCHAR(100) DEFAULT NULL,
-                  event_postal VARCHAR(100) DEFAULT NULL,
-                  google_map VARCHAR (4) DEFAULT NULL,
-                  outside_reg VARCHAR (4) DEFAULT NULL,
-                  external_site VARCHAR (100) DEFAULT NULL,
-				  display_desc VARCHAR (4) DEFAULT NULL,
-				  image_link VARCHAR(100) DEFAULT NULL,
-				  header_image VARCHAR(100) DEFAULT NULL,
-				  event_identifier VARCHAR(45) DEFAULT NULL,
-				  more_info VARCHAR(100) DEFAULT NULL,
-				  start_month VARCHAR (15) DEFAULT NULL,
-				  start_day VARCHAR (15) DEFAULT NULL,
-				  start_year VARCHAR (15) DEFAULT NULL,
-                  start_time VARCHAR (15) DEFAULT NULL,
-				  start_date VARCHAR (15) DEFAULT NULL,
-				  end_month VARCHAR (15) DEFAULT NULL,
-				  end_day VARCHAR (15) DEFAULT NULL,
-				  end_year VARCHAR (15) DEFAULT NULL,
-				  end_date VARCHAR (15) DEFAULT NULL,
-				  end_time VARCHAR (15) DEFAULT NULL,
-				  reg_limit VARCHAR (15) DEFAULT NULL,
-                  custom_cur VARCHAR(10) DEFAULT NULL,
-				  reg_form_defaults VARCHAR(200) DEFAULT NULL,
-				  allow_checks VARCHAR(45) DEFAULT NULL,
-				  send_mail VARCHAR (2) DEFAULT NULL,
-                  send_contact VARCHAR (2) DEFAULT NULL,
-                  contact_email VARCHAR(65) DEFAULT NULL,
-                  contact_msg TEXT DEFAULT NULL,
-				  is_active VARCHAR(45) DEFAULT NULL,
-				  conf_mail TEXT DEFAULT NULL,
-                  use_coupon VARCHAR(2) DEFAULT NULL,
-				  coupon_code VARCHAR(50) DEFAULT NULL,
-				  coupon_code_price decimal(7,2) DEFAULT NULL,
-				  category_id TEXT,
-                  send_coord VARCHAR(2) DEFAULT NULL,
-                  coord_email VARCHAR(65) DEFAULT NULL,
-                  coord_msg TEXT DEFAULT NULL,
-                  coord_pay_msg TEXT DEFAULT NULL,
-                  UNIQUE KEY id (id)
-				) DEFAULT CHARSET=utf8;";
+          id MEDIUMINT NOT NULL AUTO_INCREMENT,
+          event_name VARCHAR(100) DEFAULT NULL,
+          event_desc TEXT DEFAULT NULL,
+          event_location VARCHAR(300) DEFAULT NULL,
+          event_address VARCHAR(100) DEFAULT NULL,
+          event_city VARCHAR(100) DEFAULT NULL,
+          event_state VARCHAR(100) DEFAULT NULL,
+          event_postal VARCHAR(100) DEFAULT NULL,
+          google_map VARCHAR (4) DEFAULT NULL,
+          outside_reg VARCHAR (4) DEFAULT NULL,
+          external_site VARCHAR (100) DEFAULT NULL,
+          display_desc VARCHAR (4) DEFAULT NULL,
+          image_link VARCHAR(100) DEFAULT NULL,
+          header_image VARCHAR(100) DEFAULT NULL,
+          event_identifier VARCHAR(45) DEFAULT NULL,
+          more_info VARCHAR(100) DEFAULT NULL,
+          start_month VARCHAR (15) DEFAULT NULL,
+          start_day VARCHAR (15) DEFAULT NULL,
+          start_year VARCHAR (15) DEFAULT NULL,
+          start_time VARCHAR (15) DEFAULT NULL,
+          start_date VARCHAR (15) DEFAULT NULL,
+          end_month VARCHAR (15) DEFAULT NULL,
+          end_day VARCHAR (15) DEFAULT NULL,
+          end_year VARCHAR (15) DEFAULT NULL,
+          end_date VARCHAR (15) DEFAULT NULL,
+          end_time VARCHAR (15) DEFAULT NULL,
+          reg_limit VARCHAR (15) DEFAULT NULL,
+          custom_cur VARCHAR(10) DEFAULT NULL,
+          reg_form_defaults VARCHAR(200) DEFAULT NULL,
+          allow_checks VARCHAR(45) DEFAULT NULL,
+          send_mail VARCHAR (2) DEFAULT NULL,
+          send_contact VARCHAR (2) DEFAULT NULL,
+          contact_email VARCHAR(65) DEFAULT NULL,
+          contact_msg TEXT DEFAULT NULL,
+          is_active VARCHAR(45) DEFAULT NULL,
+          conf_mail TEXT DEFAULT NULL,
+          use_coupon VARCHAR(2) DEFAULT NULL,
+          coupon_code VARCHAR(50) DEFAULT NULL,
+          coupon_code_price decimal(7,2) DEFAULT NULL,
+          category_id TEXT,
+          send_coord VARCHAR(2) DEFAULT NULL,
+          coord_email VARCHAR(65) DEFAULT NULL,
+          coord_msg TEXT DEFAULT NULL,
+          coord_pay_msg TEXT DEFAULT NULL,
+          close VARCHAR (65) DEFAULT NULL,
+          UNIQUE KEY id (id)
+          ) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
 
