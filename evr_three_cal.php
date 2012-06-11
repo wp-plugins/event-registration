@@ -171,7 +171,7 @@ function evr_mini_cal_display_calendar($c_month,$c_year){
      ?>
      <style>
      .s2 {background-color:white;}</style>
-     <?
+     <?php
      
  
 if ($cal_head_clr != ""){    ?>
