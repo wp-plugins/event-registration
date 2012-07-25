@@ -333,9 +333,13 @@ To create new display lines just press Enter.','evr_language');?>">
                         echo '</select>';?></label></td>
                         </tr>
                         <tr></tr>
-                        <tr><td>Close Registration on </td><td><select name="close">
+                        <tr><td>Close Registration on </td><td><select name="close" >
+                        <?php
+                        
                          if ($close == "start"){echo '<option value="start">Start of Event</option>';}
                          if ($close == "end"){echo '<option value="end">End of Event</option>';}
+                         
+                         ?>
                         <option value="start">Start of Event</option><option value="end">End of Event</option></select></td></tr>
                     </table>
         </div>
