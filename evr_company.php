@@ -6,59 +6,59 @@ function evr_admin_company(){
         switch ($update_company) {
         case "update" : 
     	    if ($_POST['company_name'] !=""){
-    		$company_options = get_option('evr_company_settings');
-    		//$company_options = $_POST['company_settings'];
-    		$company_options['company']           = $_POST['company_name'];
-    		$company_options['company_street1']   = $_POST['company_street1'];
-    		$company_options['company_street2']   = $_POST['company_street2'];
-    		$company_options['company_city']      = $_POST['company_city'];
-    		$company_options['company_state']     = $_POST['company_state'];
-    		$company_options['company_postal']    = $_POST['company_postal'];
-    		$company_options['company_email']     = $_POST['email'];
-    		$company_options['evr_page_id']       = $_POST['evr_page_id'];
-    		$company_options['splash']            = $_POST['splash'];
-            $company_options['send_confirm']      = $_POST['send_confirm'];
-    		$company_options['message']           = htmlentities2($_POST['message']);
-            $company_options['wait_message']      = htmlentities2($_POST['wait_message']);
-            $company_options['thumbnail']         = $_POST['thumbnail'];
-            $company_options['calendar_url']      = $_POST['evr_page_id'];            //$_POST['calendar_url';
-            $company_options['default_currency']  = $_POST['default_currency'];
-            $company_options['donations']         = $_POST['donations']; 
-            $company_options['checks']            = $_POST['checks']; 
-            $company_options['pay_now']           = $_POST['pay_now'];    
-            $company_options['payment_vendor']    = $_POST['payment_vendor'];
-            $company_options['payment_vendor_id'] = $_POST['payment_vendor_id'];
-            $company_options['payment_vendor_key']= $_POST['payment_vendor_key'];
-            $company_options['return_url']        = $_POST['return_url'];
-            $company_options['notify_url']        = $_POST['notify_url'];
-            $company_options['cancel_return']     = $_POST['cancel_return'];
-            $company_options['return_method']     = $_POST['return_method'];
-            $company_options['use_sandbox']       = $_POST['use_sandbox'];
-            $company_options['image_url']         = $_POST['image_url'];
-            $company_options['admin_message']     = htmlentities2($_POST['admin_message']);
-            $company_options['pay_confirm']       = $_POST['pay_confirm'];
-            $company_options['payment_subj']      = $_POST['payment_subj'];
-            $company_options['payment_message']   = htmlentities2($_POST['payment_message']);
-            $company_options['captcha']           = $_POST['captcha'];
-            $company_options['event_pop']         = $_POST['event_pop'];
-            $company_options['form_css']          = $_POST['form_css'];
-            $start_of_week                        = $_POST['start_of_week'];
-            $company_options['use_sales_tax']     = $_POST['use_sales_tax'];
-            $company_options['sales_tax_rate']    = $_POST['sales_tax_rate'];
-            $company_options['start_of_week']     = $_POST['start_of_week'];
-            $company_options['evr_date_select']   = $_POST['evr_date_select'];
-            $company_options['evr_cal_head']      = $_POST['evr_cal_head'];
-            $company_options['cal_head_txt_clr']  = $_POST['cal_head_txt_clr'];
-            $company_options['evr_cal_cur_day']       = $_POST['evr_cal_cur_day'];
-            $company_options['evr_cal_use_cat']       = $_POST['evr_cal_use_cat']; //true-false
-            $company_options['evr_cal_pop_border']  = $_POST['evr_cal_pop_border'];
-            $company_options['cal_day_txt_clr']   = $_POST['cal_day_txt_clr'];
-            $company_options['evr_cal_day_head']      = $_POST['evr_cal_day_head'];
-            $company_options['cal_day_head_txt_clr']  = $_POST['cal_day_head_txt_clr'];
-            $company_options['evr_list_format']   =   $_POST['evr_list_format']; 
+               $company_options = get_option('evr_company_settings');
+               //$company_options = $_POST['company_settings'];
+               $company_options['company']           = $_POST['company_name'];
+               $company_options['company_street1']   = $_POST['company_street1'];
+               $company_options['company_street2']   = $_POST['company_street2'];
+               $company_options['company_city']      = $_POST['company_city'];
+               $company_options['company_state']     = $_POST['company_state'];
+               $company_options['company_postal']    = $_POST['company_postal'];
+               $company_options['company_email']     = $_POST['email'];
+               $company_options['evr_page_id']       = $_POST['evr_page_id'];
+               $company_options['splash']            = $_POST['splash'];
+               $company_options['send_confirm']      = $_POST['send_confirm'];
+               $company_options['message']           = htmlentities2($_POST['message']);
+               $company_options['wait_message']      = htmlentities2($_POST['wait_message']);
+               $company_options['thumbnail']         = $_POST['thumbnail'];
+               $company_options['calendar_url']      = $_POST['evr_page_id'];            //$_POST['calendar_url';
+               $company_options['default_currency']  = $_POST['default_currency'];
+               $company_options['donations']         = $_POST['donations']; 
+               $company_options['checks']            = $_POST['checks']; 
+               $company_options['pay_now']           = $_POST['pay_now'];    
+               $company_options['payment_vendor']    = $_POST['payment_vendor'];
+               $company_options['payment_vendor_id'] = $_POST['payment_vendor_id'];
+               $company_options['payment_vendor_key']= $_POST['payment_vendor_key'];
+               $company_options['return_url']        = $_POST['return_url'];
+               $company_options['notify_url']        = $_POST['notify_url'];
+               $company_options['cancel_return']     = $_POST['cancel_return'];
+               $company_options['return_method']     = $_POST['return_method'];
+               $company_options['use_sandbox']       = $_POST['use_sandbox'];
+               $company_options['image_url']         = $_POST['image_url'];
+               $company_options['admin_message']     = htmlentities2($_POST['admin_message']);
+               $company_options['pay_confirm']       = $_POST['pay_confirm'];
+               $company_options['payment_subj']      = $_POST['payment_subj'];
+               $company_options['payment_message']   = htmlentities2($_POST['payment_message']);
+               $company_options['captcha']           = $_POST['captcha'];
+               $company_options['event_pop']         = $_POST['event_pop'];
+               $company_options['form_css']          = $_POST['form_css'];
+               $start_of_week                        = $_POST['start_of_week'];
+               $company_options['use_sales_tax']     = $_POST['use_sales_tax'];
+               $company_options['sales_tax_rate']    = $_POST['sales_tax_rate'];
+               $company_options['start_of_week']     = $_POST['start_of_week'];
+               $company_options['evr_date_select']   = $_POST['evr_date_select'];
+               $company_options['evr_cal_head']      = $_POST['evr_cal_head'];
+               $company_options['cal_head_txt_clr']  = $_POST['cal_head_txt_clr'];
+               $company_options['evr_cal_cur_day']   = $_POST['evr_cal_cur_day'];
+               $company_options['evr_cal_use_cat']   = $_POST['evr_cal_use_cat']; //true-false
+               $company_options['evr_cal_pop_border']= $_POST['evr_cal_pop_border'];
+               $company_options['cal_day_txt_clr']   = $_POST['cal_day_txt_clr'];
+               $company_options['evr_cal_day_head']  = $_POST['evr_cal_day_head'];
+               $company_options['cal_day_head_txt_clr']  = $_POST['cal_day_head_txt_clr'];
+               $company_options['evr_list_format']   =   $_POST['evr_list_format']; 
             //$company_options['evr_invoice'] = $_POST['evr_invoice'];
-   	update_option( 'evr_company_settings', $company_options);
-    update_option( 'evr_start_of_week', $start_of_week);
+               update_option( 'evr_company_settings', $company_options);
+               update_option( 'evr_start_of_week', $start_of_week);
 	echo '<div id="message" class="updated fade"><p><strong>';
     _e('Company details saved','evr_language');
        echo '</p></strong></div>';}
@@ -371,15 +371,15 @@ function evr_admin_company(){
                         <?php
                           	}
                             else {
-                        wp_editor( htmlspecialchars_decode($company_options['message']), 'message', $settings );}
+                        wp_editor( stripslashes($company_options['message']), 'message', $settings );}
                         */
                     if (function_exists('wp_editor')){
-                    wp_editor( htmlspecialchars_decode($company_options['message']), 'message', $settings );}
+                    wp_editor( stripslashes($company_options['message']), 'message', $settings );}
 				    else{ ?>
                      <a href="javascript:void(0)" onclick="tinyfy(1,'message')"><input type="button" value="WYSIWG"/></a>
                      <br />
                      <textarea name="message" id="message" style="width: 100%; height: 200px;">
-                     <?php echo htmlspecialchars_decode($company_options['message']);?></textarea>       
+                     <?php echo stripslashes($company_options['message']);?></textarea>       
                     <?php } 
                         ?>
                         </p>
@@ -397,12 +397,12 @@ function evr_admin_company(){
                         <p>Email Body:   
                         <?php
                         if (function_exists('wp_editor')){  
-                            wp_editor(  htmlspecialchars_decode($company_options['payment_message']), 'payment_message', $settings );}
+                            wp_editor(stripslashes($company_options['payment_message']), 'payment_message', $settings );}
                         else { 
                         ?>
                         <a href="javascript:void(0)" onclick="tinyfy(1,'payment_message')"><input type="button" value="WYSIWG"/></a><br />
                         <textarea name="payment_message" id="payment_message" style="width: 100%; height: 200px;">
-                        <?php echo $company_options['payment_message'];?></textarea>
+                        <?php echo stripslashes($company_options['payment_message']);?></textarea>
                         <br /> 
                         <?php
                        	}
@@ -426,12 +426,12 @@ function evr_admin_company(){
                                 		'tinymce' => array('theme_advanced_buttons1' => 'bold,italic,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,fullscreen')
                                 	);
                     if (function_exists('wp_editor')){
-                    wp_editor( htmlspecialchars_decode($company_options['wait_message']), 'wait_message', $settings );}
+                    wp_editor( stripslashes($company_options['wait_message']), 'wait_message', $settings );}
 				    else{ ?>
                      <a href="javascript:void(0)" onclick="tinyfy(1,'wait_message')"><input type="button" value="WYSIWG"/></a>
                      <br />
                      <textarea name="wait_message" id="wait_message" style="width: 100%; height: 200px;">
-                     <?php echo htmlspecialchars_decode($company_options['wait_message']);?></textarea>       
+                     <?php echo stripslashes($company_options['wait_message']);?></textarea>       
                     <?php } 
                         ?>
                         </p>
