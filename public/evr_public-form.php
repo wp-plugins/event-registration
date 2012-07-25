@@ -149,9 +149,9 @@ if ($company_options['captcha'] == 'Y') {$captcha = "Y";} else {$captcha="N";}
 //$current_dt= date('Y-m-d H:i a',current_time('timestamp',0));
 $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
 
-if ($event_close = "start"){$close_dt = $start_date." ".$start_time;}
-else if ($event_close = "end"){$close_dt = $end_date." ".$end_time;}
-else if ($event_close = ""){$close_dt = $start_date." ".$start_time;}
+if ($event_close == "start"){$close_dt = $start_date." ".$start_time;}
+else if ($event_close == "end"){$close_dt = $end_date." ".$end_time;}
+else if ($event_close == ""){$close_dt = $start_date." ".$start_time;}
 
 
 $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
