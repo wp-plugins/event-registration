@@ -473,7 +473,7 @@ $show_cat= $cal_use_cat;
     $tool_desc = strip_tags(stripslashes(html_entity_decode($event->event_desc)),$allow); 
   
   $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';">';
-  $details .='<a class="tooltip" href="'.$linky.'" style="text-decoration:none"><h3>' . stripslashes(html_entity_decode($event->event_name)) .'</h3>';
+  $details .='<a class="tooltip" href="'.$linky.'" style="text-decoration:none"><h3>' . evr_truncateWords(stripslashes(html_entity_decode($event->event_name)), 5, "...") .'</h3>';
   $details .='<span class="help" style ="'.$style.'">';
   $details .= '<em>'.stripslashes(html_entity_decode($event->event_name)).'</em>' .evr_clean_inside_tags($tool_desc,$allow) . '<br><font color="green">Click To Register</font></span></a>'.
    '<p class="time">'.date(get_option('time_format'), strtotime(stripslashes($event->start_time))).'</p>'.
