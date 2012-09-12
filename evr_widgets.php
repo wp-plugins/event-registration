@@ -70,6 +70,7 @@ class EVR_Widget_List_Events extends WP_Widget
 		
 		echo '<p>';
 		echo '<label for="' . $this->get_field_id('title') . '">Title: </label>';
+          
 		echo '<input type="text" value="' . $title . '" name="' . $this->get_field_name('title') . '" id="' . $this->get_field_id('title') . '" class="widefat">';
 		echo '</p>';
 		
@@ -88,11 +89,69 @@ class EVR_Widget_List_Events extends WP_Widget
 			}
 		echo '</select>';
 		echo '</p>';		
-		
+	                        
 		echo '<p>';
 		echo '<label for="' . $this->get_field_id('event_template') . '">(Optional) Enter a custom template: </label>';
+          echo '<p><a class="ev_widget-fancylink" href="#evr_widget_help">Directions</a> | <a class="ev_widget-fancylink" href="#evr_widget_tags">Tags</a></p>';
 		echo '<textarea class="widefat" rows="20" cols="20" id="' . $this->get_field_id('event_template') . '" name="' . $this->get_field_name('event_template') . '">'.$event_template.'</textarea>';
 		echo '</p>';
+          ?>
+<div style="display:none;">
+     <div id="evr_widget_help" style="width:500px;height:500px;overflow:auto;">
+    <h2>Customize Sidebar Widget</h2><p><strong>Custom Display for widget</strong><br>
+    By default no information is required in the customize box, as the widget has a default format. However if you would like to customize what information is displayed in the sidebar in relation to events you can 
+    create the layout yourself.  The layout should be in html format, and simply use the below listed tags to call the specific data.  Note: Only do the layout for one event, as each event will repeat the 
+    format automatically.
+    </br>
+    Example:
+    <pre>
+    &#60;div id="evr_eventitem"&#62;
+    &nbsp;&#60;div id="datebg"&#62;
+    &nbsp;&nbsp;&#60;div id="topdate">{EVENT_MONTH_START_NAME_3}&#60;/div&#62;
+    &nbsp;&nbsp;&#60;div id="bottomdate"&#62;{EVENT_DAY_START_NUMBER}&#60;/div&#62;
+    &nbsp;&#60;/div&#62;
+    &nbsp;&#60;div id="evr_eventitem_title"&#62;
+    &nbsp;&nbsp;&#60;a href="{EVENT_URL}"&#62;{EVENT_NAME}&#60;/a&#62;&#60;/div&#62;
+    &#60;/div&#62;
+    &#60;hr/&#62;
+    </pre>
+    
+    </div>
+</div> 
+<div style="display:none;">
+     <div id="evr_widget_tags" style="width:500px;height:500px;overflow:auto;">
+    <p><strong>Tags for EVR widget</strong><br>
+</br>{EVENT_URL} - Direct link to Event
+</br>{EVENT_NAME} - Name of Event
+</br>{EVENT_DESC} - Description of Event
+</br>{EVENT_LOC} - location of event
+</br>{EVENT_ADDRESS} - address of event
+</br>{EVENT_CITY} - city of event
+</br>{EVENT_STATE} - state of event
+</br>{EVENT_POSTAL} - postal code of event
+</br>{EVENT_MONTH_START_NUMBER} - Start month digit
+</br>{EVENT_MONTH_START_NAME} - Start month full name
+</br>{EVENT_MONTH_START_NAME_3} - Start month abbreviated name
+</br>{EVENT_DAY_START_NUMBER} - start day digit
+</br>{EVENT_DAY_START_NAME} -  start day full name
+</br>{EVENT_DAY_START_NAME_3} - start day abbreviated name
+</br>{EVENT_YEAR_START} - start year (4 digit)
+</br>{EVENT_TIME_START} - start time
+</br>{EVENT_DATE_START} - full start date of event
+</br>{EVENT_MONTH_END_NUMBER} - End month number
+</br>{EVENT_MONTH_START_NAME} - End month full name
+</br>{EVENT_MONTH_END_NAME_3} - End month abbreviated name
+</br>{EVENT_DAY_END_NUMBER} - End day number
+</br>{EVENT_DAY_END_NAME} - End day full name
+</br>{EVENT_DAY_END_NAME_3} - End day abbreviated name
+</br>{EVENT_YEAR_END} - end year (4 digit)
+</br>{EVENT_DATE_END} - full end date of event
+</br>{EVENT_TIME_END} - event end time
+    </div>
+</div> 
+
+          <?php
+          
 	}
 }
 

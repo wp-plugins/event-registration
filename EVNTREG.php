@@ -91,6 +91,7 @@ require ("evr_ipn.php"); //used for paypal IPN
 require ("evr_calendar.php"); //holds functions for calendar page
 require ("evr_clean_db.php");
 require ("evr_three_cal.php");
+require ("evr_widgets.php");    // Class that holds new Widgets
 //require ("evrtest.php");
 //require ("evr_pdf.php"); //creates pdf of reg details
 //
@@ -106,7 +107,7 @@ register_activation_hook(__file__, 'evr_install');
 add_action('activated_plugin','evr_save_error');
 add_action('init', 'evr_init');
 add_action('admin_menu', 'evr_admin_menu');
-add_action('plugins_loaded', 'evr_widgets');
+//add_action('plugins_loaded', 'evr_widgets');//replaced with new evr_widgets
 //admin header
 add_action("admin_head","evr_load_tiny_mce");
 add_action('admin_head', 'evr_admin_header');
@@ -120,6 +121,7 @@ add_action('wp_print_styles', 'evr_public_stylesheets');
 add_action('wp_print_scripts', 'evr_public_scripts');
 //add to wordpress dashboard
 add_action('wp_dashboard_setup','evr_dashboard_upcomingevents');
+add_action( 'widgets_init', 'evr_widgets' );//new sidebar widget
 //
 //
 /*********************************   FILTERS   ********************************/
@@ -146,12 +148,12 @@ add_shortcode('EVR_ATTENDEE', 'evr_attendee_short');
 function evr_init(){
         //register admin scripts
         wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-        wp_register_script($handle = 'evr_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         //register public scripts
         wp_register_script($handle = 'evr_public_script', $src = plugins_url('/evr_public_script.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-        wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+        wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_register_script($handle = 'evr_public_easing', $src = plugins_url('/scripts/fancybox/jquery.easing-1.3.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_register_script($handle = 'evr_public_mouswheel', $src = plugins_url('/scripts/fancybox/jquery.mousewheel-3.0.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         
@@ -198,7 +200,7 @@ function evr_load_tiny_mce() {
 //function to enqueue styles in admin pages
 function evr_admin_css_all_page() {
        wp_register_style($handle = 'evr_admin_css', $src = plugins_url('/evr_admin_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_register_style($handle = 'evr_fancy_css', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_register_style($handle = 'evr_fancy_css', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_enqueue_style('evr_fancy_css');
        wp_enqueue_style('evr_admin_css');
        
@@ -207,7 +209,7 @@ function evr_admin_css_all_page() {
 //function to enqueue scripts in admin pages
 function evr_admin_scripts_all_page() {
        wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.2.5.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+       wp_register_script($handle = 'evr_admin_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_tab_script', $src = plugins_url('/scripts/evr_tabs.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
        wp_register_script($handle = 'evr_tooltip_script', $src = plugins_url('/js/jquery.tooltip.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
         wp_enqueue_script('evr_admin_script');
@@ -311,7 +313,7 @@ function evr_testing(){
 
 //function to load widgets to the widgets menu
 function evr_widgets(){
-
+/*  Remove old widget
 wp_register_sidebar_widget(
     'EVNTRG LST',        // your unique widget id
     'Event List',          // widget name
@@ -320,7 +322,8 @@ wp_register_sidebar_widget(
         'description' => 'Lists the next 5 future events currently in Event Registration Plugin'
     )
 );
-
+*/
+register_widget( 'EVR_Widget_List_Events' );//new widget
 }
 
 
