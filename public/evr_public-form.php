@@ -166,7 +166,7 @@ if ($expiration_date <= $today){
     echo '<br/><font color="red">Registration is closed for this event.  <br/>For more information or questions, please email: </font><a href="mailto:'.$company_options['company_email'].'">'.$company_options['company_email'].'</a>';
     } 
     else {?> 
-    <form    class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
+    <form  name="regform"  class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
 
         <ul>
         <li>
@@ -419,10 +419,10 @@ if ($expiration_date <= $today){
                                         
                                         _e('No Fees Have Been Setup For This Event!','evr_language');
                                         echo "<br/>";
-                                        _e('Registrations will be placed on the wait list!','evr_language');
+                                        _e('Registration for this event can not be taken at this time.','evr_language');
                                         echo "<br/></font>";
                                         ?>
-                                        <input type="hidden" name="reg_type" value="WAIT" />
+                                        
                                         <?php
                                         }
                                     } else {
@@ -432,6 +432,8 @@ if ($expiration_date <= $today){
                                         _e('Please provide your information to be placed on the waiting list.','evr_language');
                                         echo '</b></font>';
                                         ?>
+                                        </br><input type="checkbox" onclick="mySubmit.disabled=false" name="request" value="Waitlist"> Put me on the waitlist.
+
                                         <input type="hidden" name="reg_type" value="WAIT" />
                                         <?php   
                                     }
@@ -451,7 +453,7 @@ if ($expiration_date <= $today){
         <input type="hidden" name="action" value="confirm"/>
         <input type="hidden" name="event_id" value="<?php echo $event_id;?>" />
         <div style="margin-left: 150px;">
-        <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Submit','evr_language');?>" disabled="true"/> <input type="reset" value="<?php _e('Reset','evr_language');?>"  />
+        <input type="submit" name="mySubmit" id="mySubmit" disabled="true" value="<?php _e('Submit','evr_language');?>" /> <input type="reset" value="<?php _e('Reset','evr_language');?>"  />
         </div>
         </form>
 <?php } ?>
