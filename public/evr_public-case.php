@@ -29,6 +29,8 @@ function evr_registration_main(){
             
             case "key":
                 echo get_option('siteurl')." - ".get_option('plug-evr-activate');
+                echo get_option('siteurl')." -coordmodule- ".get_option('plug-evr_coord-activate');
+                
             break;
             
             case "paypal_txn":
