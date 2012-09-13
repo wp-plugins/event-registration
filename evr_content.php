@@ -379,9 +379,9 @@ function evr_by_category($atts, $content=null){
 					$result = mysql_query($sql2);
 					while ($row = mysql_fetch_assoc ($result)){
 					$category_id= $row['id'];
-                                    	$category_name=$row['category_name'];
-                                    	$category_identifier=$row['category_identifier'];
-                                    	$category_desc=$row['category_desc'];
+                                    	$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
+                                    	$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
+                                    	$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
                                     	$display_category_desc=$row['display_desc'];
                                         $category_color = $row['category_color'];
                                         $font_color = $row['font_color'];
@@ -406,9 +406,9 @@ function evr_by_category($atts, $content=null){
    $start_date = $end_date = '';
    while ( $row = mysql_fetch_assoc ( $result ) ) {
 		            $event_id= $row['id'];
-			        $event_name =  stripslashes($row ['event_name']);
-					$event_identifier =  stripslashes($row ['event_identifier']); 
-					$event_desc =  stripslashes($row ['event_desc']);  
+			        $event_name =  stripslashes(htmlspecialchars_decode($row ['event_name']));
+					$event_identifier = stripslashes(htmlspecialchars_decode($row ['event_identifier'])); 
+					$event_desc =  stripslashes(htmlspecialchars_decode($row ['event_desc']));  
 					$start_date = $row['start_date'];
                     $end_date = $row['end_date'];
 					$start_month = $row ['start_month'];
@@ -432,22 +432,36 @@ function evr_by_category($atts, $content=null){
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
 	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "UNLIMITED";}
      
-     
+          $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+$close_dt = $end_date." ".$end_time;
+$today = strtotime($current_dt);
+
+
+$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+$expiration_date = strtotime($stp);
+
+                           
+if ($stp >= $current_dt){
 
 
       if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
         ?>
             <td class="er_title er_ticket_info"><b>
-            <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['event_pop']=="N"){ 
+           <?php $company_options = get_option('evr_company_settings');
+            if ($company_options['evr_list_format']=="link"){
                 if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
-	               }  else {
-                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';}}
-           
-           
+	}  else {
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
+                
+                
+                
+                }}
             else {?>
-            <a href="#TB_inline?&height=600&width=800&inlineId=popup<?php echo $event_id;?>&modal=false" class="thickbox" title="<?php echo $event_name;?>">
             
+         <a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
+                  <!--  //use this for fancybox window
+          <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
+
             <?php } echo $event_name;?></a></b></td>
             <td></td><td></td>
             <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
@@ -455,7 +469,7 @@ function evr_by_category($atts, $content=null){
             
            
             <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}
-        }
+        }}
         ?>
     </tbody></table></div>
     
@@ -628,10 +642,21 @@ function evr_quick_action($links, $file)
 //function to replace content on public page for plugin
 function evr_content_replace($content)
 {
+   global $wpdb;
+   $company_options = get_option('evr_company_settings');
     if (preg_match('{EVRREGIS}', $content)) {
         ob_start();
         //event_regis_run($event_single_ID);
-        evr_registration_main(); //function with main content
+        if ($company_options['require_login'] == "Y"){
+        if (is_user_logged_in()){
+            evr_registration_main(); //function with main content
+            }
+        else
+            echo 'You must be logged in to register for events!';
+        }
+        else {
+             evr_registration_main(); //function with main content
+        }
         $buffer = ob_get_contents();
         ob_end_clean();
         $content = str_replace('{EVRREGIS}', $buffer, $content);
@@ -652,5 +677,41 @@ function evr_rotator_replace($content)
     }
     return $content;
 }
+
+function evr_Truncate($string, $limit, $break=".", $pad="...")
+{
+  // return with no change if string is shorter than $limit
+  if(strlen($string) <= $limit) return $string;
+
+  // is $break present between $limit and the end of the string?
+  if(false !== ($breakpoint = strpos($string, $break, $limit))) {
+    if($breakpoint < strlen($string) - 1) {
+      $string = substr($string, 0, $breakpoint) . $pad;
+    }
+  }
+    
+  return $string;
+  
+}
+
+function evr_truncateWords($input, $numwords, $padding="...")
+  {
+    $output = strtok($input, " \n");
+    while(--$numwords > 0) $output .= " " . strtok(" \n");
+    if($output != $input) $output .= $padding;
+    return $output;
+  }
+function evr_admin_warnings() {
+	if ( get_option('evr_is_registered') != "Y") {
+		function evr_warning() {
+			echo "
+			<div id='evr-warning' class='updated fade'><p><strong>".__('Event Registration is not registered.')."</strong> ".sprintf(__('<a href="%1$s">Please register your installation of Event Registration</a>.'), "admin.php?page=evr_register")."</p></div>
+			";
+		}
+		add_action('admin_notices', 'evr_warning');
+		return;
+	} 
+}
+
 
 ?>

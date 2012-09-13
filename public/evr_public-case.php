@@ -26,7 +26,13 @@ function evr_registration_main(){
             case "pay":
                 evr_retun_to_pay();
             break;
-
+            
+            case "key":
+                echo get_option('siteurl')." - ".get_option('plug-evr-activate');
+                echo get_option('siteurl')." -coordmodule- ".get_option('plug-evr_coord-activate');
+                
+            break;
+            
             case "paypal_txn":
                if ($company_options['payment_vendor']=="PAYPAL"){          
                 evr_paypal_txn();
@@ -37,8 +43,11 @@ function evr_registration_main(){
             break;
             
             default:
-                evr_show_event_list();
-               //evr_show_event_accordian();
+                if ($company_options['evr_list_format']=="accordian"){evr_show_event_accordian();}
+               // else if ($company_options['evr_list_format']=="link"){evr_show_event_links();}
+                else {evr_show_event_list();}
+                
+               
            }
 }
 
