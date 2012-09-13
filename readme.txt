@@ -3,8 +3,8 @@ Contributors: David Fleming
 Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
-Tested up to: 3.3.2
-Stable tag: 6.00.18
+Tested up to: 3.4.2
+Stable tag: 6.00.19
 
 This plugin is designed to allow you to take online registrations for events and classes. 
 Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
@@ -70,7 +70,7 @@ In the company information, under page settings, the events payment page, there 
 
 9. Now you are ready to create events.  Go to the Events section and select add new event.  Complete the requested information in all tabs.  The submit button is located in the last tab.
 
-10. Event creation and event pricing are handled as separate tasks.   You are able to create multiple pricing levels and optional pricing items with this version.  Once you have created an event, view the event listing and you will see a button to add tickets/items.  Add items such as registation fees, sales items or whatever you want to charge for or give away.  You must create an item in order to take registrations.
+10. Event creation and event pricing are handled as separate tasks.   You are able to create multiple pricing levels and optional pricing items with this version.  Once you have created an event, view the event listing and you will see a button to add tickets/items.  Add items such as registration fees, sales items or whatever you want to charge for or give away.  You must create an item in order to take registrations.
 
 11. Once you have created your pricing items, you are now ready to take registrations.  Go to your registrations and click the event and try it out. 
 
@@ -103,6 +103,20 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.19
+* Fixed slashes issue on Company default mail
+* Added ability to expire events on end date instead of start date
+* Fixed php tag error in evr_three_cal file.
+* Fixed issue on export payment list to excel not showing payments
+* Fixed issue with questions
+* Fixed listing style options for categories
+* Fixed calendar color coding issue
+* Modified event names on calendar to truncate long names to prevent overrun of calendar.
+* Resolved issue with waitlist registration
+* Added help file popup to new widget.
+* Changed admin popups for helps to be white background and grey screen area
+
 
 = Version 6.00.18
 * Fixed ADD FEE no content issue
