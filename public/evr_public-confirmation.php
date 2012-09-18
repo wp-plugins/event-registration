@@ -2,6 +2,7 @@
 
 function evr_confirm_form(){
 
+    $_SESSION['token'] = md5(session_id() . time());
     global $wpdb, $qanda, $posted_data;
     $company_options = get_option('evr_company_settings');
     $num_people = 0;
@@ -225,6 +226,7 @@ if ( $count <= 0){
 <input type="hidden" name="reg_form" value="<?php echo $form_post;?>" />
 <input type="hidden" name="questions" value="<?php echo $question_post;?>" />
 <input type="hidden" name="action" value="post"/>
+<input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>" />
 <input type="hidden" name="event_id" value="<?php echo $event_id;?>" />
 <div style="margin-left: 150px;">
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Confirmed','evr_language');?>" /> 
