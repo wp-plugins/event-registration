@@ -23,12 +23,18 @@ function evr_registration_main(){
                evr_process_confirmation();
             break;
             
+            case "show_confirm_mess":
+               evr_show_confirmation();  
+            break;
+            
+            
             case "pay":
                 evr_retun_to_pay();
             break;
             
             case "key":
                 echo get_option('siteurl')." - ".get_option('plug-evr-activate');
+                echo "</br>";
                 echo get_option('siteurl')." -coordmodule- ".get_option('plug-evr_coord-activate');
                 
             break;
