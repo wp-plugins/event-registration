@@ -4,6 +4,11 @@
  * @copyright 2010
  */
 
+
+/*
+6.00.20 -
+Added close field to events to signify when events close, start or end date.
+*/
 /*
 6.00.19 -
 Added close field to events to signify when events close, start or end date.
@@ -66,7 +71,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.19";
+    $cur_build = "6.00.20";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -95,7 +100,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.19";
+    $upgrade_version = "0.20";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -181,6 +186,12 @@ function evr_upgrade_tables(){
 
         $value = "co_zip";
         $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_zip VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            } 
+         
+        $value = "token";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD token VARCHAR(32) NOT NULL  DEFAULT'0'";
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }       
@@ -523,9 +534,9 @@ function evr_attendee_db()
                       co_state VARCHAR(45) DEFAULT NULL,
                       co_zip VARCHAR(45) DEFAULT NULL,
                       date timestamp NOT NULL default CURRENT_TIMESTAMP,
-					  event_id VARCHAR(45) DEFAULT NULL,
+                      event_id VARCHAR(45) DEFAULT NULL,
                       coupon VARCHAR(45) DEFAULT NULL,
-					  quantity VARCHAR(45) DEFAULT NULL,
+                      quantity VARCHAR(45) DEFAULT NULL,
                       attendees MEDIUMTEXT DEFAULT NULL,
                       tickets MEDIUMTEXT DEFAULT NULL,
                       payment VARCHAR(45) DEFAULT NULL,
@@ -533,6 +544,7 @@ function evr_attendee_db()
                       payment_status VARCHAR(45) DEFAULT NULL,
                       amount_pd VARCHAR (45) DEFAULT NULL,
                       payment_date varchar(30) DEFAULT NULL,
+                      token varchar(32) NOT NULL DEFAULT '0',
                       UNIQUE KEY id (id)
 					) DEFAULT CHARSET=utf8;";
 
