@@ -92,6 +92,7 @@ require ("evr_calendar.php"); //holds functions for calendar page
 require ("evr_clean_db.php");
 require ("evr_three_cal.php");
 require ("evr_widgets.php");    // Class that holds new Widgets
+require ("evr_attendee_widget");//add new attendee widget
 //require ("evrtest.php");
 //require ("evr_pdf.php"); //creates pdf of reg details
 //
@@ -145,6 +146,7 @@ add_shortcode('EVR_ATTENDEE', 'evr_attendee_short');
 //
 /*********************************   STARTUP FUNCTIONS   ********************************/
 //
+
 function evr_init(){
         //register admin scripts
         wp_register_script($handle = 'evr_admin_script', $src = plugins_url('/scripts/evr.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
@@ -171,7 +173,14 @@ function evr_init(){
   wp_enqueue_script(array('tiny_mce','editor','editor-functions', 'thickbox', 'media-upload'));
   //Text Domain support for other languages
   load_plugin_textdomain('evr_language', false, dirname(plugin_basename(__file__)).'/lang/');
-  evr_admin_warnings();      
+  evr_admin_warnings();     
+  
+  
+  //load dwolla
+if (get_option('evr_dwolla')=="y"){  
+wp_register_script( 'dwolla', 'https://www.dwolla.com/scripts/button.min.js');
+wp_enqueue_script( 'dwolla', 'https://www.dwolla.com/scripts/button.min.js', FALSE, FALSE, TRUE); 
+}
 }
 //
 function evr_load_tiny_mce() {
