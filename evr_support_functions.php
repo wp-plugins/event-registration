@@ -357,10 +357,8 @@ function evr_validate_key(){
     global $wpdb;
     if (get_option('evr_dontshowpopup')=="Y"){$alert = '<div id="message" class="updated"><p><strong>'.__('POPUP IS DISABLED','evr_language').'</strong></p></div>';}
     else {$alert = '<div id="message" class="updated"><p><strong>Please enter a key.</strong></p></div>';}
-   
-   
     
-    if ( isset( $_POST['key'], $_POST['donated'] ) ) {
+    if ( isset( $_POST['key']) ) {
         $cur_key = get_option('plug-evr-activate');
         $submitted_key = $_POST['key'];
         if ($cur_key == $submitted_key){ 
@@ -385,13 +383,10 @@ function evr_validate_key(){
             		<div class="inside">
                     <?php echo $alert;?> 
                     <form method="POST"  action="admin.php?page=popup">
-                        
-                        
-                      
                      <p>Thank you for using Event Registration.  To disable the popup alert, you will need an activation key. Please complete the product <a href="admin.php?page=evr_register">registration</a> to recieve the activation key.  Please include your website and donation details.</p>
                      <p>Once we recieve your details from the registration and donation, we will email you the key within 24 hrs.</p>
                      <p>Note: Each key is specific to your website/installation.</p>
-                    <p>Paste Activation Key<input name="key"/></p>
+                    <p>Paste Activation Key<input name="key" size="50"/></p>
                       <input class="button-primary" name="disable_pop" type="submit" value="Disable Popup"/>
                      </form>
                      </div>
