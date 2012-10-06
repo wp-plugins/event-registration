@@ -33,6 +33,7 @@ function evr_registration_main(){
             break;
             
             case "key":
+                echo "</br>";
                 echo get_option('siteurl')." - ".get_option('plug-evr-activate');
                 echo "</br>";
                 echo get_option('siteurl')." -coordmodule- ".get_option('plug-evr_coord-activate');
