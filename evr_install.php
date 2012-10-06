@@ -7,7 +7,7 @@
 
 /*
 6.00.20 -
-Added close field to events to signify when events close, start or end date.
+Added token field to attendee table to prevent duplicate entries.
 */
 /*
 6.00.19 -
@@ -550,6 +550,7 @@ function evr_attendee_db()
 
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+        dbDelta($sql);
 
         //create option in the wordpress options tale for the event attendee table name
         $option_name = 'evr_attendee';
@@ -585,6 +586,7 @@ function evr_category_db()
 				        UNIQUE KEY id (id)
 					) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
         //create option in the wordpress options table for the event category table
         $option_name = 'evr_category';
@@ -652,9 +654,11 @@ function evr_event_db()
           coord_msg TEXT DEFAULT NULL,
           coord_pay_msg TEXT DEFAULT NULL,
           close VARCHAR (65) DEFAULT NULL,
+          
           UNIQUE KEY id (id)
           ) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
 
         //create option for table name
@@ -691,6 +695,7 @@ function evr_cost_db()
             UNIQUE KEY  (id)
 			) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_cost';
@@ -744,6 +749,7 @@ function evr_payment_db()
 
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+        dbDelta($sql);
 
         //create option in the wordpress options tale for the event payment transaction table name
         $option_name = 'evr_payment';
@@ -776,6 +782,7 @@ function evr_question_db()
         ) AUTO_INCREMENT=1 ;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+        dbDelta($sql);
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_question';
         $newvalue = $table_name;
@@ -804,6 +811,7 @@ function evr_answer_db()
           UNIQUE KEY id (registration_id,question_id)
         )  DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
    //create option in the wordpress options tale for the event answer table name
         $option_name = 'evr_answer';
