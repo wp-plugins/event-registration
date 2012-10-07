@@ -163,30 +163,17 @@ function evr_np_of_day($date){
 function evr_display_calendar(){
    global $wpdb,$week_no;
    $company_options = get_option('evr_company_settings'); 
-   
-   
+    
     $cal_head_clr = $company_options['evr_cal_head'];
     $cal_head_txt_clr = $company_options['cal_head_txt_clr'];
-    
-   
-    
     $cal_use_cat = $company_options['evr_cal_use_cat']; 
-   
     $cal_pop_brdr_clr = $company_options['evr_cal_pop_border'];
-    
-     $cal_day_clr = $company_options['evr_cal_cur_day'];
+    $cal_day_clr = $company_options['evr_cal_cur_day'];
     $cal_day_txt_clr =  $company_options['cal_day_txt_clr'];
-    
     $date_switcher = $company_options['evr_date_select'];
-    
     $cal_day_hdr_clr = $company_options['evr_cal_day_head'];
     $cal_day_hdr_txt_clr = $company_options['cal_day_head_txt_clr'];
     
-  
-
-            
-    
-  
     
 if ($cal_head_clr != ""){    ?>
 <style type="text/css">
@@ -359,45 +346,38 @@ if ($cal_day_hdr_clr != ""){?>
 	      		}
             if ($go) {
 								if (get_option('evr_start_of_week') == 0){
-		    						$grabbed_events = evr_fetch_events($c_year,$c_month,$i);
-		    						$no_events_class = '';
-		    						if (!count($grabbed_events)){
-												$no_events_class = ' no-events';
-		      					}
-		      					else{
-												$no_events_class = ' events';
-		      					}
-		    						
-                                    $calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",evr_time_offset())?'current-day':'day-with-date').$no_events_class.'"><span '.($ii<7&&$ii>1?'':'class="weekend"').'>'.$i++.'</span><span class="event"><br />' . evr_show_events($grabbed_events) . '</span></td>';
-		  					
-                              }
-								else{
-								    
-		    						$grabbed_events = evr_fetch_events($c_year,$c_month,$i);
-		    						$no_events_class = '';
-	            			if (!count($grabbed_events)){
-												$no_events_class = ' no-events';
-		      					}
-		      					else{
-												$no_events_class = ' events';
-		      					}
-		    						
-                                    $calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",evr_time_offset())?'current-day':'day-with-date').$no_events_class.'"><span '.($ii<6?'':'class="weekend"').'>'.$i++.'</span><br/><span class="event">' . evr_show_events($grabbed_events) . '</span></td>';
-		  					
-                              }
-                           
-	     			}
-            else {
-								$calendar_body .= ' <td class="day-without-date">&nbsp;</td>';
-	      		}
+     		    						$grabbed_events = evr_fetch_events($c_year,$c_month,$i);
+                                             //added for non-events
+                                             $grabbed_non_events = evr_fetch_non_events($c_year,$c_month,$i);
+     		    						$no_events_class = '';
+     		    						if ((!count($grabbed_events))&&(!count($grabbed_non_events))){
+     				                          $no_events_class = ' no-events';
+     		      					  }
+     		      					else {
+     						                   $no_events_class = ' events';
+     		      					}
+     		    						
+                                              $calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",evr_time_offset())?'current-day':'day-with-date').$no_events_class
+                                              .'"><span '.($ii<7&&$ii>1?'':'class="weekend"').'>'.$i++.'</span><span class="event"><br />' . evr_show_events($grabbed_events) .evr_show_non_events($grabbed_non_events)
+                                              . '</span></td>';
+		  					      }
+								else {
+								  $grabbed_events = evr_fetch_events($c_year,$c_month,$i);
+                                          $no_events_class = '';
+                                          if ((!count($grabbed_events))&&(!count($grabbed_non_events))){ $no_events_class = ' no-events'; }
+                                          else { $no_events_class = ' events'; }
+                                          $calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",evr_time_offset())?'current-day':'day-with-date').
+                                          $no_events_class.'"><span '.($ii<6?'':'class="weekend"').'>'.$i++.'</span><br/><span class="event">' . evr_show_events($grabbed_events) 
+                                          .evr_show_non_events($grabbed_non_events). '</span></td>';
+                                          }
+               } else { $calendar_body .= ' <td class="day-without-date">&nbsp;</td>'; }
         }
-        
         $calendar_body .= '</tr>';
     }
 
   global $wpdb;
   $company_options = get_option('evr_company_settings');  
-  $cal_use_cat = $company_options['cal_use_cat']; 
+  $cal_use_cat = $company_options['evr_cal_use_cat']; 
   
     if ($show_cat == 'Y'){
                 $sql = "SELECT * FROM ". get_option('evr_category') ." ORDER BY id ASC";
@@ -431,6 +411,13 @@ function evr_show_events($events){
   }
   return $output;
 }
+function evr_show_non_events($events){
+  usort($events, "evr_evr_time_cmp");
+  foreach($events as $event){
+      $output .= evr_show_non_event($event).'<br />';
+  }
+  return $output;
+}
 
 function evr_show_event($event){
     
@@ -438,7 +425,7 @@ function evr_show_event($event){
   $company_options = get_option('evr_company_settings');  
   $cal_head_clr = $company_options['cal_head_clr'];
     $cal_day_clr = $company_options['cal_day_clr'];
-    $cal_use_cat = $company_options['cal_use_cat']; 
+    $cal_use_cat = $company_options['evr_cal_use_cat']; 
     $cal_pop_brdr_clr = $company_options['cal_pop_brdr_clr'];
   
                                     
@@ -482,19 +469,89 @@ $show_cat= $cal_use_cat;
   		
         $linky = evr_permalink($company_options['evr_page_id'])."action=evregister&event_id=".$event->id;   
   }
-
-  $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';"><a class="tooltip" href="'.$linky.'" target="_blank" style="text-decoration:none"><h3>' . stripslashes(html_entity_decode($event->event_name)) .
-   '</h3><span class="help" style ="';
-   
-   
-   $details .= $style;
-   $details .= '"><em>'.stripslashes(html_entity_decode($event->event_name)).'</em>' . stripslashes(html_entity_decode($event->event_desc)) . '</span></a>'.
+    $allow = '<p><ul><li><b><strong><i>';
+    $tool_desc = strip_tags(stripslashes(html_entity_decode($event->event_desc)),$allow); 
+  
+  $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';">';
+  $details .='<a class="tooltip" href="'.$linky.'" style="text-decoration:none"><h3>' . evr_truncateWords(stripslashes(html_entity_decode($event->event_name)), 5, "...") .'</h3>';
+  $details .='<span class="help" style ="'.$style.'">';
+  $details .= '<em>'.stripslashes(html_entity_decode($event->event_name)).'</em>' .evr_clean_inside_tags($tool_desc,$allow) . '<br><font color="green">Click To Register</font></span></a>'.
    '<p class="time">'.date(get_option('time_format'), strtotime(stripslashes($event->start_time))).'</p>'.
    '<p class="seats">'.$seats.'</p>'.'</div>';
 
   return $details;
 }
 
+
+function evr_show_non_event($event){
+    
+  global $wpdb;
+  $company_options = get_option('evr_company_settings');  
+ /* $cal_head_clr = $company_options['cal_head_clr'];
+  $cal_day_clr = $company_options['cal_day_clr'];
+  $cal_use_cat = $company_options['cal_use_cat']; 
+  $cal_pop_brdr_clr = $company_options['cal_pop_brdr_clr'];
+  */
+  
+    $cal_head_clr = $company_options['evr_cal_head'];
+    $cal_head_txt_clr = $company_options['cal_head_txt_clr'];
+    $cal_use_cat = $company_options['evr_cal_use_cat']; 
+    $cal_pop_brdr_clr = $company_options['evr_cal_pop_border'];
+    $cal_day_clr = $company_options['evr_cal_cur_day'];
+    $cal_day_txt_clr =  $company_options['cal_day_txt_clr'];
+    $date_switcher = $company_options['evr_date_select'];
+    $cal_day_hdr_clr = $company_options['evr_cal_day_head'];
+    $cal_day_hdr_txt_clr = $company_options['cal_day_head_txt_clr'];
+  
+                                    
+  //$show_cat = $wpdb->get_var("SELECT config_value FROM ".WP_LIVE_CALENDAR_CONFIG_TABLE." WHERE config_item='enable_categories'",0,0);
+$show_cat= $cal_use_cat;
+  if ($show_cat == 'Y'){
+      $cat_array = unserialize($event->category_id);
+      $cat_id = $cat_array[0];
+      $sql = "SELECT * FROM " . get_option('evr_category') . " WHERE id='".$cat_id."'";
+      $cat_details = $wpdb->get_row($sql);
+      if ($cat_details !=""){ $style = "background: white; border: 2px solid ".stripslashes($cat_details->category_color)."; "; $edge=$cat_details->category_color;
+          } else { $style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; $edge=$cal_pop_brdr_clr;
+      }
+      
+  }
+  else{
+      if ($cal_pop_brdr_clr !=""){$style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; $edge=$cal_pop_brdr_clr;}
+      else {$style = "background: white; border: 2px solid #2BB0D7;"; $edge='#b8ced6';}
+  }
+  if ($event->event_link != '') { 
+     $linky = stripslashes($event->more_info); 
+  }
+  
+    $allow = '<p><ul><li><b><strong><i>';
+    $tool_desc = strip_tags(stripslashes(html_entity_decode($event->event_desc)),$allow); 
+  
+  $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';">';
+  if ($event->event_link != '') { 
+  $details .='<a class="tooltip" href="'.$linky.'" style="text-decoration:none"><h3>' . stripslashes(html_entity_decode($event->event_name)) .'</h3>';
+  } else {
+  $details .='<a class="tooltip" > <h3 >' . stripslashes(html_entity_decode($event->event_name)) .'</h3>';
+  }
+  $details .='<span class="help" style ="'.$style.'">';
+  $details .= '<em>'.stripslashes(html_entity_decode($event->event_name)).'</em>' .evr_clean_inside_tags($tool_desc,$allow) . '</span></a>'.
+   '<p class="time">'.date(get_option('time_format'), strtotime(stripslashes($event->start_time)))."-".date(get_option('time_format'), strtotime(stripslashes($event->end_time))).'</p>'.
+   '</div>';
+
+  return $details;
+}
+
+
+function evr_clean_inside_tags($txt,$tags){
+     
+    preg_match_all("/<([^>]+)>/i",$tags,$allTags,PREG_PATTERN_ORDER);
+ 
+    foreach ($allTags[1] as $tag){
+         $txt = preg_replace("/<".$tag."[^>]*>/i","<".$tag.">",$txt);
+     }
+ 
+    return $txt;
+ }
 
 function evr_fetch_events($y,$m,$d){
     global $wpdb,$tod_no,$cal_no;
@@ -510,18 +567,24 @@ function evr_fetch_events($y,$m,$d){
     
     }
     
-    if (get_option('evr_cal_active')=="Y"){
-    $cal_events = $wpdb->get_results("SELECT * FROM " . get_option('evr_cal_tbl'). " WHERE str_to_date(start_date, '%Y-%m-%e') <= str_to_date('$date', '%Y-%m-%e') AND str_to_date(end_date, '%Y-%m-%e') >= str_to_date('$date', '%Y-%m-%e') ORDER BY id");
-    if (!empty($cal_events)){
-         foreach($cal_events as $cal_event){
-	   					array_push($arr_events, $cal_event);
-         }
-    
-    }
-    }
-    
-    
+   
   	return $arr_events;
+}
+
+function evr_fetch_non_events($y,$m,$d){
+    global $wpdb,$tod_no,$cal_no;
+    $arr_non_events = array();
+    $date = $y . '-' . $m . '-' . $d; 
+    
+   if (get_option('evr_cal_active')=="Y"){
+    $cal_events = $wpdb->get_results("SELECT * FROM " . get_option('evr_cal_tbl'). " WHERE str_to_date(start_date, '%Y-%m-%e') <= str_to_date('$date', '%Y-%m-%e') AND str_to_date(end_date, '%Y-%m-%e') >= str_to_date('$date', '%Y-%m-%e') ORDER BY id");
+         if (!empty($cal_events)){
+              foreach($cal_events as $cal_event){
+               array_push($arr_non_events, $cal_event);
+              }
+         }
+    }
+   return $arr_non_events;
 }
 
 function evr_evr_time_cmp($a, $b){

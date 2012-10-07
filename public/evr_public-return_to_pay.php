@@ -11,10 +11,10 @@ function evr_retun_to_pay(){
         if (is_numeric($passed_id)){$id = $passed_id;}
         else {
             $passed_id = "";
-            echo "Failure - please retry!"; 
+            _e('Failure - please retry!','evr_language'); 
             exit;}
             
-        if ($passed_id ==""){echo "Please check your email for payment information.";}
+        if ($passed_id ==""){_e('Please check your email for payment information.','evr_language');}
         else{
 			$query  = "SELECT * FROM ".get_option('evr_attendee')." WHERE id='$passed_id'";
 	   		$result = mysql_query($query) or die('Error : ' . mysql_error());
@@ -145,7 +145,7 @@ $payment=$total_due;
 //Paypal 
     if ($company_options['payment_vendor']=="PAYPAL"){
     $p = new paypal_class;// initiate an instance of the class
-    if ($use_sandbox == "Y") {
+    if ($company_options['use_sandbox'] == "Y") {
 		$p->paypal_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr'; // testing paypal url
 		echo "<h3 style=\"color:#ff0000;\" title=\"Payments will not be processed\">Sandbox Mode Is Active</h3>";
 	}else {

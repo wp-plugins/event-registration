@@ -29,7 +29,7 @@ function evr_splash(){
 ?>
 
 <div class="wrap"><br />
-<a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
+<a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
 <br />
 <br />
 <div class="evr_plugin">
@@ -97,8 +97,8 @@ function evr_splash(){
     		<div class="inside">
     			<p>Need help? FAQ, Usage instructions and other notes can be found on the WordPress.org plugin page.</p>    			<ul>
     				<li><a href="http://wordpress.org/extend/plugins/event-registration/">Download Event Registration on WordPress.org</a></li>
-    				<li><a href="http://wordpresseventregister.com/wp-content/uploads/2011/11/EventRegistration6Guide.pdf">Download Event Registration Guide</a></li>
-    				<li><a href="http://www.wordpresseventregister.com">View Online Documentation</a></li>
+    				<li><a href="http://wpeventregister.com/downloads">Download Event Registration Guide</a></li>
+    				<li><a href="http://www.wpeventregister.com">View Online Documentation</a></li>
     			</ul>            
     		</div>
     	</div> 
@@ -107,12 +107,14 @@ function evr_splash(){
     		<div class="inside">
     			<div style="clear: both; display: block; padding: 10px 0; text-align:center;"><br />If you find this plugin useful,<br /> please contribute to enable its continued development!<br /><br />
                     <p align="center">
-                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                    <input type="hidden" name="cmd" value="_s-xclick">
-                    <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
-                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-                    </form></p>
+                    <!--New Button for wpeventregister.com-->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+                    </p>
     		    </div>
             </div>		
 		  <div class="clear"></div>
@@ -142,11 +144,35 @@ function evr_splash(){
             <h3>Event Registration News</h3>
     		
     		  <div class="inside">
-        		 <script language="JavaScript" src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fwww.wordpresseventregister.com%2Ffeed&chan=y&num=3&desc=1&date=y&targ=y" type="text/javascript"></script>
-                <noscript>
-                <a href="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fwww.wordpresseventregister.com%2Ffeed&chan=y&num=3&desc=1&date=y&targ=y&html=y">View RSS feed</a>
-                </noscript>
-	
+            <?php
+                    // import rss feed
+                    if(function_exists('fetch_feed')) {
+                    	// fetch feed items
+                    	$rss = fetch_feed('http://wpeventregister.com/feed');
+                    	if(!is_wp_error($rss)) : // error check
+                    		$maxitems = $rss->get_item_quantity(10); // number of items
+                    		$rss_items = $rss->get_items(0, $maxitems);
+                    	endif;
+                    	// display feed items ?>
+                    	
+                    	<dl>
+                    	<?php if($maxitems == 0) echo '<dt>Feed not available.</dt>'; // if empty
+                    	else foreach ($rss_items as $item) : ?>
+                    
+                    		<dt>
+                    			<a href="<?php echo $item->get_permalink(); ?>" 
+                    			title="<?php echo $item->get_date('j F Y @ g:i a'); ?>">
+                    			<?php echo $item->get_title(); ?>
+                    			</a>
+                    		</dt>
+                    		<dd>
+                    			<?php echo $item->get_description(); ?>
+                    		</dd>
+                    
+                    	<?php endforeach; ?>
+                    	</dl>
+                    <?php } ?>
+        		 
     	       </div>		
 		  <div class="clear"></div>
         </div>
@@ -157,7 +183,7 @@ function evr_splash(){
                     // import rss feed
                     if(function_exists('fetch_feed')) {
                     	// fetch feed items
-                    	$rss = fetch_feed('http://wordpresseventregister.com/forum/index.php?type=rss;action=.xml;limit=10');
+                    	$rss = fetch_feed('http://wpeventregister.com/forum/index.php?type=rss;action=.xml;limit=10');
                     	if(!is_wp_error($rss)) : // error check
                     		$maxitems = $rss->get_item_quantity(10); // number of items
                     		$rss_items = $rss->get_items(0, $maxitems);
@@ -203,9 +229,10 @@ function evr_footer_ad(){
 </style>
 <div class="evr_foot_ad"><
 <p align="center">
+<!--New Button for wpeventregister.com-->
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form></p>
@@ -220,18 +247,19 @@ function evr_donate_popup()
 			<div id="evr-donate-box">
 					<div id="evr-donate-box-content">
 						<img width="32" height="32" class="evr-close" src="<?php echo EVR_PLUGINFULLURL.'images/btn-close.png';?>" alt="X">
-						<a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL.'images/evr_icon.png';?>" alt="Event Registration for Wordpress" /></a>
+						<a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL.'images/evr_icon.png';?>" alt="Event Registration for Wordpress" /></a>
                         <h3>Support Event Registration</h3>
 						<p align="justify">I noticed you've been using Event Registration for WordPress for at least 30 days.</p>  
                         <p align="justify">If you find Event Registration useful, please consider donating to show your appreciation for the time and money this product is saving you.</p>
 						<p align="center">
 						
-                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                        <input type="hidden" name="cmd" value="_s-xclick">
-                        <input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
-                        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-                        </form></p>
+                        <!--New Button for wpeventregister.com-->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form></p>
 						<a class="evr-dontshow" href="admin.php?page=popup&dontshowpopup=1">(do not show me this pop-up again)</a>
 					</div>
 				</div>

@@ -1,10 +1,10 @@
 === Event Registration ===
 Contributors: David Fleming
-Donate link: http://www.wordpresseventregister.com/donations
+Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
-Tested up to: 3.3.1
-Stable tag: 6.00.14
+Tested up to: 3.4.2
+Stable tag: 6.00.20
 
 This plugin is designed to allow you to take online registrations for events and classes. 
 Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
@@ -21,7 +21,7 @@ Reporting features provide a export list(s) of events, attendees, payments in ex
 
 If you like the plugin and find it useful, please donate.  
 Your donations help me keep it going and improve it.  
-You can find online information at http://wordpresseventregister.com/
+You can find online information at http://wpeventregister.com/
 
 Also if you could rate the plugin that would also be helpful.
 
@@ -70,7 +70,7 @@ In the company information, under page settings, the events payment page, there 
 
 9. Now you are ready to create events.  Go to the Events section and select add new event.  Complete the requested information in all tabs.  The submit button is located in the last tab.
 
-10. Event creation and event pricing are handled as separate tasks.   You are able to create multiple pricing levels and optional pricing items with this version.  Once you have created an event, view the event listing and you will see a button to add tickets/items.  Add items such as registation fees, sales items or whatever you want to charge for or give away.  You must create an item in order to take registrations.
+10. Event creation and event pricing are handled as separate tasks.   You are able to create multiple pricing levels and optional pricing items with this version.  Once you have created an event, view the event listing and you will see a button to add tickets/items.  Add items such as registration fees, sales items or whatever you want to charge for or give away.  You must create an item in order to take registrations.
 
 11. Once you have created your pricing items, you are now ready to take registrations.  Go to your registrations and click the event and try it out. 
 
@@ -103,6 +103,59 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.20
+* Modified Attendee List feature for shortcode on page
+* change html text to correct format for translation of plugin on many pages
+* Resolved issue where attendees post twice with some themes
+* Fixed htmlchanger issue
+* Fixed issue with Sandbox mode for paypal
+* Added field to support special characters with Paypal submission
+* Added validation for Attendee Name on Confirmation page
+* Simplified registration form code
+* Fixed activation key issue
+
+= Version 6.00.19
+* Fixed slashes issue on Company default mail
+* Added ability to expire events on end date instead of start date
+* Fixed php tag error in evr_three_cal file.
+* Fixed issue on export payment list to excel not showing payments
+* Fixed issue with questions
+* Fixed listing style options for categories
+* Fixed calendar color coding issue
+* Modified event names on calendar to truncate long names to prevent overrun of calendar.
+* Resolved issue with waitlist registration
+* Added help file popup to new widget.
+* Changed admin popups for helps to be white background and grey screen area
+
+
+= Version 6.00.18
+* Fixed ADD FEE no content issue
+* Fixed slashes in Company Name on Email
+* Add patch for Coordinator Email to support custom questions	
+
+= Version 6.00.17
+* Fixed WordPress compliance issues
+* Modified how events expire on the public side: Show on list until the end of the event, close registration form at event start time.
+* Added options no not use popup - added accordian style list capability
+* Changed backend popups to use thickbox
+* Changed create/edit event screens to page format instead of popup format for better screen fit
+* Other minor bug fixes
+
+= Version 6.00.16
+* Fixed bug on events not showing expired in admin panel
+* Fixed bug in Category description not showing html properly
+
+= Version 6.00.15
+* Modified Registration form to deactivate submit button unitl item is selected
+* Modified Registration form to provide visual prompt to select at lease one item
+* Moved javascript from registration form to external files to avoid conflicts
+* Modified confirmation page to deactivate confirmation button and provide visual prompt if no items were selected on registration form
+* Modified the install script to fix error in tax field on upgrade
+* Modified the install script to add fields to attendee table for company information
+* Modified registration processing script to add company details to database
+* Modified the calendar links to open on same page instead new page
+* Modified the calendar tooltip window to striptags to display properly and avoid conflicts in description
 
 = Version 6.00.14 =
 * Reinstated Widget - Event Listing
