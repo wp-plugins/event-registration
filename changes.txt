@@ -1,10 +1,10 @@
 Changes:
 =========
 
-= Version 6.00.21
+= Version 6.00.21 =
 * Fixed issue where event descriptions were not rendering line returns correctly.
 
-= Version 6.00.20
+= Version 6.00.20 =
 * Modified Attendee List feature for shortcode on page
 * Change html text to correct format for translation of plugin on many pages
 * Resolved issue where attendees post twice with some themes
@@ -15,7 +15,7 @@ Changes:
 * Simplified registration form code
 * Fixed activation key issue
 
-= Version 6.00.19
+= Version 6.00.19 =
 * Fixed slashes issue on Company default mail
 * Added ability to expire events on end date instead of start date
 * Fixed php tag error in evr_three_cal file.
@@ -28,12 +28,12 @@ Changes:
 * Added help file popup to new widget.
 * Changed admin popups for helps to be white background and grey screen area
 
-= Version 6.00.18
+= Version 6.00.18 =
 * Fixed ADD FEE no content issue
 * Fixed slashes in Company Name on Email
 * Add patch for Coordinator Email to support custom questions	
 
-= Version 6.00.17
+= Version 6.00.17 =
 * Fixed WordPress compliance issues
 * Modified how events expire on the public side: Show on list until the end of the event, close registration form at event start time.
 * Added options no not use popup - added accordian style list capability
@@ -41,11 +41,11 @@ Changes:
 * Changed create/edit event screens to page format instead of popup format for better screen fit
 * Other minor bug fixes
 
-= Version 6.00.16
+= Version 6.00.16 =
 * Fixed bug on events not showing expired in admin panel
 * Fixed bug in Category description not showing html properly
 
-= Version 6.00.15
+= Version 6.00.15=
 * Modified Registration form to deactivate submit button unitl item is selected
 * Modified Registration form to provide visual prompt to select at lease one item
 * Moved javascript from registration form to external files to avoid conflicts
