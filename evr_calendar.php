@@ -398,7 +398,10 @@ if ($cal_day_hdr_clr != ""){?>
 
     }
     $calendar_body .= '</table>';
+    $calendar_body .= evr_colorbox_cal_content();
+   
    echo $calendar_body;
+   
     return $calendar_body;
 }
 
@@ -469,18 +472,101 @@ $show_cat= $cal_use_cat;
   		
         $linky = evr_permalink($company_options['evr_page_id'])."action=evregister&event_id=".$event->id;   
   }
-    $allow = '<p><ul><li><b><strong><i>';
-    $tool_desc = strip_tags(stripslashes(html_entity_decode($event->event_desc)),$allow); 
-  
-  $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';">';
-  $details .='<a class="tooltip" href="'.$linky.'" style="text-decoration:none"><h3>' . evr_truncateWords(stripslashes(html_entity_decode($event->event_name)), 5, "...") .'</h3>';
-  $details .='<span class="help" style ="'.$style.'">';
-  $details .= '<em>'.stripslashes(html_entity_decode($event->event_name)).'</em>' .evr_clean_inside_tags($tool_desc,$allow) . '<br><font color="green">Click To Register</font></span></a>'.
-   '<p class="time">'.date(get_option('time_format'), strtotime(stripslashes($event->start_time))).'</p>'.
-   '<p class="seats">'.$seats.'</p>'.'</div>';
+    $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';">';
+
+    $details .= '<a class="inline" href="#event_content_'.$event->id.'">'.
+    evr_truncateWords(stripslashes(html_entity_decode($event->event_name)), 5, "...").'</a>';
+    $details .= '<br/>'.$seats;
+    $detail .='</div>';
 
   return $details;
 }
+#Used for colorbox popup with event details.
+function evr_colorbox_cal_content(){
+    global $wpdb,$evr_date_format;
+    #retrieve company and configuration settings
+    $company_options = get_option('evr_company_settings');
+    $curdate = date ( "Y-m-j" );
+    # Get events that end date is later than today and order by start date
+    //$sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
+    $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= DATE_SUB(CURDATE(),INTERVAL 30 DAY) ORDER BY str_to_date(start_date, '%Y-%m-%e')";
+    $rows = $wpdb->get_results( $sql );
+    
+    if ($rows){
+        $listing = "";
+        foreach ($rows as $event){
+            $listing .=  '<div style="display:none;"><div id="event_content_'.$event->id.'" style="padding:10px; background:#fff;">';
+            $listing .= '<div id="evr_pop_top"><span style="float:center;">';
+             if ($evnt->header_image != ""){ 
+                echo '<img class="evr_pop_hdr_img" src="'.$event->header_image.'" />';
+                } 
+             $listing .='</span></div>';
+             $listing .='<div id="evr_pop_title"><span style="float:left;"><h3>';
+             $listing .=stripslashes(html_entity_decode($event->event_name)).'</h3></span>';
+             $listing .='<span style="float:right;"><a href="'.EVR_PLUGINFULLURL.'evr_ics.php?event_id='.$event->id.'">';
+             $listing .='<img src="'.EVR_PLUGINFULLURL.'images/ical-logo.jpg" /></a></span></div>';
+             $listing .='<div id="evr_pop_date_row" class="evr_pop_date">';
+             $listing .='<br/>'.date($evr_date_format,strtotime($event->start_date)).'  -  ';
+             if ($event->end_date != $event->start_date) {
+                $listing .= date($evr_date_format,strtotime($event->end_date));
+                }
+             $listing .= __('Time: ','evr_language').' '.$event->start_time." - ".$event->end_time;
+             $listing .='</div><div class="evr_spacer"></div><div id="evr_pop_body" STYLE="text-align: justify;white-space:pre-wrap;">';
+             $listing .=html_entity_decode($event->event_desc);
+             $listing .='</div><div id="evr_pop_image">';
+             if ($image_link !=""){
+                $listing .='<img class="evr_pop_img" src="'.$event->image_link.'" alt="Thumbnail Image" />';
+                } 
+                else { 
+                    $listing .= '<img class="evr_pop_img" src="'.EVR_PLUGINFULLURL.'images/event_icon.png" />';
+                    } 
+             $listing .='</div><div class="evr_spacer"><hr /></div><div id="evr_pop_venue"><div id="evr_pop_address"><b><u>';
+             $listing .= __('Location','evr_language').'</u></b><br/><br/>';
+             $listing .= stripslashes($event->event_location).'<br/>'.$event->event_address.'<br/>';
+             $listing .= $event->event_city.', '.$event->event_state.' '.$event->event_postal.'<br/></div><div id="evr_pop_map">';
+             if ($event->google_map == "Y"){
+                $listing .='<img border="0" src="http://maps.google.com/maps/api/staticmap?center=';
+                $listing .=$event->event_address.",".$event->event_city.",".$event->event_state;
+                $listing .='&zoom=14&size=280x180&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|';
+                $listing .=$event_address.",".$event_city.'&sensor=false" />';
+                }
+             $listing .='</div></div><div id="evr_pop_price"><hr /><b><u>';
+             $listing .=__('Event Fees','evr_language').':</u></b><br /><br />';
+             #Get Event Fees         
+                        $curdate = date("Y-m-d");
+             $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event->id. " ORDER BY sequence ASC";
+             $rows = $wpdb->get_results( $sql );
+            
+             if ($rows){
+                foreach ($rows as $fee){
+                                $item_custom_cur = $fee->item_custom_cur;
+                                if ($fee->item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
+                                if ($fee->item_custom_cur == "USD"){$item_custom_cur = "$";}
+                                $listing .= $item_custom_cur.' '.$fee->item_price.'   '.$fee->item_title.'<br />';
+                                } 
+                                }
+                        
+             $listing .='</div><div class="evr_spacer"></div><div id="evr_pop_foot"><p align="center">';
+             if ($event->more_info !=""){
+                $listing .='<input type="button" onClick="window.open(\''.$event->more_info.'\');" value="'.__('MORE INFO','evr_language').'"/>';
+                }
+             if ($outside_reg == "Y"){
+                $listing .='<input type="button" onClick="window.open(\''.$event->external_site.'\');" value="'.
+                __('External Registration','evr_language').'"/>'; 
+             	}  
+                else { 
+                    $listing .= '<input type="button" onClick="location.href=\''.evr_permalink($company_options['evr_page_id']).
+                    'action=evregister&event_id='.$event->id.'\'" value="'.
+                __('REGISTER','evr_language').'"/>'; 
+                    }
+             $listing .= '</p></div>';
+             
+             $listing .= '</div></div>';
+            }
+            }
+            return $listing;
+}
+
 
 
 function evr_show_non_event($event){

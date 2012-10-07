@@ -157,6 +157,8 @@ function evr_init(){
     wp_register_script($handle = 'evr_public_fancy', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_script($handle = 'evr_public_easing', $src = plugins_url('/scripts/fancybox/jquery.easing-1.3.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_script($handle = 'evr_public_mouswheel', $src = plugins_url('/scripts/fancybox/jquery.mousewheel-3.0.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    wp_register_script($handle = 'evr_public_colorbox', $src = plugins_url('/colorbox/js/jquery.colorbox.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    
     //if (!is_admin()) {wp_enqueue_script('jquery');}
     wp_enqueue_script('jquery');
     wp_enqueue_script('jquery-ui-sortable'); 
@@ -236,16 +238,20 @@ function evr_public_stylesheets() {
     wp_register_style($handle = 'evr_calendar', $src = plugins_url('/evr_calendar.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_style($handle = 'evr_pop_style', $src = plugins_url('/evr_pop_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_style($handle = 'evr_fancy_style', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    wp_register_style($handle = 'evr_colorbox_style', $src = plugins_url('/colorbox/css/colorbox.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
+    
     wp_enqueue_style('evr_public');
     wp_enqueue_style('evr_calendar');
     wp_enqueue_style('evr_pop_style');
     wp_enqueue_style('evr_fancy_style');
+    wp_enqueue_style('evr_colorbox_style');
     //wp_enqueue_style('thickbox');
 }
 #function to enqueue scripts in public pages
 function evr_public_scripts() {
     wp_enqueue_script('evr_tooltip_script');    
     wp_enqueue_script('evr_public_script');
+    wp_enqueue_script('evr_public_colorbox');
     //wp_enqueue_style('thickbox');
     wp_enqueue_script('evr_public_fancy');
     wp_enqueue_script('evr_public_easing');

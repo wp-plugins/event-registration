@@ -54,10 +54,22 @@ jQuery(document).ready(function($){
 	
 });
 
+//Used for colorbox on calendar page
+$j = jQuery.noConflict();
+jQuery(document).ready(function($j){
+				//Examples of how to assign the ColorBox event to elements
+				$j(".ajax").colorbox();
+				$j(".youtube").colorbox({iframe:true, innerWidth:425, innerHeight:344});
+				$j(".vimeo").colorbox({iframe:true, innerWidth:500, innerHeight:409});
+				$j(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
+				$j(".inline").colorbox({inline:true, width:800});
+				
+			});
+
 
 //Script form fancybox configuration - used for popupt help  -- need to change to wp internal thickbox in next revision.
 /*
-        $j = jQuery.noConflict();
+        
         jQuery(document).ready(function($j) {
         $j("a.ev_reg-fancylink").fancybox({
         		'padding':		10,

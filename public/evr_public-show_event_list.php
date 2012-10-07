@@ -57,7 +57,10 @@ echo '<tbody>';
                                 $codeToReturn .=  '<a href="'.$event->external_site.'">{EVENT_NAME}</a>' ;
                                 }  
                             else {
-                            $codeToReturn .= '<a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup{EVENT_ID}&modal=false title='.stripslashes($event->event_name).'">{EVENT_NAME}</a>';
+                           // $codeToReturn .= '<a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup{EVENT_ID}&modal=false title='.stripslashes($event->event_name).'">{EVENT_NAME}</a>';
+                            #changed to use colorbox popup
+                            $codeToReturn .= '<a <a class="inline" href="#event_content_{EVENT_ID}">{EVENT_NAME}</a>';
+                            
                             }
                         }
                         $codeToReturn .= '</b></br>Open Seats {EVENT_AVAIL_SPOTS}</td>
@@ -131,7 +134,7 @@ echo '</tbody></table></div>';
             #use the included file to put all the event data for this event into strings
             include "evr_event_array2string.php";   
             #Generate the html popup code for this event
-            include "evr_event_popup_pop.php";
+            include "evr_event_colorbox_pop.php";
             }         
         }             
 }

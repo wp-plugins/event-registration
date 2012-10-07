@@ -52,7 +52,7 @@ function evr_registration_main(){
             default:
                 if ($company_options['evr_list_format']=="accordian"){evr_show_event_accordian();}
                // else if ($company_options['evr_list_format']=="link"){evr_show_event_links();}
-                else {evr_show_event_list();}
+                else {evr_show_event_list($public_list_template);}
                 
                
            }
