@@ -110,6 +110,33 @@ function jcap(){
         }
 }
 
+function validateConfirmationForm(confForm) {
+    var msg = "";
+    var i = 0;
+    var form = confForm['attendee['+i+'][first_name]'];
+    while (form != undefined)
+    {
+      if (confForm['attendee['+i+'][first_name]'].value == "") {  msg += "\n Attendee #"+(i+1)+" Please enter attendee first name";
+                confForm['attendee['+i+'][first_name]'].focus( );
+            }
+      if (confForm['attendee['+i+'][last_name]'].value == "") {  msg += "\n Attendee #"+(i+1)+" Please enter attendee last name";
+                confForm['attendee['+i+'][last_name]'].focus( );
+                }
+      i++;
+      var form = confForm['attendee['+i+'][first_name]']; 
+    }
+     if (msg.length > 0) {
+                        msg = "The following fields need to be completed before you can submit.\n\n" + msg;
+                        alert(msg);
+            if (document.getElementById("mySubmit").disabled==true){
+                document.getElementById("mySubmit").disabled=false;}
+                document.getElementById("mySubmit").focus( );
+                        return false;
+                }
+
+        return true;
+ }
+
 function validateForm(form) { 
     var msg = "";
     if (form.fname.value == "") {  msg += "\n " +"Please enter your first name"; 
