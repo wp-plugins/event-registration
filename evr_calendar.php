@@ -427,31 +427,35 @@ function evr_show_event($event){
   global $wpdb;
   $company_options = get_option('evr_company_settings');  
   $cal_head_clr = $company_options['cal_head_clr'];
-    $cal_day_clr = $company_options['cal_day_clr'];
-    $cal_use_cat = $company_options['evr_cal_use_cat']; 
-    $cal_pop_brdr_clr = $company_options['cal_pop_brdr_clr'];
+  $cal_day_clr = $company_options['cal_day_clr'];
+  $cal_use_cat = $company_options['evr_cal_use_cat']; 
+  $cal_pop_brdr_clr = $company_options['cal_pop_brdr_clr'];
   
                                     
   //$show_cat = $wpdb->get_var("SELECT config_value FROM ".WP_LIVE_CALENDAR_CONFIG_TABLE." WHERE config_item='enable_categories'",0,0);
-$show_cat= $cal_use_cat;
+    $show_cat= $cal_use_cat;
   if ($show_cat == 'Y'){
       $cat_array = unserialize($event->category_id);
-      
-      
       $cat_id = $cat_array[0];
-      
       $sql = "SELECT * FROM " . get_option('evr_category') . " WHERE id='".$cat_id."'";
-      
       $cat_details = $wpdb->get_row($sql);
-      if ($cat_details !=""){ $style = "background: white; border: 2px solid ".stripslashes($cat_details->category_color)."; "; $edge=$cat_details->category_color;
-      } else { $style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; $edge=$cal_pop_brdr_clr;
+      if ($cat_details !=""){ 
+        $style = "background: white; border: 2px solid ".stripslashes($cat_details->category_color)."; "; 
+        $edge=$cat_details->category_color;
+      } else { 
+        $style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; 
+        $edge=$cal_pop_brdr_clr;
       }
       
   }
   else{
-      if ($cal_pop_brdr_clr !=""){$style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; $edge=$cal_pop_brdr_clr;}
-      else {$style = "background: white; border: 2px solid #2BB0D7;"; $edge='#b8ced6';}
-      
+      if ($cal_pop_brdr_clr !=""){
+        $style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; 
+        $edge=$cal_pop_brdr_clr;}
+      else {
+        $style = "background: white; border: 2px solid #2BB0D7;"; 
+        $edge='#b8ced6';
+        }
   }
   
     $num = 0;                              
@@ -477,7 +481,7 @@ $show_cat= $cal_use_cat;
     $details .= '<a class="inline" href="#event_content_'.$event->id.'">'.
     evr_truncateWords(stripslashes(html_entity_decode($event->event_name)), 5, "...").'</a>';
     $details .= '<br/>'.$seats;
-    $detail .='</div>';
+    $details.='</div>';
 
   return $details;
 }
