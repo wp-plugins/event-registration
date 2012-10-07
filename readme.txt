@@ -4,7 +4,7 @@ Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
 Tested up to: 3.4.2
-Stable tag: 6.00.21
+Stable tag: 6.00.22
 
 This plugin is designed to allow you to take online registrations for events and classes. 
 Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
@@ -104,10 +104,14 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 == Change Log ==
 
-= Version 6.00.21
+= Version 6.00.22 =
+* Bug fix for "Warning: Missing argument 1 for evr_show_event_list()"
+* Changed popup window style for event list and calendar pages
+
+= Version 6.00.21 =
 * Resolved issue where event descriptions not rendering line returns correctly
 
-= Version 6.00.20
+= Version 6.00.20 =
 * Modified Attendee List feature for shortcode on page
 * change html text to correct format for translation of plugin on many pages
 * Resolved issue where attendees post twice with some themes
@@ -118,7 +122,7 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 * Simplified registration form code
 * Fixed activation key issue
 
-= Version 6.00.19
+= Version 6.00.19 =
 * Fixed slashes issue on Company default mail
 * Added ability to expire events on end date instead of start date
 * Fixed php tag error in evr_three_cal file.
@@ -132,12 +136,12 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 * Changed admin popups for helps to be white background and grey screen area
 
 
-= Version 6.00.18
+= Version 6.00.18 =
 * Fixed ADD FEE no content issue
 * Fixed slashes in Company Name on Email
 * Add patch for Coordinator Email to support custom questions	
 
-= Version 6.00.17
+= Version 6.00.17 =
 * Fixed WordPress compliance issues
 * Modified how events expire on the public side: Show on list until the end of the event, close registration form at event start time.
 * Added options no not use popup - added accordian style list capability
@@ -145,11 +149,11 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 * Changed create/edit event screens to page format instead of popup format for better screen fit
 * Other minor bug fixes
 
-= Version 6.00.16
+= Version 6.00.16 =
 * Fixed bug on events not showing expired in admin panel
 * Fixed bug in Category description not showing html properly
 
-= Version 6.00.15
+= Version 6.00.15 =
 * Modified Registration form to deactivate submit button unitl item is selected
 * Modified Registration form to provide visual prompt to select at lease one item
 * Moved javascript from registration form to external files to avoid conflicts
