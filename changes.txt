@@ -1,6 +1,9 @@
 Changes:
 =========
 
+= Version 6.00.21
+* Fixed issue where event descriptions were not rendering line returns correctly.
+
 = Version 6.00.20
 * Modified Attendee List feature for shortcode on page
 * Change html text to correct format for translation of plugin on many pages
