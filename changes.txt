@@ -1,6 +1,17 @@
 Changes:
 =========
 
+= Version 6.00.20
+* Modified Attendee List feature for shortcode on page
+* Change html text to correct format for translation of plugin on many pages
+* Resolved issue where attendees post twice with some themes
+* Fixed htmlchanger issue
+* Fixed issue with Sandbox mode for paypal
+* Added field to support special characters with Paypal submission
+* Added validation for Attendee Name on Confirmation page
+* Simplified registration form code
+* Fixed activation key issue
+
 = Version 6.00.19
 * Fixed slashes issue on Company default mail
 * Added ability to expire events on end date instead of start date
