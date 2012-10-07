@@ -1,4 +1,11 @@
 <?php
+function evr_htmlchanger($string) 
+{ 
+   $string = str_replace(array("&lt;", "&gt;", '&amp;', '&#039;', '&quot;','&lt;', '&gt;'), array("<", ">",'&','\'','"','<','>'), htmlspecialchars_decode($string, ENT_NOQUOTES));
+ 
+       return $string; 
+   
+} 
 
 function evr_process_confirmation(){
      
@@ -8,7 +15,7 @@ function evr_process_confirmation(){
     
     $reg_form = unserialize(urldecode($_POST["reg_form"]));
     $qanda = unserialize(urldecode($_POST["questions"]));
-
+    $submitted_token = isset($_POST['token'])?$_POST['token']:'0';
     
     $passed_event_id = $reg_form["event_id"];
     if (is_numeric($passed_event_id)){$event_id = $passed_event_id;}
@@ -18,19 +25,29 @@ function evr_process_confirmation(){
     $ticket_array = unserialize($reg_form['tickets']);
     $attendee_list = serialize($attendee_array);
     $business =   serialize($company_options); 
+    // Start check to see if guest was already inserted earlier
+    $attendee_sql = 'SELECT * FROM ' . get_option('evr_attendee') . " WHERE token='{$submitted_token}'";   
+    $attendee_result = mysql_query($attendee_sql);
+
+    // If we got any rows featuring our unique ID, then the user was already submitted. Bail out. Otherwise, onward!
+    if (mysql_num_rows($attendee_result) == 0)
+    {
     
     $sql=array('lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 'city'=>$reg_form['city'], 
                 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 'email'=>$reg_form['email'],
                 'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],'quantity'=>$reg_form['num_people'],
                 'tickets'=>$reg_form['tickets'], 'payment'=>$reg_form['payment'],'tax'=>$reg_form['tax'],'attendees'=>$attendee_list,
                 'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_add'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
-                'co_zip'=>$reg_form['co_zip'],);
+                'co_zip'=>$reg_form['co_zip'], 'token'=>$submitted_token);
  
-    $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
-    if ($wpdb->insert( get_option('evr_attendee'), $sql, $sql_data )){ 
+    $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
+    
+    $attendee_insert_sql_result = $wpdb->insert( get_option('evr_attendee'), $sql, $sql_data );
+	
+   if ($attendee_insert_sql_result){
     // Insert Extra From Post Here
-            $reg_id = $wpdb->get_var("SELECT LAST_INSERT_ID()");
-          
+            //$reg_id = $wpdb->get_var("SELECT LAST_INSERT_ID()");
+          $reg_id = $wpdb->insert_id;
             if ( count($qanda)>"0"){
                 $i = 0;
                  do {
@@ -44,7 +61,33 @@ function evr_process_confirmation(){
                  } while ($i < (count($qanda)+1));
             }
     } 
-    
+     } else { 
+        // User was already inserted into the DB. Let's just grab their ID then, so we can move them to the confirmation page.
+        $attendee_row = mysql_fetch_assoc($attendee_result);
+
+        $reg_id = $attendee_row['id'];
+    }
+
+    $url_to_goto = evr_permalink($company_options['evr_page_id']).'action=show_confirm_mess&event_id='.$passed_event_id.'&amp;reg_id='.$reg_id;
+
+    /* printf("<script>location.href='{$url_to_goto}'</script>"); // Javascript option */
+
+    echo '<meta http-equiv="refresh" content="0;url='.$url_to_goto .'" />';
+}
+
+function evr_show_confirmation()
+{
+    global $wpdb;
+    $company_options = get_option('evr_company_settings');
+
+    if (is_numeric($_REQUEST['event_id'])){
+        $event_id = (int)$_REQUEST['event_id'];
+    }
+
+    if (is_numeric($_REQUEST['reg_id'])){
+        $reg_id = (int)$_REQUEST['reg_id'];
+    }
+
     
    _e("Your information has been received.",'evr_language');
    echo "<br/>";
@@ -54,63 +97,64 @@ function evr_process_confirmation(){
    $sql= "SELECT * FROM ". get_option('evr_event')." WHERE id=".$event_id; 
    
    $result = mysql_query ( $sql );
-                            while ($row = mysql_fetch_assoc ($result)){  
-                            $event_id = $row['id'];
-                            $reg_form_defaults = unserialize($row['reg_form_defaults']);
-                            if ($reg_form_defaults !=""){
-                            if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
-                            if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
-                            if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
-                            if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
-                            if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
-                            }
-                        $use_coupon = $row['use_coupon'];
-                        $reg_limit = $row['reg_limit'];
-                   	    $event_name = html_entity_decode(stripslashes($row['event_name']));
-                        $invoice_event = $row['event_name'];
-        					$event_identifier = stripslashes($row['event_identifier']);
-        					$display_desc = $row['display_desc'];  // Y or N
-                            $event_desc = html_entity_decode(stripslashes($row['event_desc']));
-                            $event_category = unserialize($_REQUEST['event_category']);
-        					$reg_limit = $row['reg_limit'];
-        					$event_location = $row['event_location'];
-                            $event_address = $row['event_address'];
-                            $event_city = $row['event_city'];
-                            $event_state =$row['event_state'];
-                            $event_postal=$row['event_postcode'];
-                            $google_map = $row['google_map'];  // Y or N
-                            $start_month = $row['start_month'];
-        					$start_day = $row['start_day'];
-        					$start_year = $row['start_year'];
-                            $end_month = $row['end_month'];
-        					$end_day = $row['end_day'];
-        					$end_year = $row['end_year'];
-                            $start_time = $row['start_time'];
-        					$end_time = $row['end_time'];
-                            $allow_checks = $row['allow_checks'];
-                            $outside_reg = $row['outside_reg'];  // Yor N
-                            $external_site = $row['external_site'];
+     while ($row = mysql_fetch_assoc ($result))
+          {  
+          $event_id = $row['id'];
+          $reg_form_defaults = unserialize($row['reg_form_defaults']);
+          if ($reg_form_defaults !=""){
+          if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
+          if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
+          if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
+          if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
+          if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+          }
+          $use_coupon = $row['use_coupon'];
+          $reg_limit = $row['reg_limit'];
+	     $event_name = htmlspecialchars_decode(html_entity_decode(stripslashes($row['event_name'])));
+          $mail_subject =  evr_htmlchanger($row['event_name']);
+          $invoice_event = $row['event_name'];
+          $event_identifier = stripslashes($row['event_identifier']);
+          $display_desc = $row['display_desc'];  // Y or N
+          $event_desc = html_entity_decode(stripslashes($row['event_desc']));
+          $event_category = unserialize($_REQUEST['event_category']);
+          $reg_limit = $row['reg_limit'];
+          $event_location = $row['event_location'];
+          $event_address = $row['event_address'];
+          $event_city = $row['event_city'];
+          $event_state =$row['event_state'];
+          $event_postal=$row['event_postcode'];
+          $google_map = $row['google_map'];  // Y or N
+          $start_month = $row['start_month'];
+          $start_day = $row['start_day'];
+          $start_year = $row['start_year'];
+          $end_month = $row['end_month'];
+          $end_day = $row['end_day'];
+          $end_year = $row['end_year'];
+          $start_time = $row['start_time'];
+          $end_time = $row['end_time'];
+          $allow_checks = $row['allow_checks'];
+          $outside_reg = $row['outside_reg'];  // Yor N
+          $external_site = $row['external_site'];
+          $more_info = $row['more_info'];
+        	$image_link = $row['image_link'];
+        	$header_image = $row['header_image'];
+          $event_cost = $row['event_cost'];
+          $allow_checks = $row['allow_checks'];
+          $is_active = $row['is_active'];
+          $send_mail = $row['send_mail'];  // Y or N
+          $conf_mail = stripslashes($row['conf_mail']);
+          $start_date = $row['start_date'];
+          $end_date = $row['end_date'];
+          //added 6.00.13
+          $send_coord = $row['send_coord'];
+          $coord_email = $row['coord_email'];
+          $coord_msg = stripcslashes($row['coord_msg']);
+          $coord_pay_msg = stripslashes($row['coord_pay_msg']);
                             
-                            $more_info = $row['more_info'];
-        					$image_link = $row['image_link'];
-        					$header_image = $row['header_image'];
-                            $event_cost = $row['event_cost'];
-                            $allow_checks = $row['allow_checks'];
-        					$is_active = $row['is_active'];
-        					$send_mail = $row['send_mail'];  // Y or N
-        					$conf_mail = stripslashes($row['conf_mail']);
-        					$start_date = $row['start_date'];
-                            $end_date = $row['end_date'];
-                            //added 6.00.13
-                            $send_coord = $row['send_coord'];
-                            $coord_email = $row['coord_email'];
-                            $coord_msg = stripcslashes($row['coord_msg']);
-                            $coord_pay_msg = stripslashes($row['coord_pay_msg']);
-                            
-                            $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
-                             $result2 = mysql_query($sql2);
-            			     //$num = mysql_num_rows($result2);
-                             //$number_attendees = $num;
+          $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+               $result2 = mysql_query($sql2);
+            	  //$num = mysql_num_rows($result2);
+                 //$number_attendees = $num;
                              while($row = mysql_fetch_array($result2)){
                                 $number_attendees = $row['SUM(quantity)'];
                                 }
@@ -126,7 +170,12 @@ function evr_process_confirmation(){
  
  //'company'=>$company, 'co_add'=>$coadd, 'co_city'=>$cocity, 'co_state'=>$costate, 'co_zip'=>$cozip,
  
- //create array for invoice
+ //grab form responses for mail etc.
+  $attendee_sql = "SELECT * FROM ". get_option('evr_attendee')." WHERE id=".$reg_id; 
+  $attendee_result = mysql_query ( $attendee_sql  );
+  $reg_form = mysql_fetch_assoc ( $attendee_result );
+
+//create array for invoice
 $invoice_data = array('reg_id'=>$reg_id,'lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 
                 'city'=>$reg_form['city'], 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 
                 'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_add'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
@@ -187,7 +236,9 @@ $invoice_post = urlencode(serialize($invoice_data));
     $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], 
                             $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
                             $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
-                            $company_options['company_email'], $coord_email, $company_options['company'], $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'], $company_options['company_state'], $company_options['company_postal'],
+                            $company_options['company_email'], $coord_email, stripslashes($company_options['company']), 
+                            $company_options['company_street1'], $company_options['company_street2'],
+                            $company_options['company_city'], $company_options['company_state'], $company_options['company_postal'],
                             $payment_link , $start_date,$start_time, $end_date, $end_time, 
                             $reg_form['num_people'],$attendee_names, $ticket_list);
 
@@ -211,7 +262,9 @@ $invoice_post = urlencode(serialize($invoice_data));
     $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], 
                             $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
                             $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
-                            $company_options['company_email'], $coord_email, $company_options['company'], $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'], $company_options['company_state'], $company_options['company_postal'],
+                            $company_options['company_email'], $coord_email, stripslashes($company_options['company']), 
+                            $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'],                                      
+                            $company_options['company_state'], $company_options['company_postal'],
                             $payment_link , $start_date,$start_time, $end_date, $end_time, 
                             $reg_form['num_people'],$attendee_names, $ticket_list);
 
@@ -227,9 +280,9 @@ $invoice_post = urlencode(serialize($invoice_data));
     $email_body = $message_top.$email_content.$message_bottom;        
     $headers = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= 'From: "' . html_entity_decode($company_options['company']) . '" <' . $company_options['company_email'] . ">\r\n";
+    $headers .= 'From: "' .  htmlspecialchars_decode(html_entity_decode(stripslashes($company_options['company']))) . '" <' . $company_options['company_email'] . ">\r\n";
     
-    wp_mail($reg_form['email'], html_entity_decode($event_name), html_entity_decode(nl2br($email_body)), $headers);
+    wp_mail($reg_form['email'], stripslashes($mail_subject), html_entity_decode(nl2br($email_body)), $headers);
     
     _e("A confirmation email has been sent to:",'evr_language'); 
     echo " ";
@@ -241,34 +294,51 @@ $invoice_post = urlencode(serialize($invoice_data));
 //Send Coordinator AlertEmail   
    //Select the default message
 if ($send_coord =="Y"){
-      
-    
-    if ( count($attendee_array)>"0"){
+      if ( count($attendee_array)>"0"){
                 $attendee_names="";
                 $i = 0;
                  do {
                     $attendee_names .= $attendee_array[$i]["first_name"]." ".$attendee_array[$i]['last_name'].",";
-                    
-                   
-                 ++$i;
+                    ++$i;
                  } while ($i < count($attendee_array));
             }
          
     $payment_link = evr_permalink($company_options['return_url']). "id=".$reg_id."&fname=".$reg_form['fname'];
+    
+    //get answers to custom questions
+    $events_answer_tbl = get_option('evr_answer');
+    $events_question_tbl = get_option('evr_question');
+    $qry = "SELECT ".$events_question_tbl.".id, ".
+                                $events_question_tbl.".sequence, ".
+                                $events_question_tbl.".question, ".
+                                $events_answer_tbl.".answer ".
+                                " FROM ".$events_question_tbl.", ".$events_answer_tbl.
+                                " WHERE ".$events_question_tbl.".id = ".$events_answer_tbl.".question_id ".
+                                " AND ".$events_answer_tbl.".registration_id = ".$reg_id.
+                                " ORDER by sequence";
+     $results2 = mysql_query($qry);
+     $custom_responses ="";
+          while ($answer = mysql_fetch_array($results2)){ 
+               $custom_responses .=  $answer["question"]."   ".$answer["answer"]."<br/>";
+               }
+                                 
+                                
     //search and replace tags
     $SearchValues = array(  "[id]","[fname]", "[lname]", "[phone]", 
                             "[address]","[city]","[state]","[zip]","[email]",
                             "[event]","[description]", "[cost]", "[currency]",
                             "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]","[co_zip]", 
                             "[payment_url]", "[start_date]", "[start_time]", "[end_date]","[end_time]", 
-                            "[num_people]","[attendees]","[tickets]");
+                            "[num_people]","[attendees]","[tickets]","[custom]");
 
     $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], 
                             $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
                             $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
-                            $company_options['company_email'], $coord_email, $company_options['company'], $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'], $company_options['company_state'], $company_options['company_postal'],
+                            $company_options['company_email'], $coord_email, $company_options['company'], 
+                            $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'],            
+                            $company_options['company_state'], $company_options['company_postal'],
                             $payment_link , $start_date,$start_time, $end_date, $end_time, 
-                            $reg_form['num_people'],$attendee_names, $ticket_list);
+                            $reg_form['num_people'],$attendee_names, $ticket_list, $custom_responses);
 
     $email_content = str_replace($SearchValues, $ReplaceValues, $coord_msg);
     $message_top = "<html><body>"; 
@@ -278,9 +348,9 @@ if ($send_coord =="Y"){
             
     $headers = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= 'From: "' . $company_options['company'] . '" <' . $company_options['company_email'] . ">\r\n";
+    $headers .= 'From: "' .  htmlspecialchars_decode(html_entity_decode(stripslashes($company_options['company']))) . '" <' . $company_options['company_email'] . ">\r\n";
     
-    wp_mail($coord_email, html_entity_decode($event_name), html_entity_decode(nl2br($email_body)), $headers);
+    wp_mail($coord_email,  stripslashes($mail_subject), html_entity_decode(nl2br($email_body)), $headers);
   
 }
 //End Send Coordinator Email     
@@ -299,7 +369,7 @@ if ($send_coord =="Y"){
            if ($company_options['checks'] == "Yes"){
                 _e("You may pay online or by check.  If you are paying by check, please mail your check today to:",'evr_language');
                 echo "<p>".
-                $company_options['company']."<br />".
+                stripslashes($company_options['company'])."<br />".
                 $company_options['company_street1']."<br />";
                 
                 if ($company_options['company_street2']!=""){echo $company_options['company_street2']."<br />";}
@@ -320,7 +390,7 @@ if ($send_coord =="Y"){
               if ($company_options['checks']=="Yes"){
                 _e("You may donate online or by check.  If you are donating by check, please mail your check to:",'evr_language');
                 echo "<p>".
-                $company_options['company']."<br />".
+                stripslashes($company_options['company'])."<br />".
                 $company_options['company_street1']."<br />";
                 if ($company_options['company_street2']!=""){echo $company_options['company_street2']."<br />";}
                 echo $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."</p>";

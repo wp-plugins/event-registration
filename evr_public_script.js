@@ -7,6 +7,7 @@
   }
   
 //Popup
+// Used for displaying event Popup and New event popup in admin panesls
 jQuery(document).ready(function($){
 	 					   		   
 							   		   
@@ -52,3 +53,25 @@ jQuery(document).ready(function($){
 
 	
 });
+
+
+//Script form fancybox configuration - used for popupt help  -- need to change to wp internal thickbox in next revision.
+/*
+        $j = jQuery.noConflict();
+        jQuery(document).ready(function($j) {
+        $j("a.ev_reg-fancylink").fancybox({
+        		'padding':		10,
+        		'autoScale'		: true,
+                'imageScale':	true,
+        		'zoomSpeedIn':	250, 
+        		'zoomSpeedOut':	250,
+        		'zoomOpacity':	true, 
+        		'overlayShow':	false,
+                'width'		: 680,
+                'height'		: 680,
+        		
+        		'hideOnContentClick': false
+        	});
+        });
+        
+ */       

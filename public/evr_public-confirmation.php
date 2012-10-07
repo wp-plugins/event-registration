@@ -2,6 +2,7 @@
 
 function evr_confirm_form(){
 
+    $_SESSION['token'] = md5(session_id() . time());
     global $wpdb, $qanda, $posted_data;
     $company_options = get_option('evr_company_settings');
     $num_people = 0;
@@ -9,7 +10,10 @@ function evr_confirm_form(){
         
     $passed_event_id = $_POST['event_id'];
     if (is_numeric($passed_event_id)){$event_id = $passed_event_id;}
-    else {echo "Failure - please retry!"; exit;}
+    else {
+        _e('Failure - please retry!','evr_language'); 
+        exit;
+        }
     
     //Begin gather registrtion data for database input
     $fname = $_POST['fname'];
@@ -109,7 +113,7 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
                             while ($row = mysql_fetch_assoc ($result)){  
                          
                             $event_id           = $row['id'];
-            				$event_name         = $row['event_name'];
+            				$event_name         = stripslashes($row['event_name']);
             				$event_location     = $row['event_location'];
                             $event_address      = $row['event_address'];
                             $event_city         = $row['event_city'];
@@ -137,104 +141,90 @@ $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city
                 'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment, 'fees'=>$fees, 'tax'=>$tax);
        
 
-?>
-
-<p align="left"><strong>Please verify your registration details:</strong></p>
-                    <table width="95%" border="0">
-                      <tr>
-                        <td><strong>Event Name/Cost:</strong></td>
-                        <td><?php echo $event_name?> - <?php echo $item_order[0]['ItemCurrency'];?>&nbsp;<?php echo $payment?></td>
-                      </tr>
-                      <tr>
-                        <td><strong>Attendee Name:</strong></td>
-                        <td><?php echo $attendee_name?></td>
-                      </tr>
-                      <tr>
-                        <td><strong>Email Address:</strong></td>
-                        <td><?php echo $email?></td>
-                      </tr>
-                       <tr>
-                       <td><strong>Number of Attendees:</strong></td>
-                        <td><?php echo $quantity?></td>
-                      </tr>
-                       <tr>
-                        <td><strong>Order Details:</strong></td>
-                        <td><?php if ($reg_type == "WAIT"){echo "WAIT LIST";}
-                        else {
-                        $row_count = count($item_order);
+#Begin display of confirmation form
+echo '<script type="text/javascript" src="'.EVR_PLUGINFULLURL.'public/validate.js.php"></script>';
+echo '<p align="left"><strong>'.__('Please verify your registration details:','evr_language').'</strong></p>';
+echo '<table width="95%" border="0"><tr><td><strong>'.__('Event Name/Cost:','evr_language').'</strong></td><td>';
+echo $event_name.' - '.$item_order[0]['ItemCurrency'].'&nbsp;'.$payment.'</td></tr><tr><td><strong>';
+_e('Registering Name:','evr_language');
+echo '</strong></td><td>'.$attendee_name.'</td></tr><tr><td><strong>'.__('Email Address:','evr_language').'</strong></td><td>';
+echo $email.'</td></tr><tr><td><strong>'.__('Number of Attendees:','evr_language');
+echo '</strong></td><td>'.$quantity.'</td></tr><tr><td><strong>'.__('Order Details:','evr_language').'</strong></td><td>';
+#Registration Type
+if ($reg_type == "WAIT"){echo "WAIT LIST";}
+else {
+    $row_count = count($item_order);
     for ($row = 0; $row < $row_count; $row++) {
-    if ($item_order[$row]['ItemQty'] >= "1"){ echo $item_order[$row]['ItemQty']." ".$item_order[$row]['ItemCat']."-".$item_order[$row]['ItemName']." ".$item_order[$row]['ItemCurrency'] . " " . $item_order[$row]['ItemCost']."<br \>";}
-    } }?></td>
-                      </tr>
-                      <tr>
-                       <?php 
-                       if ($use_coupon == "Y"){
-                           if($coupon == $coupon_code) {echo '<td><strong>Coupon:</strong></td><td>'; echo $coupon_code_price;'</td>';}
-                           elseif ($coupon != $coupon_code) {echo '<td><strong>Coupon:</strong></td><td>Invalid Code!</td>';}
-                       }
-                       ?>
-                      </tr>
-                      <?php if ($company_options['use_sales_tax'] == "Y"){ ?>
-                      <tr><td></td><td><?php _e('Sales Tax  ','evr_language'); echo ':  '.$tax;?></td></tr>
-                      <?php }?>
-                      <tr><td colspan="2"> </td></tr>
-                      <tr>
-                        <td><strong>Event Name / Total Cost:</strong></td>
-                        <td><?php echo $event_name?>: <?php echo $item_order[0]['ItemCurrency'];?> <strong><?php echo number_format($payment,2)?> </strong></td>
-                      </tr>
-                    </table>
-                    
-<p align="left"><strong><?php if ($reg_type == "WAIT"){$type = "You are on the waiting list.";}
-                                if ($reg_type == "REG"){$type = "You are registering for ".$quantity." people.   Please provide the first and last name of each person:" ;}
-                                echo $type;
-                                ?></strong><br />
-<form id="attendee_confirm" class="evr_regform" method="post" action="<?php echo evr_permalink($company_options['evr_page_id']);?>" onSubmit="mySubmit.disabled=true;return validateForm(this)">
-<p>
-<?php
-
+    if ($item_order[$row]['ItemQty'] >= "1"){ 
+        echo $item_order[$row]['ItemQty']." ".$item_order[$row]['ItemCat']."-".$item_order[$row]['ItemName']." ".$item_order[$row]['ItemCurrency'] . '  ' . $item_order[$row]['ItemCost']."<br \>";}
+    } }
+echo '</td></tr><tr>';    
+if ($use_coupon == "Y"){
+    if($coupon == $coupon_code) {
+        echo '<td><strong>'.__('Coupon:','evr_language').'</strong></td><td>'.$coupon_code_price.'</td>';
+        }
+    elseif ($coupon != $coupon_code) {
+        echo '<td><strong>'.__('Coupon:','evr_language').'</strong></td><td>'.__('Invalid Code!','evr_language').'</td>';
+        }
+}
+echo '</tr>';
+if ($company_options['use_sales_tax'] == "Y"){ 
+    echo '<tr><td></td><td>';
+    _e('Sales Tax:','evr_language'); 
+    echo '  '.$tax.'</td></tr>';
+}
+echo '<tr><td colspan="2"></td></tr><tr><td><strong>'.__('Event Name / Total Cost:','evr_language').'</strong></td><td>';
+echo $event_name.': '.$item_order[0]['ItemCurrency'].'<strong>  '.number_format($payment,2).'</strong></td></tr></table>';
+echo '<p align="left"><strong>';
+if ($reg_type == "WAIT"){
+    $type = __('You are on the waiting list.','evr_language');
+}
+if ($reg_type == "REG"){
+    $type = __('You are registering for','evr_language').$quantity.__('people.','evr_language')."   ".__('Please provide the first and last name of each person:','evr_language');
+    }
+echo $type;
+echo '</strong><br />';
+echo '<form id="attendee_confirm" class="evr_regform" method="post" action="';
+echo evr_permalink($company_options['evr_page_id']);
+echo '" onSubmit="mySubmit.disabled=true;return validateConfirmationForm(this)"><p>';
 if ( $quantity >"0"){
     echo '<div style="width:95%;">';
-$i = 0;
- do {
-    $person = $i + 1;
-    echo 'Attendee #'.$person.'<br/> First Name: <input name="attendee['.$i.'][first_name]"';
-    if ($i == 0){ echo 'value ="'.$fname.'"';}
-    echo '/>';
-    echo '  Last Name: <input name="attendee['.$i.'][last_name]"';
-    if ($i == 0){ echo 'value ="'.$lname.'"';}
-    echo '/></br>';
-    
- ++$i;
- } while ($i < $quantity);
- echo '</div>';
+    $i = 0;
+    do {
+        $person = $i + 1;
+        echo __('Attendee','evr_language').' #'.$person.'<br/>&nbsp;&nbsp;&nbsp;'.__('First Name','evr_language').
+        ': <input name="attendee['.$i.'][first_name]"';
+        if ($i == 0){ echo 'value ="'.$fname.'"';}
+        echo '/>';
+        echo '<br/>&nbsp;&nbsp;&nbsp;'.__('Last Name','evr_language').': <input name="attendee['.$i.'][last_name]"';
+        if ($i == 0){ echo 'value ="'.$lname.'"';}
+        echo '/></br>';
+        
+     ++$i;
+     } 
+     while ($i < $quantity);
+     echo '</div>';
  }
  $form_post = urlencode(serialize($posted_data));
  $question_post = urlencode(serialize($qanda));
-
-?>
-<br /><div style="float:left;"><input type="button" value=" &lt;-- BACK " onclick="history.go(-1);return false;" /></div>
-
-<?php 
+echo '<br /><div style="float:left;"><input type="button" value=" &lt;-- '.__('BACK','evr_language').'" onclick="history.go(-1);return false;" /></div>';
 $count = (int)$quantity;
 if ( $count <= 0){
-    echo '<br/><font color="red"><b>You must select at least one registration item.  Please go back and select an item!</b></font>';
-    
+    echo '<br/><font color="red"><b>';
+    _e('You must select at least one registration item.','evr_language').'<br />';
+    _e('Please go back and select an item!','evr_language');  
+    echo '</b></font>';
     } 
-    else {
- ?>
-<input type="hidden" name="reg_form" value="<?php echo $form_post;?>" />
-<input type="hidden" name="questions" value="<?php echo $question_post;?>" />
-<input type="hidden" name="action" value="post"/>
-<input type="hidden" name="event_id" value="<?php echo $event_id;?>" />
-<div style="margin-left: 150px;">
-<input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Confirmed','evr_language');?>" /> 
-</div>
-<?php
-} 
-?>
-</form>
+else {
+    echo '<input type="hidden" name="reg_form" value="'.$form_post.'" />';
+    echo '<input type="hidden" name="questions" value="'.$question_post.'" />';
+    echo '<input type="hidden" name="action" value="post"/>';
+    echo '<input type="hidden" name="token" value="'.$_SESSION['token'].'" />';
+    echo '<input type="hidden" name="event_id" value="'.$event_id.'" />';
+    echo '<div style="margin-left: 150px;">';
+    echo '<input type="submit" name="mySubmit" id="mySubmit" value="'.__('Confirmed','evr_language').'" /></div>';
+    } 
+echo '</form>';
 
-<?php 
 }
-
 ?>

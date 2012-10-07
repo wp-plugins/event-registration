@@ -62,11 +62,11 @@ function evr_admin_payments_add(){
     
 ?>    
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Payment Management','evr_language');?></h2>
     <div id="dashboard-widgets-wrap">
         <div id="dashboard-widgets" class="metabox-holder">
-        	<div class='postbox-container' style='width:50%;'>
+        	<div class='postbox-container' style='width:auto;'>
                 <div id='normal-sortables' class='meta-box-sortables'>
                     <div id="dashboard_right_now" class="postbox " >
                          
@@ -141,7 +141,7 @@ function evr_admin_payments_add(){
             </div>
         </div>            
     </div>
-</div> 
+ 
 <?php    
     
 }
