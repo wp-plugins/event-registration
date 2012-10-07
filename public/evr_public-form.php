@@ -47,7 +47,7 @@ echo '<div>';
     echo '<a href="#" onclick="jQuery(\'#details\').toggle();return false;">';
     _e('Show/Hide Details','evr_language');
     echo'</a>';
-    echo '<div id="details" style="display:'.$dsply.'; border-style:solid;border-width:2px;border-color:#FF0000;padding: 15px;">';
+    echo '<div id="details" style="display:'.$dsply.';white-space:pre-wrap;border-style:solid;border-width:2px;border-color:#FF0000;padding: 15px;">';
     #Begin actual event details
     echo '<div>';
     echo date($evr_date_format,strtotime($start_date))."  -  ";

@@ -174,7 +174,7 @@ echo '<section id="close"><h2><a href="#Close">Click on Event for Details - Clic
                     $codeToReturn .= date($evr_date_format,strtotime($end_date));
                     }
                 $codeToReturn .= __('&nbsp;&nbsp;&nbsp;&nbsp;Time: ','evr_language').' '.$start_time.' - '.$end_time.'</a></h2><div>';
-                $codeToReturn .='<div class="evr_spacer"></div><div style="text-align: justify;"><p>'
+                $codeToReturn .='<div class="evr_spacer"></div><div style="text-align: justify;white-space:pre-wrap;"><p>'
                                 .html_entity_decode($event_desc).'</p></div><span style="float:right;">';			
                 $codeToReturn .='<a href="'.EVR_PLUGINFULLURL.'evr_ics.php?event_id='.$event_id.'">
                                 <img src="'.EVR_PLUGINFULLURL.'images/ical-logo.jpg" /></a></span>';
