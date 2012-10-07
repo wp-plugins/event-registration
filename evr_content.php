@@ -168,7 +168,7 @@ $payment=$total_due;
 //Paypal 
     if ($company_options['payment_vendor']=="PAYPAL"){
     $p = new paypal_class;// initiate an instance of the class
-    if ($use_sandbox == "Y") {
+    if ($company_options['use_sandbox'] == "Y") {
 		$p->paypal_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr'; // testing paypal url
 		echo "<h3 style=\"color:#ff0000;\" title=\"Payments will not be processed\">Sandbox Mode Is Active</h3>";
 	}else {
