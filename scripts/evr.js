@@ -55,25 +55,40 @@ jQuery(document).ready(function($){
 
 
 //Script form fancybox configuration - used for popupt help  -- need to change to wp internal thickbox in next revision.
-        $j = jQuery.noConflict();
+
+/*        $j = jQuery.noConflict();
         jQuery(document).ready(function($j) {
         $j("a.ev_reg-fancylink").fancybox({
         		'padding':		10,
-        		'autoScale'		: false,
-                'imageScale':	true,
+        		'autoScale'		: true,
+               'imageScale':	true,
         		'zoomSpeedIn':	250, 
         		'zoomSpeedOut':	250,
         		'zoomOpacity':	true, 
         		'overlayShow':	false,
                 'width'		: 680,
-                'height'		: 495,
+                'height'		: 680,
         		
         		'hideOnContentClick': false
         	});
         });
+ */
+  $j = jQuery.noConflict();
+        jQuery(document).ready(function($j) {
+        $j("a.ev_reg-fancylink").fancybox({
+        		
+        	});
+        });
         
         
+//Script form fancybox configuration - used for popupt help  -- need to change to wp internal thickbox in next revision.
+        $j = jQuery.noConflict();
+        jQuery(document).ready(function($j) {
+        $j("a.ev_widget-fancylink").fancybox({
 
+        	});
+        });
+        
 
         
 //used for the tabbing feature in the admin page for company settins and event configuration and event edititing

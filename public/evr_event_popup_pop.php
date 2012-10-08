@@ -19,7 +19,7 @@
                         echo __('Time: ','evr_language')." ".$start_time." - ".$end_time;?>
                         </div> 
 <div class="evr_spacer"></div> 
-<div id="evr_pop_body" STYLE="text-align: justify;"><?php echo html_entity_decode($event_desc);?></div>
+<div id="evr_pop_body" STYLE="text-align: justify;white-space:pre-wrap;"><?php echo html_entity_decode($event_desc);?></div>
 <div id="evr_pop_image"><?php if ($image_link !=""){?><img class="evr_pop_img" src="<?php echo $image_link;?>" alt="Thumbnail Image" /><?php } else { ?>
                         <img class="evr_pop_img" src="<?php echo EVR_PLUGINFULLURL;?>images/event_icon.png" />
                         <?php } ?>

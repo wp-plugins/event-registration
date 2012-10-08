@@ -45,7 +45,7 @@ function evr_admin_edit_attendee(){
     
 ?>
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Attendee Management','evr_language');?></h2>
  <form name="form" method="post" action="admin.php?page=attendee">
                                 <input type="hidden" name="action" value="view_attendee"/>
