@@ -1,6 +1,9 @@
 Changes:
 =========
 
+= Version 6.00.23 =
+* Added file needed for event list popup with colorbox
+
 = Version 6.00.22 =
 * Bug fix for "Warning: Missing argument 1 for evr_show_event_list()"
 * Changed popup window style for event list and calendar pages
