@@ -6,7 +6,7 @@
  */
 ?>
 <!-- EventPopUpStart -->
-<div id="popup<?php echo $event_id;?>" class="popup_block">
+<div id="popup<?php echo $event_id;?>" style="display:none;">
     <table class="evr_evntpop">
                             <?php  if ($header_image != ""){ ?> 
                             <tr>

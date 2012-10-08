@@ -3,7 +3,14 @@
 function evr_new_event(){
     global $wpdb, $wp_version;
    
-    $editor_settings= array('wpautop','media_buttons' => false,'textarea_rows' => '4');               
+    $editor_settings= array('wpautop','media_buttons' => false,'textarea_rows' => '4'); 
+    $body =   "***This is an automated response - Do Not Reply***<br />";
+    $body .= "Thank you [fname] [lname] for registering for [event].<br />";
+    $body .= "We hope that you will find this event both informative and enjoyable.";
+    $body .= "Should have any questions, please contact [contact].";
+    $body .= "If you have not done so already, please submit your payment in the amount of [cost].";
+    $body .= "Click here to review your payment information [payment_url].<br />";
+    $body .= "Thank You.";                
     
 ?>
 <script>
@@ -35,13 +42,11 @@ function evr_new_event(){
 </script>
 
 
-                    
-<a href="#?w=900" rel="popup0" class="poplight"><input type="button" value="<?php _e('ADD EVENT','evr_language');?>"/></a>
-
 <?php //evr_check_form_submission();?>
-
-<div id="popup0" class="popup_block" style="width:950px;height:80%;overflow:auto;">
-<form id="er_popup_Form" method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">                        
+<div class="wrap">
+<h2 style="font-family: segoe;"><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><?php _e('Event Management','evr_language');?></h2>
+<form id="er_popup_Form" method="post" action="admin.php?page=events">                        
 <div class="evr_container">
 	<h1><?php _e('ADD NEW EVENT','evr_language');?></h1>
     <ul class="tabs">
@@ -113,20 +118,18 @@ function evr_new_event(){
                     <strong><?php _e('Event Categories','evr_language');?> </strong> <a><span> ?</span></a></label>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="2">
+               </table> 
                     <?php 
                     $sql = "SELECT * FROM ". get_option('evr_category');
                     $result = mysql_query ($sql);
                     while ($row = mysql_fetch_assoc ($result)){
                     $category_id= $row['id'];
                     $category_name=$row['category_name'];
-                    echo '<label for="in-event-category-'.$category_id.'"><input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. "</label>&nbsp;&nbsp;&nbsp; ";
+                    echo '<input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. "&nbsp;&nbsp;&nbsp; ";
                     }
-                    ?>
-                    </td>
-                </tr>
-            </table>
+                    ?><br />
+               
+            
             <hr />
     </div>
     <div id="tab2" class="tab_content">
@@ -208,6 +211,8 @@ function evr_new_event(){
                             { echo '<option>' . date('g:i a', $i); }
                             echo '</select>';?></label></td>
                         </tr>
+                        <tr></tr>
+                        <tr><td>Close Registration on </td><td><select name="close"><option value="start">Start of Event</option><option value="end">Close of Event</option></select></td></tr>
                     </table>
         </div>
 
@@ -258,11 +263,11 @@ function evr_new_event(){
                  </tr>
                  <tr>
                    <td colspan="2">
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Company" checked /><?php _e('Company','evr_language');?></label>
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoAddress" checked /><?php _e('Co. Addr','evr_language');?></label>
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoCity" checked /><?php _e('Co. City','evr_language');?></label>
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoState" checked /><?php _e('Co. State/Prov','evr_language');?></label>
-                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoPostal" checked /><?php _e('Co. Postal','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Company" /><?php _e('Company','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoAddress"  /><?php _e('Co. Addr','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoCity"  /><?php _e('Co. City','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoState"  /><?php _e('Co. State/Prov','evr_language');?></label>
+                    <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="CoPostal"  /><?php _e('Co. Postal','evr_language');?></label>
                    </td>
                 </tr>
                 <tr>
@@ -369,33 +374,40 @@ function evr_new_event(){
                 <li>Option to send unique email to a unique coordinators email address for each event payment recieved via PayPal IPN.</li>
                 <li>WYSIWYG editor for coordinator's email payment notification alert.</li>
                 </ul>
+                <p><a href="http://wpeventregister.com/shop/event-registration-coordinator-module/">BUY COORDINATOR MODULE</a></p><br />
+                <p>Once purchased, you will recieve an email with activation directions.</p>
+
+                
             </div>
       <?php  } ?>
-                <div id="tab6" class="tab_content">
+            <div id="tab6" class="tab_content">
             <h2><?php _e('Confirmation eMail','evr_language');?></h2>
-            <label  class="tooltip" title="<?php _e('If you want to use a custom email for confirmation','evr_language');?>">
+            <table>
+                <tr>
+                    <td>
+            <label  class="tooltip" title="<?php _e('If you have send mail option enabled in the company settings, you can override the default mail by creating a custom mail for this event.','evr_language');?>">
             <?php _e('Do you want to use a custom email for this event?','evr_language');?> <a><span>?</span></a></label>
-            <label><input type="radio" name="custom_mail" class="radio" id="accept_checks_yes" value="Y" /><?php _e('Yes','evr_language');?>
-            </label><label><input type="radio" name="custom_mail" class="radio" id="accept_checks_no" value="N" checked /><?php _e('No','evr_language');?> 
-            </label><br />
-            <br />          
+            </td><td><label>
+            <input type="radio" name="custom_mail" class="radio" id="accept_checks_yes" value="Y" /><?php _e('Yes','evr_language');?>
+            </label>
+            </td><td><label>
+            <input type="radio" name="custom_mail" class="radio" id="accept_checks_no" value="N" checked /><?php _e('No','evr_language');?> 
+            </label>
+            </td></tr>
+            <tr><td colspan="3">         
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
             <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a></label>
             <?php
-            $body = "***This is an automated response - Do Not Reply***<br />
-                        Thank you [fname] [lname] for registering for [event].<br />
-                        We hope that you will find this event both informative and enjoyable.
-                        Should have any questions, please contact [contact].
-                        If you have not done so already, please submit your payment in the amount of [cost].
-                        Click here to review your payment information [payment_url].<br />
-                        Thank You.";     
+               
                 
               
            	if (function_exists('wp_editor')){
-					wp_editor( $body, 'conf_mail', $editor_settings );
+           	    echo "</td></tr></table>";
+					wp_editor($body, 'conf_mail', $editor_settings );
                                      
 				    }else{ ?>
 					<a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+                        </td></tr></table>
                         <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $body;?></textarea>
                     
                     <?php }  ?>

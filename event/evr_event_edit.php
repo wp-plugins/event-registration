@@ -46,7 +46,7 @@ function evr_edit_event(){
         					
                             $start_date = $row['start_date'];
                             $end_date = $row['end_date'];
-                            
+                            $close = $row['close'];
                             $event_category =  unserialize($row ['category_id']);
                             if ($event_category ==""){$event_category = array();}
              
@@ -85,24 +85,33 @@ function evr_edit_event(){
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
             				
-            					
-            			if ($start_date <= date('Y-m-d')){
+            	                        
+$current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+$close_dt = $start_date." ".$start_time;
+$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+$expiration_date = strtotime($stp);
+$today = strtotime($current_dt);
+
+//echo "The current date and time is: ".$current_dt."<br/>";
+//echo "Registration closes at: ". $stp."<br/>";                              
+
+
+if ($expiration_date <= $today){
             					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED EVENT','evr_language').'</span>';
             				} else{
             					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE EVENT','evr_language').'</span>';
-            				} 
-                            
+            				}   
                             }
                             
 	
 	
 	    
 ?>
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <br />
 <form id="er_popup_Form" method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
 <div class="evr_container">
-	<h2><?php _e('EDIT','evr_language');?> <?php echo $event_name." ".$active_event;?></h2>
+	<h2><?php _e('EDIT','evr_language');?> <?php echo $active_event." - ".$event_name;?></h2>
     <ul class="tabs">
     <script type="text/javascript">
  /* <![CDATA[ */
@@ -201,8 +210,7 @@ To create new display lines just press Enter.','evr_language');?>">
                     <strong><?php _e('Event Categories','evr_language');?> </strong> <a><span> ?</span></a></label>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="2">
+                </table>
                     
                     <?php 
                    /* $sql = "SELECT * FROM ". get_option('evr_category');
@@ -212,7 +220,7 @@ To create new display lines just press Enter.','evr_language');?>">
                         $category_id= $row['id'];
                         $category_name=$row['category_name'];
                         $checked = in_array( $category_id, $event_category );
-                        echo '<label for="in-event-category-'.$category_id.'"> <input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. " </label>";
+                        echo '<input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. "&nbsp;&nbsp;&nbsp;";
                     
                         }
                         */
@@ -231,15 +239,13 @@ To create new display lines just press Enter.','evr_language');?>">
                                     $style = "background-color:".$category_color." ; color:".$font_color." ;"; 
                                     $checked = in_array( $category_id, $event_category );
                                     
-                        echo '<label for="in-event-category-'.$category_id.'"> <input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. " </label>";
+                        echo '<input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. "&nbsp;&nbsp;&nbsp;";
                      }} else{ _e('No Categories Created!','evr_language');}
                         
                         
                     ?>
                     
-                    </td>
-                </tr>
-            </table>
+                   <br />
             <hr />
     </div>
     <div id="tab2"class="tab_content">
@@ -326,6 +332,15 @@ To create new display lines just press Enter.','evr_language');?>">
                         	{ echo '<option>' . date('g:i a', $i); }
                         echo '</select>';?></label></td>
                         </tr>
+                        <tr></tr>
+                        <tr><td>Close Registration on </td><td><select name="close" >
+                        <?php
+                        
+                         if ($close == "start"){echo '<option value="start">Start of Event</option>';}
+                         if ($close == "end"){echo '<option value="end">End of Event</option>';}
+                         
+                         ?>
+                        <option value="start">Start of Event</option><option value="end">End of Event</option></select></td></tr>
                     </table>
         </div>
 
@@ -476,28 +491,39 @@ To create new display lines just press Enter.','evr_language');?>">
                 <li>Option to send unique email to a unique coordinators email address for each event payment recieved via PayPal IPN.</li>
                 <li>WYSIWYG editor for coordinator's email payment notification alert.</li>
                 </ul>
+                <p>The cost will be $10.00 per license/site.  To purchase this add on module:</p>
+
+<p><a href="http://wpeventregister.com/shop/event-registration-coordinator-module/">BUY COORDINATOR MODULE</a></p>
+<p>&nbsp;</p>
+
+
             </div>
       <?php  } ?>
         <div id="tab6"class="tab_content">
             <h2><?php _e('Confirmation eMail','evr_language');?></h2>
+            <table>
+            <tr><td>
             <label  class="tooltip" title="<?php _e('If you have send mail option enabled in the company settings, you can override the default mail by creating a custom mail for this event.','evr_language');?>">
-            <?php _e('Do you want to use a custom email for this event?','evr_language');?> <a><span>?</span></a></label>
-            <label>
+            <?php _e('Do you want to use a custom email for this event?','evr_language');?> <a><span>?</span></a></label></td>
+            <td><label>
             <input type="radio" name="send_mail" class="radio" value="Y" <?php if($send_mail == "Y"){echo "checked";};?> /><?php _e('Yes','evr_language');?>
-            </label><label>
+            </label></td>
+            <td>
+            <label>
             <input type="radio" name="send_mail" class="radio" value="N" <?php if($send_mail == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
-            </label>
-            <br />
-            <br />          
+            </label></td></tr>
+            <tr><td colspan="3">          
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
             <?php _e('Custom Confirmation Email','evr_language');?> <a><span>?</span></a></label>
               <?php
              
              
               if (function_exists('wp_editor')){
+               echo "</td></tr></table>";
               wp_editor( htmlspecialchars_decode($conf_mail), 'conf_mail', $editor_settings ); 
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+               </td></tr></table>
                <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $conf_mail;?></textarea>
                     <?php } ?>
              
@@ -512,9 +538,10 @@ To create new display lines just press Enter.','evr_language');?>">
 <div style="clear: both; display: block; padding: 10px 0; text-align:center;"><font color="blue"><?php _e('Please make sure you complete each section before submitting!','evr_language');?></font></div>
 <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
+<!--New Button for wpeventregister.com-->
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
