@@ -1,6 +1,10 @@
 Changes:
 =========
 
+= Version 6.00.25 =
+* Modified code on registration form to better display html
+
+
 = Version 6.00.24 =
 * Bug Fixes on registration form
 * Bug fixes on confirmation, and coordinator email fields
