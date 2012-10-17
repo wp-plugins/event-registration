@@ -1,6 +1,10 @@
 Changes:
 =========
 
+= Version 6.00.24 =
+* Bug Fixes on registration form
+* Bug fixes on confirmation, and coordinator email fields
+
 = Version 6.00.23 =
 * Added file needed for event list popup with colorbox
 

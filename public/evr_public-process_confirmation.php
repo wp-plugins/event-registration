@@ -12,66 +12,64 @@ function evr_process_confirmation(){
     global $wpdb;
     $company_options = get_option('evr_company_settings');
     $num_people = 0;
-    
+    #For security purposes we serialized all form data on the confirmation page
+    #this helps eliminate spam regisrations
+    #We need to now convert it back to strings for posting to the database.
     $reg_form = unserialize(urldecode($_POST["reg_form"]));
     $qanda = unserialize(urldecode($_POST["questions"]));
+    $attendee_array = $_POST['attendee'];
+    #We added a session toaken to the confirmation page to eliminate double postings
     $submitted_token = isset($_POST['token'])?$_POST['token']:'0';
-    
+    #Make sure we are registering for a valid event
     $passed_event_id = $reg_form["event_id"];
     if (is_numeric($passed_event_id)){$event_id = $passed_event_id;}
     else {echo "Failure - please retry!"; exit;}
-    
-    $attendee_array = $_POST['attendee'];
+    #Grab field data needed later    
     $ticket_array = unserialize($reg_form['tickets']);
     $attendee_list = serialize($attendee_array);
     $business =   serialize($company_options); 
-    // Start check to see if guest was already inserted earlier
+    # Start check to see if guest was already inserted earlier
     $attendee_sql = 'SELECT * FROM ' . get_option('evr_attendee') . " WHERE token='{$submitted_token}'";   
     $attendee_result = mysql_query($attendee_sql);
-
-    // If we got any rows featuring our unique ID, then the user was already submitted. Bail out. Otherwise, onward!
+    # Ideally there should be no records with the token, as it should be unique.  
+    # If there are no records then we can add this record.
     if (mysql_num_rows($attendee_result) == 0)
     {
-    
-    $sql=array('lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 'city'=>$reg_form['city'], 
-                'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 'email'=>$reg_form['email'],
-                'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],'quantity'=>$reg_form['num_people'],
-                'tickets'=>$reg_form['tickets'], 'payment'=>$reg_form['payment'],'tax'=>$reg_form['tax'],'attendees'=>$attendee_list,
-                'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_add'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
-                'co_zip'=>$reg_form['co_zip'], 'token'=>$submitted_token);
- 
-    $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
-    
-    $attendee_insert_sql_result = $wpdb->insert( get_option('evr_attendee'), $sql, $sql_data );
-	
-   if ($attendee_insert_sql_result){
-    // Insert Extra From Post Here
-            //$reg_id = $wpdb->get_var("SELECT LAST_INSERT_ID()");
-          $reg_id = $wpdb->insert_id;
-            if ( count($qanda)>"0"){
-                $i = 0;
-                 do {
-                    $question_id = $qanda[$i]['question'];
-                    $response  = $qanda[$i]["response"];
-                    $wpdb->query("INSERT into ".get_option('evr_answer')." (registration_id, question_id, answer)
-                	values ('$reg_id', '$question_id', '$response')");
-                    
-                                      
-                 ++$i;
-                 } while ($i < (count($qanda)+1));
-            }
-    } 
-     } else { 
-        // User was already inserted into the DB. Let's just grab their ID then, so we can move them to the confirmation page.
+        # Put all attendee data in an array for submission to the attendee database
+        $sql=array('lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 'city'=>$reg_form['city'], 
+                    'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 'email'=>$reg_form['email'],
+                    'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],'quantity'=>$reg_form['num_people'],
+                    'tickets'=>$reg_form['tickets'], 'payment'=>$reg_form['payment'],'tax'=>$reg_form['tax'],'attendees'=>$attendee_list,
+                    'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_add'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
+                    'co_zip'=>$reg_form['co_zip'], 'token'=>$submitted_token);
+        # Define datatypes for submission to database, should be one for each field to post
+        $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
+        #Post new attendee info to the Attendee Database
+        $attendee_insert_sql_result = $wpdb->insert( get_option('evr_attendee'), $sql, $sql_data );
+    	# If attendee record posted to the database, then add the custom questions as well.
+            if ($attendee_insert_sql_result){
+            # In order to post the custom, we need the id of the attendee we are posting for.
+                  $reg_id = $wpdb->insert_id;
+                  #Check our array of unserialized responses, if there are any begin posting to the answer database
+                  if ( count($qanda)>"0"){
+                        $i = 0;
+                         do {
+                            $question_id = $qanda[$i]['question'];
+                            $response  = $qanda[$i]["response"];
+                            $wpdb->query("INSERT into ".get_option('evr_answer')." (registration_id, question_id, answer)
+                        	values ('$reg_id', '$question_id', '$response')");
+                            ++$i;
+                         } while ($i < (count($qanda)+1));
+                    }
+            } 
+     } 
+     else { 
+        # If attendee record already existed in the database, get the id of the attendee for completing the registration process
         $attendee_row = mysql_fetch_assoc($attendee_result);
-
         $reg_id = $attendee_row['id'];
     }
-
+    #Now that the attendee record has been posted and we have id, redirect to confirmation page.
     $url_to_goto = evr_permalink($company_options['evr_page_id']).'action=show_confirm_mess&event_id='.$passed_event_id.'&amp;reg_id='.$reg_id;
-
-    /* printf("<script>location.href='{$url_to_goto}'</script>"); // Javascript option */
-
     echo '<meta http-equiv="refresh" content="0;url='.$url_to_goto .'" />';
 }
 
@@ -79,18 +77,13 @@ function evr_show_confirmation()
 {
     global $wpdb;
     $company_options = get_option('evr_company_settings');
-
-    if (is_numeric($_REQUEST['event_id'])){
-        $event_id = (int)$_REQUEST['event_id'];
-    }
-
-    if (is_numeric($_REQUEST['reg_id'])){
-        $reg_id = (int)$_REQUEST['reg_id'];
-    }
-
-    
-   _e("Your information has been received.",'evr_language');
-   echo "<br/>";
+    if (is_numeric($_REQUEST['event_id'])){ $event_id = (int)$_REQUEST['event_id']; }
+    if (is_numeric($_REQUEST['reg_id'])){ $reg_id = (int)$_REQUEST['reg_id'];}
+    # 
+    if ($company_options['info_recieved'] != ''){
+        echo $company_options['info_recieved'];
+    } else { _e("Your information has been received.",'evr_language'); }
+    echo "<br/>";
    
 
     
@@ -174,13 +167,15 @@ function evr_show_confirmation()
   $attendee_sql = "SELECT * FROM ". get_option('evr_attendee')." WHERE id=".$reg_id; 
   $attendee_result = mysql_query ( $attendee_sql  );
   $reg_form = mysql_fetch_assoc ( $attendee_result );
+  $attendee_array = unserialize($reg_form['attendees']);
+  $ticket_array = unserialize($reg_form['tickets']);
 
 //create array for invoice
 $invoice_data = array('reg_id'=>$reg_id,'lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 
                 'city'=>$reg_form['city'], 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 
                 'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_add'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
                 'co_zip'=>$reg_form['co_zip'], 'email'=>$reg_form['email'], 'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],
-                'event_name'=>$invoice_event, 'quantity'=>$reg_form['num_people'], 'tickets'=>$reg_form['tickets'], 
+                'event_name'=>$invoice_event, 'quantity'=>$reg_form['quantity'], 'tickets'=>$reg_form['tickets'], 
                 'payment'=>$reg_form['payment'], 'tax'=>$reg_form['tax'],'attendees'=>$attendee_list,'business'=>$business);
                 
 $invoice_post = urlencode(serialize($invoice_data));
@@ -229,18 +224,21 @@ $invoice_post = urlencode(serialize($invoice_data));
     $SearchValues = array(  "[id]","[fname]", "[lname]", "[phone]", 
                             "[address]","[city]","[state]","[zip]","[email]",
                             "[event]","[description]", "[cost]", "[currency]",
-                            "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]","[co_zip]", 
+                            "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", 
+							"[co_city]", "[co_state]","[co_zip]", 
                             "[payment_url]", "[start_date]", "[start_time]", "[end_date]","[end_time]", 
                             "[num_people]","[attendees]","[tickets]");
 
     $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], 
-                            $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
+                            $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], 
+							$reg_form['email'],
                             $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
                             $company_options['company_email'], $coord_email, stripslashes($company_options['company']), 
                             $company_options['company_street1'], $company_options['company_street2'],
-                            $company_options['company_city'], $company_options['company_state'], $company_options['company_postal'],
+                            $company_options['company_city'], $company_options['company_state'], 
+							$company_options['company_postal'],
                             $payment_link , $start_date,$start_time, $end_date, $end_time, 
-                            $reg_form['num_people'],$attendee_names, $ticket_list);
+                            $reg_form['quantity'],$attendee_names, $ticket_list);
 
     $email_content = str_replace($SearchValues, $ReplaceValues, $confirmation_email_body);
     $message_top = "<html><body>"; 
@@ -266,7 +264,7 @@ $invoice_post = urlencode(serialize($invoice_data));
                             $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'],                                      
                             $company_options['company_state'], $company_options['company_postal'],
                             $payment_link , $start_date,$start_time, $end_date, $end_time, 
-                            $reg_form['num_people'],$attendee_names, $ticket_list);
+                            $reg_form['quantity'],$attendee_names, $ticket_list);
 
     $wait_message_replaced = str_replace($SearchValues, $ReplaceValues, $wait_message);
    
@@ -327,7 +325,8 @@ if ($send_coord =="Y"){
     $SearchValues = array(  "[id]","[fname]", "[lname]", "[phone]", 
                             "[address]","[city]","[state]","[zip]","[email]",
                             "[event]","[description]", "[cost]", "[currency]",
-                            "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]","[co_zip]", 
+                            "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", 
+							"[co_city]", "[co_state]","[co_zip]", 
                             "[payment_url]", "[start_date]", "[start_time]", "[end_date]","[end_time]", 
                             "[num_people]","[attendees]","[tickets]","[custom]");
 
@@ -335,10 +334,11 @@ if ($send_coord =="Y"){
                             $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
                             $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
                             $company_options['company_email'], $coord_email, $company_options['company'], 
-                            $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'],            
+                            $company_options['company_street1'], $company_options['company_street2'],
+							$company_options['company_city'],            
                             $company_options['company_state'], $company_options['company_postal'],
                             $payment_link , $start_date,$start_time, $end_date, $end_time, 
-                            $reg_form['num_people'],$attendee_names, $ticket_list, $custom_responses);
+                            $reg_form['quantity'], $attendee_names, $ticket_list, $custom_responses);
 
     $email_content = str_replace($SearchValues, $ReplaceValues, $coord_msg);
     $message_top = "<html><body>"; 
@@ -405,8 +405,9 @@ if ($send_coord =="Y"){
 
 
 if ($company_options['evr_invoice'] == "Y"){
+    echo '<form id="invoice" class="evr_regform" method="post" target=_blank action="'.get_bloginfo('wpurl') .'/wp-content/plugins/event-registration/tcpdf/examples/invoice.php">';
 ?>
-<form id="invoice" class="evr_regform" method="post" target=_blank action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/event-registration/tcpdf/examples/invoice.php'?>">
+
 <input type="hidden" name="reg_form" value="<?php echo $invoice_post;?>" />
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Print Invoice','evr_language');?>" /> 
 </form>

@@ -8,12 +8,17 @@ function evr_get_open_seats($event_id,$reg_limit ){
         $open_seats = $reg_limit - $num;
         return $open_seats;
 }
-
+#Function to generate default form questions
 function evr_generate_frm_defaults($field,$tag){
-    echo '<li><label for="'.$field.'">'.$tag.
-    '</label><span class="fieldbox"><input type="text" id="'.
-    $field.'" name="'.$field.'" value="" /></span></li>';
-    }
+    ?>
+    <li>
+    <label for="<?php echo $field;?>"><?php echo $tag; ?></label>
+    <span class="fieldbox">
+        <input type="text" id="<?php echo $field; ?>" name="<?php echo $field;?>" value="" />
+    </span>
+    </li>
+    <?php
+}
 
 /** This function, evr_regform_new($event_id){} generates a registration form
  *  base on settings defined in the event with the id that is passed as $event_id 
@@ -131,9 +136,9 @@ $today = strtotime($current_dt);
 
 if ($expiration_date <= $today){
     echo '<br/><font color="red">';
-    e_('Registration is closed for this event.','evr_language');
+    _e('Registration is closed for this event.','evr_language');
     echo '<br/>';
-    e_('For more information or questions, please email: ','evr_language');
+    _e('For more information or questions, please email: ','evr_language');
     echo '</font><a href="mailto:'.$company_options['company_email'].'">'.$company_options['company_email'].'</a>';
     } 
     else {?> 
@@ -215,19 +220,20 @@ if ($expiration_date <= $today){
                         $req = '';
                         $isfees="Y";
                         #Set hidden value for registration type to RGLR vs. WAIT
-                        echo '<input type="hidden" name="reg_type" value="RGLR"/>';
-                        echo '<div align="left">';
-                        #Begin generation of DropDown Box               
-                        echo '<select name = "PROD_'. $fee->event_id . '-' . $fee->id . '_' . $fee->item_price .'" 
-                                        id = "PROD_'. $fee->event_id . '-' . $fee->id . '_' . $fee->item_price .'" ';
-                        #check to see if need to charge sales tax, select calculator based on tax/no tax
-                        if ($company_options['use_sales_tax'] == "Y"){ 
-                            echo 'onChange="CalculateTotalTax(this.form)"  >';
-                        } else {
-                            echo 'onChange="CalculateTotal(this.form)"  >';
-                        } 
+                        ?>
+                        <input type="hidden" name="reg_type" value="RGLR"/>
+                        <div align="left">
+                        <select name = "PROD_<?php echo $fee->event_id;?>-<?php echo $fee->id;?>_<?php echo  $fee->item_price;?>"
+                        id = "PROD_<?php echo $fee->event_id;?>-<?php echo $fee->id;?>_<?php echo  $fee->item_price;?>" onChange="
+                        <?php 
+                       #check to see if need to charge sales tax, select calculator based on tax/no tax
+                        if ($company_options['use_sales_tax'] == "Y"){  
+                           echo 'CalculateTotalTax(this.form)';
+                            } else { echo 'CalculateTotal(this.form)';}                        
+                            ?>
+                        "  ><option value="0">0</option>
+                        <?php
                         #Begin generation of DropDown Box - Options
-                        echo '<option value="0">0</option>';
                         #Check to see if the item is a REG type.  If REG, set options count based on seating availability/ ticke limits
                         if ($fee->item_cat == "REG"){
                             if ($fee->item_limit != ""){
@@ -248,7 +254,9 @@ if ($expiration_date <= $today){
                                 echo '<option value="'.($i) .'">'.($i).'</option>';
                             } 
                         } 
-                        echo '</select>';
+                        ?>
+                        </select>
+                        <?php
                         #Display Fee description and cost.
                         if ($fee->item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
                         if ($fee->item_custom_cur == "USD"){$item_custom_cur = "$";}
@@ -257,65 +265,84 @@ if ($expiration_date <= $today){
                     }
             #No fees are within todays date range.
             if ($isfees == "N"){
-                echo "<br/><hr><font color='red'>";
-                _e('No Fees/Items available for todays date!','evr_language');
-                echo "<br/>";
-                _e('Please update fee dates!','evr_language');
-                echo "</font><br/>";
-                #if no fees set hidden reg type to WAIT
-                echo '<input type="hidden" name="reg_type" value="WAIT" />';                    
+                ?>
+                <br /><hr /><font color='red'>
+                <?php _e('No Fees/Items available for todays date!','evr_language');?>
+                <br />
+                <?php  _e('Please update fee dates!','evr_language');?>
+                </font><br />
+                <?php #if no fees set hidden reg type to WAIT ?>
+                <input type="hidden" name="reg_type" value="WAIT" />
+                <?php
                 }
             echo '<br />';
             #Display the Total Boxes with Tax
             if ($company_options['use_sales_tax'] == "Y"){ ?>
-                                        <table>
-                                    <tr><td><b><?php _e('Registration Fees','evr_language');?></b></td><td><input type="text" name="fees" id="fees" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
-                                    <tr><td><b><?php _e('Sales Tax','evr_language');?></b></td><td><input type="text" name="tax" id="tax" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
-                                    <tr><td><b><?php _e('Total','evr_language');?></b></td><td><input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
-                                    </table>
+                <table>
+                <tr><td><b><?php _e('Registration Fees','evr_language');?></b></td><td><input type="text" name="fees" id="fees" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                <tr><td><b><?php _e('Sales Tax','evr_language');?></b></td><td><input type="text" name="tax" id="tax" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                <tr><td><b><?php _e('Total','evr_language');?></b></td><td><input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></td></tr>
+                </table>
             <?php
             } else {
             #Dsipaly Total Boxes without Tax    
             ?>
-                                    <br />
-                                    <b><?php _e('Total   ','evr_language');?><input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/></b>
-            <?php } ?>
-                                    <br />
-            <?php
+                <br />
+                <b>
+                <?php _e('Total   ','evr_language');?>
+                <input type="text" name="total" id="total" size="10" value="0.00" onFocus="this.form.elements[0].focus()"/>
+                </b>
+                <?php } ?>
+                <br />
+                <?php
             } else {
-                echo "<br/>";
-                echo "<hr><font color='red'>";
-                _e('No Fees Have Been Setup For This Event!','evr_language');
-                echo "<br/>";
-                _e('Registration for this event can not be taken at this time.','evr_language');
-                echo "<br/></font>";
+                ?>
+                <br />
+                <hr />
+                <font color='red'>
+                <?php _e('No Fees Have Been Setup For This Event!','evr_language');?>
+                <br />
+                <?php  _e('Registration for this event can not be taken at this time.','evr_language');?>
+                <br /></font>
+                <?php
             }
         } else {
-            echo '<hr><br><b><font color="red">';
-            _e('This event has reached registration capacity.','evr_language');
-            echo "<br>";
-            _e('Please provide your information to be placed on the waiting list.','evr_language');
-            echo '</b></font>';
             ?>
-            </br><input type="checkbox" onclick="mySubmit.disabled=false" name="request" value="Waitlist"> Put me on the waitlist.
+            <hr />
+            <br />
+            <b><font color="red">
+                <?php _e('This event has reached registration capacity.','evr_language');?>
+            <br>
+                <?php _e('Please provide your information to be placed on the waiting list.','evr_language');?>
+            </b></font>
+            <br />
+            
+            <input type="checkbox" onclick="mySubmit.disabled=false" name="request" value="Waitlist" /> 
+            <?php _e('Put me on the waitlist.','evr_language');?>
             <input type="hidden" name="reg_type" value="WAIT" />
             <?php   
         }
-        echo '<hr /><br />';
-        if ($company_options['captcha'] == 'Y') { 
-            echo '<p>'. __('Enter the security code as it is shown (required)','evr_language').'
-            <script type="text/javascript">sjcap("altTextField");</script></p>'.
-            '<noscript><p>['. __('This resource requires a Javascript enabled browser.','evr_language').']</p></noscript>';
+        ?>
+        <hr /><br />
+        <?php
+        if ($company_options['captcha'] == 'Y') { ?>
+            <p>
+            <?php  _e('Enter the security code as it is shown (required)','evr_language'); ?>
+            <script type="text/javascript">sjcap("altTextField");</script>
+            </p>
+            <noscript><p>[<?php _e('This resource requires a Javascript enabled browser.','evr_language');?>]</p></noscript>
+            <?php
         }
-        echo '<input type="hidden" name="action" value="confirm"/>
-            <input type="hidden" name="event_id" value="'.$event_id.'" />
-            <div style="margin-left: 150px;">
-            <input type="submit" name="mySubmit" id="mySubmit" disabled="true" 
-            value="'. __('Submit','evr_language').'" /> 
-            <input type="reset" value="'. __('Reset','evr_language').'"  />
-            </div>
-            </form>';
-echo '</div>';
-    } 
+        ?>
+        <input type="hidden" name="action" value="confirm"/>
+        <input type="hidden" name="event_id" value="<?php echo $event_id; ?>" />
+        <div style="margin-left: 150px;">
+        <input type="submit" name="mySubmit" id="mySubmit" disabled="true" value="<?php _e('Submit','evr_language');?>" />
+        <input type="reset" value="<?php _e('Reset','evr_language');?>" />
+        </div>
+        </form>
+        </div>
+        <?php
+   } 
 }
 ?>

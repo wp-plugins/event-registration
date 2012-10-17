@@ -4,7 +4,12 @@
  * @copyright 2010
  */
 
-
+/*
+6.00.24 - No Changes
+6.00.23 - No Changes
+6.00.22 - No Changes
+6.00.21 - No Changes
+*/
 /*
 6.00.20 -
 Added token field to attendee table to prevent duplicate entries.
@@ -71,7 +76,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.20";
+    $cur_build = "6.00.24";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -100,7 +105,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.20";
+    $upgrade_version = "0.24";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
