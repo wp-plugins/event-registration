@@ -52,7 +52,7 @@ margin-left: -1.3em;
         	<div class='postbox-container' style='width:65%;'>
                 <div id='normal-sortables' class='meta-box-sortables'>
                     <div id="dashboard_right_now" class="postbox " >
-                        <h3 class='hndle'><span><?php _e('ReOrder Event Questions for display order: ','evr_language');?><?php echo stripslashes($event_name)." at ".$event_location."  ".$start_date."-".$end_date;?></span></h3>
+                        <h3 class='hndle'><span><?php _e('ReOrder Event Questions for display order: ','evr_language');?><?php echo stripslashes($event_name);?></span></h3>
                          <div class="inside">
                             <div class="padding">        
     			                 <ul id="er_ticket_sortable">	

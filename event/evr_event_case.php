@@ -37,7 +37,7 @@ function evr_admin_events(){
     //item/cost components 
      
       case "add_item":
-        evr_add_item();
+        evr_add_item1();
       break; 
       
       case "edit_item":

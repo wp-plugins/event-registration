@@ -5,6 +5,40 @@
  */
 
 /*
+6.00.25 - No DB Changes
+6.00.24 - No DB Changes
+6.00.23 - No DB Changes
+6.00.22 - No DB Changes
+6.00.21 - No DB Changes
+*/
+/*
+6.00.20 -
+Added token field to attendee table to prevent duplicate entries.
+*/
+/*
+6.00.19 -
+Added close field to events to signify when events close, start or end date.
+*/
+/*
+6.00.18 -
+No db changes
+*/
+/*
+6.00.17
+increased field size for Events - Reg_Form_defaults to 200
+Removed type definition for Question and Answer tables
+-removed automatic notification of plugin activation
+*/
+/*
+6.00.16 -
+No db changes
+*/
+/*
+6.00.15 -
+added company fields to attendee
+*/
+
+/*
 6.00.14 -
 added tax to attendee
 */
@@ -43,7 +77,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.142";
+    $cur_build = "6.00.24";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -65,12 +99,14 @@ function evr_install()
     evr_payment_db();
     evr_question_db();
     evr_answer_db();
-    evr_notification();
+    evr_generator();
+    //evr_notification();removed automatic notification of plugin activation
+    
 }
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.14.2";
+    $upgrade_version = "0.24";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -125,12 +161,47 @@ function evr_upgrade_tables(){
              $wpdb->query($sql);
             }
         $value = "tax";
-        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD tax VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL AFTER quantity";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD tax VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }
-            
-                    
+         //added for 6.00.15   
+        $value = "company";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD company VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        
+        $value = "co_address";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_address VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+                
+        $value = "co_city";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_city VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }       
+
+        $value = "co_state";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_state VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }       
+
+        $value = "co_zip";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD co_zip VARCHAR(45) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            } 
+         
+        $value = "token";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD token VARCHAR(32) NOT NULL  DEFAULT'0'";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }       
+                 
 //
 // Event Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -212,6 +283,12 @@ function evr_upgrade_tables(){
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
             }
+            
+        $value = "close";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD close VARCHAR (65) DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }    
         /*
         
                   send_coord VARCHAR(2) DEFAULT NULL,
@@ -430,7 +507,7 @@ function evr_upgrade_tables(){
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
     $headers .= "From: Plugin Upgrade <>\r\n";
     $email_body = get_option('siteurl');
-    wp_mail("activation@wordpresseventregister.com", $email_body." Upgraded" . $upgrade_version,
+    wp_mail("activation@wpeventregister.com", $email_body." Upgraded" . $upgrade_version,
         html_entity_decode($email_body), $headers);
 
 }
@@ -455,12 +532,17 @@ function evr_attendee_db()
 					  state VARCHAR(45) DEFAULT NULL,
 					  zip VARCHAR(45) DEFAULT NULL,
 					  reg_type VARCHAR (45) DEFAULT NULL,
-					  email VARCHAR(65) DEFAULT NULL,
+					  email VARCHAR(85) DEFAULT NULL,
 					  phone VARCHAR(45) DEFAULT NULL,
-					  date timestamp NOT NULL default CURRENT_TIMESTAMP,
-					  event_id VARCHAR(45) DEFAULT NULL,
+                      company VARCHAR(45) DEFAULT NULL,
+                      co_address VARCHAR(45) DEFAULT NULL,
+                      co_city VARCHAR(45) DEFAULT NULL,
+                      co_state VARCHAR(45) DEFAULT NULL,
+                      co_zip VARCHAR(45) DEFAULT NULL,
+                      date timestamp NOT NULL default CURRENT_TIMESTAMP,
+                      event_id VARCHAR(45) DEFAULT NULL,
                       coupon VARCHAR(45) DEFAULT NULL,
-					  quantity VARCHAR(45) DEFAULT NULL,
+                      quantity VARCHAR(45) DEFAULT NULL,
                       attendees MEDIUMTEXT DEFAULT NULL,
                       tickets MEDIUMTEXT DEFAULT NULL,
                       payment VARCHAR(45) DEFAULT NULL,
@@ -468,10 +550,12 @@ function evr_attendee_db()
                       payment_status VARCHAR(45) DEFAULT NULL,
                       amount_pd VARCHAR (45) DEFAULT NULL,
                       payment_date varchar(30) DEFAULT NULL,
+                      token varchar(32) NOT NULL DEFAULT '0',
                       UNIQUE KEY id (id)
 					) DEFAULT CHARSET=utf8;";
 
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
 
         //create option in the wordpress options tale for the event attendee table name
@@ -509,6 +593,7 @@ function evr_category_db()
 					) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+        dbDelta($sql);
         //create option in the wordpress options table for the event category table
         $option_name = 'evr_category';
         $newvalue = $table_name;
@@ -530,53 +615,56 @@ function evr_event_db()
     $evr_event_version = $cur_build;
    
         $sql = "CREATE TABLE " . $table_name . " (
-				  id MEDIUMINT NOT NULL AUTO_INCREMENT,
-				  event_name VARCHAR(100) DEFAULT NULL,
-				  event_desc TEXT DEFAULT NULL,
-				  event_location VARCHAR(300) DEFAULT NULL,
-                  event_address VARCHAR(100) DEFAULT NULL,
-                  event_city VARCHAR(100) DEFAULT NULL,
-                  event_state VARCHAR(100) DEFAULT NULL,
-                  event_postal VARCHAR(100) DEFAULT NULL,
-                  google_map VARCHAR (4) DEFAULT NULL,
-                  outside_reg VARCHAR (4) DEFAULT NULL,
-                  external_site VARCHAR (100) DEFAULT NULL,
-				  display_desc VARCHAR (4) DEFAULT NULL,
-				  image_link VARCHAR(100) DEFAULT NULL,
-				  header_image VARCHAR(100) DEFAULT NULL,
-				  event_identifier VARCHAR(45) DEFAULT NULL,
-				  more_info VARCHAR(100) DEFAULT NULL,
-				  start_month VARCHAR (15) DEFAULT NULL,
-				  start_day VARCHAR (15) DEFAULT NULL,
-				  start_year VARCHAR (15) DEFAULT NULL,
-                  start_time VARCHAR (15) DEFAULT NULL,
-				  start_date VARCHAR (15) DEFAULT NULL,
-				  end_month VARCHAR (15) DEFAULT NULL,
-				  end_day VARCHAR (15) DEFAULT NULL,
-				  end_year VARCHAR (15) DEFAULT NULL,
-				  end_date VARCHAR (15) DEFAULT NULL,
-				  end_time VARCHAR (15) DEFAULT NULL,
-				  reg_limit VARCHAR (15) DEFAULT NULL,
-                  custom_cur VARCHAR(10) DEFAULT NULL,
-				  reg_form_defaults VARCHAR(100) DEFAULT NULL,
-				  allow_checks VARCHAR(45) DEFAULT NULL,
-				  send_mail VARCHAR (2) DEFAULT NULL,
-                  send_contact VARCHAR (2) DEFAULT NULL,
-                  contact_email VARCHAR(65) DEFAULT NULL,
-                  contact_msg TEXT DEFAULT NULL,
-				  is_active VARCHAR(45) DEFAULT NULL,
-				  conf_mail TEXT DEFAULT NULL,
-                  use_coupon VARCHAR(2) DEFAULT NULL,
-				  coupon_code VARCHAR(50) DEFAULT NULL,
-				  coupon_code_price decimal(7,2) DEFAULT NULL,
-				  category_id TEXT,
-                  send_coord VARCHAR(2) DEFAULT NULL,
-                  coord_email VARCHAR(65) DEFAULT NULL,
-                  coord_msg TEXT DEFAULT NULL,
-                  coord_pay_msg TEXT DEFAULT NULL,
-                  UNIQUE KEY id (id)
-				) DEFAULT CHARSET=utf8;";
+          id MEDIUMINT NOT NULL AUTO_INCREMENT,
+          event_name VARCHAR(100) DEFAULT NULL,
+          event_desc TEXT DEFAULT NULL,
+          event_location VARCHAR(300) DEFAULT NULL,
+          event_address VARCHAR(100) DEFAULT NULL,
+          event_city VARCHAR(100) DEFAULT NULL,
+          event_state VARCHAR(100) DEFAULT NULL,
+          event_postal VARCHAR(100) DEFAULT NULL,
+          google_map VARCHAR (4) DEFAULT NULL,
+          outside_reg VARCHAR (4) DEFAULT NULL,
+          external_site VARCHAR (100) DEFAULT NULL,
+          display_desc VARCHAR (4) DEFAULT NULL,
+          image_link VARCHAR(100) DEFAULT NULL,
+          header_image VARCHAR(100) DEFAULT NULL,
+          event_identifier VARCHAR(45) DEFAULT NULL,
+          more_info VARCHAR(100) DEFAULT NULL,
+          start_month VARCHAR (15) DEFAULT NULL,
+          start_day VARCHAR (15) DEFAULT NULL,
+          start_year VARCHAR (15) DEFAULT NULL,
+          start_time VARCHAR (15) DEFAULT NULL,
+          start_date VARCHAR (15) DEFAULT NULL,
+          end_month VARCHAR (15) DEFAULT NULL,
+          end_day VARCHAR (15) DEFAULT NULL,
+          end_year VARCHAR (15) DEFAULT NULL,
+          end_date VARCHAR (15) DEFAULT NULL,
+          end_time VARCHAR (15) DEFAULT NULL,
+          reg_limit VARCHAR (15) DEFAULT NULL,
+          custom_cur VARCHAR(10) DEFAULT NULL,
+          reg_form_defaults VARCHAR(200) DEFAULT NULL,
+          allow_checks VARCHAR(45) DEFAULT NULL,
+          send_mail VARCHAR (2) DEFAULT NULL,
+          send_contact VARCHAR (2) DEFAULT NULL,
+          contact_email VARCHAR(65) DEFAULT NULL,
+          contact_msg TEXT DEFAULT NULL,
+          is_active VARCHAR(45) DEFAULT NULL,
+          conf_mail TEXT DEFAULT NULL,
+          use_coupon VARCHAR(2) DEFAULT NULL,
+          coupon_code VARCHAR(50) DEFAULT NULL,
+          coupon_code_price decimal(7,2) DEFAULT NULL,
+          category_id TEXT,
+          send_coord VARCHAR(2) DEFAULT NULL,
+          coord_email VARCHAR(65) DEFAULT NULL,
+          coord_msg TEXT DEFAULT NULL,
+          coord_pay_msg TEXT DEFAULT NULL,
+          close VARCHAR (65) DEFAULT NULL,
+          
+          UNIQUE KEY id (id)
+          ) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
 
         //create option for table name
@@ -613,6 +701,7 @@ function evr_cost_db()
             UNIQUE KEY  (id)
 			) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_cost';
@@ -666,6 +755,7 @@ function evr_payment_db()
 
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+        dbDelta($sql);
 
         //create option in the wordpress options tale for the event payment transaction table name
         $option_name = 'evr_payment';
@@ -695,8 +785,9 @@ function evr_question_db()
           response text NOT NULL,
           required enum('Y','N') NOT NULL DEFAULT 'N',
           UNIQUE KEY id (id)
-        ) TYPE=MyISAM AUTO_INCREMENT=1 ;";
+        ) AUTO_INCREMENT=1 ;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_question';
@@ -724,8 +815,9 @@ function evr_answer_db()
           question_id int(11) NOT NULL DEFAULT '0',
           answer text NOT NULL,
           UNIQUE KEY id (registration_id,question_id)
-        ) TYPE=MyISAM DEFAULT CHARSET=utf8;";
+        )  DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
         dbDelta($sql);
    //create option in the wordpress options tale for the event answer table name
         $option_name = 'evr_answer';
@@ -741,20 +833,32 @@ function evr_answer_db()
 
 }
 
+function evr_generator()
+{
+    global $evr_date_format, $evr_ver, $wpdb;
+    $guid=md5(uniqid(mt_rand(), true));
+    $option_name = 'plug-evr-activate';
+    $newvalue = $guid;
+    update_option($option_name, $newvalue);
+    $installed_date = strtotime('now');
+    update_option('evr_date_installed', $installed_date);
+}
+/*
+Removed this function per Wordpress Directive
 function evr_notification()
 {
-    $guid=md5(uniqid(mt_rand(), true));
+
+    $guid= get_option('plug-evr-activate');
     $headers = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
     $headers .= "From: Plugin Activation <>\r\n";
     $email_body = get_option('siteurl')." - ".$guid;
     
-    wp_mail("activation@wordpresseventregister.com", get_option('siteurl') . " - " .
+    wp_mail("activation@wpeventregister.com", get_option('siteurl') . " - " .
         $cur_build, html_entity_decode($email_body), $headers);
-        
-        $option_name = 'plug-evr-activate';
-        $newvalue = $guid;
-        update_option($option_name, $newvalue);
+
 
 }
+
+*/
 ?>
