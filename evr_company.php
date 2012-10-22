@@ -29,6 +29,7 @@ function evr_admin_company(){
                $company_options['payment_vendor']    = $_POST['payment_vendor'];
                $company_options['payment_vendor_id'] = $_POST['payment_vendor_id'];
                $company_options['payment_vendor_key']= $_POST['payment_vendor_key'];
+               $company_options['pay_msg']           = $_POST['pay_msg'];
                $company_options['return_url']        = $_POST['return_url'];
                $company_options['notify_url']        = $_POST['notify_url'];
                $company_options['cancel_return']     = $_POST['cancel_return'];
@@ -173,6 +174,14 @@ function evr_admin_company(){
                             <option value="MONSTER">MONSTER PAY</option>
                             <option value="CUSTOM">CUSTOM</option>
                         </select></td>
+                        </tr>
+                        <tr valign="top">
+                        <th scope="row"><label for="pay_msg"><?php _e('Payment Message on Confirmation Screen','evr_language');?></label></th>
+                        <td><input  name="pay_msg" value="<?php  
+                        if ($company_options['pay_msg'] != ""){echo $company_options['pay_msg'];} else {
+                            _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language');
+                        }
+                        ?>"  maxlength="93" size="95"/></td>
                         </tr>
                         <tr valign="top">
                         <th scope="row"></th><td></td>

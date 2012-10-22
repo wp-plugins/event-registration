@@ -10,6 +10,9 @@ function evr_htmlchanger($string)
 function evr_process_confirmation(){
      
     global $wpdb;
+    ?>
+    <img src="<?php echo EVR_PLUGINFULLURL;?>colorbox/images/loading.gif" />
+    <?php
     $company_options = get_option('evr_company_settings');
     $num_people = 0;
     #For security purposes we serialized all form data on the confirmation page
@@ -367,7 +370,7 @@ if ($send_coord =="Y"){
              _e("Registration, however, is not complete until we have received your payment.",'evr_language'); 
            echo " ";
            if ($company_options['checks'] == "Yes"){
-                _e("You may pay online or by check.  If you are paying by check, please mail your check today to:",'evr_language');
+                _e("You may pay by check.  If you are paying by check, please mail your check today to:",'evr_language');
                 echo "<p>".
                 stripslashes($company_options['company'])."<br />".
                 $company_options['company_street1']."<br />";
@@ -377,7 +380,7 @@ if ($send_coord =="Y"){
                  _e("Reference ",'evr_language');
                  echo "<b>".$event_name." - ID: ".$reg_id."</b><br/><br/>";
             }     
-           _e("To pay online, please select the Pay Now button to be taken to our payment vendor's site.",'evr_language'); 
+           
            echo "<hr/>";
            evr_registration_payment($event_id, $reg_id);
            }

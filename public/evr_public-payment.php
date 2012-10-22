@@ -65,6 +65,48 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
     
     //Get Payment Info
     if ($company_options['pay_now']!=""){$pay_now = $company_options['pay_now'];} else {$pay_now = "PAY NOW";}
+
+if ($company_options['payment_vendor']==""||$company_options['payment_vendor']=="NONE"){
+// Print the Order Verification to the screen.
+     if ($company_options['pay_msg'] !=""){ echo $company_options['pay_msg']; }
+     else { _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language'); }
+     
+     echo '<br/>';
+     
+      
+      
+     echo "Reference ".$event_name." ID: ".$event_id."<br/>";
+     echo '<br/>';
+     echo '<p align="left"><strong>'.__('Order details:','evr_language').'</strong></p><table width="95%" border="0"><tr><td><strong>';
+                
+                _e(' Event Name/Cost:','evr_language');
+                echo '</strong></td><td>'.$event_name.' - '.$ticket_order[0]['ItemCurrency'].' '.$payment.'</td></tr><tr><td><strong>';
+                _e('Attendee Name:','evr_language');
+                echo '</strong></td><td>'.$attendee_name.'</td></tr><tr><td><strong>';
+                _e('Email Address:','evr_language');
+                echo '</strong></td><td>'.$email.'</td></tr><tr><td><strong>';
+                _e('Number of Attendees:','evr_language');
+                echo '</strong></td><td>'.$quantity.'</td></tr><tr><td><strong>';
+                _e('Order Details:','evr_language');
+                echo '</strong></td><td>';
+                $row_count = count($ticket_order);
+                    for ($row = 0; $row < $row_count; $row++) {
+                        if ($ticket_order[$row]['ItemQty'] >= "1"){ 
+                            echo $ticket_order[$row]['ItemQty']." ".$ticket_order[$row]['ItemCat']."-".$ticket_order[$row]['ItemName']." ".
+                            $ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']."<br \>";
+                            }
+                        } 
+                echo '</td></tr>';
+                if ($company_options['use_sales_tax'] == "Y"){ 
+                    echo '<tr><td></td><td>';
+                    _e('Sales Tax  ','evr_language'); 
+                    echo ':  '.$tax;
+                    echo '</td></tr>';
+                    } 
+                echo '<tr><td><strong>'.__('Total Cost:','evr_language').'</strong></td>';
+                echo '<td>'.$ticket_order[0]['ItemCurrency'].'  <strong>'.number_format($payment,2).'</strong></td></tr></table><br />';    
+                   
+}                   
     
 //Paypal 
 if ($company_options['payment_vendor']=="PAYPAL"){
@@ -99,7 +141,10 @@ if ($company_options['payment_vendor']=="PAYPAL"){
 				  $p->add_field('state', $state);
 				  $p->add_field('zip', $zip);				 
                 
-                
+                if ($company_options['pay_msg'] !=""){ echo $company_options['pay_msg']; }
+     else { _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language'); }
+     
+     echo '<br/>';
                 echo '<p align="left"><strong>'.__('Order details:','evr_language').'</strong></p><table width="95%" border="0"><tr><td><strong>';
                 
                 _e(' Event Name/Cost:','evr_language');
@@ -177,7 +222,10 @@ if ($company_options['payment_vendor']=="AUTHORIZE"){
         {	$fingerprint = hash_hmac("md5", $loginID . "^" . $sequence . "^" . $timeStamp . "^" . $amount . "^", $transactionKey); }
         else 
         { $fingerprint = bin2hex(mhash(MHASH_MD5, $loginID . "^" . $sequence . "^" . $timeStamp . "^" . $amount . "^", $transactionKey)); }
-        
+        if ($company_options['pay_msg'] !=""){ echo $company_options['pay_msg']; }
+     else { _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language'); }
+     
+     echo '<br/>';
         // Print the Order Verification to the screen.
         echo '<p align="left"><strong>'.__('Order details:','evr_language').'</strong></p><table width="95%" border="0"><tr><td><strong>';
                 
@@ -233,6 +281,10 @@ if ($company_options['payment_vendor']=="AUTHORIZE"){
 //GooglePay Payment Section
     if ($company_options['payment_vendor']=="GOOGLE"){
     // Print the Order Verification to the screen.
+    if ($company_options['pay_msg'] !=""){ echo $company_options['pay_msg']; }
+     else { _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language'); }
+     
+     echo '<br/>';
         // Print the Order Verification to the screen.
         echo '<p align="left"><strong>'.__('Order details:','evr_language').'</strong></p><table width="95%" border="0"><tr><td><strong>';
                 
@@ -285,6 +337,10 @@ if ($company_options['payment_vendor']=="AUTHORIZE"){
 //Begin Monster Pay Section
 if ($company_options['payment_vendor']=="MONSTER"){
     // Print the Order Verification to the screen.
+    if ($company_options['pay_msg'] !=""){ echo $company_options['pay_msg']; }
+     else { _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language'); }
+     
+     echo '<br/>';
        // Print the Order Verification to the screen.
         echo '<p align="left"><strong>'.__('Order details:','evr_language').'</strong></p><table width="95%" border="0"><tr><td><strong>';
                 
