@@ -162,7 +162,7 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
         if ($inc_phone == "Y") { 
             evr_generate_frm_defaults('phone',__('Phone Number','evr_language'));
         }
-        if ($inc_address == "Y") 
+        if ($inc_address == "Y") {
             evr_generate_frm_defaults('address',__('Street/PO Address','evr_language'));
         } 
         if ($inc_city == "Y") { 
