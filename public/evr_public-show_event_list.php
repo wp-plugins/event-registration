@@ -36,6 +36,8 @@ echo '<tbody>';
                 $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
                 $expiration_date = strtotime($stp);
                 #check to see if there is a custom template for the table if not, use the deafule
+                $codeToReturn = '';
+                $outside_reg = '';
                 if ($public_list_template == ''){
                     #Check to see if the end time of this event is later than now, if so then display then send the event deatils to a string
             		if ($stp >= $current_dt){

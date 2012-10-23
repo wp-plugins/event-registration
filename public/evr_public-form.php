@@ -354,4 +354,5 @@ echo $fee->item_title . "    " . $item_custom_cur . " " . $fee->item_price; ?></
 <?php
    } 
 }
+}
 ?>

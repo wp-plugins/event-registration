@@ -68,7 +68,7 @@ function evr_registration_payment($passed_event_id, $passed_attendee_id){
 
 if ($company_options['payment_vendor']==""||$company_options['payment_vendor']=="NONE"){
 // Print the Order Verification to the screen.
-     if ($company_options['pay_msg'] !=""){ echo $company_options['pay_msg']; }
+     if ($company_options['pay_msg'] !=""){ echo stripslashes($company_options['pay_msg']); }
      else { _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language'); }
      
      echo '<br/>';
@@ -141,10 +141,11 @@ if ($company_options['payment_vendor']=="PAYPAL"){
 				  $p->add_field('state', $state);
 				  $p->add_field('zip', $zip);				 
                 
-                if ($company_options['pay_msg'] !=""){ echo $company_options['pay_msg']; }
+                if ($company_options['pay_msg'] !=""){ echo stripslashes($company_options['pay_msg']); }
      else { _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language'); }
      
      echo '<br/>';
+     $p->submit_paypal_post($pay_now); // submit the fields to paypal
                 echo '<p align="left"><strong>'.__('Order details:','evr_language').'</strong></p><table width="95%" border="0"><tr><td><strong>';
                 
                 _e(' Event Name/Cost:','evr_language');
@@ -173,7 +174,7 @@ if ($company_options['payment_vendor']=="PAYPAL"){
                     } 
                 echo '<tr><td><strong>'.__('Total Cost:','evr_language').'</strong></td>';
                 echo '<td>'.$ticket_order[0]['ItemCurrency'].'<strong>'.number_format($payment,2).'</strong></td></tr></table><br />';    
-                $p->submit_paypal_post($pay_now); // submit the fields to paypal
+                
 	            if ($company_options['use_sandbox'] == "Y") {
 					  $p->dump_fields(); // for debugging, output a table of all the fields
 	           }   

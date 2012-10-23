@@ -16,24 +16,26 @@ function evr_confirm_form(){
         }
     
     //Begin gather registrtion data for database input
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname'];
-    $address = $_POST['address'];
-    $city = $_POST['city'];
-    $state = $_POST['state'];
-    $zip = $_POST['zip'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
-    $fees = $_POST['fees'];
-    $tax = $_POST['tax'];
-    $payment = $_POST['total'];
-    $coupon = $_POST['coupon'];
-    $reg_type = $_POST['reg_type'];
-    $company = $_POST['company'];
-    $coadd = $_POST['co_address'];
-    $cocity = $_POST['co_city'];
-    $costate = $_POST['co_state'];
-    $cozip = $_POST['co_zip'];
+    if (isset($_POST['fname'])){ $fname = $_POST['fname'];}
+    if (isset($_POST['lname'])){$lname = $_POST['lname'];} 
+    if (isset($_POST['email'])){$email = $_POST['email'];} 
+    if (isset($_POST['address'])){$address = $_POST['address'];} else { $address = '';}
+    if (isset($_POST['city'])){$city = $_POST['city'];} else {$city = '';}
+    if (isset($_POST['state'])){$state = $_POST['state'];} else { $state = '';}
+    if (isset($_POST['zip'])){$zip = $_POST['zip'];} else { $zip = '';}
+    if (isset($_POST['phone'])){$phone = $_POST['phone'];} else {$phone = '';}
+     
+    if (isset($_POST['fees'])){$fees = $_POST['fees'];} else { $fees = '';}
+    if (isset($_POST['tax'])){$tax = $_POST['tax'];} else { $tax = '';}
+    if (isset($_POST['total'])){$payment = $_POST['total'];} else {$payment = '';}
+    if (isset($_POST['coupon'])){$coupon = $_POST['coupon'];} else { $coupon = '';}
+    if (isset($_POST['reg_type'])){$reg_type = $_POST['reg_type'];} else { $reg_type = '';}
+    if (isset($_POST['company'])){$company = $_POST['company'];} else { $company  = '';}
+    if (isset($_POST['co_address'])){$coadd = $_POST['co_address'];} else {$coadd = '';}
+    if (isset($_POST['co_city'])){$cocity = $_POST['co_city'];} else {$cocity  = '';}
+    if (isset($_POST['co_state'])){ $costate = $_POST['co_state'];} else { $costate = '';}
+    if (isset($_POST['co_zip'])){$cozip = $_POST['co_zip'];} else { $cozip = '';}
+    if (isset($_POST['co_phone'])){$cophone = $_POST['co_phone'];} else { $cophone = '';}
     
     $attendee_name = $fname." ".$lname;
     
@@ -179,7 +181,7 @@ echo '<p align="left"><strong>';
 if ($reg_type == "WAIT"){
     $type = __('You are on the waiting list.','evr_language');
 }
-if ($reg_type == "REG"){
+if ($reg_type == "RGLR"){
     $type = __('You are registering for','evr_language').$quantity.__('people.','evr_language')."   ".__('Please provide the first and last name of each person:','evr_language');
     }
 echo $type;

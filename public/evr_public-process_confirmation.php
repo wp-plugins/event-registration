@@ -83,7 +83,8 @@ function evr_show_confirmation()
     if (is_numeric($_REQUEST['event_id'])){ $event_id = (int)$_REQUEST['event_id']; }
     if (is_numeric($_REQUEST['reg_id'])){ $reg_id = (int)$_REQUEST['reg_id'];}
     # 
-    if ($company_options['info_recieved'] != ''){
+    if (isset($company_options['info_recieved']) && ($company_options['info_recieved'] !='')){
+     
         echo $company_options['info_recieved'];
     } else { _e("Your information has been received.",'evr_language'); }
     echo "<br/>";
@@ -112,13 +113,13 @@ function evr_show_confirmation()
           $event_identifier = stripslashes($row['event_identifier']);
           $display_desc = $row['display_desc'];  // Y or N
           $event_desc = html_entity_decode(stripslashes($row['event_desc']));
-          $event_category = unserialize($_REQUEST['event_category']);
+          $event_category = unserialize($row['category_id']);
           $reg_limit = $row['reg_limit'];
           $event_location = $row['event_location'];
           $event_address = $row['event_address'];
           $event_city = $row['event_city'];
           $event_state =$row['event_state'];
-          $event_postal=$row['event_postcode'];
+          $event_postal=$row['event_postal'];
           $google_map = $row['google_map'];  // Y or N
           $start_month = $row['start_month'];
           $start_day = $row['start_day'];
@@ -134,7 +135,7 @@ function evr_show_confirmation()
           $more_info = $row['more_info'];
         	$image_link = $row['image_link'];
         	$header_image = $row['header_image'];
-          $event_cost = $row['event_cost'];
+          //$event_cost = $row['event_cost'];
           $allow_checks = $row['allow_checks'];
           $is_active = $row['is_active'];
           $send_mail = $row['send_mail'];  // Y or N
@@ -172,14 +173,15 @@ function evr_show_confirmation()
   $reg_form = mysql_fetch_assoc ( $attendee_result );
   $attendee_array = unserialize($reg_form['attendees']);
   $ticket_array = unserialize($reg_form['tickets']);
+  $business = '';
 
 //create array for invoice
 $invoice_data = array('reg_id'=>$reg_id,'lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 
                 'city'=>$reg_form['city'], 'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 
-                'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_add'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
+                'company'=>$reg_form['company'], 'co_address'=>$reg_form['co_address'], 'co_city'=>$reg_form['co_city'], 'co_state'=>$reg_form['co_state'],
                 'co_zip'=>$reg_form['co_zip'], 'email'=>$reg_form['email'], 'phone'=>$reg_form['phone'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],
                 'event_name'=>$invoice_event, 'quantity'=>$reg_form['quantity'], 'tickets'=>$reg_form['tickets'], 
-                'payment'=>$reg_form['payment'], 'tax'=>$reg_form['tax'],'attendees'=>$attendee_list,'business'=>$business);
+                'payment'=>$reg_form['payment'], 'tax'=>$reg_form['tax'],'attendees'=>$attendee_array,'business'=>$business);
                 
 $invoice_post = urlencode(serialize($invoice_data));
 
@@ -197,7 +199,7 @@ $invoice_post = urlencode(serialize($invoice_data));
  */   
 //Send Confirmation Email   
    //Select the default message
-   if ($company_options['send_confirm']=="Y"){
+if ($company_options['send_confirm']=="Y"){
       if ($send_mail == "Y"){
             $confirmation_email_body = $conf_mail;
            }
@@ -216,6 +218,7 @@ $invoice_post = urlencode(serialize($invoice_data));
             }
             
     $row_count = count($ticket_array);
+    $ticket_list = "";
     for ($row = 0; $row < $row_count; $row++) {
     if ($ticket_array[$row]['ItemQty'] >= "1"){ $ticket_list.= $ticket_array[$row]['ItemQty']." ".$ticket_array[$row]['ItemCat']."-".$ticket_array[$row]['ItemName']." ".$ticket_array[$row]['ItemCurrency'] . " " . $ticket_array[$row]['ItemCost']."<br \>";}
     } 
@@ -303,7 +306,11 @@ if ($send_coord =="Y"){
                     ++$i;
                  } while ($i < count($attendee_array));
             }
-         
+    $row_count = count($ticket_array);
+    $ticket_list = "";
+    for ($row = 0; $row < $row_count; $row++) {
+    if ($ticket_array[$row]['ItemQty'] >= "1"){ $ticket_list.= $ticket_array[$row]['ItemQty']." ".$ticket_array[$row]['ItemCat']."-".$ticket_array[$row]['ItemName']." ".$ticket_array[$row]['ItemCurrency'] . " " . $ticket_array[$row]['ItemCost']."<br \>";}
+    }     
     $payment_link = evr_permalink($company_options['return_url']). "id=".$reg_id."&fname=".$reg_form['fname'];
     
     //get answers to custom questions
@@ -368,7 +375,7 @@ if ($send_coord =="Y"){
 //If there is a balance of payment over 0, then notify attendee of payment need.  
    if ($reg_form['payment'] > "0"){
              _e("Registration, however, is not complete until we have received your payment.",'evr_language'); 
-           echo " ";
+           echo "<br/> ";
            if ($company_options['checks'] == "Yes"){
                 _e("You may pay by check.  If you are paying by check, please mail your check today to:",'evr_language');
                 echo "<p>".
@@ -376,11 +383,9 @@ if ($send_coord =="Y"){
                 $company_options['company_street1']."<br />";
                 
                 if ($company_options['company_street2']!=""){echo $company_options['company_street2']."<br />";}
-                echo $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."</p>";
-                 _e("Reference ",'evr_language');
-                 echo "<b>".$event_name." - ID: ".$reg_id."</b><br/><br/>";
+                echo $company_options['company_city']." ".$company_options['company_state']." ".$company_options['company_postal']."<br/>";
+                 _e("Reference ",'evr_language');  echo "<b>".$event_name." - ID: ".$reg_id."</b></p>";
             }     
-           
            echo "<hr/>";
            evr_registration_payment($event_id, $reg_id);
            }
@@ -407,15 +412,16 @@ if ($send_coord =="Y"){
            }
 
 
+if (isset($company_options['evr_invoice'])){
 if ($company_options['evr_invoice'] == "Y"){
     echo '<form id="invoice" class="evr_regform" method="post" target=_blank action="'.get_bloginfo('wpurl') .'/wp-content/plugins/event-registration/tcpdf/examples/invoice.php">';
+   
 ?>
-
 <input type="hidden" name="reg_form" value="<?php echo $invoice_post;?>" />
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Print Invoice','evr_language');?>" /> 
 </form>
 <?php 
-}
+} }
 
 }
 ?>

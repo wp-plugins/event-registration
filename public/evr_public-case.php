@@ -3,10 +3,12 @@ function evr_registration_main(){
     
     global $wpdb;
     $company_options = get_option('evr_company_settings');
-    $action = $_REQUEST['action'];
-    if (is_numeric($_REQUEST['event_id'])){
+    if (!isset($_REQUEST['action'])) {$action = '';} else { $action = $_REQUEST['action'];}
+    if (!isset($_REQUEST['event_id'])) {$event_id = '';} 
+    else {  
+        if (is_numeric($_REQUEST['event_id'])){
         $event_id = (int)$_REQUEST['event_id'];
-    }
+    }}
     switch ($action) {
             
             case "evregister":
@@ -50,6 +52,7 @@ function evr_registration_main(){
             break;
             
             default:
+$public_list_template = '';
                 if ($company_options['evr_list_format']=="accordian"){evr_show_event_accordian();}
                // else if ($company_options['evr_list_format']=="link"){evr_show_event_links();}
                 else {evr_show_event_list($public_list_template);}
