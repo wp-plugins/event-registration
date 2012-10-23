@@ -39,15 +39,18 @@ function evr_questions_new(){
                             	<th width="33%" scope="row"><?php _e('Selections','evr_language')?>:</th>
                             	<td><input name="values" type="text" id="values" size="50" value="" /></td>
                             	</tr>
-                            	
+
+                                
                             	<tr valign="top">
                             	<th width="33%" scope="row"><?php _e('Required','evr_language');?>:</th>
                             	<td><input name="required" type="checkbox" id="required" /></td>
                             	</tr>
-                            	
+                            	<tr valign="top">
+                                <th width="33%" scope="row"><?php _e('Remark','evr_language');?>:</th>
+                                <td><textarea name="remark" id="remark" rows="3" cols="98"></textarea></td>
+                                </tr>
                             	</table>
-                                <?php ?>
-                            				
+                        				
                             	<?php		
                             				echo "<input type='hidden' name='event_name' value='" . $event_name . "'>";
                                             echo "<input type='hidden' name='action' value='post'>";
