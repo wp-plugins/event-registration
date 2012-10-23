@@ -640,7 +640,7 @@ function evr_quick_action($links, $file)
     return $links;
 }
 //function to replace content on public page for plugin
-function evr_content_replace($content)
+/*function evr_content_replace($content)
 {
    global $wpdb;
    $company_options = get_option('evr_company_settings');
@@ -657,6 +657,20 @@ function evr_content_replace($content)
         else {
              evr_registration_main(); //function with main content
         }
+        $buffer = ob_get_contents();
+        ob_end_clean();
+        $content = str_replace('{EVRREGIS}', $buffer, $content);
+    }
+    return $content;
+}
+*/
+function evr_content_replace($content)
+{
+   global $wpdb;
+   $company_options = get_option('evr_company_settings');
+    if (preg_match('{EVRREGIS}', $content)) {
+        ob_start();
+        evr_registration_main(); //function with main content
         $buffer = ob_get_contents();
         ob_end_clean();
         $content = str_replace('{EVRREGIS}', $buffer, $content);
