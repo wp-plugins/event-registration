@@ -5,6 +5,7 @@
  */
 
 /*
+6.00.26 - added remark field to custom questions
 6.00.25 - No DB Changes
 6.00.24 - No DB Changes
 6.00.23 - No DB Changes
@@ -77,7 +78,7 @@ function evr_install()
 {
 
     global $evr_date_format, $evr_ver, $wpdb, $cur_build;
-    $cur_build = "6.00.24";
+    $cur_build = "6.00.26";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
 
@@ -106,7 +107,7 @@ function evr_install()
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.24";
+    $upgrade_version = "0.26";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -315,6 +316,12 @@ function evr_upgrade_tables(){
         $option_name = 'evr_question_version';
         $newvalue = $upgrade_version;
         update_option($option_name, $newvalue);
+         
+        $value = "remark";
+        $sql = "ALTER TABLE ".$new_question_tbl." ADD remark TEXT DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
 //
 // Answer Table Copy Table, Replace Data, Add Colulmns        
 //        
@@ -784,6 +791,7 @@ function evr_question_db()
           question text NOT NULL,
           response text NOT NULL,
           required enum('Y','N') NOT NULL DEFAULT 'N',
+          remark text NOT NULL,
           UNIQUE KEY id (id)
         ) AUTO_INCREMENT=1 ;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
