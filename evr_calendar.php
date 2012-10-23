@@ -219,7 +219,8 @@ if ($cal_day_hdr_clr != ""){?>
         $c_day = date("d",evr_time_offset());
     }
 
-    if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
+ 
+        if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
         if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec'){
 
                $c_year = mysql_escape_string($_GET['yr']);
@@ -261,7 +262,7 @@ if ($cal_day_hdr_clr != ""){?>
 
     $days_in_month = date("t", mktime (0,0,0,$c_month,1,$c_year));
 
-    $calendar_body .= '<table class="calendar-table" id="calendar-table" >';
+    $calendar_body = '<table class="calendar-table" id="calendar-table" >';
     
     //$date_switcher="true";
     if ($date_switcher == 'Y'){
@@ -291,11 +292,14 @@ if ($cal_day_hdr_clr != ""){?>
             <option value="nov"'.evr_month_compare('nov').'>'.__('November','evr_language').'</option> 
             <option value="dec"'.evr_month_compare('dec').'>'.__('December','evr_language').'</option> 
             </select>
-            '.__('Year','evr_language').': <select name="yr" style="width:60px;">';
+            '.__('Year','evr_language').': <select name="yr" style="width:90px;">';
 
-				$past = 30;
-				$future = 30;
+				$past = 1;
+				$future = 5;
 				$fut = 1;
+                $p='';
+                $f='';
+       
 				while ($past > 0){
 	    			$p .= '<option value="';
 	    			$p .= date("Y",evr_time_offset())-$past;
@@ -338,6 +342,7 @@ if ($cal_day_hdr_clr != ""){?>
     for ($i=1; $i<=$days_in_month;){
         $calendar_body .= '<tr>';
         for ($ii=1; $ii<=7; $ii++){
+            $go = true;
             if ($ii==$first_weekday && $i==1){
 								$go = TRUE;
 	      		}
@@ -379,7 +384,7 @@ if ($cal_day_hdr_clr != ""){?>
   $company_options = get_option('evr_company_settings');  
   $cal_use_cat = $company_options['evr_cal_use_cat']; 
   
-    if ($show_cat == 'Y'){
+    if ($cal_use_cat == 'Y'){
                 $sql = "SELECT * FROM ". get_option('evr_category') ." ORDER BY id ASC";
                       $result = mysql_query ($sql);
                       if (mysql_num_rows($result) > 0 ) {
@@ -409,6 +414,7 @@ if ($cal_day_hdr_clr != ""){?>
 
 function evr_show_events($events){
   usort($events, "evr_evr_time_cmp");
+  $output = '';
   foreach($events as $event){
       $output .= evr_show_event($event).'<br />';
   }
@@ -416,6 +422,7 @@ function evr_show_events($events){
 }
 function evr_show_non_events($events){
   usort($events, "evr_evr_time_cmp");
+  $output = '';
   foreach($events as $event){
       $output .= evr_show_non_event($event).'<br />';
   }
@@ -426,11 +433,23 @@ function evr_show_event($event){
     
   global $wpdb;
   $company_options = get_option('evr_company_settings');  
+  
+  $cal_head_clr = $company_options['evr_cal_head'];
+    $cal_head_txt_clr = $company_options['cal_head_txt_clr'];
+    $cal_use_cat = $company_options['evr_cal_use_cat']; 
+    $cal_pop_brdr_clr = $company_options['evr_cal_pop_border'];
+    $cal_day_clr = $company_options['evr_cal_cur_day'];
+    $cal_day_txt_clr =  $company_options['cal_day_txt_clr'];
+    $date_switcher = $company_options['evr_date_select'];
+    $cal_day_hdr_clr = $company_options['evr_cal_day_head'];
+    $cal_day_hdr_txt_clr = $company_options['cal_day_head_txt_clr'];
+    /*
+    
   $cal_head_clr = $company_options['cal_head_clr'];
   $cal_day_clr = $company_options['cal_day_clr'];
   $cal_use_cat = $company_options['evr_cal_use_cat']; 
   $cal_pop_brdr_clr = $company_options['cal_pop_brdr_clr'];
-  
+  */
                                     
   //$show_cat = $wpdb->get_var("SELECT config_value FROM ".WP_LIVE_CALENDAR_CONFIG_TABLE." WHERE config_item='enable_categories'",0,0);
     $show_cat= $cal_use_cat;
@@ -469,7 +488,7 @@ function evr_show_event($event){
     
 
  
-  if ($event->event_link != '') { 
+  if ($event->more_info != '') { 
   		$linky = stripslashes($event->more_info); 
   }
   else { 
@@ -478,8 +497,11 @@ function evr_show_event($event){
   }
     $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';">';
 
-    $details .= '<a class="inline" href="#event_content_'.$event->id.'">'.
-    evr_truncateWords(stripslashes(html_entity_decode($event->event_name)), 5, "...").'</a>';
+    $details .= '<a class="inline" href="#event_content_'.$event->id.'">';
+    if (strlen(html_entity_decode($event->event_name))>30){ 
+    $details .= evr_truncateWords(stripslashes(html_entity_decode($event->event_name)), 5, "...");
+    } else {$details .= stripslashes(html_entity_decode($event->event_name));}
+    $details .=  '</a>';
     $details .= '<br/>'.$seats;
     $details.='</div>';
 
@@ -501,7 +523,7 @@ function evr_colorbox_cal_content(){
         foreach ($rows as $event){
             $listing .=  '<div style="display:none;"><div id="event_content_'.$event->id.'" style="padding:10px; background:#fff;">';
             $listing .= '<div id="evr_pop_top"><span style="float:center;">';
-             if ($evnt->header_image != ""){ 
+             if ($event->header_image != ""){ 
                 echo '<img class="evr_pop_hdr_img" src="'.$event->header_image.'" />';
                 } 
              $listing .='</span></div>';
@@ -518,7 +540,7 @@ function evr_colorbox_cal_content(){
              $listing .='</div><div class="evr_spacer"></div><div id="evr_pop_body" STYLE="text-align: justify;white-space:pre-wrap;">';
              $listing .=html_entity_decode($event->event_desc);
              $listing .='</div><div id="evr_pop_image">';
-             if ($image_link !=""){
+             if ($event->image_link !=""){
                 $listing .='<img class="evr_pop_img" src="'.$event->image_link.'" alt="Thumbnail Image" />';
                 } 
                 else { 
@@ -532,7 +554,7 @@ function evr_colorbox_cal_content(){
                 $listing .='<img border="0" src="http://maps.google.com/maps/api/staticmap?center=';
                 $listing .=$event->event_address.",".$event->event_city.",".$event->event_state;
                 $listing .='&zoom=14&size=280x180&maptype=roadmap&markers=size:mid|color:0xFFFF00|label:*|';
-                $listing .=$event_address.",".$event_city.'&sensor=false" />';
+                $listing .=$event->event_address.",".$event->event_city.'&sensor=false" />';
                 }
              $listing .='</div></div><div id="evr_pop_price"><hr /><b><u>';
              $listing .=__('Event Fees','evr_language').':</u></b><br /><br />';
@@ -554,7 +576,7 @@ function evr_colorbox_cal_content(){
              if ($event->more_info !=""){
                 $listing .='<input type="button" onClick="window.open(\''.$event->more_info.'\');" value="'.__('MORE INFO','evr_language').'"/>';
                 }
-             if ($outside_reg == "Y"){
+             if ($event->outside_reg == "Y"){
                 $listing .='<input type="button" onClick="window.open(\''.$event->external_site.'\');" value="'.
                 __('External Registration','evr_language').'"/>'; 
              	}  
@@ -610,15 +632,15 @@ $show_cat= $cal_use_cat;
       if ($cal_pop_brdr_clr !=""){$style = 'background: white; border: 2px solid '.$cal_pop_brdr_clr.';'; $edge=$cal_pop_brdr_clr;}
       else {$style = "background: white; border: 2px solid #2BB0D7;"; $edge='#b8ced6';}
   }
-  if ($event->event_link != '') { 
-     $linky = stripslashes($event->more_info); 
+  if ($event->link != '') { 
+     $linky = stripslashes($event->link); 
   }
   
     $allow = '<p><ul><li><b><strong><i>';
     $tool_desc = strip_tags(stripslashes(html_entity_decode($event->event_desc)),$allow); 
   
   $details = '<div class = "catgry" style="border-left: solid 3px '.$edge.';">';
-  if ($event->event_link != '') { 
+  if ($event->use_link == 'Y') { 
   $details .='<a class="tooltip" href="'.$linky.'" style="text-decoration:none"><h3>' . stripslashes(html_entity_decode($event->event_name)) .'</h3>';
   } else {
   $details .='<a class="tooltip" > <h3 >' . stripslashes(html_entity_decode($event->event_name)) .'</h3>';

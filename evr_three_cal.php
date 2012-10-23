@@ -102,7 +102,7 @@ function evr_mini_cal_display_calendar($c_month,$c_year){
 
     $days_in_month = date("t", mktime (0,0,0,$c_month,1,$c_year));
 
-    $calendar_body .= '<table class="evr_mini_cal_calendar-table mainTable"  >';
+    $calendar_body = '<table class="evr_mini_cal_calendar-table mainTable"  >';
     $date_switcher="false";
     if ($date_switcher == 'true'){
         
@@ -117,7 +117,7 @@ function evr_mini_cal_display_calendar($c_month,$c_year){
 	      		}
 	  		}
 					
-                $calendar_bodyzzz .= ''.__('Month','evr_language').': <select name="month" style="width:100px;">
+                $calendar_body .= ''.__('Month','evr_language').': <select name="month" style="width:100px;">
             <option value="jan"'.evr_month_compare('jan').'>'.__('January','evr_language').'</option>
             <option value="feb"'.evr_month_compare('feb').'>'.__('February','evr_language').'</option>
             <option value="mar"'.evr_month_compare('mar').'>'.__('March','evr_language').'</option>
@@ -150,10 +150,10 @@ function evr_mini_cal_display_calendar($c_month,$c_year){
 	    			$f .= date("Y",evr_time_offset())+$fut.'</option>';
 	    			$fut = $fut + 1;
 	  		} 
-				$calendar_bodyzzz .= $p;
-				$calendar_bodyzzz .= '<option value="'.date("Y",evr_time_offset()).'"'.evr_year_compare(date("Y",evr_time_offset())).'>'.date("Y",evr_time_offset()).'</option>';
-				$calendar_bodyzzz .= $f;
-    		$calendar_bodyzzz .= '</select><input type="submit" value="'.__('Go','evr_language').'" /></form></td></tr>';
+				$calendar_body .= $p;
+				$calendar_body .= '<option value="'.date("Y",evr_time_offset()).'"'.evr_year_compare(date("Y",evr_time_offset())).'>'.date("Y",evr_time_offset()).'</option>';
+				$calendar_body .= $f;
+    		$calendar_body .= '</select><input type="submit" value="'.__('Go','evr_language').'" /></form></td></tr>';
   	
       }
           
@@ -217,6 +217,7 @@ if ($cal_day_hdr_clr != ""){?>
     for ($i=1; $i<=$days_in_month;){
         $calendar_body .= '<tr class="rows">';
         for ($ii=1; $ii<=7; $ii++){
+            $go = true;
             if ($ii==$first_weekday && $i==1){
 								$go = TRUE;
 	      		}
