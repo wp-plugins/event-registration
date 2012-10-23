@@ -219,11 +219,11 @@ function evr_form_build($question, $answer = "") {
 	}
 	switch ($question->question_type) {
 		case "TEXT" :
-			echo "<span class=\"fieldbox\"><input type=\"text\"$required id=\"TEXT_$question->id\"  name=\"TEXT_$question->id\" size=\"40\" title=\"$question->question\" value=\"$answer\" /></span>\n";
+			echo "<span class=\"fieldbox\"><input type=\"text\" $required id=\"TEXT_$question->id\"  name=\"TEXT_$question->id\" size=\"40\" title=\"$question->question\" value=\"$answer\" /></span>\n";
 			break;
 		
 		case "TEXTAREA" :
-			echo "<span class=\"msgbox\"><textarea id=\"TEXTAREA_$question->id\"$required name=\"TEXTAREA_$question->id\" title=\"$question->question\" cols=\"30\" rows=\"5\">$answer</textarea></span>\n";
+			echo "<span class=\"msgbox\"><textarea id=\"TEXTAREA_$question->id\" $required name=\"TEXTAREA_$question->id\" title=\"$question->question\" cols=\"30\" rows=\"5\">$answer</textarea></span>\n";
 			break;
 		
 		case "SINGLE" :
@@ -232,8 +232,9 @@ function evr_form_build($question, $answer = "") {
 			
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
-				//echo "<label><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</label><br/>\n";
-			 echo "<span class=\"radio\"><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</span>\n";
+				//echo "<label><input id=\"SINGLE_$question->id_ $key\ "$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</label><br/>\n";
+			// echo "<span class=\"radio\"><input id=\"SINGLE_$question->id_ $key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</span>\n";
+ echo '<span class="radio"><input id="SINGLE_'.$question->id.'_'.$key.'" '.$required.' name="SINGLE_'.$question->id.'" title="'.$question->question.'" type="radio" value="'.$value.'" '.$checked.' /> '.$value.'</span>';
 			
             }
 			break;
@@ -245,7 +246,7 @@ function evr_form_build($question, $answer = "") {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
 			/*	echo "<label><input type=\"checkbox\"$required id=\"MULTIPLE_$question->id_$key\" name=\"MULTIPLE_$question->id_$key\" title=\"$question->question\" value=\"$value\"$checked /> $value</label><br/>\n"; */
 			//echo "<label><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value</label><br/>\n";
-			echo "<span class=\"radio\"><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value</span>\n";
+			echo "<span class=\"radio\"><input id=\"$value\" $required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\" $checked /> $value</span>\n";
 			
             }
 			break;
@@ -253,7 +254,7 @@ function evr_form_build($question, $answer = "") {
 		case "DROPDOWN" :
 			$values = explode ( ",", $question->response );
 			$answers = explode ( ",", $answer );
-			echo "<select name=\"DROPDOWN_$question->id\"$required id=\"DROPDOWN_$question->id\" title=\"$question->question\" />";
+			echo "<select name=\"DROPDOWN_$question->id\" $required id=\"DROPDOWN_$question->id\" title=\"$question->question\" />";
 			echo "<option value=''>Select One </option><br/>";
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " selected =\" selected\"" : "";
@@ -265,6 +266,7 @@ function evr_form_build($question, $answer = "") {
 		default :
 			break;
 	}
+    if ($question->remark) { echo '<div class="remark">'.$question->remark.'</div>';}
 }
 
 
