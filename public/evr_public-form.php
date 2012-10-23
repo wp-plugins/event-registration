@@ -201,10 +201,11 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
         //Additional Questions
             $questions = $wpdb->get_results("SELECT * from ".get_option('evr_question')." where event_id = '$event_id' order by sequence");
             if ($questions) {
-                foreach ($questions as $question) { 
+                foreach ($questions as $question) {
+                     if ($question->remark) { $title =  $question->remark;}
 ?>
-<li>
-    <label for="question-<?php echo $question->id;?>"><?php echo $question->question;?></label>
+<li title="<?php echo $title;?>">
+    <label for="question-<?php echo $question->id;?>" ><?php echo $question->question;?></label>
     <?php echo evr_form_build($question);?>
 </li>
 <?php
@@ -246,7 +247,7 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
     ?>
 <input type="hidden" name="reg_type" value="RGLR"/>
 <div align="left">
-<label for="cost"><select style="width: 60px" name = "PROD_<?php echo $fee->event_id;?>-<?php echo $fee->id;?>_<?php echo  $fee->item_price;?>" id = "PROD_<?php echo $fee->event_id;?>-<?php echo $fee->id;?>_<?php echo  $fee->item_price;?>" onChange="<?php if ($company_options['use_sales_tax'] == "Y"){echo 'CalculateTotalTax(this.form)';} else { echo 'CalculateTotal(this.form)';}?>">
+<label for="cost" title ="<?php echo $fee->item_description;?>" ><select style="width: 60px" name = "PROD_<?php echo $fee->event_id;?>-<?php echo $fee->id;?>_<?php echo  $fee->item_price;?>" id = "PROD_<?php echo $fee->event_id;?>-<?php echo $fee->id;?>_<?php echo  $fee->item_price;?>" onChange="<?php if ($company_options['use_sales_tax'] == "Y"){echo 'CalculateTotalTax(this.form)';} else { echo 'CalculateTotal(this.form)';}?>">
 <option value="0">0</option>
 <?php
                         #Begin generation of DropDown Box - Options
