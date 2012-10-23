@@ -32,18 +32,19 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=".$event_id;
                     		while ($row = mysql_fetch_assoc ($result)){  
                          
                             $event_id       = $row['id'];
-            				$event_name     = stripslashes($row['event_name']);
+            				$event_name     = html_entity_decode(stripslashes($row['event_name']),ENT_NOQUOTES, 'UTF-8');
         					$event_identifier = stripslashes($row['event_identifier']);
-            				$event_location = stripslashes($row['event_location']);
-                            $event_desc     = stripslashes($row['event_desc']);
+            				$event_location = html_entity_decode(stripslashes($row['event_location']),ENT_NOQUOTES, 'UTF-8');
+                            $event_desc     = html_entity_decode(stripslashes($row['event_desc']),ENT_NOQUOTES, 'UTF-8');
                             $event_address  = $row['event_address'];
                             $event_city     = $row['event_city'];
+                            $event_state     = $row['event_state'];
                             $event_postal   = $row['event_postal'];
                             $reg_limit      = $row['reg_limit'];
                     		$start_time     = $row['start_time'];
                     		$end_time       = $row['end_time'];
                     		$conf_mail      = $row['conf_mail'];
-                            $custom_mail    = $row['custom_mail'];
+                            //$custom_mail    = $row['custom_mail'];
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
 
