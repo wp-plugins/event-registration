@@ -218,9 +218,7 @@ if ($cal_day_hdr_clr != ""){?>
         $c_month = date("m",evr_time_offset());
         $c_day = date("d",evr_time_offset());
     }
-
- 
-        if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
+if (isset($_GET['yr'])) { if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
         if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec'){
 
                $c_year = mysql_escape_string($_GET['yr']);
@@ -244,7 +242,7 @@ if ($cal_day_hdr_clr != ""){?>
                $c_month = date("m",evr_time_offset());
                $c_day = date("d",evr_time_offset());
         }
-    }
+    }}
     else{
         $c_year = date("Y",evr_time_offset());
         $c_month = date("m",evr_time_offset());
@@ -353,7 +351,7 @@ if ($cal_day_hdr_clr != ""){?>
 								if (get_option('evr_start_of_week') == 0){
      		    						$grabbed_events = evr_fetch_events($c_year,$c_month,$i);
                                              //added for non-events
-                                             $grabbed_non_events = evr_fetch_non_events($c_year,$c_month,$i);
+                                        //$grabbed_non_events = evr_fetch_non_events($c_year,$c_month,$i);
      		    						$no_events_class = '';
      		    						if ((!count($grabbed_events))&&(!count($grabbed_non_events))){
      				                          $no_events_class = ' no-events';
@@ -372,8 +370,9 @@ if ($cal_day_hdr_clr != ""){?>
                                           if ((!count($grabbed_events))&&(!count($grabbed_non_events))){ $no_events_class = ' no-events'; }
                                           else { $no_events_class = ' events'; }
                                           $calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",evr_time_offset())?'current-day':'day-with-date').
-                                          $no_events_class.'"><span '.($ii<6?'':'class="weekend"').'>'.$i++.'</span><br/><span class="event">' . evr_show_events($grabbed_events) 
-                                          .evr_show_non_events($grabbed_non_events). '</span></td>';
+                                            $no_events_class.'"><span '.($ii<6?'':'class="weekend"').'>'.$i++.'</span><br/><span class="event">' . evr_show_events($grabbed_events);
+                                           //$calendar_body .=  evr_show_non_events($grabbed_non_events);
+                                           $calendar_body .= '</span></td>';
                                           }
                } else { $calendar_body .= ' <td class="day-without-date">&nbsp;</td>'; }
         }
@@ -521,10 +520,24 @@ function evr_colorbox_cal_content(){
     if ($rows){
         $listing = "";
         foreach ($rows as $event){
+            $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+            if ($event->close == "start"){$close_dt = $event->start_date." ".$event->start_time;}
+            else if ($event->close == "end"){$close_dt = $event->end_date." ".$event->end_time;}
+            else if ($event->close == ""){$close_dt = $event->start_date." ".$event->start_time;}
+            $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+            $expiration_date = strtotime($stp);
+            $today = strtotime($current_dt);
+
+//echo "The current date and time is: ".$current_dt."<br/>";
+//echo "Registration closes at: ". $stp."<br/>";                              
+
+
+
             $listing .=  '<div style="display:none;"><div id="event_content_'.$event->id.'" style="padding:10px; background:#fff;">';
             $listing .= '<div id="evr_pop_top"><span style="float:center;">';
              if ($event->header_image != ""){ 
-                echo '<img class="evr_pop_hdr_img" src="'.$event->header_image.'" />';
+             
+                $listing .= '<img class="evr_pop_hdr_img" src="'.$event->header_image.'" />';
                 } 
              $listing .='</span></div>';
              $listing .='<div id="evr_pop_title"><span style="float:left;"><h3>';
@@ -573,6 +586,17 @@ function evr_colorbox_cal_content(){
                                 }
                         
              $listing .='</div><div class="evr_spacer"></div><div id="evr_pop_foot"><p align="center">';
+             
+             if ($expiration_date <= $today){
+                $alert = '<br/><font color="red">';
+                $alert .= __('Registration is closed for this event.','evr_language');
+                $alert .= '<br/>';
+                $alert .= __('For more information or questions, please email: ','evr_language');
+                $alert .= '</font><a href="mailto:'.$company_options['company_email'].'">'.$company_options['company_email'].'</a>';
+                $listing .= $alert;
+                }
+                else { 
+
              if ($event->more_info !=""){
                 $listing .='<input type="button" onClick="window.open(\''.$event->more_info.'\');" value="'.__('MORE INFO','evr_language').'"/>';
                 }
@@ -584,7 +608,7 @@ function evr_colorbox_cal_content(){
                     $listing .= '<input type="button" onClick="location.href=\''.evr_permalink($company_options['evr_page_id']).
                     'action=evregister&event_id='.$event->id.'\'" value="'.
                 __('REGISTER','evr_language').'"/>'; 
-                    }
+                    }}
              $listing .= '</p></div>';
              
              $listing .= '</div></div>';
