@@ -6,6 +6,7 @@
 
 /*
 6.00.26 - added remark field to custom questions
+        - fixed extra spacing issue with dbDelta
 6.00.25 - No DB Changes
 6.00.24 - No DB Changes
 6.00.23 - No DB Changes
@@ -95,11 +96,12 @@ function evr_install()
     
     evr_attendee_db();
     evr_category_db();
+    evr_question_db();
+    evr_answer_db();    
     evr_event_db();
     evr_cost_db();
     evr_payment_db();
-    evr_question_db();
-    evr_answer_db();
+
     evr_generator();
     //evr_notification();removed automatic notification of plugin activation
     
@@ -384,7 +386,7 @@ function evr_upgrade_tables(){
                             item_available_start_date VARCHAR (15) DEFAULT NULL,
                             item_available_end_date VARCHAR (15) DEFAULT NULL,
                             item_custom_cur VARCHAR(10) DEFAULT NULL,
-                            PRIMARY KEY  (id)
+                            PRIMARY KEY (id)
                 			) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
@@ -562,10 +564,8 @@ function evr_attendee_db()
 					) DEFAULT CHARSET=utf8;";
 
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        dbDelta($sql);
-
-        //create option in the wordpress options tale for the event attendee table name
+        if (dbDelta($sql)){
+            //create option in the wordpress options tale for the event attendee table name
         $option_name = 'evr_attendee';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
@@ -573,10 +573,13 @@ function evr_attendee_db()
         $option_name = 'evr_attendee_version';
         $newvalue = $evr_attendee_version;
         update_option($option_name, $newvalue);
-        
-        
-       
-        
+            _e('Success Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+        else {
+        e('Failure Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
 }
 
 function evr_category_db()
@@ -596,11 +599,10 @@ function evr_category_db()
 					  display_desc VARCHAR (4) DEFAULT NULL,
                       category_color VARCHAR(30) NOT NULL ,
                       font_color VARCHAR(30) NOT NULL DEFAULT '#000000',
-				        UNIQUE KEY id (id)
+                      UNIQUE KEY id (id)
 					) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        dbDelta($sql);
+        if (dbDelta($sql)){
         //create option in the wordpress options table for the event category table
         $option_name = 'evr_category';
         $newvalue = $table_name;
@@ -609,6 +611,13 @@ function evr_category_db()
         $option_name = 'evr_category_version';
         $newvalue = $evr_category_version;
         update_option($option_name, $newvalue);
+            _e('Success Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+        else {
+            _e('Failure Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
    
 }
 
@@ -661,18 +670,16 @@ function evr_event_db()
           use_coupon VARCHAR(2) DEFAULT NULL,
           coupon_code VARCHAR(50) DEFAULT NULL,
           coupon_code_price decimal(7,2) DEFAULT NULL,
-          category_id TEXT,
+          category_id TEXT DEFAULT NULL,
           send_coord VARCHAR(2) DEFAULT NULL,
           coord_email VARCHAR(65) DEFAULT NULL,
           coord_msg TEXT DEFAULT NULL,
           coord_pay_msg TEXT DEFAULT NULL,
           close VARCHAR (65) DEFAULT NULL,
-          
           UNIQUE KEY id (id)
           ) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        dbDelta($sql);
+        if (dbDelta($sql)){
 
         //create option for table name
         $option_name = 'evr_event';
@@ -682,6 +689,15 @@ function evr_event_db()
         $option_name = 'evr_event_version';
         $newvalue = $evr_event_version;
         update_option($option_name, $newvalue);
+        
+            _e('Success Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+        else {
+            _e('Failure Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+        
 }
 
 function evr_cost_db()
@@ -705,11 +721,12 @@ function evr_cost_db()
             item_available_start_date VARCHAR (15) DEFAULT NULL,
             item_available_end_date VARCHAR (15) DEFAULT NULL,
             item_custom_cur VARCHAR(10) DEFAULT NULL,
-            UNIQUE KEY  (id)
+            UNIQUE KEY id (id)
 			) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        dbDelta($sql);
+
+       
+        if (dbDelta($sql)){ 
         //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_cost';
         $newvalue = $table_name;
@@ -718,6 +735,14 @@ function evr_cost_db()
         $option_name = 'evr_cost_version';
         $newvalue = $evr_cost_version;
         update_option($option_name, $newvalue);
+        
+            _e('Success Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+        else {
+            _e('Failure Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
 }
 
 function evr_payment_db()
@@ -740,6 +765,7 @@ function evr_payment_db()
 				  payer_status varchar(10) NOT NULL,
 				  payment_type varchar(20) NOT NULL,
 				  memo text NOT NULL,
+                  memo_old text NOT NULL,
 				  item_name text NOT NULL,
 				  item_number varchar(50) NOT NULL,
 				  quantity int(3) NOT NULL,
@@ -761,9 +787,7 @@ function evr_payment_db()
 				) DEFAULT CHARSET=utf8;";
 
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        dbDelta($sql);
-
+        if (dbDelta($sql)){
         //create option in the wordpress options tale for the event payment transaction table name
         $option_name = 'evr_payment';
         $newvalue = $table_name;
@@ -772,6 +796,16 @@ function evr_payment_db()
         $option_name = 'evr_payment_version';
         $newvalue = $evr_payment_version;
         update_option($option_name, $newvalue);
+        
+            _e('Success Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+        else {
+            _e('Failure Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+
+        
    
 }
 
@@ -780,24 +814,24 @@ function evr_question_db()
     //Define global variables
     global $wpdb, $cur_build;
     global $evr_question_version;
+    require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_question";
     $evr_question_version = $cur_build;
-    $sql = "CREATE TABLE " . $table_name . " (
-          id mediumint(9) NOT NULL AUTO_INCREMENT,
-          event_id int(11) NOT NULL DEFAULT '0',
-          sequence int(11) NOT NULL DEFAULT '0',
-          question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL DEFAULT 'TEXT',
-          question text NOT NULL,
-          response text NOT NULL,
-          required enum('Y','N') NOT NULL DEFAULT 'N',
-          remark text NOT NULL,
-          UNIQUE KEY id (id)
-        ) AUTO_INCREMENT=1 ;";
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        dbDelta($sql);
-        //create option in the wordpress options tale for the event question table name
+$sql = "CREATE TABLE " . $table_name . " (
+id mediumint(9) NOT NULL AUTO_INCREMENT,
+event_id int(11) NOT NULL DEFAULT '0',
+sequence int(11) NOT NULL DEFAULT '0',
+question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL DEFAULT 'TEXT',
+question text NOT NULL,
+response text NOT NULL,
+required enum('Y','N') NOT NULL DEFAULT 'N',
+remark text NOT NULL,
+PRIMARY KEY id (id)
+) DEFAULT CHARSET=utf8;";
+
+    if (dbDelta($sql)){
+            //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_question';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
@@ -805,7 +839,16 @@ function evr_question_db()
         $option_name = 'evr_question_version';
         $newvalue = $evr_question_version;
         update_option($option_name, $newvalue);
+        
+            _e('Success Updating table - ',''); 
+            echo $table_name.'<br/>'; 
 
+        }
+        else {
+            _e('Failure Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+        
     
 }
 //
@@ -822,12 +865,11 @@ function evr_answer_db()
 		  registration_id int(11) NOT NULL DEFAULT '0',
           question_id int(11) NOT NULL DEFAULT '0',
           answer text NOT NULL,
-          UNIQUE KEY id (registration_id,question_id)
-        )  DEFAULT CHARSET=utf8;";
+          PRIMARY KEY id (registration_id,question_id)
+          ) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        dbDelta($sql);
-   //create option in the wordpress options tale for the event answer table name
+    if (dbDelta($sql)){
+    //create option in the wordpress options tale for the event answer table name
         $option_name = 'evr_answer';
         $newvalue = $table_name;
         update_option($option_name, $newvalue);
@@ -836,9 +878,13 @@ function evr_answer_db()
         $newvalue = $evr_answer_version;
         update_option($option_name, $newvalue);
         
-    
-    
-
+            _e('Success Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
+        else {
+            _e('Failure Updating table - ',''); 
+            echo $table_name.'<br/>'; 
+        }
 }
 
 function evr_generator()
