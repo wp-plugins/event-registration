@@ -64,6 +64,8 @@ global $wpdb;
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Sales</th>
+                            <th>Payments</th>
+                            <th>Outstanding</th>
                             <th>Manage</th>
                             </tr>
                         </thead>
@@ -76,6 +78,8 @@ global $wpdb;
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Sales</th>
+                            <th>Payments</th>
+                             <th>Outstanding</th>
                             <th>Manage</th>
                             </tr>
                         </tfoot>
@@ -100,16 +104,24 @@ global $wpdb;
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
                             
-                            $sql2= "SELECT SUM(quantity),SUM(payment) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            /*$sql2= "SELECT SUM(quantity),SUM(payment) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                              $result2 = mysql_query($sql2);
             			     //$num = mysql_num_rows($result2);
                              //$number_attendees = $num;
                              while($row = mysql_fetch_array($result2)){
                                 $number_attendees = $row['SUM(quantity)'];
                                 $payment_due = $row['SUM(payment)'];
-                                }
-
-            				
+                             }
+                             */
+                            $balance_sql    = "SELECT SUM(payment) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            $attendee_sql   = "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            $payment_sql    = "SELECT SUM(mc_gross) FROM " . get_option('evr_payment') . " WHERE event_id='$event_id'";
+                            $payment_due        = $wpdb->get_var( $wpdb->prepare( $balance_sql ));
+                            $number_attendees   = $wpdb->get_var( $wpdb->prepare( $attendee_sql ));
+            				$payments_recieved  = $wpdb->get_var( $wpdb->prepare( $payment_sql ));
+                            
+                            $outstanding = $payment_due-$payments_recieved; 
+                            
             				if ($number_attendees == '' || $number_attendees == 0){
             					$number_attendees = '0';
             				}
@@ -136,8 +148,10 @@ global $wpdb;
                             <td><?php echo $event_name; ?></td>
                             <td><?php echo $event_location; ?><br /><?php echo $event_city; ?></td>
                             <td><?php echo $active_event ; ?></td>
-                            <td><?php echo $number_attendees?> / <?php echo $reg_limit?></td>
-                            <td><?php echo $payment_due?></td>
+                            <td><?php echo $number_attendees;?> / <?php echo $reg_limit?></td>
+                            <td><?php echo $payment_due;?></td>
+                            <td><?php echo $payments_recieved;?></td>
+                            <td><?php echo $outstanding;?></td>
                             <td>
                             <div style="float:left">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">

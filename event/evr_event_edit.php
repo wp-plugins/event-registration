@@ -15,11 +15,39 @@ function evr_edit_event(){
                             $event_desc = stripslashes($row['event_desc']);
                             $event_category = unserialize($_REQUEST['event_category']);
         					$reg_limit = $row['reg_limit'];
+                            /*
         					$event_location = stripslashes($row['event_location']);
                             $event_address = $row['event_address'];
                             $event_city = $row['event_city'];
                             $event_state =$row['event_state'];
                             $event_postal=$row['event_postal'];
+                            */
+                            $location_list = $row['location_list'];
+                            if((get_option('evr_location_active')=="Y") && ( $row['location_list'] >= '1')){
+                                            $location_list = $row['location_list'];
+                                            $sql = "SELECT * FROM " . get_option('evr_location')." WHERE id = $location_list";
+                                            $location = $wpdb->get_row( $sql, OBJECT );//default object
+                                            //$object->field;
+                                            if( !empty( $location ) ) {
+                                            
+                                            $location_tag = stripslashes($location->location_name);
+                                            $event_location = stripslashes($location->location_name);
+                                            $event_address  = $location->street;
+                                            $event_city     = $location->city;
+                                            $event_state    = $location->state;
+                                            $event_postal   = $location->postal;
+                                            $event_phone    = $location->phone;
+                                            }
+                                                                                 			                                           
+                            } else {
+                            $location_list = '0';
+                            $location_tag = 'Custom';    
+                            $event_location = stripslashes($row['event_location']);
+                            $event_address = $row['event_address'];
+                            $event_city = $row['event_city'];
+                            $event_state =$row['event_state'];
+                            $event_postal=$row['event_postal'];
+                            }
                             $google_map = $row['google_map'];  // Y or N
                             $start_month = $row['start_month'];
         					$start_day = $row['start_day'];
@@ -190,9 +218,9 @@ To create new display lines just press Enter.','evr_language');?>">
                     <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a>
                    
                    <?php
-                    if (function_exists('wp_editor')){
+                    if (function_exists('the_editor')){
                         echo "</td></tr></table>";
-                        wp_editor( htmlspecialchars_decode($event_desc), 'event_desc', $editor_settings );
+                        the_editor(htmlspecialchars_decode($event_desc), "event_desc", '', false);
                     } else {  ?>
                     <a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
                     </td></tr></table>
@@ -260,7 +288,52 @@ To create new display lines just press Enter.','evr_language');?>">
                     <input  class="count" name="reg_limit" value="<?php echo $reg_limit;?>"/>
                     </td>
                 </tr>
-                <tr>
+<?php    
+    global $wpdb;
+    $sql = "SELECT * FROM " . get_option('evr_location')." ORDER BY location_name";
+    $locations_array = $wpdb->get_results( $sql );
+    if( (!empty( $locations_array )) && (get_option('evr_location_active')=="Y")) :
+?>
+</table>
+<script type="text/javascript">
+/* <![CDATA[ */
+$j = jQuery.noConflict();
+jQuery(document).ready(function($j){
+		$j("#location_list").change(function(){
+
+			if ($j(this).val() == "0" ) {
+               	$j("#hide1").slideDown("fast"); 
+                 $j('#hide1 :input').attr('disabled', false);
+                 } else {
+                $j("#hide1").slideUp("fast");	
+                $j('#hide1 :input').attr('disabled', true);
+			}
+		});
+});
+/* ]]> */
+</script>
+<?php 
+if($location_list >= '1'){
+echo '<style type="text/css">.custom_addrs{display:none;}</style>'; 
+}
+?>
+    <div class="input select">
+	<table>	<tr><td><label for="select_location">Event Location: </label></td><td>
+			<select name="location_list" id="location_list" onchange="showUser(this.value)">
+				<option value="<?php echo $location_list;?>"><?php echo $location_tag;?> </option>
+				<option value="0">Custom</option>
+    <?php
+		foreach( $locations_array as $location ) : 
+        ?>
+			<option value="<?php echo $location->id; ?>"><?php echo stripslashes($location->location_name); ?></option>
+		<?php
+		endforeach;
+        ?>
+        </select>
+            </td></tr></table>
+		</div>
+        <div class="custom_addrs" id="hide1"><!-- this select box will be hidden at first -->
+			<table><tr>
                     <td>
                     <label class="tooltip" title="<?php _e('Enter the name of the business or facility where the event is being held','evr_language');?>" for="event_location">
                     <?php _e('Event Location/Venue','evr_language');?><a><span> ?</span></a></label>
@@ -274,15 +347,15 @@ To create new display lines just press Enter.','evr_language');?>">
                     <label class="first" for="event_street"><?php _e('Street','evr_language');?></label>
                     </td>
                     <td>
-                    <input  class= "title" id="event_street" name="event_street" type="text" value="<?php echo $event_address;?>" />
+                    <input  class= "title" id="event_street" name="event_street" type="text"  value="<?php echo $event_address;?>"/>
                     </td>
                 </tr>		
 				<tr>
                     <td><label for="event_city">
-					<?php _e('City','evr_language');?></label></td><td><input id="event_city" name="event_city" type="text" value="<?php echo $event_city;?>" /></td></tr>
+					<?php _e('City','evr_language');?></label></td><td><input id="event_city" name="event_city" type="text" value="<?php echo $event_city;?>"/></td></tr>
                 <tr>
                     <td><label for="event_state">
-					<?php _e('State','evr_language');?></label></td><td><input id="event_state" name="event_state" type="text" value="<?php echo $event_state;?>" /></td></tr>
+					<?php _e('State','evr_language');?></label></td><td><input id="event_state" name="event_state" type="text"  value="<?php echo $event_state;?>"/></td></tr>
                 <tr>
                     <td>
                     <label for="event_postcode">
@@ -292,6 +365,47 @@ To create new display lines just press Enter.','evr_language');?>">
                     <input id="event_postcode" name="event_postcode" type="text" value="<?php echo $event_postal;?>" />
                     </td>
                 </tr>
+                </table>
+		</div>
+        <table>
+        <?php
+	else : ?>
+		<tr>
+                    <td>
+                    <label class="tooltip" title="<?php _e('Enter the name of the business or facility where the event is being held','evr_language');?>" for="event_location">
+                    <?php _e('Event Location/Venue','evr_language');?><a><span> ?</span></a></label>
+                    </td>
+                    <td>
+                    <input class= "title" id="event_location" name="event_location" type="text" size="50" value="<?php echo $event_location;?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    <label class="first" for="event_street"><?php _e('Street','evr_language');?></label>
+                    </td>
+                    <td>
+                    <input  class= "title" id="event_street" name="event_street" type="text"  value="<?php echo $event_address;?>" />
+                    </td>
+                </tr>		
+				<tr>
+                    <td><label for="event_city">
+					<?php _e('City','evr_language');?></label></td><td><input id="event_city" name="event_city" type="text" value="<?php echo $event_city;?>"/></td></tr>
+                <tr>
+                    <td><label for="event_state">
+					<?php _e('State','evr_language');?></label></td><td><input id="event_state" name="event_state" type="text" value="<?php echo $event_state;?>" /></td></tr>
+                <tr>
+                    <td>
+                    <label for="event_postcode">
+					<?php _e('Postcode','evr_language');?></label>
+                    </td>
+                    <td>
+                    <input id="event_postcode" name="event_postcode" type="text" value="<?php echo $event_postal;?>"/>
+                    </td>
+                </tr>
+		<?php 
+	endif; 
+?>  
+
                 <tr>
                     <td>
                     <legend class="tooltip" title="<?php _e('All location information must be complete for Google Map feature to work.','evr_language');?>">
@@ -453,28 +567,27 @@ To create new display lines just press Enter.','evr_language');?>">
             <label for="contact"><?php _e('Coordinator email:','evr_language');?></label>
             <input name="coord_email" type="text" size="65" value="<?php echo $coord_email;?>" class="regular-text" /></td>
         </tr></table>
-            <br />
-            <br />
-            <label  class="tooltip" title="<?php _e('Enter the text for the registration alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
-            <?php _e('Coordinator Registration Alert Email','evr_language');?> <a><span>?</span></a></label>
+<table><tr><td colspan="2"><label  class="tooltip" title="<?php _e('Enter the text for the registration alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
+            <?php _e('Coordinator Registration Alert Email','evr_language');?> <a><span>?</span></a></label></td></tr></table>
+            
             <?php
               
                 
-               if (function_exists('wp_editor')){
-               wp_editor( $coord_msg, 'coord_msg', $editor_settings );
+               if (function_exists('the_editor')){
+               //wp_editor( $coord_msg, 'coord_msg', $editor_settings );
+                 the_editor($coord_msg, "coord_msg", '', false);
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
                <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo $coord_msg;?></textarea>
                     <?php } ?>
+            <hr />
+<table><tr><td colspan="2"><label  class="tooltip" title="<?php _e('Enter the text for the payment alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
+            <?php _e('Coordinator Payment Alert Email','evr_language');?> <a><span>?</span></a></label></td></tr></table>            
             
-            <br />
-            <br />
-            
-            <label  class="tooltip" title="<?php _e('Enter the text for the payment alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
-            <?php _e('Coordinator Payment Alert Email','evr_language');?> <a><span>?</span></a></label>
             <?php
-                if (function_exists('wp_editor')){
-               wp_editor( $coord_pay_msg, 'coord_pay_msg', $editor_settings );
+                if (function_exists('the_editor')){
+               //wp_editor( $coord_pay_msg, 'coord_pay_msg', $editor_settings );
+                the_editor($coord_pay_msg, "coord_pay_msg", '', false);
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
                <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $coord_pay_msg;?></textarea>
@@ -491,7 +604,7 @@ To create new display lines just press Enter.','evr_language');?>">
                 <li>Option to send unique email to a unique coordinators email address for each event payment recieved via PayPal IPN.</li>
                 <li>WYSIWYG editor for coordinator's email payment notification alert.</li>
                 </ul>
-                <p>The cost will be $10.00 per license/site.  To purchase this add on module:</p>
+                <p>The cost will be $15.00 per license/site.  To purchase this add on module:</p>
 
 <p><a href="http://wpeventregister.com/shop/event-registration-coordinator-module/">BUY COORDINATOR MODULE</a></p>
 <p>&nbsp;</p>

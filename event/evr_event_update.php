@@ -14,6 +14,7 @@ function evr_post_update_event(){
                     $event_desc = esc_html($_REQUEST ['event_desc']);
                     $event_category = serialize($_REQUEST['event_category']);
                     $reg_limit = $_REQUEST ['reg_limit'];
+                    $location_list = $_REQUEST['location_list'];
                     $event_location = esc_html($_REQUEST ['event_location']);
                     $event_address = $_REQUEST['event_street'];
                     $event_city = $_REQUEST['event_city'];
@@ -59,7 +60,8 @@ function evr_post_update_event(){
                     
             $sql=array(
             'event_name'=>$event_name,
-            'event_desc'=>$event_desc, 
+            'event_desc'=>$event_desc,
+            'location_list'=>$location_list, 
             'event_location'=>$event_location,
             'event_address'=>$event_address,
             'event_city'=>$event_city,
@@ -101,7 +103,7 @@ function evr_post_update_event(){
             $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-                              '%s','%s','%s','%s','%s','%s','%s','%s');
+                              '%s','%s','%s','%s','%s','%s','%s','%s','%s');
                           
         		
                                          

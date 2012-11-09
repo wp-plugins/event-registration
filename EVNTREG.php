@@ -1,20 +1,17 @@
 <?php
-
 /**
  * @author David Fleming
  * @copyright 2008 - 2012
  */
-
 /*
 Plugin Name: Event Registration
 Plugin URI: http://www.wpeventregister.com
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees. Detailed payment management system to track and record event payments. Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.00.25
+Version: 6.00.26
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.wpeventregister.com
 */
 /*  Copyright 2008 - 2012  DAVID_FLEMING  (email : support@wpeventregister.com)
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -29,11 +26,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.00.25";
-
+$evr_ver = "6.00.26";
 /**
  * To change date format in event listing display
  * Tuesday, Jan 23, 2011  -  "l, M j,Y"
@@ -60,7 +55,6 @@ $evr_ver = "6.00.25";
  */
 /*********************************   ERROR REPORTING   ********************************/
 error_reporting(E_ALL ^ E_NOTICE);
-
 function evr_save_error(){
     update_option('plugin_error',  ob_get_contents());
 }
@@ -159,7 +153,6 @@ function evr_init(){
     wp_register_script($handle = 'evr_public_easing', $src = plugins_url('/scripts/fancybox/jquery.easing-1.3.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_script($handle = 'evr_public_mouswheel', $src = plugins_url('/scripts/fancybox/jquery.mousewheel-3.0.4.pack.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_script($handle = 'evr_public_colorbox', $src = plugins_url('/colorbox/js/jquery.colorbox.js', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-    
     //if (!is_admin()) {wp_enqueue_script('jquery');}
     wp_enqueue_script('jquery');
     wp_enqueue_script('jquery-ui-sortable'); 
@@ -172,13 +165,7 @@ function evr_init(){
     wp_enqueue_script(array('tiny_mce','editor','editor-functions', 'thickbox', 'media-upload'));
     #Text Domain support for other languages
     load_plugin_textdomain('evr_language', false, dirname(plugin_basename(__file__)).'/lang/');
-    evr_admin_warnings();     
-  #Load dwolla js
- /* if (get_option('evr_dwolla')=="Y"){  
-    wp_register_script( 'dwolla', 'https://www.dwolla.com/scripts/button.min.js');
-    wp_enqueue_script( 'dwolla', 'https://www.dwolla.com/scripts/button.min.js', FALSE, FALSE, TRUE); 
-    }
-    */
+
 }
 //
 function evr_load_tiny_mce() {
@@ -240,7 +227,6 @@ function evr_public_stylesheets() {
     wp_register_style($handle = 'evr_pop_style', $src = plugins_url('/evr_pop_style.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_style($handle = 'evr_fancy_style', $src = plugins_url('/scripts/fancybox/jquery.fancybox-1.3.4.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
     wp_register_style($handle = 'evr_colorbox_style', $src = plugins_url('/colorbox/css/colorbox.css', __FILE__), $deps = array(), $ver = '1.0.0', $media = 'all');
-    
     wp_enqueue_style('evr_public');
     wp_enqueue_style('evr_calendar');
     wp_enqueue_style('evr_pop_style');
@@ -260,8 +246,8 @@ function evr_public_scripts() {
 }
 #function to load items to public pages of wordpress site
 function evr_public_header(){
-    echo "<!--Begin Added by Event Registration-->";
-    echo "<!--End Added by Event Registration-->";   
+    echo '<!--Event Registration '.$evr_ver.'-->';
+
 }
 /*********************************   END PUBLIC HEAD   *****************************/
 //
@@ -281,18 +267,10 @@ function evr_admin_menu(){
     add_submenu_page(__file__, 'Questions', __('Questions','evr_language'), $role, 'questions','evr_admin_questions');
     add_submenu_page(__file__, 'Manage Attendees', __('Attendees','evr_language'), $role, 'attendee','evr_attendee_admin');
     add_submenu_page(__file__, 'Manage Payments', __('Payments','evr_language'), $role, 'payments','evr_admin_payments');
-    //aDMINSTRATIVE MENU OPTIONS
     add_submenu_page(__file__, 'Register Plugin', __('Register Plugin','evr_language'), $role, 'evr_register','evr_registration');
-    add_submenu_page(__file__, 'Disable Donate Popup', __('Disable Donate Popup','evr_language'), $role, 'popup','evr_validate_key');
-    add_submenu_page(__file__, 'Remove Old Data', __('Remove Old Data','evr_language'), $role, 'purge','evr_clean_old_db');
+    if (get_option('evr_was_upgraded')== "Y") {add_submenu_page(__file__, 'Remove Old Data', __('Remove Old Data','evr_language'), $role, 'purge','evr_clean_old_db');}
     add_submenu_page(__file__, 'UnInstall Plugin', __('Uninstall','evr_language'), $role, 'uninstall','evr_remove_db_menu');
-    //add_submenu_page (__file__, 'Function Testing', 'Function Testing', $role, 'testing','evr_testing');
-    //add_submenu_page ( __FILE__, 'Data Import', 'Import Data', 8, 'import', 'evr_admin_import' );
-    //add_submenu_page ( __FILE__, 'Data Export', 'Export Data', 8, 'export', 'evr_admin_export' );
-    //add_submenu_page ( __FILE__, 'Send Mail', 'Mail', 8, 'mail', 'evr_mail_followup' );
-    //add_submenu_page ( __FILE__, 'Sample Events', 'Sample Events', 8, 'sample', 'evr_create_events_sample_page' );
-    //add_submenu_page ( __FILE__, 'Reports', 'Reports', 8, 'reports', 'evr_admin_reports' );
-    //add_submenu_page ( __FILE__, 'Support', 'Support', 8, 'support', 'evr_admin_support' );
+
 }
 /*********************************   END ADMIN MENU   ********************************/
 #function for testing functions
@@ -302,18 +280,7 @@ function evr_testing(){
 function evr_widgets(){
     register_widget( 'EVR_Widget_List_Events' );//new widget
     }
-#Function for checking how long using plugin
-function evr_check_usage_time(){
-			if ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_donated') == "Y")){update_option('evr_dontshowpopup', "Y");}
-			if(!get_option('evr_date_installed') ) {
-                  $installed_date = strtotime('now');
-             	  update_option('evr_date_installed', $installed_date);
-                } 
-            elseif ((get_option('evr_dontshowpopup')!= "Y")&&(get_option('evr_date_installed')< strtotime('-29 days'))){
-                // plugin has been installed for over 30 days
-                evr_donate_popup();
-                }
-}
+
 #Function to add custom tag to footer
 function evr_footer_text(){
 	echo "<p id='footer' style=\"text-align:center;\">Event Registration created by <a href='http://www.wpeventregister.com'>wpeventregister.com</a></p>";

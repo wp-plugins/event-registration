@@ -1,13 +1,11 @@
 <?php
 function evr_new_event_button(){
      ?>
-          
      <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                                 <input type="hidden" name="action" value="new">
                                 <input class="evr_button evr_add" type="submit" name="new" value="<?php  _e('ADD EVENT','evr_language');?>" />
      </form>
      <?php
-     
 }
 //function that displays events with option buttons
 function evr_event_listing(){
@@ -16,7 +14,7 @@ $record_limit = 10;
 //get today's date to sort records between current & expired'
 $curdate = date("Y-m-d");
 //initiate connection to wordpress database.
-global $wpdb;
+global $wpdb, $evr_date_format;
 
 ?>
 <div class="wrap">
@@ -28,31 +26,30 @@ global $wpdb;
                 $sql = "SELECT * FROM ".get_option('evr_event');
                 $records = mysql_query($sql);
                 $items = mysql_num_rows($records); // number of total rows in the database
-                
                 	if($items > 0) {
                 		$p = new evr_pagination;
                 		$p->items($items);
                 		$p->limit($record_limit); // Limit entries per page
                 		$p->target("admin.php?page=events");
-                		$p->currentPage($_GET[$p->paging]); // Gets and validates the current page
-                		$p->calculate(); // Calculates what to show
-                		$p->parameterName('paging');
-                		$p->adjacents(1); //No. of page away from the current page
-                
                 		if(!isset($_GET['paging'])) {
                 			$p->page = 1;
                 		} else {
                 			$p->page = $_GET['paging'];
                 		}
                 
+                        
+                        $p->currentPage($p->page); // Gets and validates the current page
+                		$p->calculate(); // Calculates what to show
+                		$p->parameterName('paging');
+                		$p->adjacents(1); //No. of page away from the current page
+                
+                		
                 		//Query for limit paging
                 		$limit = "LIMIT " . ($p->page - 1) * $p->limit  . ", " . $p->limit;
-                
                 } else {
                 	echo "No Record Found";
                 }//End pagination
                 ?>
-                
                     <div class="padding">
                     <div class="tablenav">
                         <div class='tablenav-pages'>
@@ -89,13 +86,26 @@ global $wpdb;
                        	$rows = $wpdb->get_results( "SELECT * FROM ". get_option('evr_event') ." ORDER BY date(start_date) DESC ".$limit );
                           if ($rows){
                             foreach ($rows as $event){
-                         
                                         $event_id       = $event->id;
                         				$event_name     = stripslashes($event->event_name);
-                        				$event_location = stripslashes($event->event_location);
+                                        if((get_option('evr_location_active')=="Y") && ( $event->location_list >= '1')){
+                                            $sql = "SELECT * FROM " . get_option('evr_location')." WHERE id =".$event->location_list;
+                                            $location = $wpdb->get_row( $sql, OBJECT );//default object
+                                            //$object->field;
+                                            if( !empty( $location ) ) {
+                                            $event_location = stripslashes($location->location_name);
+                                            $event_address  = $location->street;
+                                            $event_city     = $location->city;
+                                            $event_state    = $location->state;
+                                            $event_postal   = $location->postal;
+                                            $event_phone    = $location->phone;
+                                            }
+                                        } else {
+                                        $event_location = stripslashes($event->event_location);
                                         $event_address  = $event->event_address;
                                         $event_city     = $event->event_city;
                                         $event_postal   = $event->event_postal;
+                                        }
                                         $reg_limit      = $event->reg_limit;
                                 		$start_time     = $event->start_time;
                                 		$end_time       = $event->end_time;
@@ -103,35 +113,28 @@ global $wpdb;
                                         $custom_mail    = $event->custom_mail;
                                 		$start_date     = $event->start_date;
                                 		$end_date       = $event->end_date;
-                            
+                                        $event_close    = $event->close;
                             $number_attendees = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id';"));
-                            
-            				
             				if ($number_attendees == '' || $number_attendees == 0){
             					$number_attendees = '0';
             				}
-            				
             				if ($reg_limit == "" || $reg_limit == " "){
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
                                
+                               //$current_dt= date('Y-m-d H:i a',current_time('timestamp',0));
 $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
-$close_dt = $start_date." ".$start_time;
+if ($event_close == "start"){$close_dt = $start_date." ".$start_time;}
+else if ($event_close == "end"){$close_dt = $end_date." ".$end_time;}
+else if ($event_close == ""){$close_dt = $start_date." ".$start_time;}
 $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
 $expiration_date = strtotime($stp);
 $today = strtotime($current_dt);
-
-//echo "The current date and time is: ".$current_dt."<br/>";
-//echo "Registration closes at: ". $stp."<br/>";                              
-
-
 if ($expiration_date <= $today){
-            					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED','evr_language').'</span>';
+           					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED','evr_language').'</span>';
             				} else{
             					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE','evr_language').'</span>';
             				}   
-            				
-            		
                         	?>
                             <tr></tr>
                           <tr>
@@ -160,7 +163,6 @@ if ($expiration_date <= $today){
                                           <input type="hidden" name="event_name" value="<?php echo $event_name;?>">
                                           <input class="question_btn" type="submit" name="questions" value="<?php _e('Questions','evr_language');?>" />
                                         </form>
-                                        
                                     </div>
                                     <div style="float:left;">
                                         <form name="form" method="post" action="admin.php?page=attendee">
@@ -208,7 +210,6 @@ if ($expiration_date <= $today){
                             <?php if($items > 0) {echo $p->show();}  // Echo out the list of paging. ?>
                         </div>
                     </div>
-                  
     <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
 <!--New Button for wpeventregister.com-->
@@ -226,19 +227,18 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." ORDER BY date(start_date) DE
                     		$result = mysql_query ($sql);
                             if ($items > 0 ) {
                     		while ($row = mysql_fetch_assoc ($result)){  
-                         
                             $event_id       = $row['id'];
                     	    $event_name = stripslashes($row['event_name']);
         					$event_identifier = stripslashes($row['event_identifier']);
         					$display_desc = $row['display_desc'];  // Y or N
                             $event_desc = stripslashes($row['event_desc']);
-                            $event_category = unserialize($_REQUEST['event_category']);
+                            $event_category = unserialize($row['category_id']);
         					$reg_limit = $row['reg_limit'];
         					$event_location = $row['event_location'];
                             $event_address = $row['event_address'];
                             $event_city = $row['event_city'];
                             $event_state =$row['event_state'];
-                            $event_postal=$row['event_postcode'];
+                            $event_postal=$row['event_postal'];
                             $google_map = $row['google_map'];  // Y or N
                             $start_month = $row['start_month'];
         					$start_day = $row['start_day'];
@@ -255,48 +255,38 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." ORDER BY date(start_date) DE
                             $more_info = $row['more_info'];
         					$image_link = $row['image_link'];
         					$header_image = $row['header_image'];
-                            $event_cost = $row['event_cost'];
+                            //$event_cost = $row['event_cost'];
                             $allow_checks = $row['allow_checks'];
         					$is_active = $row['is_active'];
         					$send_mail = $row['send_mail'];  // Y or N
         					$conf_mail = stripslashes($row['conf_mail']);
         					$start_date = $row['start_date'];
                             $end_date = $row['end_date'];
-                        
                             //set reg limit if not set
                             if ($reg_limit == ''){$reg_limit = 999;} 
-                            
                             $sql2= "SELECT * FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                              $result2 = mysql_query($sql2);
             			     $num = mysql_num_rows($result2);
                              $number_attendees = $num;
-            				
             				if ($number_attendees == '' || $number_attendees == 0){
             					$number_attendees = '0';
             				}
-            				
             				if ($reg_limit == "" || $reg_limit == " "){
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
-            				
-            					
             		           $exp_date = $end_date;
                                $todays_date = date("Y-m-d");
                                $today = strtotime($todays_date);
                                $expiration_date = strtotime($exp_date);
-                               
                              if ($expiration_date <= $today){
             					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED EVENT','evr_language').'</span>';
             				} else{
             					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE EVENT','evr_language').'</span>';
             				}   
-                            
-                            
                             //div for popup goes here.
                             include "evr_event_popup_pop.php";         
                             }}
 ?>
-
 </div>
 <?php
 }

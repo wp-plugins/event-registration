@@ -17,16 +17,13 @@ function evr_generate_frm_defaults($field,$tag){
 </li>
 <?php
 }
-
 /** This function, evr_regform_new($event_id){} generates a registration form
  *  base on settings defined in the event with the id that is passed as $event_id 
  *  to this function.  This form will only show defined fields and costs assigned 
  *  to this event.
  *
  */ 
-
 function evr_regform_new($event_id){
-    
     global $wpdb,$evr_date_format;
     $curdate = date ( "Y-m-j" );
     $company_options = get_option('evr_company_settings');
@@ -43,9 +40,7 @@ function evr_regform_new($event_id){
 #Set default to show or hide event details
 if ($display_desc == "Y"){$dsply = "block"; }
 else {$dsply="none";}
-
 #Begin Expand/Hide for event details
-
 ?>
 <div>
 <a href="#" onclick="jQuery('#details').toggle();return false;"><?php _e('Show/Hide Details','evr_language');?></a>
@@ -55,7 +50,6 @@ echo date($evr_date_format,strtotime($start_date))."  -  ";
 if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));}
 echo __('&nbsp;&nbsp;&nbsp;&nbsp;Time: ','evr_language')." ".$start_time." - ".$end_time;
 ?></div>
-
 <div style="text-align: justify;"><p><?php echo html_entity_decode($event_desc);?></p></div>
 <span style="float:right;"><a href="<?php echo EVR_PLUGINFULLURL;?>evr_ics.php?event_id=<?php echo $event_id;?>">
 <img src="<?php echo EVR_PLUGINFULLURL;?>images/ical-logo.jpg" /></a></span>
@@ -97,7 +91,6 @@ if ($more_info !=""){
 //if ($display_desc =="Y"){ echo "<blockquote>".html_entity_decode($event_desc)."</blockquote>"; }
 #Registration form content begins here
 ?>
-
 <!--End Show/Hide Event Details -->
 <!--Begin registration form scripts -->
 <script type="text/javascript" src="<?php echo $md5_url; ?>"></script>
@@ -121,22 +114,17 @@ echo '<script type="text/javascript" src="'. EVR_PLUGINFULLURL.'public/calculato
 echo '<script type="text/javascript" src="'. EVR_PLUGINFULLURL.'public/calculator.js.php?tax='.$tax_rate.'"></script>';
         } 
 ?>
-
 <!--Custom styles from company settings for form--> 
 <style>
 <?php echo   $company_options['form_css'];?>
-
 </style>
 <div id="evrRegForm">
 <?php
 //$current_dt= date('Y-m-d H:i a',current_time('timestamp',0));
 $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
-
 if ($event_close == "start"){$close_dt = $start_date." ".$start_time;}
 else if ($event_close == "end"){$close_dt = $end_date." ".$end_time;}
 else if ($event_close == ""){$close_dt = $start_date." ".$start_time;}
-
-
 $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
 $expiration_date = strtotime($stp);
 $today = strtotime($current_dt);
@@ -174,7 +162,6 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
         if ($inc_zip == "Y") { 
             evr_generate_frm_defaults('zip',__('Postal/Zip Code','evr_language'));
         } 
-
         if ($inc_comp == "Y") {
             evr_generate_frm_defaults('company',__('Company Name','evr_language'));
         }
@@ -194,7 +181,6 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
             evr_generate_frm_defaults('co_phone',__('Company Phone','evr_language'));
         }
 ?>
-
 <!--End Default Questions -->
 <!--Begin Custom Questions -->
 <?php        
@@ -224,7 +210,6 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
         $available = evr_get_open_seats($event->id,$event->reg_limit );
         #If there is at least one seat available then begin display of event pricing and allow registration, else no fees notice.                               
         if ($available >= "1"){ 
-            
             $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
             $rows = $wpdb->get_results( $sql );
             if ($rows){

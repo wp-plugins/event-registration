@@ -16,9 +16,9 @@ function evr_show_event_list($public_list_template){
     $rows = $wpdb->get_results( $sql );
 #Begin html table layout
 echo '<div class="evr_event_list">';
-echo '<table class="evr_events" cellspacing="0" summary="The list of upcoming events.">';
-echo '<caption>Click on Event Name for description/registration</caption>';
-echo '<thead><tr><th width="40%">EVENT</th><th></th><th></th></th><th>START</th><th>-</th><th>END</th></tr></thead>';
+echo '<table class="evr_events" cellspacing="0" summary="'.__('The list of upcoming events.','evr_language').'">';
+echo '<caption>'.__('Click on Event Name for description/registration','evr_language').'</caption>';
+echo '<thead><tr><th width="40%">'.__('EVENT','evr_language').'</th><th></th><th></th></th><th>'.__('START','evr_language').'</th><th>-</th><th>'.__('END','evr_language').'</th></tr></thead>';
 echo '<tbody>';
 #Set the count for the alternating color rows of the table
     $color_row= "1";
@@ -61,7 +61,7 @@ echo '<tbody>';
                             else {
                            // $codeToReturn .= '<a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup{EVENT_ID}&modal=false title='.stripslashes($event->event_name).'">{EVENT_NAME}</a>';
                             #changed to use colorbox popup
-                            $codeToReturn .= '<a <a class="inline" href="#event_content_{EVENT_ID}">{EVENT_NAME}</a>';
+                            $codeToReturn .= '<a class="inline" href="#event_content_{EVENT_ID}">{EVENT_NAME}</a>';
                             
                             }
                         }
@@ -141,7 +141,6 @@ echo '</tbody></table></div>';
         }             
 }
 # End of Event Display List Function
-
 /**
 * Function evr_show_event_accordian(){}
 * Retrieves list of events from database and returns them to the screen in the accordian option selected in the company settings
@@ -237,7 +236,6 @@ echo '<section id="close"><h2><a href="#Close">Click on Event for Details - Clic
                 } 
         echo $codeToReturn;        
     }
-    
 echo '</div>';
 }
 ?>

@@ -3,7 +3,7 @@
 function evr_new_event(){
     global $wpdb, $wp_version;
    
-    $editor_settings= array('wpautop','media_buttons' => false,'textarea_rows' => '4'); 
+    $editor_settings= array('wpautop'=>false,'media_buttons' => false,'textarea_rows' => '4', 'tinymce'=>false); 
     $body =   "***This is an automated response - Do Not Reply***<br />";
     $body .= "Thank you [fname] [lname] for registering for [event].<br />";
     $body .= "We hope that you will find this event both informative and enjoyable.";
@@ -60,7 +60,7 @@ function evr_new_event(){
     <div class="evr_tab_container">
         <div id="tab1" class="tab_content">
             
-            <input type="hidden" name="action" value="post">
+            <input type="hidden" name="action" value="post"/>
             <table>
                 <tr>
                     <td>
@@ -95,10 +95,10 @@ function evr_new_event(){
                     <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a>
                     
                     <?php
-                   	if (function_exists('wp_editor')){
-					echo "</td></tr></table>";
-                    wp_editor( '', 'event_desc', $editor_settings );
-                                     
+                    if(function_exists('the_editor')){
+                    echo "</td></tr></table>";
+                    the_editor('', "event_desc", '', false);
+           
 				    }else{ ?>
 					
                     <a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
@@ -108,8 +108,8 @@ function evr_new_event(){
                     
                                     
                     
-              <br>      
-              <hr />
+              <br/>      
+            
               <table><tr></tr>
                 
                 <tr>
@@ -118,7 +118,7 @@ function evr_new_event(){
                     <strong><?php _e('Event Categories','evr_language');?> </strong> <a><span> ?</span></a></label>
                     </td>
                 </tr>
-               </table> 
+               <tr><td colspan="2">
                     <?php 
                     $sql = "SELECT * FROM ". get_option('evr_category');
                     $result = mysql_query ($sql);
@@ -127,10 +127,10 @@ function evr_new_event(){
                     $category_name=$row['category_name'];
                     echo '<input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. "&nbsp;&nbsp;&nbsp; ";
                     }
-                    ?><br />
-               
+                    ?></td>
+               </tr></table> 
             
-            <hr />
+            
     </div>
     <div id="tab2" class="tab_content">
             <h2><?php _e('EVENT VENUE','evr_language');?></h2>
@@ -144,7 +144,67 @@ function evr_new_event(){
                     <input  class="count" name="reg_limit">
                     </td>
                 </tr>
-                <tr>
+                <?php    
+    global $wpdb;
+    $sql = "SELECT * FROM " . get_option('evr_location')." ORDER BY location_name";
+    $locations_array = $wpdb->get_results( $sql );
+    if( (!empty( $locations_array )) && (get_option('evr_location_active')=="Y")) :
+    ?>
+</table>
+<script type="text/javascript">
+
+	/* <![CDATA[ */
+$j = jQuery.noConflict();
+jQuery(document).ready(function($j){
+		$j("#location_list").change(function(){
+
+			if ($j(this).val() == "0" ) {
+               	$j("#hide1").slideDown("fast"); 
+                 $j('#hide1 :input').attr('disabled', false);
+                 
+
+
+			} else {
+
+				$j("#hide1").slideUp("fast");	
+                $j('#hide1 :input').attr('disabled', true);
+			}
+		});
+
+	});
+
+
+   
+    /* ]]> */
+
+</script>
+
+
+<style type="text/css">
+ .custom_addrs
+		{
+			display:none;
+		}
+	
+</style> 
+    <div class="input select">
+	<table>	<tr><td><label for="select_location">Event Location: </label></td><td>
+			<select name="location_list" id="location_list" onchange="showUser(this.value)">
+				<option value="">(choose one)</option>
+				<option value="0">Custom</option>
+    <?php
+		foreach( $locations_array as $location ) : 
+        ?>
+			<option value="<?php echo $location->id; ?>"><?php echo stripslashes($location->location_name); ?></option>
+		<?php
+		endforeach;
+        ?>
+        </select>
+            </td></tr></table>
+		</div>
+        
+		<div class="custom_addrs" id="hide1"><!-- this select box will be hidden at first -->
+			<table><tr>
                     <td>
                     <label class="tooltip" title="<?php _e('Enter the name of the business or facility where the event is being held','evr_language');?>" for="event_location">
                     <?php _e('Event Location/Venue','evr_language');?><a><span> ?</span></a></label>
@@ -176,6 +236,47 @@ function evr_new_event(){
                     <input id="event_postcode" name="event_postcode" type="text" value="Postcode" />
                     </td>
                 </tr>
+                </table>
+		</div>
+        <table>
+        <?php
+	else : ?>
+		<tr>
+                    <td>
+                    <label class="tooltip" title="<?php _e('Enter the name of the business or facility where the event is being held','evr_language');?>" for="event_location">
+                    <?php _e('Event Location/Venue','evr_language');?><a><span> ?</span></a></label>
+                    </td>
+                    <td>
+                    <input class= "title" id="event_location" name="event_location" type="text" size="50" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    <label class="first" for="event_street"><?php _e('Street','evr_language');?></label>
+                    </td>
+                    <td>
+                    <input  class= "title" id="event_street" name="event_street" type="text" value="Street" />
+                    </td>
+                </tr>		
+				<tr>
+                    <td><label for="event_city">
+					<?php _e('City','evr_language');?></label></td><td><input id="event_city" name="event_city" type="text" value="City" /></td></tr>
+                <tr>
+                    <td><label for="event_state">
+					<?php _e('State','evr_language');?></label></td><td><input id="event_state" name="event_state" type="text" value="State" /></td></tr>
+                <tr>
+                    <td>
+                    <label for="event_postcode">
+					<?php _e('Postcode','evr_language');?></label>
+                    </td>
+                    <td>
+                    <input id="event_postcode" name="event_postcode" type="text" value="Postcode" />
+                    </td>
+                </tr>
+		<?php 
+	endif; 
+?>  
+                
                 <tr>
                     <td>
                     <legend class="tooltip" title="<?php _e('All location information must be complete for Google Map feature to work.','evr_language');?>">
@@ -217,6 +318,7 @@ function evr_new_event(){
         </div>
 
         <div id="tab4" class="tab_content">
+        <h2><?php _e('EVENT OPTIONS','evr_language');?></h2>
             <table>
                 <tr>
                     <td colspan="2">
@@ -329,8 +431,9 @@ function evr_new_event(){
                         [fname] [lname] has registered for [event].<br />
                         Registration is for [num_people] person(s) for a total of [cost].";     
                 
-            if (function_exists('wp_editor')){
-					wp_editor( $body, 'coord_msg', $editor_settings );
+            if (function_exists('the_editor')){
+					//wp_editor( $body, 'coord_msg', $editor_settings );
+                    the_editor($body, "coord_msg", '', false);
                                      
 				    }else{ ?>
 					<a href="javascript:void(0)" onclick="tinyfy(1,'coord_msg')"><input type="button" value="WYSIWG"/></a>
@@ -352,9 +455,9 @@ function evr_new_event(){
                 [event_name]([event_id]) on [pay_date] at [pay_time].<br />Details: [details]";    
                 
                 
-                	if (function_exists('wp_editor')){
-					wp_editor( $body, 'coord_pay_msg', $editor_settings );
-                                     
+                	if (function_exists('the_editor')){
+					//wp_editor( $body, 'coord_pay_msg', $editor_settings );
+                     the_editor($body, "coord_pay_msg", '', false);                
 				    }else{ ?>
 					<a href="javascript:void(0)" onclick="tinyfy(1,'coord_pay_msg')"><input type="button" value="WYSIWG"/></a>
                         <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $body;?></textarea>

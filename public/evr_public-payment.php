@@ -104,7 +104,7 @@ if ($company_options['payment_vendor']==""||$company_options['payment_vendor']==
                     echo '</td></tr>';
                     } 
                 echo '<tr><td><strong>'.__('Total Cost:','evr_language').'</strong></td>';
-                echo '<td>'.$ticket_order[0]['ItemCurrency'].'  <strong>'.number_format($payment,2).'</strong></td></tr></table><br />';    
+                echo '<td>'.$ticket_order[0]['ItemCurrency']." ".'<strong>'.number_format($payment,2).'</strong></td></tr></table><br />';    
                    
 }                   
     
@@ -173,7 +173,7 @@ if ($company_options['payment_vendor']=="PAYPAL"){
                     echo '</td></tr>';
                     } 
                 echo '<tr><td><strong>'.__('Total Cost:','evr_language').'</strong></td>';
-                echo '<td>'.$ticket_order[0]['ItemCurrency'].'<strong>'.number_format($payment,2).'</strong></td></tr></table><br />';    
+                echo '<td>'.$ticket_order[0]['ItemCurrency'].' <strong>'.number_format($payment,2).'</strong></td></tr></table><br />';    
                 
 	            if ($company_options['use_sandbox'] == "Y") {
 					  $p->dump_fields(); // for debugging, output a table of all the fields

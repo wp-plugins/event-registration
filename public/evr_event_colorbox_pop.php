@@ -1,18 +1,16 @@
 <?php
-
 /**
  * @author David Fleming
  * @copyright 2011
  */
+$cal_title = __('Click Here to add to your Calendar Sotware - downloads an ICS file.','evr_language');
 ?>
 <!-- Main Page Event PopUp Start -->
 <div style="display:none;"><div id="event_content_<?php echo $event_id;?>" style="padding:10px; background:#fff;">
-
-
 <div id="evr_pop_top"><span style="float:center;"><?php  if ($header_image != ""){ ?> <img class="evr_pop_hdr_img" src="<?php echo $header_image;?>" /><?php } ?></span></div>
 <div id="evr_pop_title"><span style="float:left;"><h3><?php echo $event_name;?></h3></span>
                         <span style="float:right;"><a href="<?php echo EVR_PLUGINFULLURL."evr_ics.php";?>?event_id=<?php echo $event_id;?>">
-                        <img src="<?php echo EVR_PLUGINFULLURL;?>images/ical-logo.jpg" /></a></span>
+                        <img src="<?php echo EVR_PLUGINFULLURL;?>images/ical-logo.jpg" title="<?php echo $cal_title;?>"/></a></span>
                         </div>
 <div id="evr_pop_date_row" class="evr_pop_date"><?php echo "<br/>".date($evr_date_format,strtotime($start_date))."  -  ";
                         if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));}
@@ -24,9 +22,7 @@
                         <img class="evr_pop_img" src="<?php echo EVR_PLUGINFULLURL;?>images/event_icon.png" />
                         <?php } ?>
                         </div>
-                                              
 <div class="evr_spacer"><hr /></div>  
-
 <div id="evr_pop_venue"><div id="evr_pop_address"><b><u>Location</u></b><br/><br/>
                         <?php echo stripslashes($event_location);?><br />
                         <?php echo $event_address;?><br />
@@ -58,22 +54,16 @@
                                 if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
                                 echo $item_title.'   '.$item_custom_cur.' '.$item_price.'<br />';
                                 } ?>
-                        
                         </div><div class="evr_spacer"></div>
 <div id="evr_pop_foot"><p align="center">
-
 <?php if ($more_info !=""){ ?>
 <input type="button" onClick="window.open('<?php echo $more_info;?>');" value='MORE INFO'/> 
 <?php	} ?>
-
 <?php if ($outside_reg == "Y"){ ?>
 <input type="button" onClick="window.open('<?php echo $external_site;?>');" value='External Registration'/> 
 <?php	}  else {?>
                         <input type="button" onClick="location.href='<?php echo evr_permalink($company_options['evr_page_id']);?>action=evregister&event_id=<?php echo $event_id;?>'" value='REGISTER'/> 
  <?php } ?>                       
-                        
-                        
                         </p></div>               		
-                        
 </div></div>
-<!-- EventPopUpEnd -->	
+<!-- EventPopUpEnd -->

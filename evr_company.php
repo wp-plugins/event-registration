@@ -1,8 +1,14 @@
 <?php
+function evr_issetor(&$variable, $or = NULL) {
+     return $variable === NULL ? $or : $variable;
+ }
+ 
 function evr_admin_company(){
 		global $wpdb, $wp_version;
         $company_options = get_option('evr_company_settings');
-        $update_company = $_POST['update_company'];
+        if (isset($_POST['update_company'])){$update_company = $_POST['update_company'];}
+        else {$update_company = '';}
+        
         switch ($update_company) {
         case "update" : 
     	    if ($_POST['company_name'] !=""){
@@ -178,7 +184,7 @@ function evr_admin_company(){
                         <tr valign="top">
                         <th scope="row"><label for="pay_msg"><?php _e('Payment Message on Confirmation Screen','evr_language');?></label></th>
                         <td><input  name="pay_msg" value="<?php  
-                        if ($company_options['pay_msg'] != ""){echo $company_options['pay_msg'];} else {
+                        if ($company_options['pay_msg'] != ""){echo stripslashes($company_options['pay_msg']);} else {
                             _e("To pay online, please select the Payment button to be taken to our payment vendor's site.",'evr_language');
                         }
                         ?>"  maxlength="93" size="95"/></td>
@@ -311,9 +317,9 @@ function evr_admin_company(){
                 <div class="inside">
                     <div class="padding">
                     <div class="padding">
-                         <?php if($_POST['event_page_id'] == null || $company_options['event_page_id']=='0' ){
-                                        if($_POST['splash'] == null || $company_options['splash']=='0' )
-                                        ?>
+                         <?php if(  evr_issetor($_POST['evr_page_id'])|| $company_options['evr_page_id']=='0' )
+                         {
+                          ?>
                         <p class="updated fade red_text" align="center"><strong><span>**<?php _e('Attention','evr_language');?>**</strong><br />
                         <?php _e('These settings must be configured for the plugin to function correctly.','evr_language');?></span>.</p>
                         <?php }?>	    

@@ -15,7 +15,7 @@ function evr_post_event_to_db(){
           $event_city = $_REQUEST['event_city'];
           $event_state =$_REQUEST['event_state'];
           $event_postal=$_REQUEST['event_postcode'];
-          
+          $location_list = $_REQUEST['location_list'];
           $google_map = $_REQUEST['google_map'];  // Y or N
           
           $start_month = $_REQUEST ['start_month'];
@@ -58,6 +58,7 @@ function evr_post_event_to_db(){
             $sql=array(
             'event_name'=>$event_name,
             'event_desc'=>$event_desc, 
+            'location_list'=>$location_list,
             'event_location'=>$event_location,
             'event_address'=>$event_address,
             'event_city'=>$event_city,
@@ -99,7 +100,7 @@ function evr_post_event_to_db(){
             $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-                              '%s','%s','%s','%s','%s','%s','%s','%s');
+                              '%s','%s','%s','%s','%s','%s','%s','%s','%s');
         	
         
             if ($wpdb->insert( get_option('evr_event'), $sql, $sql_data )){ ?>

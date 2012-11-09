@@ -49,11 +49,34 @@ $display_desc = $event->display_desc; // Y or N
 $event_desc = stripslashes($event->event_desc);
 $event_category = unserialize($event->category_id);
 $reg_limit = $event->reg_limit;
+
+/*
 $event_location = stripslashes($event->event_location);
 $event_address = $event->event_address;
 $event_city = $event->event_city;
 $event_state = $event->event_state;
-$event_postal = $event->event_postal;
+$event_postal = $event->event_postcode;
+*/
+if((get_option('evr_location_active')=="Y") && ( $event->location_list >= '1')){
+                                            $sql = "SELECT * FROM " . get_option('evr_location')." WHERE id =".$event->location_list;
+                                            $location = $wpdb->get_row( $sql, OBJECT );//default object
+                                            //$object->field;
+                                            if( !empty( $location ) ) {
+                                            $event_location = stripslashes($location->location_name);
+                                            $event_address  = $location->street;
+                                            $event_city     = $location->city;
+                                            $event_state    = $location->state;
+                                            $event_postal   = $location->postal;
+                                            $event_phone    = $location->phone;
+                                            }
+                                                                                 			                                           
+                                        } else {
+                                        $event_location = stripslashes($event->event_location);
+                                        $event_address  = $event->event_address;
+                                        $event_city     = $event->event_city;
+                                        $event_postal   = $event->event_postal;
+                                        }
+
 $google_map = $event->google_map; // Y or N
 $start_month = $event->start_month;
 $start_day = $event->start_day;

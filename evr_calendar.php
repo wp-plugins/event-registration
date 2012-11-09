@@ -361,8 +361,9 @@ if (isset($_GET['yr'])) { if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_
      		      					}
      		    						
                                               $calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",evr_time_offset())?'current-day':'day-with-date').$no_events_class
-                                              .'"><span '.($ii<7&&$ii>1?'':'class="weekend"').'>'.$i++.'</span><span class="event"><br />' . evr_show_events($grabbed_events) .evr_show_non_events($grabbed_non_events)
-                                              . '</span></td>';
+                                              .'"><span '.($ii<7&&$ii>1?'':'class="weekend"').'>'.$i++.'</span><span class="event"><br />' . evr_show_events($grabbed_events);
+                                              //evr_show_non_events($grabbed_non_events)
+                                              $calendar_body .= '</span></td>';
 		  					      }
 								else {
 								  $grabbed_events = evr_fetch_events($c_year,$c_month,$i);

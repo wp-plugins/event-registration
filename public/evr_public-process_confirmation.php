@@ -417,6 +417,7 @@ if ($company_options['evr_invoice'] == "Y"){
     echo '<form id="invoice" class="evr_regform" method="post" target=_blank action="'.get_bloginfo('wpurl') .'/wp-content/plugins/event-registration/tcpdf/examples/invoice.php">';
    
 ?>
+
 <input type="hidden" name="reg_form" value="<?php echo $invoice_post;?>" />
 <input type="submit" name="mySubmit" id="mySubmit" value="<?php _e('Print Invoice','evr_language');?>" /> 
 </form>

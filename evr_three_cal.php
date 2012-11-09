@@ -102,7 +102,7 @@ function evr_mini_cal_display_calendar($c_month,$c_year){
 
     $days_in_month = date("t", mktime (0,0,0,$c_month,1,$c_year));
 
-    $calendar_body = '<table class="evr_mini_cal_calendar-table mainTable"  >';
+    $calendar_body .= '<table class="evr_mini_cal_calendar-table mainTable"  >';
     $date_switcher="false";
     if ($date_switcher == 'true'){
         

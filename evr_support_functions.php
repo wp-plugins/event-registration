@@ -1,20 +1,61 @@
 <?php
-
 /**
  * @author David Fleming
  * @copyright 2010
  */
-
 //functinos used by EVR for various things
 function evr_dashboard_upcomingevents(){
     wp_add_dashboard_widget('dashboard_custom_feed', __( '<a href ="admin.php?page=event-registration/EVNTREG.php"><b> EVENTS REGISTRATION DASHBOARD</b></a>' ), 'evr_dashboard_events');
 }
-function evr_dashboard_events(){
-    global $wpdb;
 
+function evr_donate_add() {
+    ?>
+<h3>Support Event Registration</h3>
+<div style="clear: both; display: block; padding: 10px 0; text-align:center;">
+    <p><?php _e('If you find this plugin useful, please contribute to enable its continued development!','');?></p>
+    <p><!--New Button for wpeventregister.com-->
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
+            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"/>
+        </form>
+    </p>
+</div>
+    <?php
+}
+function evr_footer_ad(){
 ?>
 <style>
+.evr_foot_add{
+    width:400px;
+}
+</style>
+<div class="evr_foot_ad">
+<p align="center">
+<!--New Button for wpeventregister.com-->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form></p>
+/div>
+<?php
+}
+function evr_retrieve_all_events($where ='', $orderby='',$limit=''){
+    $sql = "SELECT * FROM " . get_option('evr_event');
+    if($where !=''){$sql .= $where;}
+    if($orderby !=''){$sql .= $orderby;}
+    if($limit !=''){$sql .= $limit;}
+    $results = $wpdb->get_results( $sql );
+    return $results;
+}
 
+function evr_dashboard_events(){
+    global $wpdb;
+?>
+<style>
 #eventsnav {
 	position:relative;
 	float:left;
@@ -24,13 +65,11 @@ function evr_dashboard_events(){
 	list-style:none;
 	line-height:1em;
 }
-
 #eventsnav LI {
 	float:left;
 	margin:0;
 	padding:0;
 }
-
 #eventsnav A {
 	display:block;
 	color:#444;
@@ -43,14 +82,12 @@ function evr_dashboard_events(){
 	border-top:1px solid #fff;
 	border-right:1px solid #aaa;
 }
-
 #eventsnav A:hover,
 #eventsnav A:active,
 #eventsnav A.here:link,
 #eventsnav A.here:visited {
 	background:#bbb;
 }
-
 #eventsnav A.here:link,
 #eventsnav A.here:visited {
 	position:relative;
@@ -64,15 +101,11 @@ function evr_dashboard_events(){
         <li><a href="admin.php?page=events">View Events</a></li>
         <li><a href="admin.php?page=attendee">View Attendees</a></li>
         <li><a href="admin.php?page=payments">Payments</a></li>
-        
     </ul>
-
-
 <table style="width:auto;" class="events_dashboard_window">
     <thead>
         <tr  style="text-align:left">
             <th><font color="green"><b>Next 5 Upcoming Events </b></font> </th><th>
-             
      </th>
         </tr>
     </thead> 
@@ -135,18 +168,14 @@ function evr_moneyFormat($number, $currencySymbol = '', $decPoint = '.', $thousa
 return $currencySymbol . number_format($number, $decimals,
 $decPoint, $thousandsSep);
 }
-
 function evr_DateSelector($inName, $useDate=0) 
                     { 
-                        
                     /* create array so we can name months */ 
                     $monthName = array(1=> "January", "February", "March", 
                     "April", "May", "June", "July", "August", 
                     "September", "October", "November", "December"); 
-                    
                     /* if date invalid or not supplied, use current time */ 
                     if($useDate == 0){$useDate = Time();} 
-                    
                     /* make month selector */ 
                     echo "<SELECT NAME=" . $inName . "_month\">\n"; 
                     for($currentMonth = 1; $currentMonth <= 12; $currentMonth++) 
@@ -161,7 +190,6 @@ function evr_DateSelector($inName, $useDate=0)
                     echo ">" . $monthName[$currentMonth] . "\n"; 
                     } 
                     echo "</SELECT>"; 
-                    
                     /* make day selector */ 
                     echo "<SELECT NAME=" . $inName . "_day\">\n"; 
                     for($currentDay=1; $currentDay <= 31; $currentDay++) 
@@ -174,7 +202,6 @@ function evr_DateSelector($inName, $useDate=0)
                     echo ">$currentDay\n"; 
                     } 
                     echo "</SELECT>"; 
-                    
                     /* make year selector */ 
                     echo "<SELECT NAME=" . $inName . "_year\">\n"; 
                     $startYear = date( "Y", $useDate); 
@@ -188,20 +215,16 @@ function evr_DateSelector($inName, $useDate=0)
                     echo ">$currentYear\n"; 
                     } 
                     echo "</SELECT>"; 
-
 } 
-
 function evr_check_form_submission(){
 echo "Check POST/GET/REQUEST Variables<br>";
 foreach ($_REQUEST as $key => $val)
 echo "$key = $val<br>";
 }
-
 function utf8_to_html ($data)
  {
  return preg_replace("/([\\xC0-\\xF7]{1,1}[\\x80-\\xBF]+)/e", '_utf8_to_html("\\1")', $data);
  }
- 
 function _utf8_to_html ($data)
  {
  $ret = 0;
@@ -209,27 +232,22 @@ function _utf8_to_html ($data)
  $ret += (ord($v) % 128) * pow(64, $k);
  return "&#$ret;";
  }
- 
-
 function evr_form_build($question, $answer = "") {
-
 	$required = '';
 	if ($question->required == "Y") {
 		$required = ' class="r"';
 	}
+    if ($question->remark) { $title =  $question->remark;}
 	switch ($question->question_type) {
 		case "TEXT" :
 			echo "<span class=\"fieldbox\"><input type=\"text\" $required id=\"TEXT_$question->id\"  name=\"TEXT_$question->id\" size=\"40\" title=\"$question->question\" value=\"$answer\" /></span>\n";
 			break;
-		
 		case "TEXTAREA" :
 			echo "<span class=\"msgbox\"><textarea id=\"TEXTAREA_$question->id\" $required name=\"TEXTAREA_$question->id\" title=\"$question->question\" cols=\"30\" rows=\"5\">$answer</textarea></span>\n";
 			break;
-		
 		case "SINGLE" :
 			$values = explode ( ",", $question->response );
 			$answers = explode ( ",", $answer );
-			
 			foreach ( $values as $key => $value ) {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
 				//echo "<label><input id=\"SINGLE_$question->id_ $key\ "$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</label><br/>\n";
@@ -238,7 +256,6 @@ function evr_form_build($question, $answer = "") {
 			
             }
 			break;
-		
 		case "MULTIPLE" :
 			$values = explode ( ",", $question->response );
 			$answers = explode ( ",", $answer );
@@ -250,7 +267,6 @@ function evr_form_build($question, $answer = "") {
 			
             }
 			break;
-		
 		case "DROPDOWN" :
 			$values = explode ( ",", $question->response );
 			$answers = explode ( ",", $answer );
@@ -262,14 +278,10 @@ function evr_form_build($question, $answer = "") {
 			}
 			echo "</select>";
 			break;
-		
 		default :
 			break;
 	}
-    if ($question->remark) { echo '<div class="remark">'.$question->remark.'</div>';}
 }
-
-
 function evr_form_build_edit ($question, $edits) {
 	$required = '';
 	if ($question->required == "Y") {
@@ -279,11 +291,9 @@ function evr_form_build_edit ($question, $edits) {
 		case "TEXT" :
 			echo "<span class=\"fieldbox\"><input type=\"text\"$required id=\"TEXT_$question->id\"  name=\"TEXT_$question->id\" size=\"40\" title=\"$question->question\" value=\"$edits\" /></span>";
 			break;
-		
 		case "TEXTAREA" :
 			echo "<span class=\"msgbox\"><textarea id=\"TEXTAREA_$question->id\"$required name=\"TEXTAREA_$question->id\" title=\"$question->question\" cols=\"30\" rows=\"5\">".$edits."</textarea></span>";
 			break;
-		
 		case "SINGLE" :
 			$values = explode ( ",", $question->response );
 			$answers = explode ( ",", $edits );
@@ -291,9 +301,7 @@ function evr_form_build_edit ($question, $edits) {
 				$checked = in_array ( $value, $answers ) ? " checked=\"checked\"" : "";
 				echo "<p class=\"hanging-indent radio_rows\"><input id=\"SINGLE_$question->id_$key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value  </p>";
 			}
-			
 			break;
-		
 		case "MULTIPLE" :
 			$values = explode ( ",", $question->response );
 			$answers = explode ( ",", $edits );
@@ -303,7 +311,6 @@ function evr_form_build_edit ($question, $edits) {
 			echo " <p class=\"hanging-indent radio_rows\"><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value  </p>";
 			}
 			break;
-		
 		case "DROPDOWN" :
 			$values = explode ( ",", $question->response );
 			//$answers = explode ( ",", $edits );
@@ -315,33 +322,10 @@ function evr_form_build_edit ($question, $edits) {
 			}
 			echo "</select>";
 			break;
-		
 		default :
 			break;
 	}
 }
-
-//This function used to collect activation of modules not hosted on wordpress site.
-function evr_mod_notification($module_name)
-{
-  global $wpdb;
-    $guid=md5(uniqid(mt_rand(), true));
-    $headers .= "From: Plugin Module Activation <>\r\n";
-    $email_body = get_option('siteurl')." - ".$module_name." - ".$guid;
-    $subject = get_option('siteurl') . " - " ."Module Activation";
-    
-    wp_mail("activation@wpeventregister.com", $subject, html_entity_decode($email_body), $headers); 
-    
-    
-    $option_name = 'plug-'.$module_name.'-activate';
-        $newvalue = $guid;
-        update_option($option_name, $newvalue);
-    
-      
-        
-       
-}
-
 
 function evr_greaterDate($start_date,$end_date)
 {
@@ -353,83 +337,11 @@ function evr_greaterDate($start_date,$end_date)
    return 0;
 }
 
-function evr_validate_key(){
-    
-    
-    global $wpdb;
-    if (get_option('evr_dontshowpopup')=="Y"){$alert = '<div id="message" class="updated"><p><strong>'.__('POPUP IS DISABLED','evr_language').'</strong></p></div>';}
-    else {$alert = '<div id="message" class="updated"><p><strong>Please enter a key.</strong></p></div>';}
-    
-    if ( isset( $_POST['key']) ) {
-        $cur_key = get_option('plug-evr-activate');
-        $submitted_key = $_POST['key'];
-        if ($cur_key == $submitted_key){ 
-            update_option('evr_dontshowpopup', "Y"); 
-            $alert =  '<div id="message" class="updated highlight"><p><strong>Popup Donate Message has been disabled!</strong></p></div>';       
-            }
-        elseif ($cur_key != $submitted_key){
-            $alert = '<div id="message" class="error"><p><strong>Invalid key.  Please re-enter your key.</strong></p></div>';
-            update_option('evr_dontshowpopup', "N");
-        }
-     
-    }
-    ?>
-        <div class="wrap"><br />
-        <a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a>
-        <br />
-        <br />
-        <div class="evr_plugin">
-            <div class="content">
-            	<div class="evr_content_half">
-            		<h3>Disable Donate Popup</h3>
-            		<div class="inside">
-                    <?php echo $alert;?> 
-                    <form method="POST"  action="admin.php?page=popup">
-                     <p>Thank you for using Event Registration.  To disable the popup alert, you will need an activation key. Please complete the product <a href="admin.php?page=evr_register">registration</a> to recieve the activation key.  Please include your website and donation details.</p>
-                     <p>Once we recieve your details from the registration and donation, we will email you the key within 24 hrs.</p>
-                     <p>Note: Each key is specific to your website/installation.</p>
-                    <p>Paste Activation Key<input name="key" size="50"/></p>
-                      <input class="button-primary" name="disable_pop" type="submit" value="Disable Popup"/>
-                     </form>
-                     </div>
-                </div>
-                
-          <br /><br />      
-       	<div class="evr_content_third" style="margin-right:0; float:right;">
-    		<h3>Support Event Registration</h3>
-    		<div class="inside">
-    			<div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful,<br /> please contribute to enable its continued development!<br />
-                <br /><p align="center">
-                <!--New Button for wpeventregister.com-->
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
-                </p>
-    		</div>
-           </div>		
-		<div class="clear"></div>
-	</div>
-    </div>
-    </div>
-    </div>
-           <?php	
-            
-    
-    
-}
-
 function evr_registration(){
     evr_reg_box_content();
  }
- 
 function evr_reg_box_content(){
-    
-    
 global $evr_ver, $wpdb;
-
 ?>
 <div class="wrap">
 <h2 style="font-family: segoe;"><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -467,22 +379,19 @@ if (get_option('evr_is_registered') != "Y"){
         <input type="hidden" name="key" value="<?php echo get_option('plug-evr-activate');?>"/>
     </ul>
     <hr />
-    
-    <p>To recieve the activation key to disable the Donation Pop Up in the admin panel, please include your donation information:</p>
+    <p>If you have donated, please include your donation information:</p>
     <ul>
         <li>Have you donated: <input type="radio" name="donated" value="Yes">Yes  <input type="radio" name="donated" value="No">No</li>
         <li>Paypal TXN ID <input name="txn_id" size="100"/></li>
         <li>Donation Amount: <input name="amnt_dntd" /></li>
         <input type="hidden" name="key" value="<?php echo get_option('plug-evr-activate');?>"/>
     </ul>    
-    
-<input type="submit" name="Send" value="Send Information" onclick="alert('I consent to send this information')"/>   </form> 
+<input type="submit" name="Send" value="Send Information" onclick="alert('I consent to send this information to support@wpeventregister.com')"/>   </form> 
 <?php 
         }
     } 
     else {
         	echo "<div class='updated fade'><p><strong>".__('The Event Registration software is registered!')."</strong></p></div>";
-        
         ?>
         	<h3>Support Event Registration</h3>
     				<div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful,<br /> please contribute to enable its continued development!<br />
@@ -501,5 +410,13 @@ if (get_option('evr_is_registered') != "Y"){
     ?>
     </div>
     <?php
+}
+function evr_mod_notification($module_name)
+{
+  global $wpdb;
+    $guid=md5(uniqid(mt_rand(), true));
+    $option_name = 'plug-'.$module_name.'-activate';
+    $newvalue = $guid;
+    update_option($option_name, $newvalue);
 }
 ?>

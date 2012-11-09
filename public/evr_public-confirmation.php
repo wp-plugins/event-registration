@@ -182,7 +182,7 @@ if ($reg_type == "WAIT"){
     $type = __('You are on the waiting list.','evr_language');
 }
 if ($reg_type == "RGLR"){
-    $type = __('You are registering for','evr_language').$quantity.__('people.','evr_language')."   ".__('Please provide the first and last name of each person:','evr_language');
+    $type = __('You are registering for','evr_language')." ".$quantity." ".__('person(s).','evr_language')."   ".__('Please provide the first and last name of each person:','evr_language');
     }
 echo $type;
 echo '</strong><br />';

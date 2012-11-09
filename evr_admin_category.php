@@ -32,7 +32,7 @@ function evr_admin_categories(){
                   <div class="inside">
                     <div class="padding">
                     <?php
-                    $category_action = $_REQUEST['action'];
+                    $category_action = evr_issetor($_REQUEST['action']);
                     switch ($category_action) {
         
                             case "add_new_category" : 
