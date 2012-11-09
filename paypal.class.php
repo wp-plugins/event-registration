@@ -120,7 +120,9 @@ class paypal_class {
       // values can be overwritten by the calling script.
 
       $this->add_field('rm','2');          // Return method = POST
-      $this->add_field('cmd','_xclick'); 
+      $this->add_field('cmd','_xclick');
+      //added to make special (like accented) characters works with Paypal 
+      $this->add_field('charset', 'utf-8'); 
       
    }
    

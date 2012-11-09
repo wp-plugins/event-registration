@@ -39,7 +39,7 @@ function evr_update_item(){
                         'item_cat'=>$item_cat, 'item_limit'=>$item_limit, 'item_price'=>$item_price, 'free_item'=>$free_item,'item_available_start_date'=>$item_start_date,  
                         'item_available_end_date'=>$item_end_date, 'item_custom_cur'=>$item_custom_cur); 
 		
-			$sql_data = array('%s','%s','%s','%s','%s','%d','%s','%s','%s','%s');
+			$sql_data = array('%s','%s','%s','%s','%s','%f','%s','%s','%s','%s');
             
                       
         
