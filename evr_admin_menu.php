@@ -208,8 +208,7 @@ function evr_splash(){
     	<div class="evr_content_third" style="margin-right:0;">
     		<h3>Support Our Sponsors</h3>
     		<div class="inside">
-            <a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=7673_0_1_10"><img src="<?php echo EVR_PLUGINFULLURL."images/ElegantThemes.gif";?>"/></a>
-    		</div>
+            </div>
     	</div> 
      <div class="evr_content_third" style="margin-right:0; float:right;">
     		<h3></h3>
