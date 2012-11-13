@@ -1,6 +1,9 @@
 Changes:
 =========
 
+= Version 6.00.27 =
+* Compliance Update
+
 = Version 6.00.26 =
 * Resolved issue where editor windows overflowed tabs in Coordinator Module
 * Removed admin registration alert
@@ -20,7 +23,6 @@ Changes:
 * Modified to hide text by default on ref form is "Show description on reg form" is set to no on event setup
 * Resolved payment area to accurately reflect amount due and payment totals for events
 * Added "Send payment reminder to all people with a balance" to the payment area
-
 
 = Version 6.00.25 =
 * Modified code on registration form to better display html

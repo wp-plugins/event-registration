@@ -4,7 +4,7 @@ Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
 Tested up to: 3.4.2
-Stable tag: 6.00.26
+Stable tag: 6.00.27
 
 This plugin is designed to allow you to take online registrations for events and classes. 
 Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
@@ -84,14 +84,14 @@ In the company information, under page settings, the events payment page, there 
 
 
 How to Use:
-Create a new page on your site and title it Registration.
+Must Do! Create a new page on your site and title it Registration.
 On that page, in html view, put this text:   {EVRREGIS}
 Save the page.
 
 Create another page on your site and title it Calendar
 On that page, in html view, put this text:  {EVR_CALENDAR}
 
-Create another page on your side and title it Event Payments
+Must Do! Create another page on your side and title it Event Payments
 Make the page hidden from navigation
 On that page, in the html view, put this text:  [EVR_PAYMENT]
 
@@ -103,6 +103,9 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.27 =
+* Compliance Update
 
 = Version 6.00.26 =
 * Resolved issue where editor windows overflowed tabs in Coordinator Module
