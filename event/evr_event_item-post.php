@@ -28,11 +28,11 @@ function evr_post_item_to_db(){
             $item_custom_cur  = $_REQUEST['custom_cur'];
             $event_end        = $_REQUEST['end'];
             
-            $sql=array('sequence'=>$sequence,'event_id'=>$event_id, 'item_title'=>$item_title, 'item_description'=>$item_description, 
+            $sql=array( 'sequence'=>$sequence,'event_id'=>$event_id, 'item_title'=>$item_title, 'item_description'=>$item_description, 
                         'item_cat'=>$item_cat, 'item_limit'=>$item_limit, 'item_price'=>$item_price, 'free_item'=>$free_item,'item_available_start_date'=>$item_start_date,  
                         'item_available_end_date'=>$item_end_date, 'item_custom_cur'=>$item_custom_cur); 
 		
-			$sql_data = array('%s','%s','%s','%s','%s','%d','%s','%s','%s','%s','%s');
+			$sql_data = array('%s','%s','%s','%s','%s','%s','%f','%s','%s','%s','%s');
             
         
                 if ($wpdb->insert( get_option('evr_cost'), $sql, $sql_data )){ 

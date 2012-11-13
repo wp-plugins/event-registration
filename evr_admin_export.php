@@ -62,7 +62,7 @@ switch ($_REQUEST['action']) {
 			$s = $et . $st;
 	        //Base array for cell column headings
 			$basic_header = array('Reg ID', 'Reg Date','Type','Last Name', 'First Name', 'Attendees', 'Email', 'Address', 
-					'City', 'State', 'Zip', 'Phone','Num People', 'Payment','Tickets');
+					'City', 'State', 'Zip', 'Phone','Co Name', 'Co Address', 'Co City', 'Co State/Prov', 'Co Postal','Num People', 'Payment','Tickets');
             //check for extra questions        
 			$question_sequence = array();
 			$qry = "select question, sequence from ".$events_question_tbl." where event_id = '$event_id' order by sequence" ;
@@ -108,7 +108,12 @@ switch ($_REQUEST['action']) {
 					. $s . $participant["state"]
 					. $s . $participant["zip"]
 					. $s . $participant["phone"]
-                    . $s . $participant["quantity"]
+                         . $s . $participant["company"]
+                         . $s . $participant["co_address"]
+                         . $s . $participant["co_city"]
+                         . $s . $participant["co_state"]
+                         . $s . $participant["co_zip"]
+                         . $s . $participant["quantity"]
 					. $s . $participant["payment"]
                     . $s;
                     //Add ticke order information
@@ -142,7 +147,7 @@ switch ($_REQUEST['action']) {
             $s = $et . $st;
             //Base array for cell column headings
 			$basic_header = array('Reg ID', 'Reg Date','Type','Last Name', 'First Name', 'Attendees', 'Email', 'Address', 
-					'City', 'State', 'Zip', 'Phone','Num People', 'Payment','Tickets');
+					'City', 'State', 'Zip', 'Co Name', 'Co Address', 'Co City', 'Co State/Prov', 'Co Postal','Phone','Num People', 'Payment','Tickets');
             //check for extra questions        
 			$question_sequence = array();
 			$qry = "select question, sequence from ".$events_question_tbl." where event_id = '$event_id' order by sequence" ;
@@ -189,7 +194,12 @@ switch ($_REQUEST['action']) {
 					. $s . $participant["state"]
 					. $s . $participant["zip"]
 					. $s . $participant["phone"]
-                    . $s . $participant["quantity"]
+                         . $s . $participant["company"]
+                         . $s . $participant["co_address"]
+                         . $s . $participant["co_city"]
+                         . $s . $participant["co_state"]
+                         . $s . $participant["co_zip"]
+                         . $s . $participant["quantity"]
 					. $s . $participant["payment"]
                     . $s;
                     //Add ticke order information
@@ -238,13 +248,13 @@ switch ($_REQUEST['action']) {
 			echo implode($s, $basic_header) . $et . "\r\n";
             $results = mysql_query("SELECT * from $events_attendee_tbl where event_id = '$event_id' ORDER BY lname DESC");
             while($participant = mysql_fetch_array($results)) {
-                   {
+                   
     			     echo $participant ["id"]
-					. $s . $participant ["lname"].", " . $participant ["fname"]
+			       . $s . $participant ["lname"].", " . $participant ["fname"]
                     . $s . $participant["email"]
                     . $s . $participant ["reg_type"]
                     . $s . $participant["quantity"]
-					. $s . $participant["payment"];
+                    . $s . $participant["payment"];
                     
                     //get balance owed
                     $sql2= "SELECT SUM(mc_gross) FROM $events_payment_tbl WHERE payer_id='".$participant ["id"]."'";
@@ -262,15 +272,18 @@ switch ($_REQUEST['action']) {
                     echo "||";
                     for ($row = 0; $row < $row_count; $row++) {
                         echo $ticket_order[$row]['ItemQty']." ".$ticket_order[$row]['ItemCat']."-".$ticket_order[$row]['ItemName']." ".$ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']."||";
-                        }       
-                    $sql = "SELECT * from $events_payment_tbl WHERE payer_id = '$participant_id'";
+                        }  
+                     echo $s; 
+                     echo "||";  
+                     //Get payment details        
+                    $sql = "SELECT * from $events_payment_tbl WHERE payer_id ='".$participant["id"]."'";
         			$result = mysql_query($sql);
                     while ($payment = mysql_fetch_assoc ($result)){
-                            echo  $payment["mc_currency"]." ".$payment["mc_gross"]." ".$payment["txn_type"]." ".$payment["txn_id"]." (".$payment["payment_date"].")";
+                            echo  $payment["mc_currency"]." ".$payment["mc_gross"]." ".$payment["txn_type"]." ".$payment["txn_id"]." (".$payment["payment_date"].")"."||";
                                 }}
                         
             					echo $et . "\r\n"; 
-                    }
+                    
                 }
              
 			exit;
