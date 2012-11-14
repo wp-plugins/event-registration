@@ -218,7 +218,7 @@ if ($cal_day_hdr_clr != ""){?>
         $c_month = date("m",evr_time_offset());
         $c_day = date("d",evr_time_offset());
     }
-if (isset($_GET['yr'])) { if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
+if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
         if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec'){
 
                $c_year = mysql_escape_string($_GET['yr']);
@@ -242,7 +242,7 @@ if (isset($_GET['yr'])) { if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_
                $c_month = date("m",evr_time_offset());
                $c_day = date("d",evr_time_offset());
         }
-    }}
+    }
     else{
         $c_year = date("Y",evr_time_offset());
         $c_month = date("m",evr_time_offset());
@@ -340,7 +340,7 @@ if (isset($_GET['yr'])) { if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_
     for ($i=1; $i<=$days_in_month;){
         $calendar_body .= '<tr>';
         for ($ii=1; $ii<=7; $ii++){
-            $go = true;
+           // $go = true;
             if ($ii==$first_weekday && $i==1){
 								$go = TRUE;
 	      		}
