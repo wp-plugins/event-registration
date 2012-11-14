@@ -28,6 +28,7 @@ echo '<tbody>';
     $start_date = $end_date = '';
 #Check and see if the sql querry returned rows, if they did then begin to return each row
     if ($rows){
+        $codeToReturn = '';
         foreach ($rows as $event){
                 #Determine when the event ends and compare that date and time to todays date and time
                 $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
@@ -36,7 +37,7 @@ echo '<tbody>';
                 $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
                 $expiration_date = strtotime($stp);
                 #check to see if there is a custom template for the table if not, use the deafule
-                $codeToReturn = '';
+                
                 $outside_reg = '';
                 if ($public_list_template == ''){
                     #Check to see if the end time of this event is later than now, if so then display then send the event deatils to a string
