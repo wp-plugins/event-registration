@@ -164,7 +164,7 @@ function evr_show_event_accordian(){
     include "evr_public_accordian_style.php";
     #start accordian html outpupt
 echo '<div class="evr_accordion">';
-echo '<section id="close"><h2><a href="#Close">Click on Event for Details - Click Here to Collaspe All</a></h2><div></div></section>';
+echo '<section id="close"><h2><a href="#Close">Click on Event for Details - Click Here to Collapse All</a></h2><div></div></section>';
     #Check and see if the sql querry returned rows, if they did then begin to return each row   
     if ($rows){
             foreach ($rows as $event){                             
