@@ -14,7 +14,7 @@ function evr_admin_categories(){
                                 	); 
 ?>
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Category Management','evr_language');?></h2>
 
   <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"];?>">
@@ -32,7 +32,7 @@ function evr_admin_categories(){
                   <div class="inside">
                     <div class="padding">
                     <?php
-                    $category_action = $_REQUEST['action'];
+                    $category_action = evr_issetor($_REQUEST['action']);
                     switch ($category_action) {
         
                             case "add_new_category" : 
@@ -93,9 +93,9 @@ function evr_admin_categories(){
                                     
                                     while ($row = mysql_fetch_assoc ($result)){
                                     	$category_id= $row['id'];
-                                    	$category_name=$row['category_name'];
-                                    	$category_identifier=$row['category_identifier'];
-                                    	$category_desc=$row['category_desc'];
+                                    	$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
+                                    	$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
+                                    	$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
                                     	$display_category_desc=$row['display_desc'];
                                         $category_color = $row['category_color'];
                                         $font_color = $row['font_color'];
@@ -253,9 +253,9 @@ function evr_admin_categories(){
                                     if (mysql_num_rows($result) > 0 ) {
                                     while ($row = mysql_fetch_assoc ($result)){
                                     					$category_id= $row['id'];
-                                    					$category_name=$row['category_name'];
-                                    					$category_identifier=$row['category_identifier'];
-                                    					$category_desc=$row['category_desc'];
+                                    					$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
+                                    					$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
+                                    					$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
                                     					$display_category_desc=$row['display_desc'];
                                                         $category_color = $row['category_color'];
                                                         $font_color = $row['font_color'];
@@ -287,9 +287,10 @@ function evr_admin_categories(){
 </div>
 <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
+<!--New Button for wpeventregister.com-->
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
