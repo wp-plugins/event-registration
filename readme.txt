@@ -9,6 +9,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Event Registration is a WordPress plugin that allows you to manage events with an online and manual registration and payment process. 
+
 == Description ==
 
 This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. It is designed to be easy to navigate.
