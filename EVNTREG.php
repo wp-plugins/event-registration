@@ -1,8 +1,4 @@
 <?php
-/**
- * @author David Fleming
- * @copyright 2008 - 2012
- */
 /*
 Plugin Name: Event Registration
 Plugin URI: http://www.wpeventregister.com
@@ -28,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.00.27";
+$evr_ver = "6.00.28";
 /**
  * To change date format in event listing display
  * Tuesday, Jan 23, 2011  -  "l, M j,Y"
