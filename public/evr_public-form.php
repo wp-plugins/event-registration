@@ -188,6 +188,7 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
             $questions = $wpdb->get_results("SELECT * from ".get_option('evr_question')." where event_id = '$event_id' order by sequence");
             if ($questions) {
                 foreach ($questions as $question) {
+                    $title = '';
                      if ($question->remark) { $title =  $question->remark;}
 ?>
 <li title="<?php echo $title;?>">
