@@ -29,17 +29,17 @@ if ($reg_form_defaults != "") {
 
     if (in_array("Phone", $reg_form_defaults)) {  $inc_phone = "Y";  }
     
-    if (in_array("company", $reg_form_defaults)) { $inc_comp = "Y"; }
+    if (in_array("Company", $reg_form_defaults)) { $inc_comp = "Y"; }
     
-    if (in_array("co_address", $reg_form_defaults)) { $inc_coadd = "Y"; }
+    if (in_array("CoAddress", $reg_form_defaults)) { $inc_coadd = "Y"; }
     
-    if (in_array("co_city", $reg_form_defaults)) { $inc_cocity = "Y";}
+    if (in_array("CoCity", $reg_form_defaults)) { $inc_cocity = "Y";}
     
-    if (in_array("co_state", $reg_form_defaults)) { $inc_costate = "Y"; }
+    if (in_array("CoState", $reg_form_defaults)) { $inc_costate = "Y"; }
     
-    if (in_array("co_zip", $reg_form_defaults)) { $inc_copostal = "Y"; }
+    if (in_array("CoPostal", $reg_form_defaults)) { $inc_copostal = "Y"; }
     
-    if (in_array("co_phone", $reg_form_defaults)) { $inc_cophone = "Y"; }
+    if (in_array("CoPhone", $reg_form_defaults)) { $inc_cophone = "Y"; }
 }
 $use_coupon = $event->use_coupon;
 $reg_limit = $event->reg_limit;
