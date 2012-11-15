@@ -1,13 +1,10 @@
 <?php
-
 /**
  * @author David Fleming
  * @copyright 2010
  */
-
 //function that provides the content in the content replacement for main public page
 function evr_main_content(){
-    
 }
 //function that provides the content in the content replacement for widget
 function evr_widget_content(){
@@ -21,7 +18,6 @@ function evr_widget_content(){
         $rows = $wpdb->get_results( $sql );
         if ($rows){
             foreach ($rows as $event){
-                                       
                 $bottomdate = date("j",strtotime($event->start_date));
                 $topdate = date("M",strtotime($event->start_date));
                echo '<div id="evr_eventitem">';
@@ -30,7 +26,6 @@ function evr_widget_content(){
                 echo '<div id="evr_eventitem_title">'.stripslashes($event->event_name).'</div></a>';
                 echo '</div><hr/>';
                 }
-        
         }
     echo '</div>';
 }
@@ -42,17 +37,13 @@ function evr_payment_page(){
         $first = "";
         $passed_attendee_id = $_GET['id'];
         $passed_first = $_GET['fname'];
-               
         if (is_numeric($passed_attendee_id)){$attendee_id = $passed_attendee_id;}
             else {
                 $attendee_id = "0";
                 echo "Failure - please retry!"; 
                 }
-
         if (($attendee_id =="")||($attendee_id =="0")) {_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
         else {
-            
-            
 			$query  = "SELECT * FROM ".get_option('evr_attendee')." WHERE id='$attendee_id'";
 	   		$result = mysql_query($query) or die('Error : ' . mysql_error());
 	   		while ($row = mysql_fetch_assoc ($result))
@@ -75,14 +66,11 @@ function evr_payment_page(){
                 $coupon = $row['coupon'];
 				$attendee_name = $fname." ".$lname;
 				}
-
             if ($passed_first==$fname){}
             else {
                 echo "Failure - please retry!"; 
                 exit;}
-
 		//Query Database for event and get variable
-
 			$sql = "SELECT * FROM ". get_option('evr_event') . " WHERE id='$event_id'";
 			$result = mysql_query($sql);
 			while ($row = mysql_fetch_assoc ($result))
@@ -92,11 +80,8 @@ function evr_payment_page(){
 						$event_desc = stripslashes($row['event_desc']);
 						$event_description = stripslashes($row['event_desc']);
 						$event_identifier = $row['event_identifier'];
-						
-					
 							}
 echo "<br><br><strong>".__('Payment Page for','evr_language')." " .$fname." ".$lname." ".__('for event','evr_language')." ".$event_name."</strong><br><br>";
-
 // Print the Order Verification to the screen.
         ?>				  
                         <p align="left"><strong>Registration Detail Summary:</strong></p>
@@ -127,9 +112,7 @@ echo "<br><br><strong>".__('Payment Page for','evr_language')." " .$fname." ".$l
                             </table><br />
         <?php
 //End Verification
-
 $sql3 = "SELECT * FROM " . get_option('evr_payment') . " WHERE payer_id='$attendee_id' ";
-                             
                              $result3 = mysql_query ( $sql3 );
                              $made_payments = mysql_num_rows($result3); // number of total rows in the database
                             if($made_payments > 0)  { 
@@ -143,7 +126,6 @@ $sql3 = "SELECT * FROM " . get_option('evr_payment') . " WHERE payer_id='$attend
                                 }
                                 echo '<font color="red">';
                                 echo "<br/>";
-                                
                                 _e('Total Outstanding Payment Due*:','evr_language');
                                 $total_due = $payment - $payment_made;
                                 echo $ticket_order[0]['ItemCurrency']." ".$total_due;
@@ -157,35 +139,28 @@ $sql3 = "SELECT * FROM " . get_option('evr_payment') . " WHERE payer_id='$attend
                                 $total_due = $payment;
                                 echo $ticket_order[0]['ItemCurrency']." ".$total_due;
                                 echo '</font><br/><br/>';}
-                                
 _e('*Payments could take several days to post to this page. Please check back in several days if you made a payment and your payment is not showing at this time.','evr_language');
 echo "<br><br>";
 //Set payment value for return payments
-
 $payment=$total_due;
     //Get Payment Info
     if ($company_options['pay_now']!=""){$pay_now = $company_options['pay_now'];} else {$pay_now = "PAY NOW";}
 //Paypal 
     if ($company_options['payment_vendor']=="PAYPAL"){
     $p = new paypal_class;// initiate an instance of the class
-    if ($use_sandbox == "Y") {
+    if ($company_options['use_sandbox'] == "Y") {
 		$p->paypal_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr'; // testing paypal url
 		echo "<h3 style=\"color:#ff0000;\" title=\"Payments will not be processed\">Sandbox Mode Is Active</h3>";
 	}else {
 		$p->paypal_url = 'https://www.paypal.com/cgi-bin/webscr'; // paypal url
 	}
     	if ($payment != "0.00" || $payment != "" || $payment != " "){
-			 			
-			
-			
 				  $p->add_field('business', $company_options['payment_vendor_id']);
                   $p->add_field('return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
 				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
 				  $p->add_field('cancel_return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
                   //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
 				  $p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
-                  
-                  
 				  //$p->add_field('return', evr_permalink($company_options['return_url']));
 				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
 				  //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&attendee_action=post_payment&form_action=payment');
@@ -193,7 +168,6 @@ $payment=$total_due;
                   $p->add_field('item_name', $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity);
 				  $p->add_field('amount', $payment);
 				  $p->add_field('currency_code', $ticket_order[0]['ItemCurrency']);
-				  
 				  //Post variables
 				  $p->add_field('first_name', $fname);
 				  $p->add_field('last_name', $lname);
@@ -206,14 +180,9 @@ $payment=$total_due;
 				  if ($company_options['use_sandbox'] == "Y") {
 					  $p->dump_fields(); // for debugging, output a table of all the fields
 				  }   
-			
 			}
-	  
-    
  }
  //End Paypal Section
- 
- 
 //Authorize.Net Payment Section
 if ($company_options['payment_vendor']=="AUHTHORIZE"){
         //Authorize.Net Payment 
@@ -233,20 +202,17 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         // for real accounts (even in test mode), please make sure that you are
         // posting to: https://secure.authorize.net/gateway/transact.dll
         $url			= "https://secure.authorize.net/gateway/transact.dll";
-        
         // If an amount or description were posted to this page, the defaults are overidden
         if ($_REQUEST["amount"])
         	{ $amount = $_REQUEST["amount"]; }
         if ($_REQUEST["description"])
         	{ $description = $_REQUEST["description"]; }
-        
         // an invoice is generated using the date and time
         $invoice	= date(YmdHis);
         // a sequence number is randomly generated
         $sequence	= rand(1, 1000);
         // a timestamp is generated
         $timeStamp	= time ();
-        
         // The following lines generate the SIM fingerprint.  PHP versions 5.1.2 and
         // newer have the necessary hmac function built in.  For older versions, it
         // will try to use the mhash library.
@@ -254,8 +220,6 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         {	$fingerprint = hash_hmac("md5", $loginID . "^" . $sequence . "^" . $timeStamp . "^" . $amount . "^", $transactionKey); }
         else 
         { $fingerprint = bin2hex(mhash(MHASH_MD5, $loginID . "^" . $sequence . "^" . $timeStamp . "^" . $amount . "^", $transactionKey)); }
-        
-             
         // Create the HTML form containing necessary SIM post values
         echo "<FORM method='post' action='$url' >";
         // Additional fields can be added here as outlined in the SIM integration guide
@@ -272,16 +236,12 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         echo "	<INPUT type='hidden' name='x_show_form' value='PAYMENT_FORM' />";
         echo "	<input type='submit' value='$label' />";
         echo "</FORM>";
-
 // This is the end of the code generating the "submit payment" button.    -->
 }
 //End Authorize.Net Section 
-
 //GooglePay Payment Section
     if ($company_options['payment_vendor']=="GOOGLE"){
-          
         // Create the HTML Payment Button
-    
     //Google Payment Button
     ?>
      <form action="https://checkout.google.com/api/checkout/v2/checkoutForm/Merchant/<?php echo $company_options['payment_vendor_id'];?>" id="BB_BuyButtonForm" method="post" name="BB_BuyButtonForm" target="_top">
@@ -294,13 +254,10 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
     <input alt="" src="https://checkout.google.com/buttons/buy.gif?merchant_id=<?php echo $company_options['payment_vendor_id'];?>&amp;w=117&amp;h=48&amp;style=trans&amp;variant=text&amp;loc=en_US" type="image"/>
     </form>
     <?php
- 
 }
 //End Google Pay Section
-
 //Begin Monster Pay Section
 if ($company_options['payment_vendor']=="MONSTER"){
-
 //Display Payment Button
 ?>    
 <form action="https://www.monsterpay.com/secure/index.cfm" method="POST" enctype="APPLICATION/X-WWW-FORM-URLENCODED" target="_BLANK">
@@ -316,16 +273,9 @@ if ($company_options['payment_vendor']=="MONSTER"){
 <input type="submit" value="<?php echo $pay_now;?>" style="background-color: #DCDCDC; font-family: Arial; font-size: 11px; color: #000000; font-weight: bold; border: 1px groove #000000;">
 </form> 
 <?php   
-
 }
 //End Monster Pay Section
-
-
-
 	}
-    
-   
-
 }
 //function to add calendar shortcode page on public page for plugin
 function evr_calendar_page(){}
@@ -339,7 +289,6 @@ function evr_single_event($atts){
     $buffer = ob_get_contents();
     ob_end_clean();
     return $buffer;
-
 }
 /*
 function display_events_by_category($atts, $content=null) {
@@ -357,38 +306,31 @@ function display_events_by_category($atts, $content=null) {
     ob_end_clean();
     return $buffer;
 }
-
 */
-
 //function to add events by category page on public page for plugin
 function evr_by_category($atts, $content=null){
     global $wpdb, $evr_date_format;
-	
     $curdate = date ( "Y-m-j" );
-    
     extract(shortcode_atts(array('event_category_id' => 'No Category ID Supplied'), $atts));
 	$event_category_id = "{$event_category_id}";
-    
     ob_start();
 	$curdate = date ( "Y-m-j" );
     $category_id = null;    
     $sql = null;    
 		if ($event_category_id != ""){
 		  $sql2  = "SELECT * FROM " . get_option('evr_category') . " WHERE category_identifier = '".$event_category_id."'";
-          
 					$result = mysql_query($sql2);
 					while ($row = mysql_fetch_assoc ($result)){
 					$category_id= $row['id'];
-                                    	$category_name=$row['category_name'];
-                                    	$category_identifier=$row['category_identifier'];
-                                    	$category_desc=$row['category_desc'];
+                                    	$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
+                                    	$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
+                                    	$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
                                     	$display_category_desc=$row['display_desc'];
                                         $category_color = $row['category_color'];
                                         $font_color = $row['font_color'];
 					echo "<p><b>".$category_name."</b><br>".$category_desc."</p>";
                     }
                   	$sql = "SELECT * FROM " . get_option('evr_event') ." WHERE category_id LIKE '%\"$category_id\"%' AND str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')"; 
-                    
    //$sql = "SELECT * FROM " . get_option('evr_event');
     $result = mysql_query ( $sql );
 ?>
@@ -399,16 +341,15 @@ function evr_by_category($atts, $content=null){
     <tr><th>EVENT</th><th></th><th width="8"><?php echo "     ";?></th><th>START</th><th>-</th><th>END</th></tr>
 </thead>
 <tbody>
-
 <?php
    $color_row= "1";
    $month_no = $end_month_no = '01';  
    $start_date = $end_date = '';
    while ( $row = mysql_fetch_assoc ( $result ) ) {
 		            $event_id= $row['id'];
-			        $event_name =  stripslashes($row ['event_name']);
-					$event_identifier =  stripslashes($row ['event_identifier']); 
-					$event_desc =  stripslashes($row ['event_desc']);  
+			        $event_name =  stripslashes(htmlspecialchars_decode($row ['event_name']));
+					$event_identifier = stripslashes(htmlspecialchars_decode($row ['event_identifier'])); 
+					$event_desc =  stripslashes(htmlspecialchars_decode($row ['event_desc']));  
 					$start_date = $row['start_date'];
                     $end_date = $row['end_date'];
 					$start_month = $row ['start_month'];
@@ -421,56 +362,47 @@ function evr_by_category($atts, $content=null){
 					$end_time = $row ['end_time'];  
 					 $outside_reg = $row['outside_reg'];  // Yor N
                     $external_site = $row['external_site'];
-		          
-	    
 		$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
 		$result2 = mysql_query($sql2);
                 $num = 0;   
 		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
-        
         $available_spaces = 0;  
 		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
 	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "UNLIMITED";}
-     
-     
-
-
+          $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+$close_dt = $end_date." ".$end_time;
+$today = strtotime($current_dt);
+$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+$expiration_date = strtotime($stp);
+if ($stp >= $current_dt){
       if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
         ?>
             <td class="er_title er_ticket_info"><b>
-            <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['event_pop']=="N"){ 
+           <?php $company_options = get_option('evr_company_settings');
+            if ($company_options['evr_list_format']=="link"){
                 if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
-	               }  else {
-                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';}}
-           
-           
+	}  else {
+                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
+                }}
             else {?>
-            <a href="#TB_inline?&height=600&width=800&inlineId=popup<?php echo $event_id;?>&modal=false" class="thickbox" title="<?php echo $event_name;?>">
-            
+         <a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
+                  <!--  //use this for fancybox window
+          <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
             <?php } echo $event_name;?></a></b></td>
             <td></td><td></td>
             <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
             <td class="er_date"><?php if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;?></td></tr>
-            
-           
             <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}
-        }
+        }}
         ?>
     </tbody></table></div>
-    
- 
-    
        <?php 
     $company_options = get_option('evr_company_settings');
     //Section for popup listings
-    
     //$sql = "SELECT * FROM " . get_option('evr_event') ." WHERE str_to_date(start_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
-      
       //$sql = "SELECT * FROM " . get_option('evr_event');
                     	//	$result = mysql_query ($sql);
                         	$sql = "SELECT * FROM " . get_option('evr_event');
-    
    //$sql = "SELECT * FROM " . get_option('evr_event');
     $result = mysql_query ( $sql );
                             while ($row = mysql_fetch_assoc ($result)){  
@@ -508,7 +440,6 @@ function evr_by_category($atts, $content=null){
                             $allow_checks = $row['allow_checks'];
                             $outside_reg = $row['outside_reg'];  // Yor N
                             $external_site = $row['external_site'];
-                            
                             $more_info = $row['more_info'];
         					$image_link = $row['image_link'];
         					$header_image = $row['header_image'];
@@ -519,8 +450,6 @@ function evr_by_category($atts, $content=null){
         					$conf_mail = stripslashes($row['conf_mail']);
         					$start_date = $row['start_date'];
                             $end_date = $row['end_date'];
-                        
-                            
                             $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                              $result2 = mysql_query($sql2);
             			     //$num = mysql_num_rows($result2);
@@ -528,30 +457,20 @@ function evr_by_category($atts, $content=null){
                              while($row = mysql_fetch_array($result2)){
                                 $number_attendees = $row['SUM(quantity)'];
                                 }
-            				
             				if ($number_attendees == '' || $number_attendees == 0){
             					$number_attendees = '0';
             				}
-            				
             				if ($reg_limit == "" || $reg_limit == " "){
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
-                               
                                //div for popup goes here.
                             include "public/evr_event_popup_pop.php";
                               } 
-                               
-            				
-            					
-            			
 }
 $buffer = ob_get_contents();
     ob_end_clean();
     return $buffer;
-    
 }
-
-
 //Shortcode functions for Attendee List
 function evr_attendee_short($atts){
     extract(shortcode_atts(array('event_id' => 'No ID Supplied'), $atts));
@@ -562,17 +481,13 @@ function evr_attendee_short($atts){
     ob_end_clean();
     return $buffer;
 }
-
 function evr_attendee_list($event_id){
-    
     global $wpdb;
     $event = $wpdb->get_row('SELECT * FROM ' . get_option('evr_event') . ' WHERE id = ' . $event_id);
     echo "<h2>";
     _e('Attendee List for ','evr_language');
     echo stripslashes($event->event_name)."</h2>";
     $participants = $wpdb->get_results("SELECT * from ".get_option('evr_attendee')." where event_id = '$event_id'");
-
-    
 //get attendeeds from each registration and put them into a single array    
     if ($participants) {
         $people = array();
@@ -582,15 +497,12 @@ function evr_attendee_list($event_id){
                 $i = 0;
                  do {
                     array_push($people,$attendee_array[$i]);
-                    
                     ++$i;
                  } while ($i < count($attendee_array));
             }
         }
     }
-    
 //sort array of all attendees
-
  $tmp = Array();
  foreach($people as &$aSingleArray)    $tmp[] = $aSingleArray["last_name"];
  $tmp = array_map('strtolower', $tmp);
@@ -603,11 +515,7 @@ function evr_attendee_list($event_id){
                     ++$i;
                  } while ($i < count($people));
             }
-  
-
 }
-
-
 //function to add quick link to Plugin Activation Menu - used as a filter
 function evr_quick_action($links, $file)
 {
@@ -615,7 +523,6 @@ function evr_quick_action($links, $file)
     static $this_plugin;
     if (!$this_plugin)
         $this_plugin = plugin_basename(__file__);
-
     if ($file == $this_plugin) {
         $org_settings_link = '<a href="admin.php?page=' . __file__ . '">' . __('Settings',
             'evr_language') . '</a>';
@@ -626,11 +533,36 @@ function evr_quick_action($links, $file)
     return $links;
 }
 //function to replace content on public page for plugin
-function evr_content_replace($content)
+/*function evr_content_replace($content)
 {
+   global $wpdb;
+   $company_options = get_option('evr_company_settings');
     if (preg_match('{EVRREGIS}', $content)) {
         ob_start();
         //event_regis_run($event_single_ID);
+        if ($company_options['require_login'] == "Y"){
+        if (is_user_logged_in()){
+            evr_registration_main(); //function with main content
+            }
+        else
+            echo 'You must be logged in to register for events!';
+        }
+        else {
+             evr_registration_main(); //function with main content
+        }
+        $buffer = ob_get_contents();
+        ob_end_clean();
+        $content = str_replace('{EVRREGIS}', $buffer, $content);
+    }
+    return $content;
+}
+*/
+function evr_content_replace($content)
+{
+   global $wpdb;
+   $company_options = get_option('evr_company_settings');
+    if (preg_match('{EVRREGIS}', $content)) {
+        ob_start();
         evr_registration_main(); //function with main content
         $buffer = ob_get_contents();
         ob_end_clean();
@@ -638,7 +570,6 @@ function evr_content_replace($content)
     }
     return $content;
 }
-
 //function to replace content on public page for plugin
 function evr_rotator_replace($content)
 {
@@ -652,5 +583,23 @@ function evr_rotator_replace($content)
     }
     return $content;
 }
-
+function evr_Truncate($string, $limit, $break=".", $pad="...")
+{
+  // return with no change if string is shorter than $limit
+  if(strlen($string) <= $limit) return $string;
+  // is $break present between $limit and the end of the string?
+  if(false !== ($breakpoint = strpos($string, $break, $limit))) {
+    if($breakpoint < strlen($string) - 1) {
+      $string = substr($string, 0, $breakpoint) . $pad;
+    }
+  }
+  return $string;
+}
+function evr_truncateWords($input, $numwords, $padding="...")
+  {
+    $output = strtok($input, " \n");
+    while(--$numwords > 0) $output .= " " . strtok(" \n");
+    if($output != $input) $output .= $padding;
+    return $output;
+  }
 ?>

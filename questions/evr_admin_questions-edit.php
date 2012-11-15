@@ -50,7 +50,10 @@ function evr_questions_edit(){
                             	<th width="33%" scope="row"><?php _e('Required','evr_language');?>:</th>
                             	<td><input name="required" type="checkbox" id="required" <?php if($question->required =="Y" ){echo "checked";}?>/></td>
                             	</tr>
-                            	
+                            	<tr valign="top">
+                                <th width="33%" scope="row"><?php _e('Remark','evr_language');?>:</th>
+                                <td><textarea name="remark" id="remark" rows="3" cols="98"><?php if($question->remark){echo $question->remark;}?></textarea></td>
+                                </tr>
                             	</table>
                                 <input type="hidden" name="sequence" value="<?php echo $question->sequence;?>"/>
                                 <input type="hidden" name="question_id" value="<?php echo $question->id;?>"/>
