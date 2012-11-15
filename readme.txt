@@ -1,13 +1,14 @@
 === Event Registration ===
-Contributors: David Fleming
+Contributors: avdude
 Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
 Tested up to: 3.4.2
-Stable tag: 6.00.27
+Stable tag: 6.00.28
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin is designed to allow you to take online registrations for events and classes. 
-Supports Paypal, Google Pay, MonsterPay or Authorize.net online payment sites for online collection of event fees.
+Event Registration is a WordPress plugin that allows you to manage events with an online registration and payment process. The application is also equipped to manually register people and manually process payments so that you can track a mixed registration type event.
 
 == Description ==
 
@@ -103,6 +104,11 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.28 =
+* Company field not displaying on registration form - Resolved
+* Only 1 event displaying in event list - Resolved
+* Calendar days not correct with dates - Resolved
 
 = Version 6.00.27 =
 * Compliance Update

@@ -1,6 +1,11 @@
 Changes:
 =========
 
+= Version 6.00.28 =
+* Company field not displaying on registration form - Resolved
+* Only 1 event displaying in event list - Resolved
+* Calendar days not correct with dates - Resolved
+
 = Version 6.00.27 =
 * Compliance Update
 
