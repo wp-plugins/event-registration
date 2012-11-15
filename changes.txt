@@ -1,6 +1,10 @@
 Changes:
 =========
 
+= Version 6.00.29 =
+* hover text on custom questions appearing on other questions - Resolved
+* Version not showing correct on WordPress - Resolved
+
 = Version 6.00.28 =
 * Company field not displaying on registration form - Resolved
 * Only 1 event displaying in event list - Resolved

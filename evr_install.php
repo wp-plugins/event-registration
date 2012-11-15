@@ -4,6 +4,8 @@
  * @copyright 2010
  */
 /*
+
+6.00.29 - No DB Changes
 6.00.28 - No DB Changes
 6.00.27 - No DB Changes
 6.00.26 - added remark field to custom questions
@@ -74,7 +76,7 @@ function evr_install()
 {
     global $evr_date_format, $evr_ver, $wpdb, $cur_build, $table_message;
     $table_message = '';
-    $cur_build = "6.00.28";
+    $cur_build = "6.00.29";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
     if ((get_option('evr_was_upgraded')!= "Y")&& ($old_db_version < $cur_build)){
@@ -97,7 +99,7 @@ function evr_install()
 }
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.28";
+    $upgrade_version = "0.29";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
