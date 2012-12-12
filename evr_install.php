@@ -4,7 +4,7 @@
  * @copyright 2010
  */
 /*
-
+6.00.30 - droped memo_old from payments
 6.00.29 - No DB Changes
 6.00.28 - No DB Changes
 6.00.27 - No DB Changes
@@ -76,7 +76,7 @@ function evr_install()
 {
     global $evr_date_format, $evr_ver, $wpdb, $cur_build, $table_message;
     $table_message = '';
-    $cur_build = "6.00.29";
+    $cur_build = "6.00.30";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
     if ((get_option('evr_was_upgraded')!= "Y")&& ($old_db_version < $cur_build)){
@@ -99,7 +99,7 @@ function evr_install()
 }
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.29";
+    $upgrade_version = "0.30";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -696,6 +696,7 @@ function evr_payment_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_payment";
     $evr_payment_version = $cur_build;
+    
     $sql = "CREATE TABLE " . $table_name . " (
 				  id MEDIUMINT NOT NULL AUTO_INCREMENT,
 				  payer_id varchar(15) NOT NULL,
@@ -708,8 +709,7 @@ function evr_payment_db()
 				  payer_status varchar(10) NOT NULL,
 				  payment_type varchar(20) NOT NULL,
 				  memo text NOT NULL,
-                  memo_old text NOT NULL,
-				  item_name text NOT NULL,
+                  item_name text NOT NULL,
 				  item_number varchar(50) NOT NULL,
 				  quantity int(3) NOT NULL,
 				  mc_gross decimal(10,2) NOT NULL,
@@ -743,6 +743,17 @@ function evr_payment_db()
         else {
         $table_message .= __('Failure Updating table - ','').$table_name.'<br/>'; 
         }
+        //get column names
+    $sql = "SELECT * FROM ".$table_name;
+    $wpdb->query($sql);
+           $fields = $wpdb->get_col_info('name', -1);
+    //change column names from values to keys for identifcation 
+    $field_names = array_flip($fields);
+    $value = "memo_old";
+    $sql = "ALTER TABLE ".$table_name." DROP COLUMN memo_old";
+    if (array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
 }
 function evr_question_db()
 {
