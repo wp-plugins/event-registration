@@ -1,105 +1,12 @@
 <?php
 //function to add sale items
-function evr_add_item(){
-    
+function evr_add_item1(){
 //get today's date to sort records between current & expired'
 $curdate = date("Y-m-d");
 //initiate connection to wordpress database.
 global $wpdb;
 $company_options = get_option('evr_company_settings');
-
 ?>
-<style>
-#fade { /*--Transparent background layer--*/
-	display: none; /*--hidden by default--*/
-	background: #000;
-	position: fixed; left: 0; top: 0;
-	width: 100%; height: 100%;
-	opacity: .80;
-	z-index: 9999;
-}
-.popup_block{
-	display: none; /*--hidden by default--*/
-	background: #fff;
-	padding: 20px;
-	border: 20px solid #ddd;
-	float: left;
-	font-size: .8em;
-	position: fixed;
-	top: 50%; left: 50%;
-    
-	z-index: 99999;
-	/*--CSS3 Box Shadows--*/
-	-webkit-box-shadow: 0px 0px 20px #000;
-	-moz-box-shadow: 0px 0px 20px #000;
-	box-shadow: 0px 0px 20px #000;
-	/*--CSS3 Rounded Corners--*/
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-}
-img.btn_close {
-	float: right;
-	margin: -55px -55px 0 0;
-}
-/*--Making IE6 Understand Fixed Positioning--*/
-*html #fade {
-	position: absolute;
-}
-*html .popup_block {
-	position: absolute;
-}
-</style>
-<script type="text/javascript">
-
-jQuery(document).ready(function($){
-	 					   		   
-							   		   
-	//When you click on a link with class of poplight and the href starts with a # 
-	$('a.poplight[href^=#]').click(function() {
-		var popID = $(this).attr('rel'); //Get Popup Name
-		var popURL = $(this).attr('href'); //Get Popup href to define size
-				
-		//Pull Query & Variables from href URL
-		var query= popURL.split('?');
-		var dim= query[1].split('&');
-		var popWidth = dim[0].split('=')[1]; //Gets the first query string value
-
-		//Fade in the Popup and add close button
-		$('#' + popID).fadeIn().css({ 'width': Number( popWidth ) }).prepend('<a href="#" class="close"><img src="<?php echo EVR_PLUGINFULLURL;?>images/btn-close.png" class="btn_close" title="Close Window" alt="Close" /></a>');
-		
-		//Define margin for center alignment (vertical + horizontal) - we add 80 to the height/width to accomodate for the padding + border width defined in the css
-		var popMargTop = ($('#' + popID).height() + 80) / 2;
-		var popMargLeft = ($('#' + popID).width() + 80) / 2;
-		
-		//Apply Margin to Popup
-		$('#' + popID).css({ 
-			'margin-top' : -popMargTop,
-			'margin-left' : -popMargLeft
-		});
-		
-		//Fade in Background
-		$('body').append('<div id="fade"></div>'); //Add the fade layer to bottom of the body tag.
-		$('#fade').css({'filter' : 'alpha(opacity=80)'}).fadeIn(); //Fade in the fade layer 
-		
-		return false;
-	});
-	
-	   
-	//Close Popups and Fade Layer
-	$('a.close, #fade').live('click', function() { //When clicking on the close or fade layer...
-	  	$('#fade , .popup_block').fadeOut(function() {
-			$('#fade, a.close').remove();  
-	}); //fade them both out
-		
-		return false;
-	});
-
-	
-});
-</script>
-
-
 <?php
 $currency_format = $company_options['default_currency'];;
     $curdate = date("Y-m-d");
@@ -145,8 +52,6 @@ $currency_format = $company_options['default_currency'];;
                             $use_coupon = $row['use_coupon'];
                             $coupon_code = $row['coupon_code'];
                             $coupon_code_price = $row['coupon_code_price'];
-                            
-                    
                     if ($reg_form_defaults !=""){
                         if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
                         if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
@@ -154,40 +59,25 @@ $currency_format = $company_options['default_currency'];;
                         if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
                         if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
                         }
-                            
-
    		            if ($reg_limit == ''){$reg_limit = 999;}
                     if ($event_cost == ''){$event_cost= 0;}
                     if ($coupon_code_price == ''){$coupon_code_price = 0;}
          }
-
 ?>
-
-
-
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Event Management','evr_language');?></h2>
 <div id="dashboard-widgets-wrap">
-
-
-
-
 <div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:55%;'>
+	<div class='postbox-container' style='width:75%;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
-                 
-                <h3 class='hndle'><span><?php _e('Event Items:','evr_language');?><?php echo $event_name." at ".$event_location."  ".$start_date."-".$end_date;?></span></h3>
+                <h3 class='hndle'><span><?php _e('Event Items:','evr_language');?><?php echo stripslashes($event_name)." at ".stripslashes($event_location)."  ".$start_date."  -  ".$end_date;?></span></h3>
                  <div class="inside">
                     <div class="padding">
-                    
 <?php
-
 $start = strtotime('6:00am');
 $end = strtotime('11:45pm');
-
-
 ?>
 <style>
 .tooltip a{
@@ -196,12 +86,10 @@ $end = strtotime('11:45pm');
     text-decoration:none;
     position:relative;top:-1px
 }
-
 .tooltip a span{
     padding:0 5px;
     visibility:hidden
 }
-
 .tooltip a:hover{
     text-decoration:none!important
 }
@@ -211,92 +99,45 @@ $end = strtotime('11:45pm');
     text-decoration:none;
     position:relative;top:-1px
 }
-
 .er_ticket_info a span{
     padding:0 5px;
     visibility:hidden
 }
-
 .er_ticket_info a:hover{
     text-decoration:none!important
 }
-
 /*------------------POPUPS------------------------*/
-#fade {
-	display: none;
-	background: #000; 
-	position: fixed; left: 0; top: 0; 
-	z-index: 10;
-	width: 100%; height: 100%;
-	opacity: .80;
-	z-index: 9999;
-}
-.popup_block{
-	display: none;
-	background: #fff;
-	padding: 20px; 	
-	border: 20px solid #ddd;
-	float: left;
-	font-size: 1.2em;
-	position: fixed;
-	top: 50%; left: 50%;
-	z-index: 99999;
-	-webkit-box-shadow: 0px 0px 20px #000;
-	-moz-box-shadow: 0px 0px 20px #000;
-	box-shadow: 0px 0px 20px #000;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-}
-img.btn_close {
-	float: right; 
-	margin: -55px -55px 0 0;
-}
-.popup p {
-	padding: 5px 10px;
-	margin: 5px 0;
-}
-/*--Making IE6 Understand Fixed Positioning--*/
-*html #fade {
-	position: absolute;
-}
-*html .popup_block {
-	position: absolute;
-}
 </style>
-
        <div class="postbox " style='width:98%;'>
 			<h2><span><img src="<?php echo EVR_PLUGINFULLURL;?>images/icon_ticket.png" alt="tickets" style="vertical-align:middle" /> REGISTRATION/TICKET TYPES</span></h2>
 			<p> Add tickets to set pricing for your event (Adult, Child, VIP, etc.) </p>
             <br /><br />
-            
-			<table class="widefat">
-            
+			<table class="wp-list-table widefat fixed posts">
 				<thead>
 					<tr>
-						<th class="full first" width="250"> <span class="cufon"> <?php _e('Name','evr_language');?> </span> </th>
-						<th class="center" width="100"> <span class="cufon"> <?php _e('Price','evr_language');?> </span> </th>
-						<th class="center" width="150"> <span class="cufon"> <?php _e('Start','evr_language');?> </span> </th>
-                        <th class="center" width="150"> <span class="cufon"> <?php _e('End','evr_language');?> </span> </th>
-						<th class="center" colspan="2">
+						<th class="full first" width="50%" align="left"> <span class="cufon"> <?php _e('Name','evr_language');?> </span> </th>
+						<th class="center" width="75" align="left"> <span class="cufon"> <?php _e('Price','evr_language');?> </span> </th>
+						<th class="center" width="75" > <span class="cufon"> <?php _e('Start','evr_language');?> </span> </th>
+                        <th class="center" width="75" > <span class="cufon"> <?php _e('End','evr_language');?> </span> </th>
+						<th class="center" colspan="2" width="75" >
 							<div> <span class="cufon"><?php _e('Actions','evr_language');?></span> </div>
 						</th>
+                        <th></th>
 					</tr>
 				</thead>
 				<tfoot>
                   	<tr>
-						<th class="full first" width="250"> <span class="cufon"> <?php _e('Name','evr_language');?> </span> </th>
-						<th class="center" width="100"> <span class="cufon"> <?php _e('Price','evr_language');?> </span> </th>
-						<th class="center" width="150"> <span class="cufon"> <?php _e('Start','evr_language');?> </span> </th>
-                        <th class="center" width="150"> <span class="cufon"> <?php _e('End','evr_language');?> </span> </th>
+						<th class="full first"> <span class="cufon"> <?php _e('Name','evr_language');?> </span> </th>
+						<th class="center" > <span class="cufon"> <?php _e('Price','evr_language');?> </span> </th>
+						<th class="center" > <span class="cufon"> <?php _e('Start','evr_language');?> </span> </th>
+                        <th class="center" > <span class="cufon"> <?php _e('End','evr_language');?> </span> </th>
 						<th class="center" colspan="2">
 							<div> <span class="cufon"><?php _e('Actions','evr_language');?></span> </div>
 						</th>
+                        <th></th>
 					</tr>  
-                    
                </tfoot>
          <tbody>
-               
     <?php
     $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
     $result = mysql_query ( $sql );
@@ -315,21 +156,21 @@ img.btn_close {
             $item_start_date  = $row['item_available_start_date'];
             $item_end_date    = $row['item_available_end_date'];
             $item_custom_cur  = $row['item_custom_cur'];
-            echo "<tr><td class='er_ticket_info' title='".$item_description."'>";
+            echo "<tr><td class='er_ticket_info' title='".$item_description."' style='WORD-BREAK:BREAK-ALL;'>";
             if ($free_item == "Y"){?><img src="<?php echo EVR_PLUGINFULLURL;?>images/free_icon.png" alt="free" style="vertical-align:middle" />&nbsp;<?php }
             if ($free_item == "N"){ ?><img src="<?php echo EVR_PLUGINFULLURL;?>images/dollar_icon.png" alt="free" style="vertical-align:middle" /> <?php }
-            echo $item_cat." | ".$item_title." <a><span>?</span></a></td><td align='right'>".$item_custom_cur." ".$item_price."</td><td align='center'>".$item_start_date."</td><td align='center'>".$item_end_date."</td>";
+            echo $item_cat." | ".$item_title." <a><span>?</span></a></td><td align='left'>".$item_custom_cur." ".$item_price."</td><td align='center'>".$item_start_date."</td><td align='center'>".$item_end_date."</td>";
             ?>
-            <td width="75" align="right"><a href="#?w=700" rel="popup<?php echo $item_id;?>" class="poplight"><img src="<?php echo EVR_PLUGINFULLURL;?>images/small_gear.png" alt="Edit" /></td>
-            <td width="75" align="left"><a href="admin.php?page=events&action=delete_item&event_id=<?php echo $event_id;?>&item_id=<?php echo $item_id;?>&end_date=<?php echo $end_date;?>&end=<?php echo $end_date;?>"><img src="<?php echo EVR_PLUGINFULLURL;?>images/redx.png" alt="Delete" />
-            </td><tr>
+            <td width="15" align="right">
+            <a  href="TB_inline?inlineId=popup<?php echo $item_id;?>;&width=640&height=914" class="thickbox" ><img src="<?php echo EVR_PLUGINFULLURL;?>images/small_gear.png" alt="Edit" /></td>
+            <td width="15" align="left"><a href="admin.php?page=events&action=delete_item&event_id=<?php echo $event_id;?>&item_id=<?php echo $item_id;?>&end_date=<?php echo $end_date;?>&end=<?php echo $end_date;?>"><img src="<?php echo EVR_PLUGINFULLURL;?>images/redx.png" alt="Delete" />
+            </td><td></td><tr>
             <?php }      ?>
 			</tbody></table>
-            
             <br />
             <div style="float: left;">
             <div class="padding">
-            <a href="#?w=500" rel="popup0" class="poplight"><button class="button-primary"><?php _e('ADD COST/ITEM','evr_language');?></button></a>
+            <a href="#TB_inline?width=640&height=914&inlineId=popup0" class="thickbox"><button class="button-primary"><?php _e('ADD COST/ITEM','evr_language');?></button></a>
             </div></div>
             <div style="float: right;">
             <div class="padding">
@@ -339,12 +180,9 @@ img.btn_close {
          </div>
           <div class="postbox" style='width:98%;' ><div class="inside">
                     <div class="padding">
-         
          <h2><span><img src="<?php echo EVR_PLUGINFULLURL;?>images/discount_icon.png" alt="tickets" style="vertical-align:middle" /> <?php _e('COUPON CODE','evr_language');?></span></h2>
          <form name="discount" method="post" action="<?php echo "admin.php?page=events&action=update_coupon&event_id=". $event_id."&end_date=".$_REQUEST['end'];?>">
-         
         <ul><li>
-        
         <label class="tooltip" title="<?php _e('A coupon code is a promotional code you can tie to your event.  The code is valid for a discount off the total registration cost.">
 	       Do you want to use a coupon code for this event? ','evr_language');?><a><span>?</span></a></label>
             <input type="radio" class="radio" name="use_coupon" value="Y" <?php if ($use_coupon == "Y") { echo "checked";}?>/> <?php _e('Yes','evr_language');?> 
@@ -354,14 +192,11 @@ img.btn_close {
             <label class="tooltip" title="<?php _e('This should be a one word code with no spaces or extra characters. Recomend ALL CAPS.','evr_language');?>">
 					<?php _e('Enter the Code','evr_language');?> <a><span> ?</span></a></label> 
 					<input id="coupon_code" name="coupon_code" type="text" value="<?php echo $coupon_code;?>"/></li>
-				    
                      <li><label class="tooltip" title="<?php _e('Enter the amount with two decimal places.  You MUST put a - sign before the value, otherwise this will add to the total
                      during calculations. i.e. -10.00  ','evr_language');?>">
 					<?php _e('Discount amount for Coupon Code','evr_language');?> <a><span> ?</span></a></label>
 					<input id="coupon_code_price" name="coupon_code_price" type="text" value="<?php echo $coupon_code_price;?>"/>
 				     </li>
-                   
-        
         </u>
          <br /><br /><br />
     <input type="hidden" name="page" value="events"/>
@@ -374,21 +209,6 @@ img.btn_close {
 </div>
 </div>
 </div>
-
-               
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                     </div>
                 </div>
             </div>
@@ -397,17 +217,13 @@ img.btn_close {
 </div> 
 <!-- PopUp Window Form for Event Cost -->
 <!--POPUP START-->
-<div id="popup0" class="popup_block">
-
+<div id="popup0" style="display:none;" >
 <form action="" method="POST" >
     <input type="hidden" name="page" value="events">
     <input type="hidden" name="action" value="post_item">
     <input type="hidden" name="event_id" value="<?php echo $_REQUEST['event_id'];?>"/>
     <input type="hidden" name="event_end" value="<?php echo $end_date;?>"/>
-    
-    
-    
-    <h3><?php _e('Add Event Cost/Item for ','evr_language'); echo $event_name;?></h3>					
+    <h3><?php _e('Add Event Cost/Item for ','evr_language'); echo stripslashes($event_name);?></h3>					
                 <br /><ul>
                     <li>
                         <label class="er_ticket_info" title="<?php _e('Select a Item/Cost category.  Note that category REG is used for attendance count, all others are not included in attendance count.','evr_language');?>">
@@ -421,12 +237,12 @@ img.btn_close {
                         </select>
                     </li>
                     <li>
-                        <label class="er_ticket_info" title="<?php _e('Use a concise but descriptive name.','evr_language');?>" ><?php _e('Name of Cost/Item','evr_language');?> <a><span>?</span></a></label>
-                        <input class="title" name="item_name"/>
+                        <label class="er_ticket_info" title="<?php _e('Use a concise but descriptive name. Limit is 69 Characters.','evr_language');?>" ><?php _e('Name of Cost/Item','evr_language');?> <a><span>?</span></a></label>
+                        <input class="title" name="item_name" maxlength="69" size="70"/>
                     </li>
                     <li>
                         <label for="cost_desc" class="er_ticket_info" title="<?php _e('Provide a description of the cost/ticket.','evr_language');?>"><?php _e('Description of Cost','evr_language');?> <a><span>?</span></a></label>
-                        <input class="desc"  name="item_desc" id="cost_desc"/> 
+                        <input class="desc"  name="item_desc" id="cost_desc" maxlength="69" size="70" /> 
                     </li>
                     <li>
                         <label class="er_ticket_info" title="<?php _e('Provide the number of available item/cost types per registration form. If it is a REG item, available seats will impact overall amount available. Leave blank if no limit (system will default to 25).','evr_language');?>"><?php _e('Available items/cost per registration/order?','evr_language');?> <a><span>?</span></a></label>
@@ -437,8 +253,8 @@ img.btn_close {
 				    <li>
                         <label  class="er_ticket_info" title="<?php _e('Please select no for event pricing setup, select yes for free event','evr_language');?>">
         					<?php _e('Will this be a free item?','evr_language');?><a><span><img src="http://localhost/test/wp-content/plugins/EVR/images/info-icon.png"/></span></a></label>
-                        <input type="radio" name="item_free" class="radio" id="free_yes" value="Y"   checked > <?php _e('Yes','evr_language');?> 
-                        <input type="radio" name="item_free" class="radio" id="free_no" value="N"  /><?php _e('No','evr_language');?>  
+                        <input type="radio" name="item_free" class="radio" id="free_yes" value="Y"/> <?php _e('Yes','evr_language');?> 
+                        <input type="radio" name="item_free" class="radio" id="free_no" value="N"    checked  /><?php _e('No','evr_language');?>  
                     </li>
                     <li>
                         <label  class="er_ticket_info" title="<?php _e('Please select the country in which the currency format will be used','evr_language');?>"><?php _e('Custom Currency','evr_language');?><a><span>?</span></a></label>
@@ -464,7 +280,6 @@ img.btn_close {
                                     <option value="CHF">CHF</option></select>
                     </li>
         			<li>
-                    
                         <label  class="er_ticket_info" title="<?php _e('Please enter the amount using 2 decimal point (i.e. 10.00) for the registration cost.  Use minus symbol before for discount amounts (i.e. -5.00).','evr_language');?>">
     				    <?php _e('Item/Cost Value','evr_language');?> <a><span>?</span></a></label>
        					<input class="price" id="item_price" name="item_price" type="text" maxlength="10" value="0.00" />
@@ -485,10 +300,7 @@ img.btn_close {
                 <input class="button-primary" type="SUBMIT" value="<?php _e('ADD NEW COST/TICKET','evr_language');?>">
             </form>	 
         </div>
-        
-        
 <!-- Begin Popup for Edit Items  --->
-
 <?php 
  $sql = "SELECT * FROM " . get_option('evr_cost');
                 $result = mysql_query ( $sql );
@@ -506,19 +318,13 @@ img.btn_close {
                         $item_end_date    = $row['item_available_end_date'];
                         $item_custom_cur  = $row['item_custom_cur'];
                         ?>
-
-<div id="popup<?php echo $item_id;?>" class="popup_block">
+<div id="popup<?php echo $item_id;?>" style="display:none;">
 <form action="admin.php?page=events" method="POST" >
     <input type="hidden" name="action" value="update_item"/>
     <input type="hidden" name="event_id" value="<?php echo $event_id;?>"/>
     <input type="hidden" name="item_id" value="<?php echo $item_id;?>"/>
     <input type="hidden" name="event_end" value="<?php echo $end_date;?>"/>
-    
-   
-    
-    
-    
-    <h3><?php _e('Edit Event Cost/Item for ','evr_language'); echo $event_name;?></h3>					
+    <h3><?php _e('Edit Event Cost/Item for ','evr_language'); echo stripslashes($event_name);?></h3>					
                 <br /><ul>
                     <li>
                         <label class="er_ticket_info" title="<?php _e('Select a Item/Cost category.  Note that category REG is used for attendance count, all others are not included in attendance count.','evr_language');?>">
@@ -546,7 +352,6 @@ img.btn_close {
                             _e('Meal or Food','evr_language');
                             }
                         ?>
-                        
                         </option>
                         <option value="REG">REG - <?php _e('Registration Attendee','evr_language');?></option>
                         <option value="MDS">MDS - <?php _e('Merchandise','evr_language');?></option>
@@ -557,11 +362,11 @@ img.btn_close {
                     </li>
                     <li>
                         <label class="er_ticket_info" title="<?php _e('Use a concise but descriptive name.','evr_language');?>" ><?php _e('Name of Cost/Item','evr_language');?> <a><span>?</span></a></label>
-                        <input class="title" name="item_name" value="<?php echo $item_title;?>"/>
+                        <input class="title" name="item_name" value="<?php echo $item_title;?>" maxlength="69" size="70" />
                     </li>
                     <li>
                         <label for="cost_desc" class="er_ticket_info" title="<?php _e('Provide a description of the cost/ticket.','evr_language');?>"><?php _e('Description of Cost','evr_language');?> <a><span>?</span></a></label>
-                        <input class="desc"  name="item_desc" id="cost_desc" value="<?php echo $item_description;?>"/> 
+                        <input class="desc"  name="item_desc" id="cost_desc" value="<?php echo $item_description;?>" maxlength="69" size="70" /> 
                     </li>
                     <li>
                         <label class="er_ticket_info" title="<?php _e('Provide the number of available item/cost types per registration form. If it is a REG item, available seats will impact overall amount available. Leave blank if no limit.','evr_language');?>">
@@ -615,7 +420,6 @@ img.btn_close {
                                     <option value="CHF">CHF</option></select>
                     </li>
         			<li>
-                    
                         <label  class="er_ticket_info" title="<?php _e('Please enter the amount using 2 decimal point (i.e. 10.00) for the registration cost.  Use minus symbol before for discount amounts (i.e. -5.00).','evr_language');?>">
     				    <?php _e('Item/Cost Value','evr_language');?> <a><span>?</span></a></label>
        					<input class="price" id="item_price" name="item_price" type="text" maxlength="10" value="<?php echo $item_price;?>" />
@@ -635,20 +439,18 @@ img.btn_close {
                 <input type="hidden" name="end" value="<?php echo $end_date;?>"/>
                 <input class="button-primary" type="SUBMIT" value="<?php _e('UPDATE COST/TICKET','evr_language');?>"/>
             </form>	 
-	
 </div>   
 <?php }  ?>
-     
 <!--END POPUP-->
 <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
+<!--New Button for wpeventregister.com-->
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
 <?php
-
 }
 ?>

@@ -1,6 +1,111 @@
 Changes:
 =========
 
+= Version 6.00.30 =
+* fixe bug preventing posting of payments by paypal
+
+= Version 6.00.29 =
+* hover text on custom questions appearing on other questions - Resolved
+* Version not showing correct on WordPress - Resolved
+
+= Version 6.00.28 =
+* Company field not displaying on registration form - Resolved
+* Only 1 event displaying in event list - Resolved
+* Calendar days not correct with dates - Resolved
+
+= Version 6.00.27 =
+* Compliance Update
+
+= Version 6.00.26 =
+* Resolved issue where editor windows overflowed tabs in Coordinator Module
+* Removed admin registration alert
+* Removed donation nag
+* Resolved privacy issues
+* Removed upgrade email notification
+* Resolved event expiration issue in public side
+* Resolved incorrect Expiration notice on admin event list
+* Resolved whole number issue to allow cents on event fees
+* Resolved fee popup layout issue
+* Resolved image disiplacement on event popups and calendar
+* Resolved Usort error on calendar
+* Resolved dbdelta issue on data table upgrades
+* Added support to location module
+* Added remark field for hover help on questions
+* Resolved fee description hover text issue on reg form
+* Modified to hide text by default on ref form is "Show description on reg form" is set to no on event setup
+* Resolved payment area to accurately reflect amount due and payment totals for events
+* Added "Send payment reminder to all people with a balance" to the payment area
+
+= Version 6.00.25 =
+* Modified code on registration form to better display html
+
+
+= Version 6.00.24 =
+* Bug Fixes on registration form
+* Bug fixes on confirmation, and coordinator email fields
+
+= Version 6.00.23 =
+* Added file needed for event list popup with colorbox
+
+= Version 6.00.22 =
+* Bug fix for "Warning: Missing argument 1 for evr_show_event_list()"
+* Changed popup window style for event list and calendar pages
+
+= Version 6.00.21 =
+* Fixed issue where event descriptions were not rendering line returns correctly.
+
+= Version 6.00.20 =
+* Modified Attendee List feature for shortcode on page
+* Change html text to correct format for translation of plugin on many pages
+* Resolved issue where attendees post twice with some themes
+* Fixed htmlchanger issue
+* Fixed issue with Sandbox mode for paypal
+* Added field to support special characters with Paypal submission
+* Added validation for Attendee Name on Confirmation page
+* Simplified registration form code
+* Fixed activation key issue
+
+= Version 6.00.19 =
+* Fixed slashes issue on Company default mail
+* Added ability to expire events on end date instead of start date
+* Fixed php tag error in evr_three_cal file.
+* Fixed issue on export payment list to excel not showing payments
+* Fixed issue with questions
+* Fixed listing style options for categories
+* Fixed calendar color coding issue
+* Modified event names on calendar to truncate long names to prevent overrun of calendar.
+* Resolved issue with waitlist registration
+* Added help file popup to new widget.
+* Changed admin popups for helps to be white background and grey screen area
+
+= Version 6.00.18 =
+* Fixed ADD FEE no content issue
+* Fixed slashes in Company Name on Email
+* Add patch for Coordinator Email to support custom questions	
+
+= Version 6.00.17 =
+* Fixed WordPress compliance issues
+* Modified how events expire on the public side: Show on list until the end of the event, close registration form at event start time.
+* Added options no not use popup - added accordian style list capability
+* Changed backend popups to use thickbox
+* Changed create/edit event screens to page format instead of popup format for better screen fit
+* Other minor bug fixes
+
+= Version 6.00.16 =
+* Fixed bug on events not showing expired in admin panel
+* Fixed bug in Category description not showing html properly
+
+= Version 6.00.15=
+* Modified Registration form to deactivate submit button unitl item is selected
+* Modified Registration form to provide visual prompt to select at lease one item
+* Moved javascript from registration form to external files to avoid conflicts
+* Modified confirmation page to deactivate confirmation button and provide visual prompt if no items were selected on registration form
+* Modified the install script to fix error in tax field on upgrade
+* Modified the install script to add fields to attendee table for company information
+* Modified registration processing script to add company details to database
+* Modified the calendar links to open on same page instead new page
+* Modified the calendar tooltip window to striptags to display properly and avoid <a> conflicts in description
+
 = Version 6.00.14 =
 * Reinstated Widget - Event Listing
 * Resolved Authorize.Net Payment button issues
