@@ -3,8 +3,8 @@ Contributors: avdude
 Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.0.2
-Tested up to: 3.4.2
-Stable tag: 6.00.30
+Tested up to: 3.5
+Stable tag: 6.00.31
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,19 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.00.31 =
+*Resolved issue where fees would be deleted if event was attempted to be deleted but had attendees
+*Changed files for compatibility with WordPress 3.5 prepare
+*evr_admin_attendee_listing.php
+*evr_event_delete.php
+*evr_event_listing.php
+*evr_install.php
+*evr_ipn.php
+*evr_support_functions.php
+*evr_three_cal.php
+*evr_admin_payments-case.php
+*evr_admin_payments-event_list.php
 
 = Version 6.00.30 =
 * fixe bug preventing posting of payments by paypal
