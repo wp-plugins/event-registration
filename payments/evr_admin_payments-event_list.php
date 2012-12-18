@@ -9,11 +9,11 @@ global $wpdb;
 
 ?>
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Payment Management','evr_language');?></h2>
 <div id="dashboard-widgets-wrap">
 <div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:90%;'>
+	<div class='postbox-container' style='width:auto;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
                  
@@ -64,6 +64,8 @@ global $wpdb;
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Sales</th>
+                            <th>Payments</th>
+                            <th>Outstanding</th>
                             <th>Manage</th>
                             </tr>
                         </thead>
@@ -76,6 +78,8 @@ global $wpdb;
                             <th>Status</th>
                             <th># Attendees</th>
                             <th>Sales</th>
+                            <th>Payments</th>
+                             <th>Outstanding</th>
                             <th>Manage</th>
                             </tr>
                         </tfoot>
@@ -100,16 +104,24 @@ global $wpdb;
                     		$start_date     = $row['start_date'];
                     		$end_date       = $row['end_date'];
                             
-                            $sql2= "SELECT SUM(quantity),SUM(payment) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
+                            /*$sql2= "SELECT SUM(quantity),SUM(payment) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
                              $result2 = mysql_query($sql2);
             			     //$num = mysql_num_rows($result2);
                              //$number_attendees = $num;
                              while($row = mysql_fetch_array($result2)){
                                 $number_attendees = $row['SUM(quantity)'];
                                 $payment_due = $row['SUM(payment)'];
-                                }
-
-            				
+                             }
+                             */
+                            $balance_sql    = "SELECT SUM(payment) FROM " . get_option('evr_attendee') . " WHERE event_id=%d";
+                            $attendee_sql   = "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id=%d";
+                            $payment_sql    = "SELECT SUM(mc_gross) FROM " . get_option('evr_payment') . " WHERE event_id=%d";
+                            $payment_due        = $wpdb->get_var( $wpdb->prepare( $balance_sql,$event_id ));
+                            $number_attendees   = $wpdb->get_var( $wpdb->prepare( $attendee_sql,$event_id ));
+            				$payments_recieved  = $wpdb->get_var( $wpdb->prepare( $payment_sql,$event_id ));
+                            
+                            $outstanding = $payment_due-$payments_recieved; 
+                            
             				if ($number_attendees == '' || $number_attendees == 0){
             					$number_attendees = '0';
             				}
@@ -118,13 +130,16 @@ global $wpdb;
             					$reg_limit = "Unlimited";}
                                $available_spaces = $reg_limit;
             				
-            			$expired = __( 'EXPIRED EVENT','evr_language' );
-                        $active = __( 'ACTIVE EVENT','evr_language' );		
-            			if ($start_date <= date('Y-m-d')){
-            					$active_event = '<span style="color: #F00; font-weight:bold;">'.$expired.'</span>';
+            			 $exp_date = $end_date;
+                               $todays_date = date("Y-m-d");
+                               $today = strtotime($todays_date);
+                               $expiration_date = strtotime($exp_date);
+                               
+                             if ($expiration_date <= $today){
+            					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED EVENT','evr_language').'</span>';
             				} else{
-            					$active_event = '<span style="color: #090; font-weight:bold;">'.$active.'</span>';
-            				} 
+            					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE EVENT','evr_language').'</span>';
+            				}   
                         	?>
                             <tr></tr>
                           <tr>
@@ -133,8 +148,10 @@ global $wpdb;
                             <td><?php echo $event_name; ?></td>
                             <td><?php echo $event_location; ?><br /><?php echo $event_city; ?></td>
                             <td><?php echo $active_event ; ?></td>
-                            <td><?php echo $number_attendees?> / <?php echo $reg_limit?></td>
-                            <td><?php echo $payment_due?></td>
+                            <td><?php echo $number_attendees;?> / <?php echo $reg_limit?></td>
+                            <td><?php echo evr_moneyFormat($payment_due);?></td>
+                            <td><?php echo evr_moneyFormat($payments_recieved);?></td>
+                            <td><?php echo evr_moneyFormat($outstanding);?></td>
                             <td>
                             <div style="float:left">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
@@ -169,9 +186,10 @@ global $wpdb;
     </div>
     <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
+<!--New Button for wpeventregister.com-->
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>

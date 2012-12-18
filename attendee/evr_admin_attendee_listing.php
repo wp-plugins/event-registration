@@ -8,7 +8,7 @@ $curdate = date("Y-m-d");
 global $wpdb;
 ?>
 <div class="wrap">
-<h2><a href="http://www.wordpresseventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
+<h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h2><?php _e('Attendee Management','evr_language');?></h2>
 <div id="dashboard-widgets-wrap">
 <div id="dashboard-widgets" class="metabox-holder">
@@ -100,7 +100,7 @@ global $wpdb;
                                 		$end_date       = $event->end_date;
                                         
                             
-                            $number_attendees = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id';"));
+                            $number_attendees = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id=%d",$event_id));
                             
                                       				
             				if ($number_attendees == '' || $number_attendees == 0){
@@ -112,11 +112,16 @@ global $wpdb;
                                $available_spaces = $reg_limit;
             				
             					
-            			if ($start_date <= date('Y-m-d')){
-            					$active_event = '<span style="color: #F00; font-weight:bold;">EXPIRED EVENT</span>';
+            		  $exp_date = $end_date;
+                               $todays_date = date("Y-m-d");
+                               $today = strtotime($todays_date);
+                               $expiration_date = strtotime($exp_date);
+                               
+                             if ($expiration_date <= $today){
+            					$active_event = '<span style="color: #F00; font-weight:bold;">EXPIRED</span>';
             				} else{
-            					$active_event = '<span style="color: #090; font-weight:bold;">ACTIVE EVENT</span>';
-            				} 
+            					$active_event = '<span style="color: #090; font-weight:bold;">ACTIVE</span>';
+            				}  
                         	?>
                             <tr></tr>
                           <tr>
@@ -168,12 +173,14 @@ global $wpdb;
     </div>
     <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">
+<!--New Button for wpeventregister.com-->
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="VN9FJEHPXY6LU">
+<input type="hidden" name="hosted_button_id" value="4G8G3YUK9QEDA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
+
 </div>
 </div>
  <?php $company_options = get_option('evr_company_settings');?>

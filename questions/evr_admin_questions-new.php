@@ -13,7 +13,7 @@ function evr_questions_new(){
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
                  
-                <h3 class='hndle'><span><?php _e('ADD NEW QUESTION','evr_language');?> for <?php echo $event_name;?></span></h3>
+                <h3 class='hndle'><span><?php _e('ADD NEW QUESTION','evr_language');?> for <?php echo stripslashes($event_name);?></span></h3>
                  <div class="inside">
                     <div class="padding">
                             <form name="newquestion" method="post" action="admin.php?page=questions">
@@ -39,15 +39,18 @@ function evr_questions_new(){
                             	<th width="33%" scope="row"><?php _e('Selections','evr_language')?>:</th>
                             	<td><input name="values" type="text" id="values" size="50" value="" /></td>
                             	</tr>
-                            	
+
+                                
                             	<tr valign="top">
                             	<th width="33%" scope="row"><?php _e('Required','evr_language');?>:</th>
                             	<td><input name="required" type="checkbox" id="required" /></td>
                             	</tr>
-                            	
+                            	<tr valign="top">
+                                <th width="33%" scope="row"><?php _e('Remark','evr_language');?>:</th>
+                                <td><textarea name="remark" id="remark" rows="3" cols="98"></textarea></td>
+                                </tr>
                             	</table>
-                                <?php ?>
-                            				
+                        				
                             	<?php		
                             				echo "<input type='hidden' name='event_name' value='" . $event_name . "'>";
                                             echo "<input type='hidden' name='action' value='post'>";
@@ -56,6 +59,18 @@ function evr_questions_new(){
                             	
                             	<p><input type="submit" name="Submit" value="<?php _e('ADD QUESTION','evr_language');?>" /></p>
                             </form>
+                            <br />
+                            <div>
+                            <p><b>Text:</b>  This is generally what I would call short answer questions, typically consisting of a single sentence.  Where the registering person would type in their response.  You do not need to put anything in the Selections field for this question type.</p>
+                            <p><b>Text Area:</b>  This is similar to the Text, except you are looking more for an paragraph/multiple sentence response.  You do not need to put anything in the Selections field for this question type.</p>
+                            <p><b>Single:</b>  This will provide radio button answers where the registering person will select one of several options.  Yes/No, True/False are good examples of this type of question.  Basically a multiple choice question with one possible choice. When entering this question you will need to provide the list of choices that will appear.  Separate your choices by a comma:
+True, False etc.    <font color="red">  Do not provide answer choices that have a comma in the response!</font></p>
+                              <p><b>Multiple:</b>  This is similar to Single Type questions but gives them the option of selecting several of the choices instead of just selecting one item. Basically a multiple choice question with several  possible choices. When entering this question you will need to provide the list of choices that will appear.  Separate your choices by a comma:
+Newspaper, Web, A Friend, Billboard  etc.  
+ <font color="red">  Do not provide answer choices that have a comma in the response</font>!</p>
+                              <p><b>Dropdown:</b> This question type is similar in nature to the Single, exept instead of providing the choices in radio buttons, it provides them in a drop down box.  This is handy if you have a lot of choices the person needs to choose from, it prevents them from taking up a lot space on your registration form.</p>
+
+</div>
    
                     </div>
                 </div>
