@@ -53,8 +53,8 @@ function evr_paypal_txn(){
 			$events_attendee_tbl = get_option('evr_attendee');
 			
 			$today = date("m-d-Y");	
-			$sql="UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id ='$id'";
-            $wpdb->query($wpdb->prepare($sql));
+			//$sql="UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id = '$id'";
+            $wpdb->query($wpdb->prepare("UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id = %d",$id));
                           
                 
                 
@@ -272,8 +272,8 @@ function evr_sandbox_using_ipn($id){
 			$events_attendee_tbl = get_option('evr_attendee');
 			
 			$today = date("m-d-Y");	
-			$sql="UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id ='$id'";
-            $wpdb->query($wpdb->prepare($sql));
+			//$sql="UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id ='$id'";
+            $wpdb->query($wpdb->prepare("UPDATE ". $events_attendee_tbl . " SET payment_status = '$payment_status', amount_pd = '$amount_pd', payment_date ='$payment_date' WHERE id =%d",$id));
 			
 			 
             $event_id = $_REQUEST['event_id'];

@@ -50,8 +50,8 @@ function evr_send_payment_reminders ($event_id = ''){
     $attendees = $wpdb->get_results( $sql );
     foreach ( $attendees as $attendee ){
     	if ($attendee->payment >= '.01'){
-    	   $payment_sql     = "SELECT SUM(mc_gross) FROM " . get_option('evr_payment') . " WHERE payer_id=".$attendee->id;
-           $payment_recieved    = $wpdb->get_var( $wpdb->prepare( $payment_sql ));
+    	   //$payment_sql     = "SELECT SUM(mc_gross) FROM " . get_option('evr_payment') . " WHERE payer_id=".$attendee->id;
+           $payment_recieved    = $wpdb->get_var( $wpdb->prepare( "SELECT SUM(mc_gross) FROM " . get_option('evr_payment') . " WHERE payer_id= %d",$attendee->id ));
            $balance_due     = $attendee->payment - $payment_recieved;
            if ($balance_due >= '.01'){
             //echo $attendee->fname." ".$attendee->lname." owes ".$balance_due."<br/>";

@@ -128,7 +128,7 @@ if ($rows){
         $custom_mail    = $event->custom_mail;
   		$start_date     = $event->start_date;
   		$end_date       = $event->end_date;
-        $number_attendees = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id';"));
+        $number_attendees = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id=%d",$event_id));
         if ($number_attendees == '' || $number_attendees == 0){
             $number_attendees = '0';
             }

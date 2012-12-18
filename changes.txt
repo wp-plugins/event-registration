@@ -1,6 +1,20 @@
 Changes:
 =========
 
+= Version 6.00.31 =
+*Resolved issue where fees would be deleted if event was attempted to be deleted but had attendees
+*Changed files for compatibility with WordPress 3.5 prepare
+*evr_admin_attendee_listing.php
+*evr_event_delete.php
+*evr_event_listing.php
+*evr_install.php
+*evr_ipn.php
+*evr_support_functions.php
+*evr_three_cal.php
+*evr_admin_payments-case.php
+*evr_admin_payments-event_list.php
+
+
 = Version 6.00.30 =
 * fixe bug preventing posting of payments by paypal
 

@@ -76,7 +76,7 @@ function evr_install()
 {
     global $evr_date_format, $evr_ver, $wpdb, $cur_build, $table_message;
     $table_message = '';
-    $cur_build = "6.00.30";
+    $cur_build = "6.00.31";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
     if ((get_option('evr_was_upgraded')!= "Y")&& ($old_db_version < $cur_build)){
@@ -99,7 +99,7 @@ function evr_install()
 }
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.30";
+    $upgrade_version = "0.31";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -452,7 +452,7 @@ function evr_upgrade_tables(){
 //
         $old_organization_tbl = $wpdb->prefix . "events_organization";
         if (($wpdb->get_var("SHOW TABLES LIKE '$old_organization_tbl'") == $old_organization_tbl) && (get_option('evr_company_settings')=="")){
-        $ER_org_data = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $old_organization_tbl . " WHERE id='1'"), ARRAY_A) or die(mysql_error());
+        $ER_org_data = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $old_organization_tbl . " WHERE id=%d", 1), ARRAY_A) or die(mysql_error());
         $company_options['company'] = $ER_org_data['organization'];
         $company_options['company_street1'] = $ER_org_data['organization_street1'];
         $company_options['company_street2'] = $ER_org_data['organization_street2'];

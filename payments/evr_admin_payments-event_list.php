@@ -113,12 +113,12 @@ global $wpdb;
                                 $payment_due = $row['SUM(payment)'];
                              }
                              */
-                            $balance_sql    = "SELECT SUM(payment) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
-                            $attendee_sql   = "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
-                            $payment_sql    = "SELECT SUM(mc_gross) FROM " . get_option('evr_payment') . " WHERE event_id='$event_id'";
-                            $payment_due        = $wpdb->get_var( $wpdb->prepare( $balance_sql ));
-                            $number_attendees   = $wpdb->get_var( $wpdb->prepare( $attendee_sql ));
-            				$payments_recieved  = $wpdb->get_var( $wpdb->prepare( $payment_sql ));
+                            $balance_sql    = "SELECT SUM(payment) FROM " . get_option('evr_attendee') . " WHERE event_id=%d";
+                            $attendee_sql   = "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id=%d";
+                            $payment_sql    = "SELECT SUM(mc_gross) FROM " . get_option('evr_payment') . " WHERE event_id=%d";
+                            $payment_due        = $wpdb->get_var( $wpdb->prepare( $balance_sql,$event_id ));
+                            $number_attendees   = $wpdb->get_var( $wpdb->prepare( $attendee_sql,$event_id ));
+            				$payments_recieved  = $wpdb->get_var( $wpdb->prepare( $payment_sql,$event_id ));
                             
                             $outstanding = $payment_due-$payments_recieved; 
                             
@@ -149,9 +149,9 @@ global $wpdb;
                             <td><?php echo $event_location; ?><br /><?php echo $event_city; ?></td>
                             <td><?php echo $active_event ; ?></td>
                             <td><?php echo $number_attendees;?> / <?php echo $reg_limit?></td>
-                            <td><?php echo $payment_due;?></td>
-                            <td><?php echo $payments_recieved;?></td>
-                            <td><?php echo $outstanding;?></td>
+                            <td><?php echo evr_moneyFormat($payment_due);?></td>
+                            <td><?php echo evr_moneyFormat($payments_recieved);?></td>
+                            <td><?php echo evr_moneyFormat($outstanding);?></td>
                             <td>
                             <div style="float:left">
                               <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
