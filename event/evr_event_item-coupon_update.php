@@ -14,10 +14,10 @@ function evr_post_update_coupon(){
 
         $sql=array('use_coupon'=>$use_coupon, 'coupon_code'=>$coupon_code, 'coupon_code_price'=>$coupon_code_price); 
         $update_id = array('id'=> $id);               
-		$sql_data = array('%s','%s','%d');
+		$sql_data = array('%s','%s','%s');
   
   
-                if ($wpdb->update( get_option('evr_event'), $sql, $update_id, $sql_data, array( '%d' ) )){
+                if ($wpdb->update( get_option('evr_event'), $sql, $update_id, $sql_data, array( '%s' ) )){
                     ?>
                     
                 <div id="message" class="updated fade"><p><strong><?php _e('The coupon code information has been updated.  You will now be returned to the Event Pricing Page','evr_language');?></strong></p></div>
