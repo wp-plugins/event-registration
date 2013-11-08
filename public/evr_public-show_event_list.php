@@ -30,17 +30,17 @@ echo '<tbody>';
     if ($rows){
         $codeToReturn = '';
         foreach ($rows as $event){
-                #Determine when the event ends and compare that date and time to todays date and time
+                #Determine when the event ends and compare that date and time to today's date and time
                 $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
                 $close_dt = $event->end_date." ".$event->end_time;
                 $today = strtotime($current_dt);
                 $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
                 $expiration_date = strtotime($stp);
-                #check to see if there is a custom template for the table if not, use the deafule
-                
-                $outside_reg = '';
+                #check to see if there is a custom template for the table if not, use the default.
+                #GT Populate variable
+                $outside_reg = $event->outside_reg;
                 if ($public_list_template == ''){
-                    #Check to see if the end time of this event is later than now, if so then display then send the event deatils to a string
+                    #Check to see if the end time of this event is later than now, if so then display then send the event details to a string
             		if ($stp >= $current_dt){
                         #Set the row color for this row
                         if($color_row==1){ $td_class = "odd"; } else if($color_row==2){ $td_class = "even"; } 

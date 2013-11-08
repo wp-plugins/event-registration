@@ -135,10 +135,10 @@ $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
 if ($use_coupon == "Y"){
     if ($coupon == $coupon_code) { $payment = ($payment + $coupon_code_price);}
 }
-
+# GT Added event_name to the array
 $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city'=>$city, 
                 'state'=>$state, 'zip'=>$zip, 'reg_type'=>$reg_type, 'email'=>$email,
-                'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,
+                'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,'event_name'=>$event_name,
                 'company'=>$company, 'co_add'=>$coadd, 'co_city'=>$cocity, 'co_state'=>$costate, 'co_zip'=>$cozip,
                 'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment, 'fees'=>$fees, 'tax'=>$tax);
        

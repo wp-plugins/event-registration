@@ -19,6 +19,8 @@ function evr_process_confirmation(){
     #this helps eliminate spam regisrations
     #We need to now convert it back to strings for posting to the database.
     $reg_form = unserialize(urldecode($_POST["reg_form"]));
+	#GT Hook for MailChimp Addon
+	do_action('evr_process_confirmation', $reg_form );
     $qanda = unserialize(urldecode($_POST["questions"]));
     $attendee_array = $_POST['attendee'];
     #We added a session toaken to the confirmation page to eliminate double postings

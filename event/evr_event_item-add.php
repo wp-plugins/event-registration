@@ -189,7 +189,7 @@ $end = strtotime('11:45pm');
             <input type="radio" class="radio" name="use_coupon" value="N" <?php if ($use_coupon == "N") { echo "checked";}?>/><?php _e('No','evr_language');?> 
             </li>
             <li>
-            <label class="tooltip" title="<?php _e('This should be a one word code with no spaces or extra characters. Recomend ALL CAPS.','evr_language');?>">
+            <label class="tooltip" title="<?php _e('This should be a one word code with no spaces or extra characters. Recommend ALL CAPS.','evr_language');?>">
 					<?php _e('Enter the Code','evr_language');?> <a><span> ?</span></a></label> 
 					<input id="coupon_code" name="coupon_code" type="text" value="<?php echo $coupon_code;?>"/></li>
                      <li><label class="tooltip" title="<?php _e('Enter the amount with two decimal places.  You MUST put a - sign before the value, otherwise this will add to the total
