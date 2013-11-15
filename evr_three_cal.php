@@ -217,7 +217,7 @@ if ($cal_day_hdr_clr != ""){?>
     for ($i=1; $i<=$days_in_month;){
         $calendar_body .= '<tr class="rows">';
         for ($ii=1; $ii<=7; $ii++){
-            $go = true;
+            # GT //$go = true;
             if ($ii==$first_weekday && $i==1){
 								$go = TRUE;
 	      		}

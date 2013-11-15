@@ -40,7 +40,7 @@ Please note that because of conflicts with other plugins (people copying my work
 * {EVENTREGPAY}  Now -> [EVR_PAYMENT]
 * [EVENT_REGIS_CATEGORY event_category_id="??"]  Now -> [EVR_CATEGORY event_category_id="????"] where ???? is your custom identfier - see category listing.
 * [Event_Registration_Single event_id="??"] Now -> [EVR_SINGLE event_id="??"] where ?? is the ID number of the event.
-* [EVENT_ATTENDEE_LIST event_id="??"]  Now -> 
+* [EVENT_ATTENDEE_LIST event_id="??"]  Now -> [EVR_ATTENDEE event_id="?"] where ?? is the ID number of the event.
 
 
 
