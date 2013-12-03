@@ -131,7 +131,7 @@ echo '<tbody>';
         }
 echo '</tbody></table></div>';
 #Now that we have returned the table, we need to return the hidden html that provides the popups.
-#Once again we will go through the retruned event data to generate the popup html
+#Once again we will go through the returned event data to generate the popup html
     if ($rows){
         foreach ($rows as $event){                             
             #use the included file to put all the event data for this event into strings

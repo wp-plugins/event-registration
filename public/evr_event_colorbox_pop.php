@@ -3,7 +3,7 @@
  * @author David Fleming
  * @copyright 2011
  */
-$cal_title = __('Click Here to add to your Calendar Sotware - downloads an ICS file.','evr_language');
+$cal_title = __('Click Here to add to your Calendar Software - downloads an ICS file.','evr_language');
 ?>
 <!-- Main Page Event PopUp Start -->
 <div style="display:none;"><div id="event_content_<?php echo $event_id;?>" style="padding:10px; background:#fff;">
