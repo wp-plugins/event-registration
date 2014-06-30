@@ -4,6 +4,10 @@
  * @copyright 2010
  */
 /*
+6.01.01 - changed options table for company settings
+        - various patches
+6.00.32 - added waiver info - event & attendee tables
+        - created evr_options table for settings instead of array
 6.00.30 - droped memo_old from payments
 6.00.29 - No DB Changes
 6.00.28 - No DB Changes
@@ -76,7 +80,7 @@ function evr_install()
 {
     global $evr_date_format, $evr_ver, $wpdb, $cur_build, $table_message;
     $table_message = '';
-    $cur_build = "6.00.31";
+    $cur_build = "6.01.01";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
     if ((get_option('evr_was_upgraded')!= "Y")&& ($old_db_version < $cur_build)){
@@ -94,12 +98,39 @@ function evr_install()
     evr_event_db();
     evr_cost_db();
     evr_payment_db();
+    evr_config_company();
     evr_generator();
+    evr_change_array2options();
+    //evr_createCompanyyArray();
+    
+    //add_evr_option("Test","Revised Value of Test Box");
     //evr_notification();removed automatic notification of plugin activation
 }
+
+function evr_change_array2options(){
+    global $wpdb;
+    //used once to update to version 6.01.00 or later
+    if (!get_option('evr_company_settings')){
+      //option has already been wiped!
+      //no action required  
+    }
+    else {
+        $company_options = get_option('evr_company_settings');
+        //iterate through old options and add to new table
+        foreach($company_options as $key=>$val) {
+            add_evr_option($key, $val);
+        }
+        //now options have been added to new table, erase old option
+        delete_option( 'evr_company_settings' );  
+    }
+}
+
+
+
+
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "0.31";
+    $upgrade_version = "6.01.01";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -187,7 +218,12 @@ function evr_upgrade_tables(){
         $sql = "ALTER TABLE ".$new_attendee_tbl." ADD token VARCHAR(32) NOT NULL  DEFAULT'0'";
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
-            }       
+            } 
+                   $value = "waiver_agree";
+        $sql = "ALTER TABLE ".$new_attendee_tbl." ADD waiver_agree VARCHAR(4) DEFAULT NULL COLLATE utf8_general_ci NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }        
 //
 // Event Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -273,7 +309,18 @@ function evr_upgrade_tables(){
         $sql = "ALTER TABLE ".$new_event_tbl." ADD location_list VARCHAR(4) DEFAULT NULL";
         if (!array_key_exists($value, $field_names)) {            
              $wpdb->query($sql);
-            }     
+            } 
+        //added by df for waiver
+        $value = "waiver";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD waiver VARCHAR (2) DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }
+        $value = "waiver_content";
+        $sql = "ALTER TABLE ".$new_event_tbl." ADD waiver_content TEXT DEFAULT NULL";
+        if (!array_key_exists($value, $field_names)) {            
+             $wpdb->query($sql);
+            }    
         /*
                   send_coord VARCHAR(2) DEFAULT NULL,
                   coord_email VARCHAR(65) DEFAULT NULL,
@@ -401,7 +448,7 @@ function evr_upgrade_tables(){
                     end_date, 'item_custom_cur' => $old_event->custom_cur);
                 $sql_data = array('%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s',
                     '%s');
-                $wpdb->insert($new_cost_tbl, $sql, $sql_data) or die(mysql_error());
+                $wpdb->insert($new_cost_tbl, $sql, $sql_data) or die($wpdb->last_error);
             }
         }
         //Now update the ticket information for each attendee
@@ -429,7 +476,7 @@ function evr_upgrade_tables(){
                 $payment = $num_people * $cost;
                 $wpdb->update(get_option('evr_attendee'), array('reg_type' => 'RGLR', 'payment' =>
                     $payment, 'tickets' => $ticket_data), array('id' => $attendee_id), array('%s',
-                    '%s', '%s'), array('%d')) or die(mysql_error());
+                    '%s', '%s'), array('%d')) or die($wpdb->last_error);
                 }
            }
         }
@@ -447,12 +494,15 @@ function evr_upgrade_tables(){
             $wpdb->query("UPDATE " . $wpdb->prefix . "posts SET post_content = REPLACE(post_content,'[Event_Registration_Single','[EVR_SINGLE')");
             $wpdb->query("UPDATE " . $wpdb->prefix . "posts SET post_content = REPLACE(post_content,'[EVENT_REGIS_CATEGORY','[EVR_CATEGORY')");
 		}
+
+/*
+//removed by df for new evr_options
 //
 // Company Table Copy Table, Replace Data, Add Colulmns        
 //
         $old_organization_tbl = $wpdb->prefix . "events_organization";
         if (($wpdb->get_var("SHOW TABLES LIKE '$old_organization_tbl'") == $old_organization_tbl) && (get_option('evr_company_settings')=="")){
-        $ER_org_data = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $old_organization_tbl . " WHERE id=%d", 1), ARRAY_A) or die(mysql_error());
+        $ER_org_data = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $old_organization_tbl . " WHERE id=%d", 1), ARRAY_A) or die($wpdb->last_error);
         $company_options['company'] = $ER_org_data['organization'];
         $company_options['company_street1'] = $ER_org_data['organization_street1'];
         $company_options['company_street2'] = $ER_org_data['organization_street2'];
@@ -485,6 +535,7 @@ function evr_upgrade_tables(){
         $company_options['captcha'] = $ER_org_data['captcha'];
         update_option('evr_company_settings', $company_options);
     }
+    */
     
 }
 function evr_attendee_db()
@@ -524,6 +575,7 @@ function evr_attendee_db()
                       amount_pd VARCHAR (45) DEFAULT NULL,
                       payment_date varchar(30) DEFAULT NULL,
                       token varchar(32) NOT NULL DEFAULT '0',
+                      waiver_agree varchar(4) DEFAULT NULL,
                       UNIQUE KEY id (id)
 					) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -631,6 +683,8 @@ function evr_event_db()
           coord_msg TEXT DEFAULT NULL,
           coord_pay_msg TEXT DEFAULT NULL,
           close VARCHAR (65) DEFAULT NULL,
+          waiver VARCHAR(2) DEFAULT NULL,
+          waiver_content TEXT DEFAULT NULL,
           UNIQUE KEY id (id)
           ) DEFAULT CHARSET=utf8;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -757,13 +811,16 @@ function evr_payment_db()
 }
 function evr_question_db()
 {
+    
+
+
     //Define global variables
     global $wpdb, $cur_build, $table_message;
     global $evr_question_version;
     require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_question";
-    $evr_question_version = $cur_build;
+
 $sql = "CREATE TABLE " . $table_name . " (
 id mediumint(9) NOT NULL AUTO_INCREMENT,
 event_id int(11) NOT NULL DEFAULT '0',
@@ -773,8 +830,9 @@ question text NOT NULL,
 response text NOT NULL,
 required enum('Y','N') NOT NULL DEFAULT 'N',
 remark text NOT NULL,
-PRIMARY KEY id (id)
+UNIQUE KEY id (id)
 ) DEFAULT CHARSET=utf8;";
+
     if (dbDelta($sql)){
             //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_question';
@@ -800,12 +858,20 @@ function evr_answer_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_answer";
     $evr_answer_version = $cur_build;
-    $sql = "CREATE TABLE " . $table_name . " (
+    /*$sql = "CREATE TABLE " . $table_name . " (
 		  registration_id int(11) NOT NULL DEFAULT '0',
           question_id int(11) NOT NULL DEFAULT '0',
           answer text NOT NULL,
           PRIMARY KEY id (registration_id,question_id)
           ) DEFAULT CHARSET=utf8;";
+ 
+          */
+         $sql = "CREATE TABLE " . $table_name . " (
+		  registration_id int(11) NOT NULL DEFAULT '0',
+          question_id int(11) NOT NULL DEFAULT '0',
+          answer text NOT NULL,
+          PRIMARY KEY id (registration_id)
+          ) DEFAULT CHARSET=utf8;"; 
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
     if (dbDelta($sql)){
     //create option in the wordpress options tale for the event answer table name
@@ -832,4 +898,49 @@ function evr_generator()
     $installed_date = strtotime('now');
     update_option('evr_date_installed', $installed_date);
 }
+function evr_config_company(){
+        //Define global variables
+    global $wpdb;
+    //Create new variables for this function
+    $config_table = $wpdb->prefix . "evr_options";
+        
+    $sql = "CREATE TABLE IF NOT EXISTS ".$config_table." (
+	  `evr_option_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `evr_option_name` varchar(64) NOT NULL DEFAULT '',
+      `evr_option_value` longtext NOT NULL,
+      PRIMARY KEY (`evr_option_id`),
+      UNIQUE KEY `evr_option_name` (`evr_option_name`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+	dbDelta($sql);
+}
+//moved this function to incl/settings.php
+/*
+function add_evr_option($option,$value){
+    global $wpdb;
+    $config_table = $wpdb->prefix . "evr_options";
+	$option = trim($option);
+	if ( empty($option) )
+		return false;
+	if ( is_object($value) )
+		$value = clone $value;
+
+	//$value = sanitize_option( $option, $value );
+
+	// Make sure the option doesn't already exist. We can check the 'notoptions' cache before we ask for a db query
+	$notoptions = wp_cache_get( 'notoptions', 'options' );
+	if ( !is_array( $notoptions ) || !isset( $notoptions[$option] ) )
+		if ( false !== get_option( $option ) )
+			return false;
+
+	$serialized_value = maybe_serialize( $value );
+	do_action( 'add_option', $option, $value );
+
+	$result = $wpdb->query( $wpdb->prepare( "INSERT INTO `$config_table` (`evr_option_name`, `evr_option_value`) VALUES (%s, %s) ON DUPLICATE KEY UPDATE `evr_option_name` = VALUES(`evr_option_name`), `evr_option_value` = VALUES(`evr_option_value`)", $option, $serialized_value) );
+	if ( ! $result )
+		return false;
+
+	return true;
+}
+*/
 ?>

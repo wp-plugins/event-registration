@@ -1,9 +1,9 @@
 <?php
-
+//This is an outdated function
 function evr_process_regform(){
      
-    global $wpdb;
-    $company_options = get_option('evr_company_settings');
+    global $wpdb, $company_options;
+    //$company_options = get_option('evr_company_settings');
     $num_people = 0;
     $item_order = array();
     //$event_id = $_REQUEST['event_id'];
@@ -25,23 +25,30 @@ function evr_process_regform(){
     
     
    
-    $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
-    $result = mysql_query ( $sql );
-	while ($row = mysql_fetch_assoc ($result)){
-            $item_id          = $row['id'];
-            $item_sequence    = $row['sequence'];
-			$event_id         = $row['event_id'];
-            $item_title       = $row['item_title'];
-            $item_description = $row['item_description']; 
-            $item_cat         = $row['item_cat'];
-            $item_limit       = $row['item_limit'];
-            $item_price       = $row['item_price'];
-            $free_item        = $row['free_item'];
-            $item_start_date  = $row['item_available_start_date'];
-            $item_end_date    = $row['item_available_end_date'];
-            $item_custom_cur  = $row['item_custom_cur'];
+          
+   $items = $wpdb->get_results( "SELECT * FROM ". get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC" );
+                                                if ($items){
+                                                    foreach ($items as $item){
+                                                       
+                                                        $item_id          = $item->id;
+                                                        $item_sequence    = $item->sequence;
+                                            			$event_id         = $item->event_id;
+                                                        $item_title       = $item->item_title;
+                                                        $item_description = $item->item_description; 
+                                                        $item_cat         = $item->item_cat;
+                                                        $item_limit       = $item->item_limit;
+                                                        $item_price       = $item->item_price;
+                                                        $free_item        = $item->free_item;
+                                                        $item_start_date  = $item->item_available_start_date;
+                                                        $item_end_date    = $item->item_available_end_date;
+                                                        $item_custom_cur  = $item->item_custom_cur;
+                                                        if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
+                                                        if ($item_custom_cur == "USD"){$item_custom_cur = "$";}         
+            
+            
+            
                  
-            $item_post = str_replace(".", "_", $row['item_price']);
+            $item_post = str_replace(".", "_", $item->item_price);
             $item_qty = $_REQUEST['PROD_' . $event_id . '-' . $item_id . '_' . $item_post];
             
             if ($item_cat == "REG"){$num_people = $num_people + $item_qty;}
@@ -52,6 +59,7 @@ function evr_process_regform(){
                 'ItemEnd' => $item_end_date, 'ItemQty' => $item_qty);
             array_push($item_order, $item_info);
             
+            }
             }
     
     $ticket_data = serialize($item_order);
@@ -103,7 +111,7 @@ function evr_process_regform(){
                 }    
                 
     }else { ?>
-        		<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again.','evr_language');?><?php print mysql_error() ?>.</strong></p>
+        		<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again.','evr_language');?><?php print $wpdb->last_error; ?>.</strong></p>
           
                 </div>
                 <?php break;
@@ -113,73 +121,66 @@ function evr_process_regform(){
    _e("You're information has been received.",'evr_language');
    echo " ";
    
-   $sql= "SELECT * FROM ". get_option('evr_event')." WHERE id=".$event_id; 
    
-   $result = mysql_query ( $sql );
-                            while ($row = mysql_fetch_assoc ($result)){  
-                            $event_id = $row['id'];
-                            $reg_form_defaults = unserialize($row['reg_form_defaults']);
-                            if ($reg_form_defaults !=""){
-                            if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
-                            if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
-                            if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
-                            if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
-                            if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
-                            }
-                        $use_coupon = $row['use_coupon'];
-                        $reg_limit = $row['reg_limit'];
-                   	    $event_name = stripslashes($row['event_name']);
-        					$event_identifier = stripslashes($row['event_identifier']);
-        					$display_desc = $row['display_desc'];  // Y or N
-                            $event_desc = stripslashes($row['event_desc']);
-                            $event_category = unserialize($_REQUEST['event_category']);
-        					$reg_limit = $row['reg_limit'];
-        					$event_location = $row['event_location'];
-                            $event_address = $row['event_address'];
-                            $event_city = $row['event_city'];
-                            $event_state =$row['event_state'];
-                            $event_postal=$row['event_postcode'];
-                            $google_map = $row['google_map'];  // Y or N
-                            $start_month = $row['start_month'];
-        					$start_day = $row['start_day'];
-        					$start_year = $row['start_year'];
-                            $end_month = $row['end_month'];
-        					$end_day = $row['end_day'];
-        					$end_year = $row['end_year'];
-                            $start_time = $row['start_time'];
-        					$end_time = $row['end_time'];
-                            $allow_checks = $row['allow_checks'];
-                            $outside_reg = $row['outside_reg'];  // Yor N
-                            $external_site = $row['external_site'];
-                            
-                            $more_info = $row['more_info'];
-        					$image_link = $row['image_link'];
-        					$header_image = $row['header_image'];
-                            $event_cost = $row['event_cost'];
-                            $allow_checks = $row['allow_checks'];
-        					$is_active = $row['is_active'];
-        					$send_mail = $row['send_mail'];  // Y or N
-        					$conf_mail = stripslashes($row['conf_mail']);
-        					$start_date = $row['start_date'];
-                            $end_date = $row['end_date'];
-                        
-                            
-                            $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
-                             $result2 = mysql_query($sql2);
-            			     //$num = mysql_num_rows($result2);
-                             //$number_attendees = $num;
-                             while($row = mysql_fetch_array($result2)){
-                                $number_attendees = $row['SUM(quantity)'];
-                                }
-            				
-            				if ($number_attendees == '' || $number_attendees == 0){
-            					$number_attendees = '0';
-            				}
-            				
-            				if ($reg_limit == "" || $reg_limit == " "){
-            					$reg_limit = "Unlimited";}
-                               $available_spaces = $reg_limit;
-                               }
+   
+   $event = $wpdb->get_row($wpdb->prepare("SELECT * FROM ". get_option('evr_event') ." WHERE id = %d",$event_id));
+ 
+        $event_id = $event->id;
+        $reg_form_defaults = unserialize($event->reg_form_defaults);
+        if ($reg_form_defaults !=""){
+            if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
+            if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
+            if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
+            if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
+            if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+            }
+        $use_coupon = $event->use_coupon;
+        $reg_limit = $event->reg_limit;
+        $event_name = stripslashes($event->event_name);
+        $event_identifier = stripslashes($event->event_identifier);
+        $display_desc = $event->display_desc;  // Y or N
+        $event_desc = stripslashes($event->event_desc);
+        $event_category = unserialize($_REQUEST['event_category']);
+        $reg_limit = $event->reg_limit;
+        $event_location = $event->event_location;
+        $event_address = $event->event_address;
+        $event_city = $event->event_city;
+        $event_state =$event->event_state;
+        $event_postal=$event->event_postcode;
+        $google_map = $event->google_map;  // Y or N
+        $start_month = $event->start_month;
+        $start_day = $event->start_day;
+        $start_year = $event->start_year;
+        $end_month = $event->end_month;
+        $end_day = $event->end_day;
+        $end_year = $event->end_year;
+        $start_time = $event->start_time;
+        $end_time = $event->end_time;
+        $allow_checks = $event->allow_checks;
+        $outside_reg = $event->outside_reg;  // Yor N
+        $external_site = $event->external_site;
+        
+        $more_info = $event->more_info;
+        $image_link = $event->image_link;
+        $header_image = $event->header_image;
+        $event_cost = $event->event_cost;
+        $allow_checks = $event->allow_checks;
+        $is_active = $event->is_active;
+        $send_mail = $event->send_mail;  // Y or N
+        $conf_mail = stripslashes($event->conf_mail);
+        $start_date = $event->start_date;
+        $end_date = $event->end_date;
+        $number_attendees = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id=%d",$event_id));
+        if ($number_attendees == '' || $number_attendees == 0){
+            $number_attendees = '0';
+            }
+        if ($reg_limit == "" || $reg_limit == " "){
+            $reg_limit = "Unlimited";}
+        $available_spaces = $reg_limit;
+
+                               
+
+//End EVent Details
    
 //Send Confirmation Email   
    //Select the default message

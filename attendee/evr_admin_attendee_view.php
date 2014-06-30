@@ -50,19 +50,25 @@ function evr_admin_view_attendee(){
                             <div class="padding">        
                             <table class="widefat">
                                 <thead>
-                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th><th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
+                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th>
+                                <?php if ($event->waiver=="Y"){echo "<th>Agreed to Waiver</th>";} ?>
+                                <th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
                                 </thead>
                                 <tfoot>
-                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th><th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
+                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th>
+                                <?php if ($event->waiver=="Y"){echo "<th>Agreed to Waiver</th>";} ?>
+                                <th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
                                 </tfoot>
                                 <tbody>
 <?php
 $rows = $wpdb->get_results('SELECT * FROM ' . get_option('evr_attendee') . ' WHERE event_id = ' . $event_id);
 if ($rows){
     foreach ($rows as $attendee){
-        echo "<tr><td>".$attendee->reg_type."</td><td>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td><td>";
+        echo "<tr><td>".$attendee->reg_type."</td><td align='center'>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td>";
+        if ($event->waiver=="Y"){echo "<td align='center'>".$attendee->waiver_agree."</td>";}
         /*if ($attendee->attendees ==""){echo "<font color='red'>Please Update This Attendee</font>";}*/
         /* Glenn Tate: */
+        echo "<td>";
         if ($attendee->attendees =="" || $attendee->attendees =="N;"){echo "<font color='red'>Please Update This Attendee</font>";}
         else {$attendee_array = unserialize($attendee->attendees);
         foreach($attendee_array as $ma) 

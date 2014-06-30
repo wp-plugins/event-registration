@@ -24,9 +24,9 @@ function evr_generate_frm_defaults($field,$tag){
  *
  */ 
 function evr_regform_new($event_id){
-    global $wpdb,$evr_date_format;
+    global $wpdb,$evr_date_format, $company_options;
     $curdate = date ( "Y-m-j" );
-    $company_options = get_option('evr_company_settings');
+    //$company_options = get_option('evr_company_settings');
     $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
     $rows = $wpdb->get_results( $sql );
     if ($rows){
@@ -200,6 +200,30 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
             }
 ?>
 <!--End Custom Questions -->
+<!--Waiver Content if active-->
+<?if ($event->waiver == "Y"){
+   ?>
+   <hr /><h3>Event Waiver/Disclaimer</h3>
+   
+   <div style="overflow: scroll;height: 250px;" id="WaiverArea">
+   <div style="margin-left: 10px;margin-right: 20px;">
+   <? 
+$waivertext = apply_filters('the_content', $event->waiver_content);
+echo($waivertext) ;?></div>
+   </div> 
+   <li title="waiver">
+   <label for="waiver" >I have read and agree to the terms of the event waiver/disclaimer:</label>
+    <span class="radio"><input type="radio" name="waiver_agree"  value="Y" class="r" />&nbsp;<?php _e('Yes','evr_language');?>&nbsp;&nbsp;&nbsp;</span>
+    <span class="radio"><input type="radio" name="waiver_agree"  value="N" class="r" />&nbsp;<?php _e('No','evr_language');?></span>
+    </li>
+
+     
+<?php
+   
+    
+}?>
+<!--End Waiver Content-->
+
 <?php
         if ($use_coupon == "Y") { 
             evr_generate_frm_defaults('coupon',__('Enter coupon code for discount','evr_language'));
