@@ -161,8 +161,8 @@ function evr_np_of_day($date){
 }
 
 function evr_display_calendar(){
-   global $wpdb,$week_no;
-   $company_options = get_option('evr_company_settings'); 
+   global $wpdb,$week_no, $company_options;
+   //$company_options = get_option('evr_company_settings'); 
     
     $cal_head_clr = $company_options['evr_cal_head'];
     $cal_head_txt_clr = $company_options['cal_head_txt_clr'];
@@ -221,7 +221,7 @@ if ($cal_day_hdr_clr != ""){?>
 if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
         if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec'){
 
-               $c_year = mysql_escape_string($_GET['yr']);
+               $c_year = addslashes($_GET['yr']);
                if ($_GET['month'] == 'jan') { $t_month = 1; }
                else if ($_GET['month'] == 'feb') { $t_month = 2; }
                else if ($_GET['month'] == 'mar') { $t_month = 3; }
@@ -380,24 +380,23 @@ if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
         $calendar_body .= '</tr>';
     }
 
-  global $wpdb;
-  $company_options = get_option('evr_company_settings');  
+  global $wpdb, $company_options;
+  //$company_options = get_option('evr_company_settings');  
   $cal_use_cat = $company_options['evr_cal_use_cat']; 
   
     if ($cal_use_cat == 'Y'){
                 $sql = "SELECT * FROM ". get_option('evr_category') ." ORDER BY id ASC";
-                      $result = mysql_query ($sql);
-                      if (mysql_num_rows($result) > 0 ) {
-                      while ($row = mysql_fetch_assoc ($result)){
-                 					$category_id= $row['id'];
-                 					$category_name=$row['category_name'];
-                 					$category_identifier=$row['category_identifier'];
-                 					$category_desc=$row['category_desc'];
-                 					$display_category_desc=$row['display_desc'];
-                                    $category_color = $row['category_color'];
-                                    $font_color = $row['font_color'];
-                                    
-                                    
+                $rows = $wpdb->get_results( $sql );
+                                    if ($rows){
+                                    	foreach ($rows as $category){
+                                       		$category_id= $category->id;
+                                        	$category_name=stripslashes(htmlspecialchars_decode($category->category_name));
+                                        	$category_identifier=stripslashes(htmlspecialchars_decode($category->category_identifier));
+                                        	$category_desc=stripslashes(htmlspecialchars_decode($category->category_desc));
+                                        	$display_category_desc=$category->display_desc;
+                                            $category_color = $category->category_color;
+                                            $font_color = $category->font_color;
+                                          
               $calendar_body .= '<td colspan="1" style="background-color:'.$category_color.';font-size:0.9em; color:'.$font_color.'; ">'.$category_name.'</td>';
         }}
 
@@ -431,8 +430,8 @@ function evr_show_non_events($events){
 
 function evr_show_event($event){
     
-  global $wpdb;
-  $company_options = get_option('evr_company_settings');  
+  global $wpdb, $company_options;
+  //$company_options = get_option('evr_company_settings');  
   
   $cal_head_clr = $company_options['evr_cal_head'];
     $cal_head_txt_clr = $company_options['cal_head_txt_clr'];
@@ -509,9 +508,9 @@ function evr_show_event($event){
 }
 #Used for colorbox popup with event details.
 function evr_colorbox_cal_content(){
-    global $wpdb,$evr_date_format;
+    global $wpdb,$evr_date_format, $company_options;
     #retrieve company and configuration settings
-    $company_options = get_option('evr_company_settings');
+    //$company_options = get_option('evr_company_settings');
     $curdate = date ( "Y-m-j" );
     # Get events that end date is later than today and order by start date
     //$sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
@@ -622,8 +621,8 @@ function evr_colorbox_cal_content(){
 
 function evr_show_non_event($event){
     
-  global $wpdb;
-  $company_options = get_option('evr_company_settings');  
+  global $wpdb, $company_options;
+  //$company_options = get_option('evr_company_settings');  
  /* $cal_head_clr = $company_options['cal_head_clr'];
   $cal_day_clr = $company_options['cal_day_clr'];
   $cal_use_cat = $company_options['cal_use_cat']; 

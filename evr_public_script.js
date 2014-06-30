@@ -7,7 +7,7 @@
   }
   
 //Popup
-// Used for displaying event Popup and New event popup in admin panels
+// Used for displaying event Popup and New event popup in admin panesls
 jQuery(document).ready(function($){
 	 					   		   
 							   		   
@@ -24,7 +24,7 @@ jQuery(document).ready(function($){
 		//Fade in the Popup and add close button
 		$('#' + popID).fadeIn().css({ 'width': Number( popWidth ) }).prepend('<a href="#" class="close"><img src="/wp-content/plugins/event-registration/images/btn-close.png" class="btn_close" title="Close Window" alt="Close" /></a>');
 		
-		//Define margin for center alignment (vertical + horizontal) - we add 80 to the height/width to accommodate for the padding + border width defined in the css
+		//Define margin for center alignment (vertical + horizontal) - we add 80 to the height/width to accomodate for the padding + border width defined in the css
 		var popMargTop = ($('#' + popID).height() + 80) / 2;
 		var popMargLeft = ($('#' + popID).width() + 80) / 2;
 		

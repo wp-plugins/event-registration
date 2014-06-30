@@ -4,135 +4,9 @@ function evr_edit_event(){
     global $wpdb, $wp_version;
     $editor_settings= array('wpautop','media_buttons' => false,'textarea_rows' => '4');   
     $event_id = $_REQUEST['id'];
-	$sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
-                    		$result = mysql_query ($sql);
-                            while ($row = mysql_fetch_assoc ($result)){  
-                         
-                            $event_id       = $row['id'];
-                    	    $event_name = stripslashes($row['event_name']);
-        					$event_identifier = stripslashes($row['event_identifier']);
-        					$display_desc = $row['display_desc'];  // Y or N
-                            $event_desc = stripslashes($row['event_desc']);
-                            $event_category = unserialize($_REQUEST['event_category']);
-        					$reg_limit = $row['reg_limit'];
-                            /*
-        					$event_location = stripslashes($row['event_location']);
-                            $event_address = $row['event_address'];
-                            $event_city = $row['event_city'];
-                            $event_state =$row['event_state'];
-                            $event_postal=$row['event_postal'];
-                            */
-                            $location_list = $row['location_list'];
-                            if((get_option('evr_location_active')=="Y") && ( $row['location_list'] >= '1')){
-                                            $location_list = $row['location_list'];
-                                            $sql = "SELECT * FROM " . get_option('evr_location')." WHERE id = $location_list";
-                                            $location = $wpdb->get_row( $sql, OBJECT );//default object
-                                            //$object->field;
-                                            if( !empty( $location ) ) {
-                                            
-                                            $location_tag = stripslashes($location->location_name);
-                                            $event_location = stripslashes($location->location_name);
-                                            $event_address  = $location->street;
-                                            $event_city     = $location->city;
-                                            $event_state    = $location->state;
-                                            $event_postal   = $location->postal;
-                                            $event_phone    = $location->phone;
-                                            }
-                                                                                 			                                           
-                            } else {
-                            $location_list = '0';
-                            $location_tag = 'Custom';    
-                            $event_location = stripslashes($row['event_location']);
-                            $event_address = $row['event_address'];
-                            $event_city = $row['event_city'];
-                            $event_state =$row['event_state'];
-                            $event_postal=$row['event_postal'];
-                            }
-                            $google_map = $row['google_map'];  // Y or N
-                            $start_month = $row['start_month'];
-        					$start_day = $row['start_day'];
-        					$start_year = $row['start_year'];
-                            $end_month = $row['end_month'];
-        					$end_day = $row['end_day'];
-        					$end_year = $row['end_year'];
-                            $start_time = $row['start_time'];
-        					$end_time = $row['end_time'];
-                            $allow_checks = $row['allow_checks'];
-                            $outside_reg = $row['outside_reg'];  // Yor N
-                            $external_site = $row['external_site'];
-                            $reg_form_defaults = unserialize($row['reg_form_defaults']);
-                            $more_info = $row['more_info'];
-        					$image_link = $row['image_link'];
-        					$header_image = $row['header_image'];
-                            $event_cost = $row['event_cost'];
-                            
-                            $allow_checks = $row['allow_checks'];
-                            
-        					$is_active = $row['is_active'];
-        					$send_mail = $row['send_mail'];  // Y or N
-        					$conf_mail = stripslashes($row['conf_mail']);
-        					
-                            $start_date = $row['start_date'];
-                            $end_date = $row['end_date'];
-                            $close = $row['close'];
-                            $event_category =  unserialize($row ['category_id']);
-                            if ($event_category ==""){$event_category = array();}
-             
-                            $coord_email = $row['coord_email'];
-                            $send_coord = $row['send_coord'];
-                            $coord_msg = stripslashes($row['coord_msg']);
-                            $coord_pay_msg = stripslashes($row['coord_pay_msg']);
-                            $reg_form_defaults = unserialize($row['reg_form_defaults']);
-                            if ($reg_form_defaults !=""){
-                            if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
-                            if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
-                            if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
-                            if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
-                            if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
-                            if (in_array("Company", $reg_form_defaults)) {$inc_comp = "Y";}
-                            if (in_array("CoAddress", $reg_form_defaults)) {$inc_coadd = "Y";}
-                            if (in_array("CoCity", $reg_form_defaults)) {$inc_cocity = "Y";}
-                            if (in_array("CoState", $reg_form_defaults)) {$inc_costate = "Y";}
-                            if (in_array("CoPostal", $reg_form_defaults)) {$inc_copostal = "Y";}
-                            if (in_array("CoPhone", $reg_form_defaults)) {$inc_cophone = "Y";}
-                            }
-                        
-                            //set reg limit if not set
-                            if ($reg_limit == ''){$reg_limit = 999;} 
-                            
-                            $sql2= "SELECT * FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
-                             $result2 = mysql_query($sql2);
-            			     $num = mysql_num_rows($result2);
-                             $number_attendees = $num;
-            				
-            				if ($number_attendees == '' || $number_attendees == 0){
-            					$number_attendees = '0';
-            				}
-            				
-            				if ($reg_limit == "" || $reg_limit == " "){
-            					$reg_limit = "Unlimited";}
-                               $available_spaces = $reg_limit;
-            				
-            	                        
-$current_dt= date('Y-m-d H:i',current_time('timestamp',0));
-$close_dt = $start_date." ".$start_time;
-$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
-$expiration_date = strtotime($stp);
-$today = strtotime($current_dt);
+    $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
+    $event = $wpdb->get_row($sql);
 
-//echo "The current date and time is: ".$current_dt."<br/>";
-//echo "Registration closes at: ". $stp."<br/>";                              
-
-
-if ($expiration_date <= $today){
-            					$active_event = '<span style="color: #F00; font-weight:bold;">'.__('EXPIRED EVENT','evr_language').'</span>';
-            				} else{
-            					$active_event = '<span style="color: #090; font-weight:bold;">'.__('ACTIVE EVENT','evr_language').'</span>';
-            				}   
-                            }
-                            
-	
-	
 	    
 ?>
 <h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -184,7 +58,7 @@ if ($expiration_date <= $today){
  <div id="tab1" class="tab_content">
             
             <input type="hidden" name="action" value="update">
-            <input type="hidden" name="event_id" value="<?php echo $event_id;?>">
+            <input type="hidden" name="event_id" value="<?php echo $event->id;?>">
             <table>
                 <tr>
                     <td>
@@ -192,7 +66,7 @@ if ($expiration_date <= $today){
                     <?php _e('Event Name/Title ','evr_language');?><a><span>?</span></a></label>
                     </td>
                     <td>
-                    <input class="title" name="event_name" size="50" value="<?php echo $event_name;?>"/>
+                    <input class="title" name="event_name" size="50" value="<?php echo stripslashes($event->event_name);?>"/>
                     </td>
                 <tr>
                     <td>
@@ -200,31 +74,31 @@ if ($expiration_date <= $today){
                     <?php _e('Unique Event Identifier','evr_language');?>  <a><span>?</span></a></label> 
                     </td>
                     <td>
-                    <input name="event_identifier" value="<?php echo $event_identifier;?>"/>
+                    <input name="event_identifier" value="<?php echo $event->event_identifier;?>"/>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
                     <label class="tooltip" title="<?php _e('If you want the description to display under the event title on the registration form, select yes.','evr_language');?>">
                     <?php _e('Display description on registration form page? ','evr_language');?><a><span>?</span></a></label>
-                    <label for="display_desc"><input type="radio" class="radio" name="display_desc" value="Y" <?php if ($display_desc == "Y"){echo "checked";}?> /><?php _e('Yes','evr_language');?></label>
-                    <label for="display_desc"><input type="radio" class="radio" name="display_desc" value="N" <?php if ($display_desc == "N"){echo "checked";}?> /><?php _e('No','evr_language');?></label>
+                    <label for="display_desc"><input type="radio" class="radio" name="display_desc" value="Y" <?php if ($event->display_desc == "Y"){echo "checked";}?> /><?php _e('Yes','evr_language');?></label>
+                    <label for="display_desc"><input type="radio" class="radio" name="display_desc" value="N" <?php if ($event->display_desc == "N"){echo "checked";}?> /><?php _e('No','evr_language');?></label>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
                     <label for="event_desc" class="tooltip" title="<?php _e('Provide a detailed description of the event, include key details other than when and where. Do not use any html code. This is a text only display. 
-To create new display lines just press Enter.','evr_language');?>">
+                    To create new display lines just press Enter.','evr_language');?>">
                     <?php _e('Detailed Event Description','evr_language');?> <a><span>?</span></a>
                    
                    <?php
                     if (function_exists('the_editor')){
                         echo "</td></tr></table>";
-                        the_editor(htmlspecialchars_decode($event_desc), "event_desc", '', false);
+                        the_editor(htmlspecialchars_decode($event->event_desc), "event_desc", '', false);
                     } else {  ?>
                     <a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
                     </td></tr></table>
-                    <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"><?php echo $event_desc;?></textarea>
+                    <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"><?php echo $event->event_desc;?></textarea>
                     <?php }  ?>
                    
                     <br />
@@ -240,34 +114,18 @@ To create new display lines just press Enter.','evr_language');?>">
                 </tr>
                 </table>
                     
-                    <?php 
-                   /* $sql = "SELECT * FROM ". get_option('evr_category');
-                    $result = mysql_query ($sql);
-                    
-                    while ($row = mysql_fetch_assoc ($result)){
-                        $category_id= $row['id'];
-                        $category_name=$row['category_name'];
-                        $checked = in_array( $category_id, $event_category );
-                        echo '<input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. "&nbsp;&nbsp;&nbsp;";
-                    
-                        }
-                        */
-                      global $wpdb;
+                    <?php
+                      $event_category = unserialize($event->category_id); 
                       $sql = "SELECT * FROM ". get_option('evr_category') ." ORDER BY id ASC";
-                      $result = mysql_query ($sql);
-                      if (mysql_num_rows($result) > 0 ) {
-                      while ($row = mysql_fetch_assoc ($result)){
-                 					$category_id= $row['id'];
-                 					$category_name=$row['category_name'];
-                 					$category_identifier=$row['category_identifier'];
-                 					$category_desc=$row['category_desc'];
-                 					$display_category_desc=$row['display_desc'];
-                                    $category_color = $row['category_color'];
-                                    $font_color = $row['font_color'];
-                                    $style = "background-color:".$category_color." ; color:".$font_color." ;"; 
-                                    $checked = in_array( $category_id, $event_category );
+                      $rows = $wpdb->get_results( $sql );
+                        if ($rows){
+                        	foreach ($rows as $category){ 
+                        	   if(!empty($event_category)){ 
+                        	       $checked = in_array( $category->id, $event_category );
+                                }
+       					           
                                     
-                        echo '<input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. "&nbsp;&nbsp;&nbsp;";
+                        echo '<input class="checkbox" value="'.$category->id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category->id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category->category_name. "&nbsp;&nbsp;&nbsp;";
                      }} else{ _e('No Categories Created!','evr_language');}
                         
                         
@@ -277,11 +135,41 @@ To create new display lines just press Enter.','evr_language');?>">
             <hr />
     </div>
     <div id="tab2"class="tab_content">
+    <?php
+    $location_list = $event->location_list;
+    
+            if((get_option('evr_location_active')=="Y") && ( $event->location_list >= '1')){
+                
+                $sql = "SELECT * FROM " . get_option('evr_location')." WHERE id = $location_list";
+                $location = $wpdb->get_row( $sql, OBJECT );//default object
+                if( !empty( $location ) ) {
+                    $location_tag = stripslashes($location->location_name);
+                    $event_location = stripslashes($location->location_name);
+                    $event_address  = $location->street;
+                    $event_city     = $location->city;
+                    $event_state    = $location->state;
+                    $event_postal   = $location->postal;
+                    $event_phone    = $location->phone;
+                } 
+                else {
+                    $location_list = '0';
+                    $location_tag = 'Custom';    
+                    $event_location = stripslashes($event->event_location);
+                    $event_address = $$event->event_address;
+                    $event_city = $event->event_city;
+                    $event_state =$event->event_state;
+                    $event_postal=$event->event_postal;
+                }
+            }
+            
+            //set reg limit if not set
+            if ($event->reg_limit == ''|| $reg_limit == ' '){$reg_limit = 9999;}
+            else {$reg_limit = $event->reg_limit;}
+    ?>
             <h2><?php _e('EVENT VENUE','evr_language');?></h2>
             <table>
                    <tr>
-                    <td>
-                    <label  class="tooltip" title="<?php _e('Enter the number of available seats at your event venue. Leave blank if their is no limit on registrations.','evr_language');?>" for="reg_limit">
+                    <td>                    <label  class="tooltip" title="<?php _e('Enter the number of available seats at your event venue. Leave blank if their is no limit on registrations.','evr_language');?>" for="reg_limit">
                     <?php _e('Event Seating Capacity','evr_language');?> <a><span>?</span></a>
                     </td>
                     <td>
@@ -412,8 +300,8 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
 					<?php _e('Use Google Maps On Registration Page','evr_language');?> <a><span>?</span></a></legend>
                     </td>
                     <td>
-                    <label for="google_map_yes"><input type="radio" class="radio" name="google_map" value="Y" <?php if ($google_map == "Y"){echo "checked";}?> /><?php _e('Yes','evr_language');?></label>
-                    <label for="google_map_no"><input type="radio" class="radio" name="google_map" value="N"  <?php if ($google_map == "N"){echo "checked";}?> /><?php _e('No','evr_language');?>
+                    <label for="google_map_yes"><input type="radio" class="radio" name="google_map" value="Y" <?php if ($event->google_map == "Y"){echo "checked";}?> /><?php _e('Yes','evr_language');?></label>
+                    <label for="google_map_no"><input type="radio" class="radio" name="google_map" value="N"  <?php if ($google->google_map == "N"){echo "checked";}?> /><?php _e('No','evr_language');?>
                     </label>
                     </td>
                 </tr> </table>
@@ -428,20 +316,20 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                         
                         
                         ?>
-                        <td><label  for="start_date"><?php evr_DateSelector( "\"start", strtotime($start_date));?></label></td>
+                        <td><label  for="start_date"><?php evr_DateSelector( "\"start", strtotime($event->start_date));?></label></td>
                         <td><b><?php _e('Start Time','evr_language');?></b></td><td><label for="start_time"><?php 
                         echo '<select name="start_time">';
                         
-                        if ($start_time != ""){echo '<option>'.$start_time.'</option>';}
+                        if ($event->start_time != ""){echo '<option>'.$event->start_time.'</option>';}
                         for ($i = $start; $i <= $end; $i += 900)
                         	{echo '<option>' . date('g:i a', $i);}
                         echo '</select>';
                         ?></label></td>
                         </tr>
-                        <tr><td><b><?php _e('End Date','evr_language');?></b></td><td><label for="end_date"><?php evr_DateSelector( "\"end",strtotime($end_date)); ?></label></td>
+                        <tr><td><b><?php _e('End Date','evr_language');?></b></td><td><label for="end_date"><?php evr_DateSelector( "\"end",strtotime($event->end_date)); ?></label></td>
                         <td><b><?php _e('End Time','evr_language');?></b></td><td><label for="end_time"><?php
                         echo '<select name="end_time">';
-                        if ($end_time != ""){echo '<option>'.$end_time.'</option>';}
+                        if ($event->end_time != ""){echo '<option>'.$event->end_time.'</option>';}
                         for ($i = $start; $i <= $end; $i += 900)
                         	{ echo '<option>' . date('g:i a', $i); }
                         echo '</select>';?></label></td>
@@ -450,8 +338,8 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                         <tr><td>Close Registration on </td><td><select name="close" >
                         <?php
                         
-                         if ($close == "start"){echo '<option value="start">Start of Event</option>';}
-                         if ($close == "end"){echo '<option value="end">End of Event</option>';}
+                         if ($event->close == "start"){echo '<option value="start">Start of Event</option>';}
+                         if ($event->close == "end"){echo '<option value="end">End of Event</option>';}
                          
                          ?>
                         <option value="start">Start of Event</option><option value="end">End of Event</option></select></td></tr>
@@ -465,8 +353,8 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                     <br />
                     <label  class="tooltip" title="<?php _e('If you will accept checks or cash, usually when accepting payment at event/on-site.','evr_language');?>">
    					<?php _e('Will you accept checks/cash for this event? ','evr_language');?><a><span>?</span></a></label>
-                    <label for="accept_checks"><input type="radio" name="allow_checks" class="radio" id="accept_checks_yes" value="Y" <?php if ($allow_checks == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?></label>
-                    <label for="free_event_no"><input type="radio" name="allow_checks" class="radio" id="accept_checks_no" value="N" <?php if ($allow_checks == "N"){echo "checked";};?> /><?php _e('No ','evr_language');?></label>
+                    <label for="accept_checks"><input type="radio" name="allow_checks" class="radio" id="accept_checks_yes" value="Y" <?php if ($event->allow_checks == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?></label>
+                    <label for="free_event_no"><input type="radio" name="allow_checks" class="radio" id="accept_checks_no" value="N" <?php if ($event->allow_checks == "N"){echo "checked";};?> /><?php _e('No ','evr_language');?></label>
                     </td>
                 </tr>
             
@@ -477,16 +365,16 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                     <label class="tooltip" title="<?php _e('You can point your register now button to an external registration site/page by selecting yes and entering the url!','evr_language');?>">
                     <?php _e('Are you using an external registration?','evr_language');?> <a><span>?</span></a></label>
                     <label>
-                    <input type="radio" name="outside_reg" class="radio" id="outside_reg_yes" value="Y" <?php if ($outside_reg == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?> 
+                    <input type="radio" name="outside_reg" class="radio" id="outside_reg_yes" value="Y" <?php if ($event->outside_reg == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?> 
                     </label><label>
-                    <input type="radio" name="outside_reg" class="radio" id="outside_reg_no" value="N" <?php if ($outside_reg == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
+                    <input type="radio" name="outside_reg" class="radio" id="outside_reg_no" value="N" <?php if ($event->outside_reg == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
                     </label>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
                     <label class="tooltip" title="<?php _e('Enter the url hyperlink to another webpage or website external registration','evr_language');?>">
-                    <?php _e('External registration URL','evr_language');?> <a><span> ?</span></a><input class= "title" id="external_site" name="external_site" type="text" value="<?php echo $external_site;?>" /></label> 
+                    <?php _e('External registration URL','evr_language');?> <a><span> ?</span></a><input class= "title" id="external_site" name="external_site" type="text" value="<?php echo $event->external_site;?>" /></label> 
                     </td>
                 </tr>
                 <tr></tr>
@@ -498,6 +386,22 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                     <?php _e('Default Registration Information (Name and Email Required)','evr_language');?><a><span> ?</span></a></legend>
                     </td>
                 </tr>
+                <?php
+                $reg_form_defaults = unserialize($event->reg_form_defaults);
+                if ($reg_form_defaults !=""){
+                    if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
+                    if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
+                    if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
+                    if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
+                    if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+                    if (in_array("Company", $reg_form_defaults)) {$inc_comp = "Y";}
+                    if (in_array("CoAddress", $reg_form_defaults)) {$inc_coadd = "Y";}
+                    if (in_array("CoCity", $reg_form_defaults)) {$inc_cocity = "Y";}
+                    if (in_array("CoState", $reg_form_defaults)) {$inc_costate = "Y";}
+                    if (in_array("CoPostal", $reg_form_defaults)) {$inc_copostal = "Y";}
+                    if (in_array("CoPhone", $reg_form_defaults)) {$inc_cophone = "Y";}
+                    }
+                ?>
                 <tr>
                     <td colspan="2">
                     <label><INPUT class="radio" type="checkbox" name="reg_form_defaults[]" value="Address" <?php if ($inc_address == "Y"){echo "checked";};?> /><?php _e('Street Address','evr_language');?></label>
@@ -525,6 +429,36 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                 
         </table>
         <hr />
+      
+        <h4><?php _e('Event Waiver Options','evr_language');?>  <font color="red"><?php _e('Optional','evr_language');?></font></h4>
+        <table>
+            <tr><td>
+            <label  class="tooltip" title="<?php _e('Will require the person signing up to accept or decline an event waiver','evr_language');?>">
+            <?php _e('Use event waiver?','evr_language');?> <a><span>?</span></a></label></td>
+            <td><label>
+            <input type="radio" name="waiver" class="radio" value="Y" <?php if($event->waiver == "Y"){echo "checked";};?> />&nbsp;<?php _e('Yes','evr_language');?>
+            </label></td>
+            <td>
+            <label>
+            <input type="radio" name="waiver" class="radio" value="N" <?php if($event->waiver == "N"){echo "checked";};?> />&nbsp;<?php _e('No','evr_language');?> 
+            </label></td></tr>
+            <tr><td colspan="3">          
+            <label  class="tooltip" title="<?php _e('Enter the content for the event waiver','evr_language');?>" >
+            <?php _e('Waiver Content','evr_language');?> <a><span>?</span></a></label>
+              <?php
+             
+             
+              if (function_exists('wp_editor')){
+               echo "</td></tr></table>";
+              wp_editor( htmlspecialchars_decode($event->waiver_content), 'waiver_content', $editor_settings ); 
+                    } else {  ?>
+               <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+               </td></tr></table>
+               <textarea name="waiver_content" id="waiver_content" style="width: 100%; height: 200px;"><?php echo $event->waiver_content;?></textarea>
+                    <?php } ?>
+             
+                    
+        <hr />
         <br />
         <h3><?php _e('Event Listing Options','evr_language');?>  <font color="red"><?php _e('Optional','evr_language');?></font></h3>
         <table>
@@ -534,38 +468,41 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                 <?php _e('More Info URL','evr_language');?> <a><span> ?</span></a>
                 </td>
                 <td>
-                <input class= "title" id="event_location" name="more_info" type="text" value="<?php echo $more_info;?>" /></label>
+                <input class= "title" id="event_location" name="more_info" type="text" value="<?php echo $event->more_info;?>" /></label>
                 </td>
             </tr>
             <tr>
                 <td><label class="tooltip" title="<?php _e('Enter the url to an image you would like displayed next to the event in the event listings. Size should be 150 x112','evr_language');?>">
-                <?php _e('Thumbnail Image URL','evr_language');?> <a><span> ?</span></a></td><td><input class= "title" id="image_link" name="image_link" type="text" value="<?php echo $image_link;?>" />
+                <?php _e('Thumbnail Image URL','evr_language');?> <a><span> ?</span></a></td><td><input class= "title" id="image_link" name="image_link" type="text" value="<?php echo $event->image_link;?>" />
 				    </label>
                 </td>
             </tr>
             <tr>
                 <td><label class="tooltip" title="<?php _e('Enter the url of an image you wish displayed above the registration form.  The image should be no wider than 450.','evr_language');?>">
-                <?php _e('Header Image URL','evr_language');?> <a><span> ?</span></a></td><td><input class= "title" id="header_image" name="header_image" type="text" value="<?php echo $header_image;?>" /></label>
+                <?php _e('Header Image URL','evr_language');?> <a><span> ?</span></a></td><td><input class= "title" id="header_image" name="header_image" type="text" value="<?php echo $event->header_image;?>" /></label>
                 </td>
             </tr>
         </table>
     </div>
-     <?php if (get_option('evr_coordinator_active')=="Y"){ ?>
+     <?php /* if (get_option('evr_coordinator_active')=="Y"){ */
+        $coordinator_status 	= get_option( 'evr_coordinator_license_status' );
+        if( ($coordinator_status !== false && $coordinator_status == 'valid' ) || (get_option('evr_coordinator_active')=="Y")){ 
+     ?>
     <div id="tab5" class="tab_content">
             <h2><?php _e('Coordinator Options','evr_language');?></h2>
             <label  class="tooltip" title="<?php _e('If you want to send alerts to a unique event coordinator','evr_language');?>">
             <?php _e('Do you want to send alerts to a coordinator for this event?','evr_language');?> <a><span>?</span></a></label>
             <label>
-            <input type="radio" name="send_coord" class="radio" id="send_coord_yes" value="Y" <?php if($send_coord == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?>
+            <input type="radio" name="send_coord" class="radio" id="send_coord_yes" value="Y" <?php if($event->send_coord == "Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?>
             </label><label>
-            <input type="radio" name="send_coord" class="radio" id="send_coord_no"  value="N" <?php if($send_coord == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
+            <input type="radio" name="send_coord" class="radio" id="send_coord_no"  value="N" <?php if($event->send_coord == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
             </label><br />
             <br /> 
             <table>
             <tr>
             <td colspan="2">
             <label for="contact"><?php _e('Coordinator email:','evr_language');?></label>
-            <input name="coord_email" type="text" size="65" value="<?php echo $coord_email;?>" class="regular-text" /></td>
+            <input name="coord_email" type="text" size="65" value="<?php echo $event->coord_email;?>" class="regular-text" /></td>
         </tr></table>
 <table><tr><td colspan="2"><label  class="tooltip" title="<?php _e('Enter the text for the registration alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
             <?php _e('Coordinator Registration Alert Email','evr_language');?> <a><span>?</span></a></label></td></tr></table>
@@ -575,10 +512,10 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                 
                if (function_exists('the_editor')){
                //wp_editor( $coord_msg, 'coord_msg', $editor_settings );
-                 the_editor($coord_msg, "coord_msg", '', false);
+                 the_editor($event->coord_msg, "coord_msg", '', false);
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
-               <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo $coord_msg;?></textarea>
+               <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo $event->coord_msg;?></textarea>
                     <?php } ?>
             <hr />
 <table><tr><td colspan="2"><label  class="tooltip" title="<?php _e('Enter the text for the payment alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
@@ -587,10 +524,10 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
             <?php
                 if (function_exists('the_editor')){
                //wp_editor( $coord_pay_msg, 'coord_pay_msg', $editor_settings );
-                the_editor($coord_pay_msg, "coord_pay_msg", '', false);
+                the_editor($event->coord_pay_msg, "coord_pay_msg", '', false);
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
-               <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $coord_pay_msg;?></textarea>
+               <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $cevent->oord_pay_msg;?></textarea>
                     <?php } ?>
                
         </div>
@@ -604,9 +541,9 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                 <li>Option to send unique email to a unique coordinators email address for each event payment recieved via PayPal IPN.</li>
                 <li>WYSIWYG editor for coordinator's email payment notification alert.</li>
                 </ul>
-                <p>The cost will be $15.00 per license/site.  To purchase this add on module:</p>
+                <p>The module is a single site license.  To purchase this add on module:</p>
 
-<p><a href="http://wpeventregister.com/shop/event-registration-coordinator-module/">BUY COORDINATOR MODULE</a></p>
+<p><a href="http://wpeventregister.com/downloads/event-registration-coordinator-module/">BUY COORDINATOR MODULE</a></p>
 <p>&nbsp;</p>
 
 
@@ -619,11 +556,11 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
             <label  class="tooltip" title="<?php _e('If you have send mail option enabled in the company settings, you can override the default mail by creating a custom mail for this event.','evr_language');?>">
             <?php _e('Do you want to use a custom email for this event?','evr_language');?> <a><span>?</span></a></label></td>
             <td><label>
-            <input type="radio" name="send_mail" class="radio" value="Y" <?php if($send_mail == "Y"){echo "checked";};?> /><?php _e('Yes','evr_language');?>
+            <input type="radio" name="send_mail" class="radio" value="Y" <?php if($event->send_mail == "Y"){echo "checked";};?> /><?php _e('Yes','evr_language');?>
             </label></td>
             <td>
             <label>
-            <input type="radio" name="send_mail" class="radio" value="N" <?php if($send_mail == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
+            <input type="radio" name="send_mail" class="radio" value="N" <?php if($event->send_mail == "N"){echo "checked";};?> /><?php _e('No','evr_language');?> 
             </label></td></tr>
             <tr><td colspan="3">          
             <label  class="tooltip" title="<?php _e('Enter the text for the confirmation email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
@@ -633,11 +570,11 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
              
               if (function_exists('wp_editor')){
                echo "</td></tr></table>";
-              wp_editor( htmlspecialchars_decode($conf_mail), 'conf_mail', $editor_settings ); 
+              wp_editor( htmlspecialchars_decode($event->conf_mail), 'conf_mail', $editor_settings ); 
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
                </td></tr></table>
-               <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $conf_mail;?></textarea>
+               <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $event->conf_mail;?></textarea>
                     <?php } ?>
              
              

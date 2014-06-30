@@ -1,54 +1,38 @@
 <?php
-
-
 error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
- 
 /*
 define( 'ABSPATH', '../../../' );
-
 if ( file_exists( ABSPATH . 'wp-config.php') ) {
-
 require_once( ABSPATH . 'wp-config.php' );}
 */
-	
 if ( file_exists( '../../../wp-config.php') ) {
-
 require_once( '../../../wp-config.php'); 
-	
-	
-global $wpdb;
 
 $curdate = date("Ymd");
 $curtime = date("His");
 //initiate connection to wordpress database.
 global $wpdb;
-
-
 //$event_id = $_REQUEST['event_id'];
 (is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
-$sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=".$event_id;
-                    		$result = mysql_query ($sql);
-                            
-                    		while ($row = mysql_fetch_assoc ($result)){  
-                         
-                            $event_id       = $row['id'];
-            				$event_name     = html_entity_decode(stripslashes($row['event_name']),ENT_NOQUOTES, 'UTF-8');
-        					$event_identifier = stripslashes($row['event_identifier']);
-            				$event_location = html_entity_decode(stripslashes($row['event_location']),ENT_NOQUOTES, 'UTF-8');
-                            $event_desc     = html_entity_decode(stripslashes($row['event_desc']),ENT_NOQUOTES, 'UTF-8');
-                            $event_address  = $row['event_address'];
-                            $event_city     = $row['event_city'];
-                            $event_state     = $row['event_state'];
-                            $event_postal   = $row['event_postal'];
-                            $reg_limit      = $row['reg_limit'];
-                    		$start_time     = $row['start_time'];
-                    		$end_time       = $row['end_time'];
-                    		$conf_mail      = $row['conf_mail'];
-                            //$custom_mail    = $row['custom_mail'];
-                    		$start_date     = $row['start_date'];
-                    		$end_date       = $row['end_date'];
+$event = $wpdb->get_row($wpdb->prepare("SELECT * FROM ". get_option('evr_event') ." WHERE id = %d",$event_id));
 
-}
+    $event_id       = $event->id;
+	$event_name     = html_entity_decode(stripslashes($event->event_name),ENT_NOQUOTES, 'UTF-8');
+	$event_identifier = stripslashes($event->event_identifier);
+	$event_location = html_entity_decode(stripslashes($event->event_location),ENT_NOQUOTES, 'UTF-8');
+    $event_desc     = html_entity_decode(stripslashes($event->event_desc),ENT_NOQUOTES, 'UTF-8');
+    $event_address  = $event->event_address;
+    $event_city     = $event->event_city;
+    $event_state     = $event->event_state;
+    $event_postal   = $event->event_postal;
+    $reg_limit      = $event->reg_limit;
+	$start_time     = $event->start_time;
+	$end_time       = $event->end_time;
+	$conf_mail      = $event->conf_mail;
+    //$custom_mail    = $event->custom_mail;
+	$start_date     = $event->start_date;
+	$end_date       = $event->end_date;
+
 /*
 $data = "";
 $data .= __('BEGIN:VCALENDAR\n');
@@ -71,16 +55,10 @@ $data .= __('DESCRIPTION:');
 $data .= $event_desc."\n";
 $data .= __('END:VEVENT\n');
 $data .= __('END:VCALENDAR\n');
-
-
 */
-
-
 //This is the most important coding.
 header("Content-Type: text/Caledar");
 header("Content-Disposition: inline; filename=".rawurlencode($event_name).".ics");
-
-
 echo "BEGIN:VCALENDAR\n";
 //echo "PRODID:-//Microsoft Corporation//Outlook 12.0 MIMEDIR//EN\n";
 //echo "VERSION:2.0\n";
@@ -117,6 +95,5 @@ echo "DESCRIPTION:Reminder\n";
 echo "END:VALARM\n";
 echo "END:VEVENT\n";
 echo "END:VCALENDAR\n";
-
 } else echo "Bad Directory!";
 ?>
