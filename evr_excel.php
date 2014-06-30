@@ -234,7 +234,7 @@ else { ?>
     </SELECT>
     <input type="hidden" name="action" value="attendee"/>
     <?php wp_nonce_field( 'reporting','report_nonce' ); ?>
-    <input type="Submit" class="button-primary" name="report" value="Download Attendee Details in Excel Spreadsheet"/>
+    <button type="Submit" class="button-primary" name="report" ><i class='fa fa-file-excel-o'></i> Download Attendee Details in Excel Spreadsheet</button>
       
     </form><br /><br />
     
@@ -256,7 +256,7 @@ else { ?>
     </SELECT>
     <?php wp_nonce_field( 'reporting','report_nonce' ); ?>
     <input type="hidden" name="action" value="payment"/>
-    <input type="Submit" class='button-primary' name="report" value="Download Payment Records in Excel Spreadsheet"/>
+    <button type="Submit" class='button-primary' name="report" ><i class='fa fa-file-excel-o'></i> Download Payment Records in Excel Spreadsheet</button>
     </form>
     </div> <?php
   } }
