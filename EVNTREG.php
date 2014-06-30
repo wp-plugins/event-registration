@@ -278,7 +278,7 @@ function evr_admin_menu(){
     #Create Admin Menus
     add_menu_page($version, $version, $role, __file__, 'evr_splash'); 
     add_submenu_page(__file__, 'Plugin Settings','<i class="fa fa-cogs"></i> '. __('Settings','evr_language'), $role, 'settings','evr_admin_company');
-     add_submenu_page(__file__, 'Reports', '<i class="fa fa-file-excel-o"></i> '.__('Reports','evr_language'), $role, 'excel','evr_excel');
+    add_submenu_page(__file__, 'Reports', '<i class="fa fa-file-excel-o"></i> '.__('Reports','evr_language'), $role, 'excel','evr_excel');
     add_submenu_page(__file__, 'Categories', '<i class="fa fa-sitemap"></i> '.__('Categories','evr_language'),$role, 'categories','evr_admin_categories');
     add_submenu_page(__file__, 'Manage Events', '<i class="fa fa-calendar"></i> '.__('Events','evr_language'), $role, 'events','evr_admin_events');
     add_submenu_page(__file__, 'Questions', '<i class="fa fa-question"></i><i class="fa fa-question"></i> '.__('Questions','evr_language'), $role, 'questions','evr_admin_questions');
@@ -286,7 +286,7 @@ function evr_admin_menu(){
     add_submenu_page(__file__, 'Manage Payments', '<i class="fa fa-bank"></i> '.__('Payments','evr_language'), $role, 'payments','evr_admin_payments');
     add_submenu_page(__file__, 'Register Plugin', '<i class="fa fa-paper-plane-o"></i> '.__('Register Plugin','evr_language'), $role, 'evr_register','evr_registration');
     if (get_option('evr_was_upgraded')== "Y") {add_submenu_page(__file__, 'Remove Old Data', __('Remove Old Data','evr_language'), $role, 'purge','evr_clean_old_db');}
-    add_submenu_page(__file__, 'UnInstall Plugin', __('Uninstall','evr_language'), $role, 'uninstall','evr_remove_db_menu');
+    add_submenu_page(__file__, 'UnInstall Plugin', '<i class="fa fa-frown-o"></i> '.__('Uninstall','evr_language'), $role, 'uninstall','evr_remove_db_menu');
 
 }
 /*********************************   END ADMIN MENU   ********************************/
