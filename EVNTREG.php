@@ -84,7 +84,7 @@ require ("evr_widgets.php");    // Class that holds new Widgets
 require ("evr_attendee_widget.php");
 require ("incl/settings.php");//for new admin menu
 require ( "incl/evr_payfast_itn.php" );
-require ( "evr_excel.php" );
+include ( "evr_excel.php" );
 //add new attendee widget
 //require ('evr_payment_gateways.php');//used for payment gateways feature.
 //require ("evrtest.php");
