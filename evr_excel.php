@@ -1,7 +1,6 @@
 <?php
-
 function evr_excel($event_id){
-  global $wpdb;
+global $wpdb;
 $events_answer_tbl = get_option('evr_answer');
 $events_question_tbl = get_option('evr_question');
 $events_detail_tbl = get_option('evr_event');
@@ -15,17 +14,14 @@ $events_payment_tbl = get_option('evr_payment');
         $event = $wpdb->get_row($wpdb->prepare("SELECT * FROM ". get_option('evr_event') ." WHERE id = %d",$event_id));
         switch ($_REQUEST['action']) {
 	           case "attendee":
-               
                 //create filename for excel export  
                  $file = urlencode(stripslashes($event->event_name));
                  $filename = $file."-Attendees_". $today . ".xls";
-                 
                  //strings used for excel layout
             $st = "";
 			$et = "\t";
 			$s = $et . $st;
 	        //Base array for cell column headings
-			
             if ($waiver == "Y"){
                 $basic_header = array('Reg ID', 'Reg Date','Type','Agreed to Waiver','Last Name', 'First Name', 'Attendees', 'Email', 'Address', 
 					'City', 'State', 'Zip', 'Phone','Co Name', 'Co Address', 'Co City', 'Co State/Prov', 'Co Postal','Num People', 'Payment','Tickets');
@@ -43,10 +39,7 @@ $events_payment_tbl = get_option('evr_payment');
 				    array_push($question_sequence, $question->sequence);	
             	}
             }
- 
-                   
         		//start file header information
-        		                   
                  /* $filename = sanitize_file_name(get_bloginfo('name') ) . '.' . $ext;
                   if ( $ext == 'xls' ) {
                     header("Content-type: application/vnd.ms-excel;");
@@ -59,9 +52,7 @@ $events_payment_tbl = get_option('evr_payment');
         		  header("Content-Type: application/vnd.ms-excel");
         		  header("Pragma: no-cache"); 
         		  header("Expires: 0"); 
-                  
                   echo implode($s, $basic_header) . $et . "\r\n";
-                  
                   $rows = $wpdb->get_results( "SELECT * FROM ". get_option('evr_attendee') ." WHERE event_id = $event_id" );
                     if ($rows){
                         foreach ($rows as $participant){
@@ -103,9 +94,7 @@ $events_payment_tbl = get_option('evr_payment');
                                         //echo "|* ";
                                         for ($row = 0; $row < $row_count; $row++) {
                                         echo "|* ".$ticket_order[$row]['ItemQty']." ".$ticket_order[$row]['ItemCat']."-".$ticket_order[$row]['ItemName']." ".$ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']." *|";
-                                        
                                         } 
-                                        
                                         //Add Answers if Extron Quesitons
                                             $qry = "SELECT ".$events_question_tbl.".id, ".
                                                     $events_question_tbl.".sequence, ".
@@ -116,44 +105,27 @@ $events_payment_tbl = get_option('evr_payment');
                                                     " AND ".$events_answer_tbl.".registration_id = ".$participant->id.
                                                     " ORDER by sequence";
                                             $answers = $wpdb->get_results( $qry );
-                                            
                                             if ($answers){
-                                                
                                             	foreach ($answers as $answer){
                                             		echo $s . $answer->answer;
                                             	}
                                             }
-                                        
-                                           
                                         echo $et . "\r\n";
-                        
-                        
-                        
                     	}
                     }
-                  
-                    
-					
-       
                   exit;
                break;
-               
                case "payment";
                 			$st = "";
                 			$et = "\t";
                 			$s = $et . $st;
                 			$file = urlencode(stripslashes($event->event_name));
                 			$filename = $file."-Payments_". $today . ".xls";
-                           
-                           
                            $basic_header = array('Participant ID', 'Name (Last, First)', 'Email', 'Registration Type','# Attendees', 'Order Total', 'Balance Due', 'Order Details','Payment Details' );
-                			
-                		
                 		  header("Content-Disposition: attachment; filename=\"$filename\"");
                 		  header("Content-Type: application/vnd.ms-excel");
                 		  header("Pragma: no-cache"); 
                 		  header("Expires: 0"); 
-                
                 			//echo header
                 			echo implode($s, $basic_header) . $et . "\r\n";
                             $participants = $wpdb->get_results( "SELECT * from $events_attendee_tbl where event_id = '$event_id' ORDER BY lname DESC" );
@@ -165,10 +137,8 @@ $events_payment_tbl = get_option('evr_payment');
                                     . $s . $participant->reg_type
                                     . $s . $participant->quantity
                                     . $s . $participant->payment;
-                                    
                                     //get balance owed
                                     $total_paid = $wpdb->get_var($wpdb->prepare("SELECT SUM(mc_gross) FROM " . get_option('evr_payment') . " WHERE payer_id=%d",$participant->id));    
-                                                               
                                     //$balance = "0";
                                     if( $total_paid != null){
                                     if ($participant->payment >"0"){$balance = ($participant->payment - $total_paid);}  
@@ -190,24 +160,16 @@ $events_payment_tbl = get_option('evr_payment');
                                     if ($payments){
                                         foreach ($payments as $payment){
                                            echo  $payment->mc_currency." ".$payment->mc_gross." ".$payment->txn_type." ".$payment->txn_id." (".$payment->payment_date.")"."||";
-                                                
                                         }
                                     }
                                     echo $et . "\r\n"; 
                                     }
-                                        
-                            					
-                                    
                                 }
-                                
-                             
                 			exit;
             break;
-               	
                 default:
             	_e('This Is Not A Valid Selection!','evr_language');
                 exit;
-               
                }
 }
 else { ?>
@@ -220,7 +182,6 @@ else { ?>
     <form name="export" action="http://localhost/wordpress/wp-admin/admin.php?page=excel&noheader=true" method="post" onsubmit="return validate_form();">
     <SELECT name="id">
     <OPTION value="">Choose an Event . . .</OPTION>
-    
     <?php
     $rows = $wpdb->get_results( "SELECT * FROM ". get_option('evr_event') ." ORDER BY date(start_date) DESC ".$limit );
                           if ($rows){
@@ -235,14 +196,10 @@ else { ?>
     <input type="hidden" name="action" value="attendee"/>
     <?php wp_nonce_field( 'reporting','report_nonce' ); ?>
     <button type="Submit" class="button-primary" name="report" ><i class='fa fa-file-excel-o'></i> Download Attendee Details in Excel Spreadsheet</button>
-      
     </form><br /><br />
-    
     <form name="export" action="http://localhost/wordpress/wp-admin/admin.php?page=excel&noheader=true" method="post" onsubmit="return validate_form();">
-    
     <SELECT name="id">
     <OPTION value="">Choose an Event . . .</OPTION>
-    
     <?php
     $rows = $wpdb->get_results( "SELECT * FROM ". get_option('evr_event') ." ORDER BY date(start_date) DESC ".$limit );
                           if ($rows){
@@ -260,4 +217,4 @@ else { ?>
     </form>
     </div> <?php
   } }
-  ?>   
+?>
