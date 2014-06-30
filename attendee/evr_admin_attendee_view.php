@@ -97,71 +97,33 @@ if ($rows){
 }
 function evr_excel_export($event_id){
     global $wpdb;
-    $today = date("Y-m-d_Hi",time()); 
-$info = array(
-        "dbuser" => $wpdb->dbuser, 
-        "dbpass" => $wpdb->dbpassword, 
-        "db" =>$wpdb->dbname, 
-        "host" =>$wpdb->dbhost
-        );
-$tables = array(
-        "evr_answer" => get_option('evr_answer'),
-        "evr_question" => get_option('evr_question'),
-        "evr_event" => get_option('evr_event'),
-        "evr_attendee" => get_option('evr_attendee'),
-        "evr_payment" => get_option ('evr_payment')
-        );
+    $today = date("Y-m-d_Hi",time());
+    $report_url = admin_url( 'admin.php?page=excel&noheader=true', '' );
+ 
+
 ?>
 <div style="float:left; margin-right:10px;">
-    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
-                                <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
-                               <input type="hidden" name="export" value="report" /> 
-                               <input type="hidden" name="action" value="excel" />
-                               <input type="hidden" name="key" value="5678" /> 
-                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
-                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input class="xls_btn" type="submit" value="Export Details - Excel"/>
-                                </form>
-    </div>
-<div style="float:left;">
-    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
-                                <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
-                               <input type="hidden" name="export" value="report" /> 
-                               <input type="hidden" name="action" value="csv" />
-                               <input type="hidden" name="key" value="5678" /> 
-                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
-                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input class="csv_btn" type="submit" value="Export Details - CSV"/>
+    <form method="POST" action="<?php echo $report_url;?>">
+                               <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
+                               <input type="hidden" name="action" value="attendee"/>
+                               <?php wp_nonce_field( 'reporting','report_nonce' ); ?>
+                               <input class="xls_btn" type="submit" name="report" value="Export Details - Excel"/>
                                 </form>
     </div>
 <?php
 }
 function evr_payment_export($event_id){
     global $wpdb;
-    $today = date("Y-m-d_Hi",time()); 
-$info = array(
-        "dbuser" => $wpdb->dbuser, 
-        "dbpass" => $wpdb->dbpassword, 
-        "db" =>$wpdb->dbname, 
-        "host" =>$wpdb->dbhost
-        );
-$tables = array(
-        "evr_answer" => get_option('evr_answer'),
-        "evr_question" => get_option('evr_question'),
-        "evr_event" => get_option('evr_event'),
-        "evr_attendee" => get_option('evr_attendee'),
-        "evr_payment" => get_option ('evr_payment')
-        );
+    $today = date("Y-m-d_Hi",time());
+    $report_url = admin_url( 'admin.php?page=excel&noheader=true', '' ); 
+
 ?>
 <div style="display: inline-block;">
-    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
+    <form method="POST" action="<?php echo $report_url;?>">
                                 <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
-                               <input type="hidden" name="export" value="report" /> 
-                               <input type="hidden" name="action" value="payment" />
-                               <input type="hidden" name="key" value="5678" /> 
-                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
-                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input type="submit" value="Export Payments - Excel"/>
+                               <input type="hidden" name="action" value="payment"/>
+                               <?php wp_nonce_field( 'reporting','report_nonce' ); ?>
+                               <input class="xls_btn" type="submit" name="report" value="Export Payments - Excel"/>
                                 </form>
     </div>
 <?php
