@@ -156,6 +156,7 @@ function evr_splash(){
     		<h3>From the Forum</h3>
     		<div class="inside">
                  <?php
+                 /*
                     // import rss feed
                     if(function_exists('fetch_feed')) {
                     	// fetch feed items
@@ -179,14 +180,14 @@ function evr_splash(){
                     		</dd>
                     	<?php endforeach; ?>
                     	</dl>
-                    <?php } ?>
+                    <?php }  */?>
     		</div>
     	</div> 
     </div>     	
 <div class="content">
     	<div class="evr_content_third">
 <?php if((get_option('evr_dontshowpopup')== "Y")){$nag = EVR_PLUGINFULLURL."images/yes.png";} else {$nag = EVR_PLUGINFULLURL."images/no.png";} ?>
-<?php if((get_option('evr_coordinator_active')== "Y")){$coordindicator = EVR_PLUGINFULLURL."images/yes.png";} else {$coordindicator = EVR_PLUGINFULLURL."images/no.png";} ?>
+<?php if((get_option( 'evr_coordinator_license_status')== "valid")||(get_option('evr_coordinator_active')=="Y")){$coordindicator = EVR_PLUGINFULLURL."images/yes.png";} else {$coordindicator = EVR_PLUGINFULLURL."images/no.png";} ?>
 <?php if((get_option('evr_cal_active')== "Y")){$calendarindicator = EVR_PLUGINFULLURL."images/yes.png";} else {$calendarindicator = EVR_PLUGINFULLURL."images/no.png";} ?>
 <?php if((get_option('evr_location_active')== "Y")){$locationindicator = EVR_PLUGINFULLURL."images/yes.png";} else {$locationindicator = EVR_PLUGINFULLURL."images/no.png";} ?>
 <?php if((get_option('evr_email_active')== "Y")){$emailindicator = EVR_PLUGINFULLURL."images/yes.png";} else {$emailindicator = EVR_PLUGINFULLURL."images/no.png";} ?>

@@ -28,6 +28,8 @@ function evr_post_event_to_db(){
           $end_time = $_REQUEST ['end_time'];
           $close = $_REQUEST['close'];
           $allow_checks = $_REQUEST['allow_checks'];
+          $waiver = $_REQUEST['waiver'];
+          $waiver_content = $_REQUEST['waiver_content'];
           
           $outside_reg = $_REQUEST['outside_reg'];  // Yor N
           $external_site = $_REQUEST['external_site'];
@@ -94,20 +96,22 @@ function evr_post_event_to_db(){
             'send_coord'=>$send_coord,
             'coord_email'=>$coord_email,
             'coord_msg'=>$coord_msg,
-            'coord_pay_msg'=>$coord_pay_msg); 
+            'coord_pay_msg'=>$coord_pay_msg,
+            'waiver'=>$waiver,
+            'waiver_content'=>$waiver_content); 
                           
         		
             $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-                              '%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                              '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
         	
         
             if ($wpdb->insert( get_option('evr_event'), $sql, $sql_data )){ ?>
             	<div id="message" class="updated fade"><p><strong><?php _e('The event ','evr_language'); echo stripslashes($_REQUEST['event_name']); _e('has been added.','evr_language');?> </strong></p>
                 <p><strong><?php _e(' . . .Now returning you to event list . . ');?><meta http-equiv="Refresh" content="1; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p></div>
                 <?php }else { ?>
-        		<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The event was not saved!','evr_language');?><?php print mysql_error() ?>.</strong></p>
+        		<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The event was not saved!','evr_language');?><?php print $wpdb->last_error; ?>.</strong></p>
                 <p><strong><?php _e(' . . .Now returning you to event list . . ','evr_language');?><meta http-equiv="Refresh" content="3; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p>
                 </div>
                 <?php } 

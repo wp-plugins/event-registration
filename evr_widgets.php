@@ -158,9 +158,9 @@ class EVR_Widget_List_Events extends WP_Widget
 // Formatting for the Event List Widget
 function evr_widget_make_list($record_limit = '5', $record_category = '0', $record_template = '')
 {
-    global $wpdb;    
+    global $wpdb, $company_options;    
     $curdate = date("Y-m-d");
-    $company_options = get_option('evr_company_settings');
+    //$company_options = get_option('evr_company_settings');
 	$category_query = '';
 	if (intval( $record_limit ) > 20) $record_limit = '20';
 

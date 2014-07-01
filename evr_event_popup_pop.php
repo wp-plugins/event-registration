@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author David Fleming
  * @copyright 2011
@@ -11,12 +10,10 @@
                             <?php  if ($header_image != ""){ ?> 
                             <tr>
                                 <td>
-                                
 		                          <span style="float:center;"><img src="<?php echo $header_image;?>" /></span>
                 				</td>
                 			</tr>
                             <?php }?>
-                            
                             <tr>
                                 <td>
                                 <br />
@@ -28,7 +25,6 @@
                             <tr><td><div class="er_pop_date"><?php 
                             echo date($evr_date_format,strtotime($start_date))." ".$start_time." through ";
                             if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));}
-                            
                             echo " ".$end_time;?></div></td></tr>
                             <tr>
                 				<td>
@@ -47,26 +43,13 @@
             								<div class="padding"><b><u><?php _e('Event Fees','evr_language');?>:</u></b><br /><br />
                                             <?php
                                             $curdate = date("Y-m-d");
-                                            $sql2 = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
-                                            $result2 = mysql_query ( $sql2 );
-                                        	while ($row2 = mysql_fetch_assoc ($result2)){
-                                                    $item_id          = $row2['id'];
-                                                    $item_sequence    = $row2['sequence'];
-                                        			$event_id         = $row2['event_id'];
-                                                    $item_title       = $row2['item_title'];
-                                                    $item_description = $row2['item_description']; 
-                                                    $item_cat         = $row2['item_cat'];
-                                                    $item_limit       = $row2['item_limit'];
-                                                    $item_price       = $row2['item_price'];
-                                                    $free_item        = $row2['free_item'];
-                                                    $item_start_date  = $row2['item_available_start_date'];
-                                                    $item_end_date    = $row2['item_available_end_date'];
-                                                    $item_custom_cur  = $row2['item_custom_cur'];
-                                                    if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
-                                                    if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
-                                                    
-                                                    echo $item_title.'   '.$item_custom_cur.' '.$item_price.'<br />';
-                                                    }
+                                               $items = $wpdb->get_results( "SELECT * FROM ". get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC" );
+                                                if ($items){
+                                                    foreach ($items as $item){
+                                                        if ($item->item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
+                                                        if ($item->item_custom_cur == "USD"){$item_custom_cur = "$";}
+                                                        echo $item->item_title.'   '.$item_custom_cur.' '.$item->item_price.'<br />';
+                                                        }}     
                                            ?>
                                             <br/>
                 								<hr/>
@@ -87,16 +70,10 @@
                         <tr><td><br /></td></tr>
             			<tr>
                         <td style="text-align:center;">
-							
-
         				<?php if ($more_info !=""){ ?>
         				    <input type="button" onClick="window.open('<?php echo $more_info;?>');" value='MORE INFO'/> 
         			     <?php	} ?>
-                        
-                                    	
 						<input type="button" onClick="location.href='<?php echo evr_permalink($company_options['evr_page_id']);?>action=evregister&event_id=<?php echo $event_id;?>'" value='REGISTER'/> 
-
-
 				</td>
 			</tr>
 		</table>

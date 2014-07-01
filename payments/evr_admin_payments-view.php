@@ -4,9 +4,8 @@ function evr_admin_view_payments(){
     //$event_id = $_REQUEST['event_id'];
     (is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
     $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
-                    		$result = mysql_query ($sql);
-    while ($row = mysql_fetch_assoc ($result)){  
-    $reg_form_defaults = unserialize($row['reg_form_defaults']);
+    $event = $wpdb->get_row($sql);
+    $reg_form_defaults = unserialize($event->reg_form_defaults);
                             if ($reg_form_defaults !=""){
                             if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
                             if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
@@ -14,11 +13,9 @@ function evr_admin_view_payments(){
                             if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
                             if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
                             }
-    $use_coupon = $row['use_coupon'];
-    $reg_limit = $row['reg_limit'];
-    $event_name = stripslashes($row['event_name']);
-    
-                            }
+    $use_coupon = $event->use_coupon;
+    $reg_limit = $event->reg_limit;
+    $event_name = stripslashes($event->event_name);
 ?>
 <div class="wrap">
 <h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -31,15 +28,12 @@ function evr_admin_view_payments(){
         	<div class='postbox-container' style='width:auto;'>
                 <div id='normal-sortables' class='meta-box-sortables'>
                     <div id="dashboard_right_now" class="postbox " >
-                         
                         <h3 class='hndle'><span><?php _e('View Payments:','evr_language');?><?php echo "  ".$event_name;?></span></h3>
                         <?php
                             $record_limit = 15;
                             //check database for number of records with date of today or in the future
-                            $sql = "SELECT * FROM ".get_option('evr_attendee');
-                            $records = mysql_query($sql);
-                            $items = mysql_num_rows($records); // number of total rows in the database
-                            
+                            $wpdb->get_results( 'SELECT COUNT(*) FROM '.get_option('evr_attendee' ));
+                            $items = $wpdb->num_rows;
                             	if($items > 0) {
                             		$p = new evr_pagination;
                             		$p->items($items);
@@ -49,16 +43,13 @@ function evr_admin_view_payments(){
                             		$p->calculate(); // Calculates what to show
                             		$p->parameterName('paging');
                             		$p->adjacents(1); //No. of page away from the current page
-                            
                             		if(!isset($_GET['paging'])) {
                             			$p->page = 1;
                             		} else {
                             			$p->page = $_GET['paging'];
                             		}
-                            
                             		//Query for limit paging
                             		$limit = "LIMIT " . ($p->page - 1) * $p->limit  . ", " . $p->limit;
-                            
                             } else {
                             	echo "No Record Found";
                             }//End pagination
@@ -84,27 +75,26 @@ function evr_admin_view_payments(){
                                 </tfoot>
                                 <tbody>
                                 <?php
-                
                             $sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id' ORDER BY lname ASC ".$limit;
-                            $result = mysql_query ( $sql );
-                            while ( $row = mysql_fetch_assoc ( $result ) ) {
-                                    $attendee_id = $row['id'];
-                                    $lname = $row ['lname'];
-                        			$fname = $row ['fname'];
-                        			$address = $row ['address'];
-                        			$city = $row ['city'];
-                        			$state = $row ['state'];
-                        			$zip = $row ['zip'];
-                        			$email = $row ['email'];
-                        			$phone = $row ['phone'];
-                        			$quantity = $row ['quantity'];
-                        			$date = $row ['date'];
-                        			$reg_type = $row['reg_type'];
-                                    $ticket_order = unserialize($row['tickets']);
-                                    $payment= $row['payment'];
-                                    $event_id = $row['event_id'];
-                                    $coupon = $row['coupon'];
-                                    
+                            $rows = $wpdb->get_results( $sql );
+                            if ($rows){
+                            	foreach ($rows as $attendee){
+                                    $attendee_id = $attendee->id;
+                                    $lname = stripslashes($attendee->lname);
+                        			$fname = stripslashes($attendee->fname);
+                        			$address = $attendee->address;
+                        			$city = $attendee->city;
+                        			$state = $attendee->state;
+                        			$zip = $attendee->zip;
+                        			$email = $attendee->email;
+                        			$phone = $attendee->phone;
+                        			$quantity = $attendee->quantity;
+                        			$date = $attendee->date;
+                        			$reg_type = $attendee->reg_type;
+                                    $ticket_order = unserialize($attendee->tickets);
+                                    $payment= $attendee->payment;
+                                    $event_id = $attendee->event_id;
+                                    $coupon = $attendee->coupon;
                     			echo "<tr><td>".$quantity."</td><td align='left'>" . $lname . ", " . $fname . "</td><td>" . $payment . "</td><td>";
                                 $row_count = count($ticket_order);
                                     for ($row = 0; $row < $row_count; $row++) {
@@ -112,22 +102,19 @@ function evr_admin_view_payments(){
                                        } 
                                 echo "</td>";
                                 echo "<td>";
-                                $sql3 = "SELECT * FROM " . get_option('evr_payment') . " WHERE payer_id='$attendee_id' ";
-                             
-                             $result3 = mysql_query ( $sql3 );
-                             $made_payments = mysql_num_rows($result3); // number of total rows in the database
-                            if($made_payments > 0)  { 
-                            while ( $row3 = mysql_fetch_assoc ( $result3 ) ) {
-                                echo  $row3['mc_currency']." ".$row3['mc_gross']." ".$row3['txn_type']." ".$row3['txn_id']." (".$row3['payment_date'].")"."     ".
-                                '<a href="admin.php?page=payments&action=delete_payment&event_id='.$event_id.'&id='.$row3['id'].'">'.__('Delete','evr_language').'</a>   |  '.
-                                '<a href="admin.php?page=payments&action=edit_payment&event_id='.$event_id.'&id='.$row3['id'].'">'.__('Edit','evr_language').'</a><br />';
-                                }}
+                                $sql = "SELECT * FROM " . get_option('evr_payment') . " WHERE payer_id='$attendee_id' ";
+                                $rows = $wpdb->get_results( $sql );
+                                if ($rows){
+                                	foreach ($rows as $payment){
+                                		echo  $payment->mc_currency." ".$payment->mc_gross." ".$payment->txn_type." ".$payment->txn_id." (".$payment->payment_date.")"."     ".
+                                '<a href="admin.php?page=payments&action=delete_payment&event_id='.$event_id.'&id='.$payment->id.'">'.__('Delete','evr_language').'</a>   |  '.
+                                '<a href="admin.php?page=payments&action=edit_payment&event_id='.$event_id.'&id='.$payment->id.'">'.__('Edit','evr_language').'</a><br />';
+                                	}
+                                }
                                 else {
                                     echo '<font color="red">';
                                 _e('No Payments Received!','evr_language');
                                 echo '</font>';}
-                                
-                                             		        
                                 ?>
                                 </td><td>
                                 <form name="form" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
@@ -137,7 +124,7 @@ function evr_admin_view_payments(){
                                 <input class="button-primary" type="submit" name="Add Payment" value="<?php _e('Add Payment','evr_language');?>" />
                                 </form>
                                 </td> </tr>
-                                <?php   }  
+                                <?php   } } 
                             echo "</table>";
                             ?>
                              <?php evr_payment_export($event_id);?>
@@ -146,7 +133,6 @@ function evr_admin_view_payments(){
                             <?php echo $p->show();  // Echo out the list of paging. ?>
                         </div>
                     </div>
-                                                       
                         </div>
                         </div>
                     </div>
