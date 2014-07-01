@@ -172,14 +172,15 @@ $events_payment_tbl = get_option('evr_payment');
                 exit;
                }
 }
-else { ?>
+else { 
+    $report_url = admin_url( 'admin.php?page=excel&noheader=true', '' ); ?>
 <div class="wrap">
 <h2 style="font-family: segoe;"><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL; ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
 <h1><?php _e('Reports','evr_language');?></h1>
 <br />
 <h2>You must select an event before requesting the report!</h2>
 <br />
-    <form name="export" action="http://localhost/wordpress/wp-admin/admin.php?page=excel&noheader=true" method="post" onsubmit="return validate_form();">
+    <form name="export" action="<?php echo $report_url;?>" method="post" onsubmit="return validate_form();">
     <SELECT name="id">
     <OPTION value="">Choose an Event . . .</OPTION>
     <?php
@@ -197,7 +198,7 @@ else { ?>
     <?php wp_nonce_field( 'reporting','report_nonce' ); ?>
     <button type="Submit" class="button-primary" name="report" ><i class='fa fa-file-excel-o'></i> Download Attendee Details in Excel Spreadsheet</button>
     </form><br /><br />
-    <form name="export" action="http://localhost/wordpress/wp-admin/admin.php?page=excel&noheader=true" method="post" onsubmit="return validate_form();">
+    <form name="export" action="<?php echo $report_url;?>" method="post" onsubmit="return validate_form();">
     <SELECT name="id">
     <OPTION value="">Choose an Event . . .</OPTION>
     <?php
