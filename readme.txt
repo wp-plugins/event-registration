@@ -4,7 +4,7 @@ Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.7
 Tested up to: 3.9.1
-Stable tag: 6.01.02
+Stable tag: 6.01.03
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,12 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.01.03 =
+*Bug Fix related to currency format with PayPal
+
+= Version 6.01.02 = 
+*Minor Bug Fix
 
 = Version 6.00.01 =
 *Too many to list in detail, but a few are:
