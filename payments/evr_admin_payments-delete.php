@@ -12,5 +12,4 @@ function evr_delete_payment(){
                 echo "<META HTTP-EQUIV='refresh' content='2;URL=";
                 echo "admin.php?page=payments&action=view_payments&event_id=".$event_id."'>";
 }
-
 ?>

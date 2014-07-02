@@ -4,12 +4,17 @@ function evr_admin_events(){
     switch ($action) {
      case "new":
         evr_new_event();
+        
      break;
      case "edit":
         evr_edit_event();
      break;
+     
+ 
      case "copy_event":
         evr_copy_event();
+        
+        
      break; 
      case "delete":
         evr_delete_event();
@@ -54,6 +59,6 @@ function evr_admin_events(){
      break;
      default:
         evr_event_listing();
-         }
+        }
 }
 ?>

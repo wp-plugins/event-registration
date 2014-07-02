@@ -5,7 +5,7 @@ $record_limit = 15;
 //get today's date to sort records between current & expired'
 $curdate = date("Y-m-d");
 //initiate connection to wordpress database.
-global $wpdb;
+global $wpdb, $company_options;
 ?>
 <div class="wrap">
 <h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -19,9 +19,9 @@ global $wpdb;
                 <h3 class='hndle'><span><?php _e('Active Events','evr_language');?></span></h3>
                 <?php
                 //check database for number of records with date of today or in the future
-                $sql = "SELECT * FROM ".get_option('evr_event');
-                $records = mysql_query($sql);
-                $items = mysql_num_rows($records); // number of total rows in the database
+                $wpdb->get_results( 'SELECT COUNT(*) FROM '.get_option('evr_event' ));
+                $items = $wpdb->num_rows;
+
                 
                 	if($items > 0) {
                 		$p = new evr_pagination;
@@ -183,7 +183,6 @@ global $wpdb;
 
 </div>
 </div>
- <?php $company_options = get_option('evr_company_settings');?>
 <?php
 }
 ?>

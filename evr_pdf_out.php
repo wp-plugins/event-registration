@@ -8,7 +8,7 @@
 //require files
     require_once("../../../wp-config.php");
     require('fpdf.php');
-    global $wpdb; 
+    global $wpdb, $company_options; 
        
     class PDF extends FPDF
 {
@@ -125,38 +125,15 @@ function PutLink($URL, $txt)
        $attendee_array = unserialize($_POST['attendee_list']);
        echo $_POST['attendee_list'];
        break;
-    //   $pdf=new FPDF();
-    //    $pdf->AddPage();
-    //    $pdf->SetFont( 'Arial', 'B', 24 );
-        
-        /*
-          $sql=array('lname'=>$reg_form['lname'], 'fname'=>$reg_form['fname'], 'address'=>$reg_form['address'], 'city'=>$reg_form['city'], 
-                'state'=>$reg_form['state'], 'zip'=>$reg_form['zip'], 'reg_type'=>$reg_form['reg_type'], 'email'=>$reg_form['email'],
-                'phone'=>$reg_form['phone'], 'email'=>$reg_form['email'], 'coupon'=>$reg_form['coupon'], 'event_id'=>$reg_form['event_id'],
-                'quantity'=>$reg_form['num_people'], 'tickets'=>$reg_form['tickets'], 'payment'=>$reg_form['payment'], 'attendees'=>$attendee_list);
-        */
-        
-$sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $reg_form['event_id'];
-                    		$result = mysql_query ($sql);
-                            while ($row = mysql_fetch_assoc ($result)){  
-                         
-                            $event_id       = $row['id'];
-            				$event_name     = $row['event_name'];
-            				$event_location = $row['event_location'];
-                            $event_address  = $row['event_address'];
-                            $event_city     = $row['event_city'];
-                            $event_postal   = $row['event_postal'];
-                            $reg_limit      = $row['reg_limit'];
-                    		$start_time     = $row['start_time'];
-                    		$end_time       = $row['end_time'];
-                    		$start_date     = $row['start_date'];
-                    		$end_date       = $row['end_date'];
-                            }
+
+                            $event = $wpdb->get_row($wpdb->prepare("SELECT * FROM ". get_option('evr_event') ." WHERE id = %d",$reg_form['event_id']));
+
+                            
                             
 $item_order = unserialize($reg_form['tickets']);
         
  $invoice = '<br><br><br><b><u>Registration Details:</u></b>'.
- '<br><br><b>Event Name/Cost:</b> '.$event_name.
+ '<br><br><b>Event Name/Cost:</b> '.$event->event_name.
  '<br><br><b>Attendee Name:</b> '.$reg_form['fname'].' '.$reg_form['lname'].
  '<br><br><b>Email Address:</b> '.$reg_form['email'].
  '<br><br><b>Number of Attendees:</b> '.$reg_form['num_people'].
@@ -171,13 +148,13 @@ $item_order = unserialize($reg_form['tickets']);
         foreach($attendee_array as $ma) {
             $invoice .= $ma["first_name"].' '.$ma["last_name"].'<br/>';}
      
-     $company_options = get_option('evr_company_settings');
+     //$company_options = get_option('evr_company_settings');
         
     $company = stripslashes($company_options['company']);
     $co_address = stripslashes($company_options['company_street1']).', '.stripslashes($company_options['company_street2']).', '
     .stripslashes($company_options['company_city']).', '.$company_options['company_state'].', '.$company_options['company_postal'];
     
-    $page_title = "Registration Summary: ".stripslashes($event_name);
+    $page_title = "Registration Summary: ".stripslashes($event->event_name);
         
      /*       $pdf->SetFont( 'Arial', 'B', 20 );
             $pdf->Write( 12, $company );
@@ -219,8 +196,8 @@ $pdf->WriteHTML($html);
             //$pdf->Output();
     
             //force file download
-            $download = str_replace(" ","_",$event_name);
-            $download = str_replace("\"","_",$event_name);
+            $download = str_replace(" ","_",$event->event_name);
+            $download = str_replace("\"","_",$event->event_name);
             $filedownload = $download.".pdf";
             $pdf->Output($filedownload, "D" );
 

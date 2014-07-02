@@ -52,7 +52,7 @@ function evr_update_item(){
                 <?php }
                 else { ?>
                 <div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The event cost/ticket item was not updated!','evr_language');                 
-                print mysql_error();
+                print $wpdb->last_error;
                 _e('Now taking you back . . .');?>
                 </strong></p></div>
                 <meta http-equiv="Refresh" content="3;  url=admin.php?page=events&action=add_item&event_id=<?php echo $event_id;?>&event_end=<?php echo $event_end;?>"/>
