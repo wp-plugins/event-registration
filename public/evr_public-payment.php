@@ -109,7 +109,7 @@ if ($company_options['payment_vendor']=="PAYPAL"){
 				  //$p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
                   $p->add_field('item_name', $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity);
 				  $p->add_field('amount', $payment);
-				  $p->add_field('currency_code', $ticket_order[0]['ItemCurrency']);
+				  $p->add_field('currency_code', $company_options['default_currency']);
 				  //Post variables
 				  $p->add_field('first_name', $fname);
 				  $p->add_field('last_name', $lname);
@@ -366,7 +366,7 @@ if ($company_options['use_authorize_sandbox'] == "Y"){
 		<input type="hidden" name="item_description_1" value="<?php echo $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;?>" />
 		<input type="hidden" name="item_merchant_id_1" value="<?php echo esc_attr( $company_options['google_id'] ); ?>"/>
 		<input type="hidden" name="item_price_1" value="<?php echo $payment;?>" />
-		<input type="hidden" name="item_currency_1" value="<?php echo $ticket_order[0]['ItemCurrency'];?>" />
+		<input type="hidden" name="item_currency_1" value="<?php echo $company_options['default_currency'];?>" />
 		<input type="hidden" name="item_quantity_1" value="1" />
 		<input type="hidden" name="_charset_" value="utf-8" />
 		<input type="hidden" name="continue_url" value="<?php echo esc_attr( $back_url ); ?>"/>
@@ -419,7 +419,7 @@ if ($company_options['payment_vendor']=="MONSTER"){
 <input type="hidden" name="LIDSKU" value="<?php echo $event_name."-".$attendee_name;?>"/>
 <input type="hidden" name="LIDPrice" value="<?php echo $payment;?>"/>
 <input type="hidden" name="LIDQty" value="1"/>
-<input type="hidden" name="CurrencyAlphaCode" value="<?php echo $ticket_order[0]['ItemCurrency'];?>"/>
+<input type="hidden" name="CurrencyAlphaCode" value="<?php echo $company_options['default_currency'];?>"/>
 <input type="hidden" name="ShippingRequired" value="0"/>
 <input type="hidden" name="MerchRef" value=""/>
 <input type="submit" value="<?php echo $pay_now;?>" />
@@ -637,7 +637,7 @@ function evr_registration_donation($passed_event_id, $passed_attendee_id){
                    $p->add_field('cmd', '_donations');
                   $p->add_field('item_name', 'Donation - '.$event_name );
 				  $p->add_field('no_note', '0');
-				  $p->add_field('currency_code', $ticket_order[0]['ItemCurrency']);
+				  $p->add_field('currency_code', $company_options['default_currency']);
 				  //Post variables
 				  $p->add_field('first_name', $fname);
 				  $p->add_field('last_name', $lname);
