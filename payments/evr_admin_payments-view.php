@@ -30,10 +30,18 @@ function evr_admin_view_payments(){
                     <div id="dashboard_right_now" class="postbox " >
                         <h3 class='hndle'><span><?php _e('View Payments:','evr_language');?><?php echo "  ".$event_name;?></span></h3>
                         <?php
-                            $record_limit = 15;
+                            if ($company_options['eventpaging'] >= "1"){
+                               //define # of records to display per page
+                                $record_limit = $company_options['attendeepaging'];  
+                            } else
+                            {
+                                //define # of records to display per page
+                                $record_limit = 25; 
+                            }
                             //check database for number of records with date of today or in the future
-                            $wpdb->get_results( 'SELECT COUNT(*) FROM '.get_option('evr_attendee' ));
-                            $items = $wpdb->num_rows;
+                            
+                            
+                            $items = $wpdb->get_var( 'SELECT COUNT(*) FROM '.get_option('evr_attendee' ));
                             	if($items > 0) {
                             		$p = new evr_pagination;
                             		$p->items($items);

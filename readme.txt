@@ -106,6 +106,13 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 == Change Log ==
 
+= Version 6.01.04 =
+*Layout Change: Custom Questions Order - fixed spacing issue to allow readability
+*Bug Fix related to custom question answer table only posting 1 repsone
+*Bug Fix related to paging event listing on admin pages
+*Add Feature to Settings Misc. Tab to control number of events and number of attendees when paging on the admin side
+
+
 = Version 6.01.03 =
 *Bug Fix related to currency format with PayPal
 

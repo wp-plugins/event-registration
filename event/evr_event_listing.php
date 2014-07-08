@@ -11,8 +11,14 @@ function evr_new_event_button(){
 function evr_event_listing(){
 //initiate connection to wordpress database.
 global $wpdb, $evr_date_format,$company_options;
-//define # of records to display per page
-$record_limit = 10;
+if ($company_options['eventpaging'] >= "1"){
+                   //define # of records to display per page
+                    $record_limit = $company_options['eventpaging'];  
+                } else
+                {
+                    //define # of records to display per page
+                    $record_limit = 10; 
+                }
 //get today's date to sort records between current & expired'
 $curdate = date("Y-m-d");
 ?>
@@ -24,8 +30,9 @@ $curdate = date("Y-m-d");
                 //check database for number of records with date of today or in the future
               
                	
-                $wpdb->get_results( 'SELECT COUNT(*) FROM '.get_option('evr_event' ));
-                $items = $wpdb->num_rows;
+                $items = $wpdb->get_var( 'SELECT COUNT(*) FROM '.get_option('evr_event' ));
+                //$items = $wpdb->num_rows;
+                               
                 	if($items > 0) {
                 		$p = new evr_pagination;
                 		$p->items($items);

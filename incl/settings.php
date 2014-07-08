@@ -487,6 +487,38 @@ function evr_adminMail(){
                     </div>   
 <?php
 }
+function evr_adminMisc(){
+    global $company_options;
+
+    $settings = array(  
+    'media_buttons' => false,
+    'tinymce' => array(
+        'theme_advanced_buttons1' => 'formatselect,|,bold,italic,underline,|,' .
+            'bullist,blockquote,|,justifyleft,justifycenter' .
+            ',justifyright,justifyfull,|,link,unlink,|' .
+            ',spellchecker,wp_fullscreen,wp_adv'
+    ));
+    ?>
+    <div class="padding" style="width: 800px;">
+                        <!--Company Contact Info -->
+                    <div class="padding">
+                       <table class="form-table">
+                        <tr valign="top">
+                        <th scope="row"><label for="eventpaging"><?php _e('How many Events to list per page in admin view: ','event-registration');?></label></th>
+                        <td><input name="eventpaging" type="text" value="<?php echo $company_options['eventpaging'];?>" class="regular-text" /></td>
+                        </tr>
+                        <tr valign="top">
+                        <th scope="row"><label for="attendeepaging"><?php _e('How many Attendees to list per page in admin view: ','event-registration');?></label></th>
+                        <td><input name="attendeepaging" type="text" value="<?php echo $company_options['attendeepaging'];?>" class="regular-text" /></td>
+                        </tr>
+                        </table>  
+                      </div>
+                      <!--End Company Contact--> 
+                      <hr /> 
+                    <div style="clear:both;"></div>
+                    </div>   
+<?php
+}
 function evr_adminHelp(){
     ?>
     <!--Admin Help Content-->

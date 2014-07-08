@@ -4,6 +4,7 @@
  * @copyright 2010
  */
 /*
+6.01.04 - resolved issue with custom answer table - dropped primary key (will retro drop existing key on earler version table)
 6.01.01 - changed options table for company settings
         - various patches
 6.00.32 - added waiver info - event & attendee tables
@@ -80,7 +81,7 @@ function evr_install()
 {
     global $evr_date_format, $evr_ver, $wpdb, $cur_build, $table_message;
     $table_message = '';
-    $cur_build = "6.01.03";
+    $cur_build = "6.01.04";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
     if ((get_option('evr_was_upgraded')!= "Y")&& ($old_db_version < $cur_build)){
@@ -130,7 +131,7 @@ function evr_change_array2options(){
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "6.01.03";
+    $upgrade_version = "6.01.04";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -821,17 +822,17 @@ function evr_question_db()
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_question";
 
-$sql = "CREATE TABLE " . $table_name . " (
-id mediumint(9) NOT NULL AUTO_INCREMENT,
-event_id int(11) NOT NULL DEFAULT '0',
-sequence int(11) NOT NULL DEFAULT '0',
-question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL DEFAULT 'TEXT',
-question text NOT NULL,
-response text NOT NULL,
-required enum('Y','N') NOT NULL DEFAULT 'N',
-remark text NOT NULL,
-UNIQUE KEY id (id)
-) DEFAULT CHARSET=utf8;";
+    $sql = "CREATE TABLE " . $table_name . " (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    event_id int(11) NOT NULL DEFAULT '0',
+    sequence int(11) NOT NULL DEFAULT '0',
+    question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL DEFAULT 'TEXT',
+    question text NOT NULL,
+    response text NOT NULL,
+    required enum('Y','N') NOT NULL DEFAULT 'N',
+    remark text NOT NULL,
+    UNIQUE KEY id (id)
+    ) DEFAULT CHARSET=utf8;";
 
     if (dbDelta($sql)){
             //create option in the wordpress options tale for the event question table name
@@ -855,38 +856,19 @@ function evr_answer_db()
 //Define global variables
     global $wpdb, $cur_build, $table_message;
     global $evr_answer_version;
-    //Create new variables for this function
-    $table_name = $wpdb->prefix . "evr_answer";
-    $evr_answer_version = $cur_build;
-    /*$sql = "CREATE TABLE " . $table_name . " (
-		  registration_id int(11) NOT NULL DEFAULT '0',
-          question_id int(11) NOT NULL DEFAULT '0',
-          answer text NOT NULL,
-          PRIMARY KEY id (registration_id,question_id)
-          ) DEFAULT CHARSET=utf8;";
- 
-          */
-         $sql = "CREATE TABLE " . $table_name . " (
-		  registration_id int(11) NOT NULL DEFAULT '0',
-          question_id int(11) NOT NULL DEFAULT '0',
-          answer text NOT NULL,
-          PRIMARY KEY id (registration_id)
-          ) DEFAULT CHARSET=utf8;"; 
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-    if (dbDelta($sql)){
-    //create option in the wordpress options tale for the event answer table name
-        $option_name = 'evr_answer';
-        $newvalue = $table_name;
-        update_option($option_name, $newvalue);
-   //create option in the wordpress options table for the event answer table version
-        $option_name = 'evr_answer_version';
-        $newvalue = $evr_answer_version;
-        update_option($option_name, $newvalue);
-        $table_message .= __('Success Updating table - ','').$table_name.'<br/>'; 
-        }
-        else {
-        $table_message .= __('Failure Updating table - ','').$table_name.'<br/>'; 
-        }
+    $wp_table_name = $wpdb->prefix . "evr_answer";
+    $sql = "ALTER TABLE ".$wp_table_name." DROP PRIMARY KEY;";
+    $wpdb->query ($sql);
+    $sql = "ALTER TABLE ".$wp_table_name." ADD PRIMARY KEY(registration_id,question_id);";
+    $sql = "registration_id int(11) NOT NULL default '0',
+			question_id int(11) NOT NULL default '0',
+			answer text NOT NULL,
+            PRIMARY KEY (registration_id,question_id)";
+        
+    evr_installer( "evr_answer", $table_version = '', $sql );
+
+    
+
 }
 function evr_generator()
 {
@@ -914,33 +896,18 @@ function evr_config_company(){
 
 	dbDelta($sql);
 }
-//moved this function to incl/settings.php
-/*
-function add_evr_option($option,$value){
-    global $wpdb;
-    $config_table = $wpdb->prefix . "evr_options";
-	$option = trim($option);
-	if ( empty($option) )
-		return false;
-	if ( is_object($value) )
-		$value = clone $value;
 
-	//$value = sanitize_option( $option, $value );
+//This function installs the tables
+function evr_installer( $table_name, $table_version = '', $sql ) {
 
-	// Make sure the option doesn't already exist. We can check the 'notoptions' cache before we ask for a db query
-	$notoptions = wp_cache_get( 'notoptions', 'options' );
-	if ( !is_array( $notoptions ) || !isset( $notoptions[$option] ) )
-		if ( false !== get_option( $option ) )
-			return false;
+	global $wpdb,$cur_build, $table_message;
+	
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	
+    $wp_table_name = $wpdb->prefix . $table_name;
 
-	$serialized_value = maybe_serialize( $value );
-	do_action( 'add_option', $option, $value );
-
-	$result = $wpdb->query( $wpdb->prepare( "INSERT INTO `$config_table` (`evr_option_name`, `evr_option_value`) VALUES (%s, %s) ON DUPLICATE KEY UPDATE `evr_option_name` = VALUES(`evr_option_name`), `evr_option_value` = VALUES(`evr_option_value`)", $option, $serialized_value) );
-	if ( ! $result )
-		return false;
-
-	return true;
+	$sql_create_table = "CREATE TABLE $wp_table_name ( $sql ) DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
+	dbDelta($sql_create_table);
+    update_option($table_name, $wp_table_name);
+    update_option($table_name.'_version', $cur_build);
 }
-*/
-?>

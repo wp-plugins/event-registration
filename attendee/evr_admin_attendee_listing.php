@@ -1,7 +1,6 @@
 <?php
 function evr_attendee_event_listing(){
-//define # of records to display per page
-$record_limit = 15;
+
 //get today's date to sort records between current & expired'
 $curdate = date("Y-m-d");
 //initiate connection to wordpress database.
@@ -19,10 +18,16 @@ global $wpdb, $company_options;
                 <h3 class='hndle'><span><?php _e('Active Events','evr_language');?></span></h3>
                 <?php
                 //check database for number of records with date of today or in the future
-                $wpdb->get_results( 'SELECT COUNT(*) FROM '.get_option('evr_event' ));
-                $items = $wpdb->num_rows;
-
-                
+                if ($company_options['eventpaging'] >= "1"){
+                   //define # of records to display per page
+                    $record_limit = $company_options['eventpaging'];  
+                } else
+                {
+                    //define # of records to display per page
+                    $record_limit = 10; 
+                }
+                $items = $wpdb->get_var( 'SELECT COUNT(*) FROM '.get_option('evr_event' ));
+            
                 	if($items > 0) {
                 		$p = new evr_pagination;
                 		$p->items($items);

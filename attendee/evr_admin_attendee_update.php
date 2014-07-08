@@ -71,18 +71,21 @@ function evr_update_attendee(){
         <div id="message" class="updated fade"><p><strong><?php _e('Now adding extra question responses.','evr_language');?> </strong></p></div>
         <?php
         foreach ($questions as $question) {
+            ?>
+            <div id="message" class="updated fade"><p><strong><?php _e('Now adding a question responses.','evr_language');?> </strong></p></div>
+            <?php
             switch ($question->question_type) {
             				case "TEXT" :
             				case "TEXTAREA" :
             				case "DROPDOWN" :
             					$post_val = $_POST [$question->question_type . '_' . $question->id];
-            					$sql = "UPDATE " . get_option('evr_answer') . " SET answer='$post_val' WHERE registration_id = '$reg_id' 
+            					$sql = "REPLACE INTO " . get_option('evr_answer') . " SET answer='$post_val' WHERE registration_id = '$reg_id' 
                                 AND question_id ='$question->id'";
             					$wpdb->query ($sql);
             					break;
             				case "SINGLE" :
             					$post_val = $_POST [$question->question_type . '_' . $question->id];
-            					$sql = "UPDATE " . get_option('evr_answer') . " SET answer='$post_val' WHERE registration_id = '$reg_id' 
+            					$sql = "REPLACE INTO " . get_option('evr_answer') . " SET answer='$post_val' WHERE registration_id = '$reg_id' 
                                 AND question_id ='$question->id'";
             					$wpdb->query ($sql);
             					break;
@@ -91,8 +94,7 @@ function evr_update_attendee(){
             					for ($i=0; $i<count($_POST[$question->question_type.'_'.$question->id]); $i++){ 
             					$value_string .= $_POST[$question->question_type.'_'.$question->id][$i].","; 
             					}
-            					echo "Value String - ".$value_string;
-            				    $sql = "UPDATE " . get_option('evr_answer') . " SET answer='$value_string' WHERE registration_id = '$reg_id' 
+            					$sql = "REPLACE INTO " . get_option('evr_answer') . " SET answer='$value_string' WHERE registration_id = '$reg_id' 
                                 AND question_id ='$question->id'";
             					$wpdb->query ($sql);
             					break;

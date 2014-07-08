@@ -1,6 +1,6 @@
 <?php
 function evr_admin_view_attendee(){
-    global $wpdb;
+    global $wpdb,$company_options;
     //$event_id = $_REQUEST['event_id'];
     (is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
     $event = $wpdb->get_row('SELECT * FROM ' . get_option('evr_event') . ' WHERE id = ' . $event_id);
@@ -46,7 +46,49 @@ function evr_admin_view_attendee(){
                 <div id='normal-sortables' class='meta-box-sortables'>
                     <div id="dashboard_right_now" class="postbox " >
                         <h3 class='hndle'><span><?php _e('View Attendee:','evr_language');?><a href="#?w=700" rel="popup<?php echo $event->id;?>" class="poplight">   <?php echo stripslashes($event->event_name); ?></a></span></h3>
-                         <div class="inside">
+                         <?php
+                //check database for number of records with date of today or in the future
+                if ($company_options['attendeepaging'] >= "1"){
+                   //define # of records to display per page
+                    $record_limit = $company_options['attendeepaging'];  
+                } else
+                {
+                    //define # of records to display per page
+                    $record_limit = 25; 
+                }
+                $items = $wpdb->get_var( 'SELECT COUNT(*) FROM '.get_option('evr_attendee').' WHERE event_id = ' . $event_id );
+            
+                	if($items > 0) {
+                		$p = new evr_pagination;
+                		$p->items($items);
+                		$p->limit($record_limit); // Limit entries per page
+                		$p->target("admin.php?page=attendee&action=view_attendee&event_id=".$event_id);
+                		$p->currentPage($_GET[$p->paging]); // Gets and validates the current page
+                		$p->calculate(); // Calculates what to show
+                		$p->parameterName('paging');
+                		$p->adjacents(1); //No. of page away from the current page
+                
+                		if(!isset($_GET['paging'])) {
+                			$p->page = 1;
+                		} else {
+                			$p->page = $_GET['paging'];
+                		}
+                
+                		//Query for limit paging
+                		$limit = "LIMIT " . ($p->page - 1) * $p->limit  . ", " . $p->limit;
+                
+                } else {
+                	echo "No Record Found";
+                }//End pagination
+                ?>
+                <div class="inside">
+                    <div class="padding">
+                    <div class="tablenav">
+                        <div class='tablenav-pages'>
+                            <?php if($items > 0) { echo $p->show();}  // Echo out the list of paging. ?>
+                        </div>
+                    </div>
+                    <div class="inside">
                             <div class="padding">        
                             <table class="widefat">
                                 <thead>
@@ -61,7 +103,7 @@ function evr_admin_view_attendee(){
                                 </tfoot>
                                 <tbody>
 <?php
-$rows = $wpdb->get_results('SELECT * FROM ' . get_option('evr_attendee') . ' WHERE event_id = ' . $event_id);
+$rows = $wpdb->get_results('SELECT * FROM ' . get_option('evr_attendee') . ' WHERE event_id = ' . $event_id." ".$limit );
 if ($rows){
     foreach ($rows as $attendee){
         echo "<tr><td>".$attendee->reg_type."</td><td align='center'>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td>";
@@ -87,6 +129,11 @@ if ($rows){
                             <?php evr_excel_export($event_id);?>
                         </div>
                         </div>
+                        <div class="tablenav">
+                        <div class='tablenav-pages'>
+                            <?php if($items > 0) { echo $p->show();  }// Echo out the list of paging. ?>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

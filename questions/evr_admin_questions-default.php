@@ -1,7 +1,15 @@
 <?php
 function evr_questions_default(){
-    $record_limit = "10";
-    global $wpdb;
+    
+    global $wpdb,$company_options;
+    if ($company_options['eventpaging'] >= "1"){
+                   //define # of records to display per page
+                    $record_limit = $company_options['eventpaging'];  
+                } else
+                {
+                    //define # of records to display per page
+                    $record_limit = 10; 
+                }
     ?>
 <div class="wrap">
 <h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -13,8 +21,7 @@ function evr_questions_default(){
             <div id="dashboard_right_now" class="postbox " >
                 <h3 class='hndle'><span><?php _e('Select An Event','evr_language');?></span></h3>
                 <?php
-                  $wpdb->get_results( 'SELECT COUNT(*) FROM '.get_option('evr_event' ));
-                $items = $wpdb->num_rows;                
+                  $items = $wpdb->get_var( 'SELECT COUNT(*) FROM '.get_option('evr_event' ));              
 	if($items > 0) {
                 		$p = new evr_pagination;
                 		$p->items($items);

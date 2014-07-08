@@ -82,6 +82,21 @@ function evr_admin_company(){
                 <p><strong><?php _e(' . . .Now refreshing configuration settings . . ','evr_language');?><meta http-equiv="Refresh" content="1; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p>
         <?php 
         break;
+        case "misc" : 
+    	    if ($_POST['update'] =="misc"){
+                foreach($_POST as $key=>$val ) {
+                    add_evr_option($key, $val);
+                } 
+        	   echo '<div id="message" class="updated fade"><p><strong>';
+               _e('Configuration settings saved to options','evr_language');
+               echo '</p></strong></div>';}
+            else { ?>
+               <div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The configuration data was not updated!','evr_language'); print $wpdb->last_error; ?>.</strong></p>
+               <?php } ?>
+                <p><strong><?php _e(' . . .Now refreshing configuration settings . . ','evr_language');?><meta http-equiv="Refresh" content="1; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p>
+        <?php 
+        break;
+        
         default:
             evr_createCompanyArray();
        ?> 
@@ -122,6 +137,7 @@ jQuery(document).ready(function() {
         			<li><a href="#plugin_config-2">Calendar Settings</a></li>
         			<li><a href="#plugin_config-3">Payment Settings</a></li>
                     <li><a href="#plugin_config-4">Email Settings</a></li>
+                    <li><a href="#plugin_config-5">Misc. Settings</a></li>
         		</ul>
         		<div id="plugin_config-1">
                     <form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
@@ -160,7 +176,13 @@ jQuery(document).ready(function() {
                     </form>
         		</div>
         		<div id="plugin_config-6">
-        			<?php //parent::settingsPage(); ?>
+        			<form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+                        <div class="error"><p><?php _e('You must click the Save Changes button at the bottom of this tab for changes on this tab to take effect.','');?></p></div>
+                        <?php evr_adminMisc();?>
+                        <input type="hidden" name="update" value="misc"/>
+                        <br />
+                        <input  type="submit" name="update_button" value="<?php _e('Save Changes','evr_language'); ?>" id="update_button" class="button button-primary"/>
+                    </form>
         		</div>
         	</div>
         </div>
