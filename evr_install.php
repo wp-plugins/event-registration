@@ -81,7 +81,7 @@ function evr_install()
 {
     global $evr_date_format, $evr_ver, $wpdb, $cur_build, $table_message;
     $table_message = '';
-    $cur_build = "6.01.04";
+    $cur_build = "6.01.05";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
     if ((get_option('evr_was_upgraded')!= "Y")&& ($old_db_version < $cur_build)){
@@ -131,7 +131,7 @@ function evr_change_array2options(){
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "6.01.04";
+    $upgrade_version = "6.01.05";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
