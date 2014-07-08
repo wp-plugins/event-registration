@@ -42,7 +42,7 @@ function evr_mini_cal_calendar_replace($content){
 
 
 function evr_mini_cal_display_calendar($c_month,$c_year){
-    global $wpdb,$week_no;
+    global $wpdb,$week_no, $company_options;
     unset($week_no);
 	$_GET['month']=$c_month;
 	$_GET['yr']=$c_year;
@@ -63,7 +63,7 @@ function evr_mini_cal_display_calendar($c_month,$c_year){
     if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0 && (int)$_GET['yr'] != 0){
         if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec'){
 
-               $c_year = mysql_escape_string($_GET['yr']);
+               $c_year = addslashes($_GET['yr']);
                if ($_GET['month'] == 'jan') { $t_month = 1; }
                else if ($_GET['month'] == 'feb') { $t_month = 2; }
                else if ($_GET['month'] == 'mar') { $t_month = 3; }
@@ -158,7 +158,7 @@ function evr_mini_cal_display_calendar($c_month,$c_year){
       }
           
    //added to make calendar match large calendar
-     $company_options = get_option('evr_company_settings'); 
+     //$company_options = get_option('evr_company_settings'); 
      $cal_head_clr = $company_options['evr_cal_head'];
      $cal_head_txt_clr = $company_options['cal_head_txt_clr'];
      $cal_use_cat = $company_options['evr_cal_use_cat']; 
@@ -288,8 +288,8 @@ function evr_mini_cal_show_events($events){
 
 function evr_mini_cal_show_event($event){
     
-  global $wpdb;
-  $company_options = get_option('evr_company_settings');                                    
+  global $wpdb, $company_options;
+  //$company_options = get_option('evr_company_settings');                                    
   //$show_cat = $wpdb->get_var("SELECT config_value FROM ".WP_LIVE_CALENDAR_CONFIG_TABLE." WHERE config_item='enable_categories'",0,0);
 $show_cat="true";
   if ($show_cat == 'true'){

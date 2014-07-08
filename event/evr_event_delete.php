@@ -5,12 +5,9 @@ function evr_delete_event(){
 		if ( $_REQUEST['action'] == 'delete' ){
 			$id=$_REQUEST['id'];
             //check attendee database for records for event
-            $sql ="SELECT * FROM ".get_option('evr_attendee')." WHERE event_id=".$id;
-            //$result = mysql_query ($sql);
-            $result = mysql_query ($sql);
-            $attendees = mysql_num_rows($result);
-            if ($attendees > 0) { ?>
-                <div id="message" class="error"><p><strong><?php _e('There are currently ','evr_language').$attendees;
+            $number_attendees = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id=%d",$id));
+            if ($number_attendees > 0) { ?>
+                <div id="message" class="error"><p><strong><?php _e('There are currently ','evr_language'); echo $number_attendees;
                 _e(' attendes registered for this event.  The event cannot be deleted.','evr_language');?>.</strong></p>
                 <p><strong><?php _e('. . .Now returning you to event list . . ','evr_language');?> <meta http-equiv="Refresh" content="1; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p>
                 </div>
@@ -27,7 +24,7 @@ function evr_delete_event(){
                     </div>
                 <?php }
                 else { ?>
-                    <div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The event was not deleted!','evr_language');?><?php print mysql_error() ?>.</strong></p>
+                    <div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The event was not deleted!','evr_language');?><?php print $wpdb->last_error; ?>.</strong></p>
                     <p><strong><?php _e(' . . .Now returning you to event list . . ','evr_language');?><meta http-equiv="Refresh" content="1; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p>
                     </div>
                 <?php }

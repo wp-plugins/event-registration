@@ -33,6 +33,8 @@ function evr_post_update_event(){
                     $end_time = $_REQUEST ['end_time'];
                     $close = $_REQUEST ['close'];
                     $allow_checks = $_REQUEST['allow_checks'];
+                    $waiver = $_REQUEST['waiver'];
+                    $waiver_content = $_REQUEST['waiver_content'];
                     
                     $outside_reg = $_REQUEST['outside_reg'];  // Yor N
                     $external_site = $_REQUEST['external_site'];
@@ -97,13 +99,15 @@ function evr_post_update_event(){
             'send_coord'=>$send_coord,
             'coord_email'=>$coord_email,
             'coord_msg'=>$coord_msg,
-            'coord_pay_msg'=>$coord_pay_msg); 
+            'coord_pay_msg'=>$coord_pay_msg,
+            'waiver'=>$waiver,
+            'waiver_content'=>$waiver_content); 
                           
         		
             $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
                               '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-                              '%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                              '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');
                           
         		
                                          
@@ -115,7 +119,7 @@ function evr_post_update_event(){
             <p><strong><?php _e(' . . .Now returning you to event list . . ','evr_language');?><meta http-equiv="Refresh" content="1; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p></div>
             
             <?php }else { ?>
-            	<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The event was not updated!','evr_language'); print mysql_error(); ?>.</strong></p>
+            	<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The event was not updated!','evr_language'); print $wpdb->last_error; ?>.</strong></p>
                 <p><strong><?php _e(' . . .Now returning you to event list . . ','evr_language');?><meta http-equiv="Refresh" content="1; url=<?php echo $_SERVER["REQUEST_URI"]?>"></strong></p>
                     </div>
             <?php

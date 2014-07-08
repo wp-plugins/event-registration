@@ -7,11 +7,8 @@ function evr_questions_new(){
     (is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
     ?>
 <div class="wrap">
-<div id="dashboard-widgets-wrap">
-<div id="dashboard-widgets" class="metabox-holder">
-	<div class='postbox-container' style='width:65%;'>
-        <div id='normal-sortables' class='meta-box-sortables'>
-            <div id="dashboard_right_now" class="postbox " >
+<div class='postbox-container' style='width:90%;'>
+               <div  class="postbox " >
                  
                 <h3 class='hndle'><span><?php _e('ADD NEW QUESTION','evr_language');?> for <?php echo stripslashes($event_name);?></span></h3>
                  <div class="inside">
@@ -77,9 +74,7 @@ Newspaper, Web, A Friend, Billboard  etc.
             </div>
         </div>
     </div>
-</div>
-    </div>
-</div>
+
 <br />
 <?php
 }

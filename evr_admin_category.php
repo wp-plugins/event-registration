@@ -89,18 +89,20 @@ function evr_admin_categories(){
                                     global $wpdb;
                                     $id=$_REQUEST['id'];
                                     $sql = "SELECT * FROM ". get_option('evr_category') ." WHERE id =".$id;
-                                    $result = mysql_query ($sql);
                                     
-                                    while ($row = mysql_fetch_assoc ($result)){
-                                    	$category_id= $row['id'];
-                                    	$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
-                                    	$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
-                                    	$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
-                                    	$display_category_desc=$row['display_desc'];
-                                        $category_color = $row['category_color'];
-                                        $font_color = $row['font_color'];
-                                        
+                                    $rows = $wpdb->get_results( $sql );
+                                    if ($rows){
+                                    	foreach ($rows as $category){
+                                       		$category_id= $category->id;
+                                        	$category_name=stripslashes(htmlspecialchars_decode($category->category_name));
+                                        	$category_identifier=stripslashes(htmlspecialchars_decode($category->category_identifier));
+                                        	$category_desc=stripslashes(htmlspecialchars_decode($category->category_desc));
+                                        	$display_category_desc=$category->display_desc;
+                                            $category_color = $category->category_color;
+                                            $font_color = $category->font_color;
+                                    	}
                                     }
+                                    
                                     ?>
                                     <!--Add event display-->
                                      
@@ -177,7 +179,7 @@ function evr_admin_categories(){
                                     if ($wpdb->insert( get_option('evr_category'), $sql, $sql_data )){?>
                                     	<div id="message" class="updated fade"><p><strong><?php _e('The category has been added.','evr_language');?></strong></p></div>
                                     <?php }else { ?>
-                                    	<div id="message" class="error"><p><strong><?php _e('The category was not saved.','evr_language');?> <?php print mysql_error() ?>.</strong></p></div>
+                                    	<div id="message" class="error"><p><strong><?php _e('The category was not saved.','evr_language');?> <?php print $wpdb->last_error; ?>.</strong></p></div>
                                     <?php
                                     }
                                     echo "<META HTTP-EQUIV='refresh' content='2;URL=admin.php?page=categories'>";
@@ -202,7 +204,7 @@ function evr_admin_categories(){
                                     if ($wpdb->update( get_option('evr_category'), $sql, $update_id, $sql_data, array( '%d' ) )){?>
                                     <div id="message" class="updated fade"><p><strong><?php _e('The category has been updated.','evr_language');?></strong></p></div>
                                     <?php }else { ?>
-                                    <div id="message" class="error"><p><strong><?php _e('The category was not updated.','evr_language');?> <?php print mysql_error() ?>.</strong></p></div>
+                                    <div id="message" class="error"><p><strong><?php _e('The category was not updated.','evr_language');?> <?php print $wpdb->last_error; ?>.</strong></p></div>
                                     <?php
                     }
                                     echo "<META HTTP-EQUIV='refresh' content='2;URL=admin.php?page=categories'>";
@@ -249,18 +251,18 @@ function evr_admin_categories(){
                                     <?php 
                                     global $wpdb;
                                     $sql = "SELECT * FROM ". get_option('evr_category') ." ORDER BY id ASC";
-                                    $result = mysql_query ($sql);
-                                    if (mysql_num_rows($result) > 0 ) {
-                                    while ($row = mysql_fetch_assoc ($result)){
-                                    					$category_id= $row['id'];
-                                    					$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
-                                    					$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
-                                    					$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
-                                    					$display_category_desc=$row['display_desc'];
-                                                        $category_color = $row['category_color'];
-                                                        $font_color = $row['font_color'];
-                                                        $style = "background-color:".$category_color." ; color:".$font_color." ;";
-                                    ?>
+                                                                     
+                                    $rows = $wpdb->get_results( $sql );
+                                    if ($rows){
+                                    	foreach ($rows as $category){
+                                       		$category_id= $category->id;
+                                        	$category_name=stripslashes(htmlspecialchars_decode($category->category_name));
+                                        	$category_identifier=stripslashes(htmlspecialchars_decode($category->category_identifier));
+                                        	$category_desc=stripslashes(htmlspecialchars_decode($category->category_desc));
+                                        	$display_category_desc=$category->display_desc;
+                                            $category_color = $category->category_color;
+                                            $font_color = $category->font_color;
+                                    	                 ?>
                                     <tr><td><?php echo $category_id?></td>
                                         <td><span style="<?php echo $style;?>"><?php echo $category_name?></span></td>
                                         <td><?php echo $category_identifier?></td>

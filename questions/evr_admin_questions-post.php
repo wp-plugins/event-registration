@@ -13,7 +13,7 @@ function evr_post_question(){
 	<div id="message" class="updated fade"><p><strong><?php _e('The question has been added.','evr_language');?> </strong></p>
     <p><strong><?php _e(' . . .Now returning you to Question Managment . . ','evr_language');?><meta http-equiv="Refresh" content="1; url=admin.php?page=questions&action=new&event_id=<?php echo $event_id;?>&event_name=<?php echo $event_name;?>"></strong></p></div>
     <?php }else { ?>
-	<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The question was not saved!','evr_language');?><?php print mysql_error() ?>.</strong></p>
+	<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The question was not saved!','evr_language');?><?php print $wpdb->last_error; ?>.</strong></p>
     <p><strong><?php _e(' . . .Now returning you to Question Management . . ','evr_language');?><meta http-equiv="Refresh" content="3; url=admin.php?page=questions&action=new&event_id=<?php echo $event_id;?>&event_name=<?php echo $event_name;?>"></strong></p>
     </div>
 <?php } 
