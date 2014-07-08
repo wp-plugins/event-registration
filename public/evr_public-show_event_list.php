@@ -7,9 +7,9 @@
 *
 */
 function evr_show_event_list($public_list_template){
-    global $wpdb,$evr_date_format;
+    global $wpdb,$evr_date_format, $company_options;
     #retrieve company and configuration settings
-    $company_options = get_option('evr_company_settings');
+    //$company_options = get_option('evr_company_settings');
     $curdate = date ( "Y-m-j" );
     # Get events that end date is later than today and order by start date
     $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
@@ -63,7 +63,6 @@ echo '<tbody>';
                            // $codeToReturn .= '<a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup{EVENT_ID}&modal=false title='.stripslashes($event->event_name).'">{EVENT_NAME}</a>';
                             #changed to use colorbox popup
                             $codeToReturn .= '<a class="inline" href="#event_content_{EVENT_ID}">{EVENT_NAME}</a>';
-                            
                             }
                         }
                         $codeToReturn .= '</b></br>Open Seats {EVENT_AVAIL_SPOTS}</td>
@@ -115,13 +114,10 @@ echo '<tbody>';
     			$codeToReturn = str_replace("{EVENT_TIME_END}", $event->end_time, $codeToReturn);
                 #In order to get the number of seats we need to count all attendees for this event
                 #Retrieve the number of registered attendees for this event from attendee db
-                    $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event->id'";
-      		        $result2 = mysql_query($sql2);
-                    $num = 0;   
-              		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
-                    $available_spaces = 0;  
-                    if ($event->reg_limit != ""){$available_spaces = $event->reg_limit - $num;}
-                    if ($event->reg_limit == "" || $event->reg_limit == " " || $event->reg_limit == "999"){$available_spaces = "UNLIMITED";}
+                    $qty_count = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id= %d", $event->id));
+                    $available_spaces = 0; 
+            		if ($event->reg_limit != ""){$available_spaces = $event->reg_limit - $qty_count;}
+            	    if ($event->reg_limit == "" || $event->reg_limit == " " || $event->reg_limit == "999"){$available_spaces = "UNLIMITED";}
                 $codeToReturn = str_replace("{EVENT_AVAIL_SPOTS}", $available_spaces, $codeToReturn);
                 #We have now finished this row, repeat the process for the remaining row(s)
                 }
@@ -131,7 +127,7 @@ echo '<tbody>';
         }
 echo '</tbody></table></div>';
 #Now that we have returned the table, we need to return the hidden html that provides the popups.
-#Once again we will go through the returned event data to generate the popup html
+#Once again we will go through the retruned event data to generate the popup html
     if ($rows){
         foreach ($rows as $event){                             
             #use the included file to put all the event data for this event into strings
@@ -150,7 +146,7 @@ echo '</tbody></table></div>';
 * 
 */
 function evr_show_event_accordian(){
-    global $wpdb,$evr_date_format;
+    global $wpdb,$evr_date_format, $company_options;
     $curdate = date ( "Y-m-j" );
     # Get events that end date is later than today and order by start date
     $sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
@@ -160,7 +156,7 @@ function evr_show_event_accordian(){
     #Clear start date and end date fields to ensure no carry over data 
     $start_date = $end_date = '';
     #retrieve company and configuration settings
-    $company_options = get_option('evr_company_settings');
+    //$company_options = get_option('evr_company_settings');
     #include style sheet for accordian here to esnure style was not overwritten by other style elsewhere!
     include "evr_public_accordian_style.php";
     #start accordian html outpupt
@@ -204,21 +200,6 @@ echo '<section id="close"><h2><a href="#Close">Click on Event for Details - Clic
                                 if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
                                 if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
                                 $codeToReturn .=$fee->item_title.'   '.$item_custom_cur.' '.$fee->item_price.'<br />';
-                                /*
-                            while ($row2 = mysql_fetch_assoc ($result2)){
-                                $item_id          = $row2['id'];
-                                $item_sequence    = $row2['sequence'];
-                                $event_id         = $row2['event_id'];
-                                $item_title       = $row2['item_title'];
-                                $item_description = $row2['item_description'];
-                                $item_cat         = $row2['item_cat'];
-                                $item_limit       = $row2['item_limit'];
-                                $item_price       = $row2['item_price'];
-                                $free_item        = $row2['free_item'];
-                                $item_start_date  = $row2['item_available_start_date'];
-                                $item_end_date    = $row2['item_available_end_date'];
-                                echo $item_title.'   '.$item_custom_cur.' '.$item_price.'<br />';
-                                */
                                 }
                             } 
                 $codeToReturn .='</p></div><div class="evr_spacer"></div><div id="evr_pop_foot"><p align="center">';            

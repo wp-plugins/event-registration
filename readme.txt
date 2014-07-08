@@ -2,9 +2,9 @@
 Contributors: avdude
 Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
-Requires at least: 3.0.2
-Tested up to: 3.5
-Stable tag: 6.00.31
+Requires at least: 3.7
+Tested up to: 3.9.1
+Stable tag: 6.01.03
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,7 +28,8 @@ Also if you could rate the plugin that would also be helpful.
 
 == Upgrading ==
 
-If you have used event registration in the past and desire to keep your data, version 6.0 will create new data tables and copy all your data upon activation.  
+It is strongly recommended that after upgrading you deactivate and reactivate the plugin a 2nd time to ensure complete data migragion.
+
 If you are unsatisfied with the upgrade, simply deactivate and delete the plugin.  You can then download the prior version and mannually upload to your system.  
 All your old data will still be in tact as the upgrade copies and creates new tables, and leaves the existing ones for easy rollback.
 
@@ -56,7 +57,7 @@ I recommend activating and deactivating the new version several times. if you ar
 
 2. Download and install the plugin.
 
-3. Activate the plugin.
+3. Activate the plugin, then read the directions (http://wpeventregister.com/wp-content/uploads/2012/05/EventRegistrationGuide_60008a.pdf).
 
 4. Create a new page on your site and title it Registration. On that page, in html view, put this text:   {EVRREGIS}  Save the page.
 
@@ -104,6 +105,25 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.01.04 =
+*Layout Change: Custom Questions Order - fixed spacing issue to allow readability
+*Bug Fix related to custom question answer table only posting 1 repsone
+*Bug Fix related to paging event listing on admin pages
+*Add Feature to Settings Misc. Tab to control number of events and number of attendees when paging on the admin side
+
+
+= Version 6.01.03 =
+*Bug Fix related to currency format with PayPal
+
+= Version 6.01.02 = 
+*Minor Bug Fix
+
+= Version 6.00.01 =
+*Too many to list in detail, but a few are:
+*Improved admin Settings interface
+*Improved add-on module activation (more to come!!!)
+*Various bug fixes.
 
 = Version 6.00.31 =
 *Resolved issue where fees would be deleted if event was attempted to be deleted but had attendees
