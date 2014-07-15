@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.01.06";
+$evr_ver = "6.01.07";
 /**
  * To change date format in event listing display
  * Tuesday, Jan 23, 2011  -  "l, M j,Y"

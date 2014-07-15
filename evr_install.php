@@ -4,6 +4,7 @@
  * @copyright 2010
  */
 /*
+6.01.07 - No db changes
 6.01.06 - No db changes
 6.01.05 - No db changes
 6.01.04 - resolved issue with custom answer table - dropped primary key (will retro drop existing key on earler version table)

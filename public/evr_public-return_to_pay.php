@@ -2,6 +2,7 @@
 function evr_retun_to_pay(){
 		global $wpdb, $company_options;
         //$company_options = get_option('evr_company_settings');
+        if ($company_options['pay_now']!=""){$pay_now = $company_options['pay_now'];} else {$pay_now = "PAY NOW";}
         $id="";
         $passed_id="";
         $passed_id = $_GET['id'];
@@ -112,7 +113,7 @@ $payment=$total_due;
 				  $p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
 				  $p->add_field('item_name', $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity);
 				  $p->add_field('amount', $payment);
-				  $p->add_field('currency_code', $ticket_order[0]['ItemCurrency']);
+				  $p->add_field('currency_code', $company_options['default_currency']);
 				  //Post variables
 				  $p->add_field('first_name', $fname);
 				  $p->add_field('last_name', $lname);
@@ -121,7 +122,7 @@ $payment=$total_due;
 				  $p->add_field('city', $city);
 				  $p->add_field('state', $state);
 				  $p->add_field('zip', $zip);				 
-                  $p->submit_paypal_post(); // submit the fields to paypal
+                  $p->submit_paypal_post($pay_now); // submit the fields to paypal
 				  if ($company_options['use_sandbox'] == "Y") {
 					  $p->dump_fields(); // for debugging, output a table of all the fields
 				  }   
@@ -179,7 +180,7 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         echo "	<INPUT type='hidden' name='x_fp_hash' value='$fingerprint' />";
         echo "	<INPUT type='hidden' name='x_test_request' value='$testMode' />";
         echo "	<INPUT type='hidden' name='x_show_form' value='PAYMENT_FORM' />";
-        echo "	<input type='submit' value='$label' />";
+        echo "	<input type='submit' value='".$pay_now."' />";
         echo "</FORM>";
 // This is the end of the code generating the "submit payment" button.    -->
 }
@@ -194,7 +195,7 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
     <input name="item_description_1" type="hidden" value="<?php echo $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;?>"/>
     <input name="item_quantity_1" type="hidden" value="1"/>
     <input name="item_price_1" type="hidden" value="<?php echo $payment;?>"/>
-        <input name="item_currency_1" type="hidden" value="<?php echo $ticket_order[0]['ItemCurrency'];?>"/>
+        <input name="item_currency_1" type="hidden" value="<?php echo $company_options['default_currency'];?>"/>
     <input name="_charset_" type="hidden" value="utf-8"/>
     <input alt="" src="https://checkout.google.com/buttons/buy.gif?merchant_id=<?php echo $company_options['payment_vendor_id'];?>&amp;w=117&amp;h=48&amp;style=trans&amp;variant=text&amp;loc=en_US" type="image"/>
     </form>
@@ -212,10 +213,10 @@ if ($company_options['payment_vendor']=="MONSTER"){
 <input type="hidden" name="LIDSKU" value="<?php echo $event_name."-".$attendee_name;?>">
 <input type="hidden" name="LIDPrice" value="<?php echo $payment;?>">
 <input type="hidden" name="LIDQty" value="1">
-<input type="hidden" name="CurrencyAlphaCode" value="<?php echo $ticket_order[0]['ItemCurrency'];?>">
+<input type="hidden" name="CurrencyAlphaCode" value="<?php echo $company_options['default_currency'];?>">
 <input type="hidden" name="ShippingRequired" value="0">
 <input type="hidden" name="MerchRef" value="">
-<input type="submit" value="Buy Now" style="background-color: #DCDCDC; font-family: Arial; font-size: 11px; color: #000000; font-weight: bold; border: 1px groove #000000;">
+<input type="submit" value="<?php echo $$pay_now;?>" style="background-color: #DCDCDC; font-family: Arial; font-size: 11px; color: #000000; font-weight: bold; border: 1px groove #000000;">
 </form> 
 <?php   
 }
