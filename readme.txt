@@ -4,7 +4,7 @@ Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.7
 Tested up to: 3.9.1
-Stable tag: 6.01.05
+Stable tag: 6.01.06
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
