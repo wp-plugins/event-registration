@@ -4,65 +4,14 @@ function evr_add_item1(){
 //get today's date to sort records between current & expired'
 $curdate = date("Y-m-d");
 //initiate connection to wordpress database.
-global $wpdb;
-$company_options = get_option('evr_company_settings');
+global $wpdb, $company_options;
+//$company_options = get_option('evr_company_settings');
 ?>
 <?php
 $currency_format = $company_options['default_currency'];;
     $curdate = date("Y-m-d");
  	$event_id = $_REQUEST ['event_id'];
-	$sql = "SELECT * FROM " . get_option ( 'evr_event' ). " WHERE id =" . $event_id;
-	$result = mysql_query ( $sql );
-	while ($row = mysql_fetch_assoc ($result)){
-				            $event_id       = $row['id'];
-                    	    $event_name = stripslashes($row['event_name']);
-        					$event_identifier = stripslashes($row['event_identifier']);
-        					$display_desc = $row['display_desc'];  // Y or N
-                            $event_desc = stripslashes($row['event_desc']);
-                            $event_category = unserialize($_REQUEST['event_category']);
-        					$reg_limit = $row['reg_limit'];
-        					$event_location = $row['event_location'];
-                            $event_address = $row['event_address'];
-                            $event_city = $row['event_city'];
-                            $event_state =$row['event_state'];
-                            $event_postal=$row['event_postcode'];
-                            $google_map = $row['google_map'];  // Y or N
-                            $start_month = $row['start_month'];
-        					$start_day = $row['start_day'];
-        					$start_year = $row['start_year'];
-                            $end_month = $row['end_month'];
-        					$end_day = $row['end_day'];
-        					$end_year = $row['end_year'];
-                            $start_time = $row['start_time'];
-        					$end_time = $row['end_time'];
-                            $allow_checks = $row['allow_checks'];
-                            $outside_reg = $row['outside_reg'];  // Yor N
-                            $external_site = $row['external_site'];
-                            $reg_form_defaults = unserialize($row['reg_form_defaults']);
-                            $more_info = $row['more_info'];
-        					$image_link = $row['image_link'];
-        					$header_image = $row['header_image'];
-                            $event_cost = $row['event_cost'];
-                            $allow_checks = $row['allow_checks'];
-        					$is_active = $row['is_active'];
-        					$send_mail = $row['send_mail'];  // Y or N
-        					$conf_mail = stripslashes($row['conf_mail']);
-        					$start_date = $row['start_date'];
-                            $end_date = $row['end_date'];
-                            $use_coupon = $row['use_coupon'];
-                            $coupon_code = $row['coupon_code'];
-                            $coupon_code_price = $row['coupon_code_price'];
-                    if ($reg_form_defaults !=""){
-                        if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
-                        if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
-                        if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
-                        if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
-                        if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
-                        }
-   		            if ($reg_limit == ''){$reg_limit = 999;}
-                    if ($event_cost == ''){$event_cost= 0;}
-                    if ($coupon_code_price == ''){$coupon_code_price = 0;}
-         }
+    $event = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . get_option ( 'evr_event' ). " WHERE id = %d", $event_id ) );
 ?>
 <div class="wrap">
 <h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -72,7 +21,7 @@ $currency_format = $company_options['default_currency'];;
 	<div class='postbox-container' style='width:75%;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
-                <h3 class='hndle'><span><?php _e('Event Items:','evr_language');?><?php echo stripslashes($event_name)." at ".stripslashes($event_location)."  ".$start_date."  -  ".$end_date;?></span></h3>
+                <h3 class='hndle'><span><?php _e('Event Items: ','evr_language');?><?php echo stripslashes($event->event_name)." at ".stripslashes($event->event_location)."  ".$event->start_date."  -  ".$event->end_date;?></span></h3>
                  <div class="inside">
                     <div class="padding">
 <?php
@@ -139,33 +88,36 @@ $end = strtotime('11:45pm');
                </tfoot>
          <tbody>
     <?php
-    $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
-    $result = mysql_query ( $sql );
-	while ($row = mysql_fetch_assoc ($result)){
-                      //<a href='admin.php?page=events&action=edit_item&event_id=".$event_id."&item_id=".$item_id."&end_date=".$end_date."'
-            //do not update sequence - leave as is
-            $item_id          = $row['id'];
-            $item_sequence    = $row['sequence'];
-			$event_id         = $row['event_id'];
-            $item_title       = $row['item_title'];
-            $item_description = $row['item_description']; 
-            $item_cat         = $row['item_cat'];
-            $item_limit       = $row['item_limit'];
-            $item_price       = $row['item_price'];
-            $free_item        = $row['free_item'];
-            $item_start_date  = $row['item_available_start_date'];
-            $item_end_date    = $row['item_available_end_date'];
-            $item_custom_cur  = $row['item_custom_cur'];
-            echo "<tr><td class='er_ticket_info' title='".$item_description."' style='WORD-BREAK:BREAK-ALL;'>";
-            if ($free_item == "Y"){?><img src="<?php echo EVR_PLUGINFULLURL;?>images/free_icon.png" alt="free" style="vertical-align:middle" />&nbsp;<?php }
-            if ($free_item == "N"){ ?><img src="<?php echo EVR_PLUGINFULLURL;?>images/dollar_icon.png" alt="free" style="vertical-align:middle" /> <?php }
-            echo $item_cat." | ".$item_title." <a><span>?</span></a></td><td align='left'>".$item_custom_cur." ".$item_price."</td><td align='center'>".$item_start_date."</td><td align='center'>".$item_end_date."</td>";
+    $items = $wpdb->get_results( "SELECT * FROM ". get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC" );
+                                                if ($items){
+                                                    foreach ($items as $item){
+                                                        
+                                                        $item_id          = $item->id;
+                                                        $item_sequence    = $item->sequence;
+                                            			$event_id         = $item->event_id;
+                                                        $item_title       = $item->item_title;
+                                                        $item_description = $item->item_description; 
+                                                        $item_cat         = $item->item_cat;
+                                                        $item_limit       = $item->item_limit;
+                                                        $item_price       = $item->item_price;
+                                                        $free_item        = $item->free_item;
+                                                        $item_start_date  = $item->item_available_start_date;
+                                                        $item_end_date    = $item->item_available_end_date;
+                                                        $item_custom_cur  = $item->item_custom_cur;
+                                                        if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
+                                                        if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
+                                                        echo "<tr><td class='er_ticket_info' title='".$item_description."' style='WORD-BREAK:BREAK-ALL;'>";
+                                                        if ($free_item == "Y"){?><img src="<?php echo EVR_PLUGINFULLURL;?>images/free_icon.png" alt="free" style="vertical-align:middle" />&nbsp;<?php }
+                                                        if ($free_item == "N"){ ?><img src="<?php echo EVR_PLUGINFULLURL;?>images/dollar_icon.png" alt="free" style="vertical-align:middle" /> <?php }
+                                                        echo $item_cat." | ".$item_title." <a><span>?</span></a></td><td align='left'>".$item_custom_cur." ".$item_price."</td><td align='center'>".$item_start_date."</td><td align='center'>".$item_end_date."</td>";
+                                                        ?>
+                                                        <td width="15" align="right">
+                                                        <a  href="TB_inline?inlineId=popup<?php echo $item_id;?>;&width=640&height=914" class="thickbox" ><img src="<?php echo EVR_PLUGINFULLURL;?>images/small_gear.png" alt="Edit" /></td>
+                                                        <td width="15" align="left"><a href="admin.php?page=events&action=delete_item&event_id=<?php echo $event_id;?>&item_id=<?php echo $item_id;?>&end_date=<?php echo $end_date;?>&end=<?php echo $end_date;?>"><img src="<?php echo EVR_PLUGINFULLURL;?>images/redx.png" alt="Delete" />
+                                                        </td><td></td><tr>
+                                                        <?php }      
+                                               }
             ?>
-            <td width="15" align="right">
-            <a  href="TB_inline?inlineId=popup<?php echo $item_id;?>;&width=640&height=914" class="thickbox" ><img src="<?php echo EVR_PLUGINFULLURL;?>images/small_gear.png" alt="Edit" /></td>
-            <td width="15" align="left"><a href="admin.php?page=events&action=delete_item&event_id=<?php echo $event_id;?>&item_id=<?php echo $item_id;?>&end_date=<?php echo $end_date;?>&end=<?php echo $end_date;?>"><img src="<?php echo EVR_PLUGINFULLURL;?>images/redx.png" alt="Delete" />
-            </td><td></td><tr>
-            <?php }      ?>
 			</tbody></table>
             <br />
             <div style="float: left;">
@@ -185,19 +137,19 @@ $end = strtotime('11:45pm');
         <ul><li>
         <label class="tooltip" title="<?php _e('A coupon code is a promotional code you can tie to your event.  The code is valid for a discount off the total registration cost.">
 	       Do you want to use a coupon code for this event? ','evr_language');?><a><span>?</span></a></label>
-            <input type="radio" class="radio" name="use_coupon" value="Y" <?php if ($use_coupon == "Y") { echo "checked";}?>/> <?php _e('Yes','evr_language');?> 
-            <input type="radio" class="radio" name="use_coupon" value="N" <?php if ($use_coupon == "N") { echo "checked";}?>/><?php _e('No','evr_language');?> 
+            <input type="radio" class="radio" name="use_coupon" value="Y" <?php if ($event->use_coupon == "Y") { echo "checked";}?>/> <?php _e('Yes','evr_language');?> 
+            <input type="radio" class="radio" name="use_coupon" value="N" <?php if ($event->use_coupon == "N") { echo "checked";}?>/><?php _e('No','evr_language');?> 
             </li>
             <li>
             <label class="tooltip" title="<?php _e('This should be a one word code with no spaces or extra characters. Recommend ALL CAPS.','evr_language');?>">
 					<?php _e('Enter the Code','evr_language');?> <a><span> ?</span></a></label> 
-					<input id="coupon_code" name="coupon_code" type="text" value="<?php echo $coupon_code;?>"/></li>
-                     <li><label class="tooltip" title="<?php _e('Enter the amount with two decimal places.  You MUST put a - sign before the value, otherwise this will add to the total
+					<input id="coupon_code" name="coupon_code" type="text" value="<?php echo $event->coupon_code;?>"/></li>
+                    <li><label class="tooltip" title="<?php _e('Enter the amount with two decimal places.  You MUST put a - sign before the value, otherwise this will add to the total
                      during calculations. i.e. -10.00  ','evr_language');?>">
 					<?php _e('Discount amount for Coupon Code','evr_language');?> <a><span> ?</span></a></label>
-					<input id="coupon_code_price" name="coupon_code_price" type="text" value="<?php echo $coupon_code_price;?>"/>
+					<input id="coupon_code_price" name="coupon_code_price" type="text" value="<?php echo $event->coupon_code_price;?>"/>
 				     </li>
-        </u>
+        </ul>
          <br /><br /><br />
     <input type="hidden" name="page" value="events"/>
     <input type="hidden" name="action" value="update_coupon"/>
@@ -302,21 +254,24 @@ $end = strtotime('11:45pm');
         </div>
 <!-- Begin Popup for Edit Items  --->
 <?php 
- $sql = "SELECT * FROM " . get_option('evr_cost');
-                $result = mysql_query ( $sql );
-            	while ($row = mysql_fetch_assoc ($result)){
-                        $item_id          = $row['id'];
-                        $item_sequence    = $row['sequence'];
-            			$event_id         = $row['event_id'];
-                        $item_title       = $row['item_title'];
-                        $item_description = $row['item_description']; 
-                        $item_cat         = $row['item_cat'];
-                        $item_limit       = $row['item_limit'];
-                        $item_price       = $row['item_price'];
-                        $free_item        = $row['free_item'];
-                        $item_start_date  = $row['item_available_start_date'];
-                        $item_end_date    = $row['item_available_end_date'];
-                        $item_custom_cur  = $row['item_custom_cur'];
+ $items = $wpdb->get_results( "SELECT * FROM ". get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC" );
+                                                if ($items){
+                                                    foreach ($items as $item){
+                                                        $event_id       = $event->id;
+                                                        $item_id          = $item->id;
+                                                        $item_sequence    = $item->sequence;
+                                            			$event_id         = $item->event_id;
+                                                        $item_title       = $item->item_title;
+                                                        $item_description = $item->item_description; 
+                                                        $item_cat         = $item->item_cat;
+                                                        $item_limit       = $item->item_limit;
+                                                        $item_price       = $item->item_price;
+                                                        $free_item        = $item->free_item;
+                                                        $item_start_date  = $item->item_available_start_date;
+                                                        $item_end_date    = $item->item_available_end_date;
+                                                        $item_custom_cur  = $item->item_custom_cur;
+                                                        if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
+                                                        if ($item_custom_cur == "USD"){$item_custom_cur = "$";}                       
                         ?>
 <div id="popup<?php echo $item_id;?>" style="display:none;">
 <form action="admin.php?page=events" method="POST" >
@@ -380,22 +335,7 @@ $end = strtotime('11:45pm');
         					<?php _e('Will this be a free item?','evr_language');?><a><span><img src="http://localhost/test/wp-content/plugins/EVR/images/info-icon.png"/></span></a></label>
                         <input type="radio" name="item_free" class="radio" id="free_yes" value="Y"  <?php if ($free_item =="Y"){echo "checked";} ?> /><?php _e('Yes','evr_language');?> 
                         <input type="radio" name="item_free" class="radio" id="free_no" value="N" <?php if ($free_item =="N"){echo "checked";} ?> /><?php _e('No','evr_language');?> 
-                    </li> <?php
-    /*
-                        $item_id          = $row['id'];
-                        $item_sequence    = $row['sequence'];
-            			$event_id         = $row['event_id'];
-                        $item_title       = $row['item_title'];
-                        $item_description = $row['item_description']; 
-                        $item_cat         = $row['item_cat'];
-                        $item_limit       = $row['item_limit'];
-                        $item_price       = $row['item_price'];
-                        $free_item        = $row['free_item'];
-                        $item_start_date  = $row['item_available_start_date'];
-                        $item_end_date    = $row['item_available_end_date'];
-                        $item_custom_cur  = $row['item_custom_cur'];
-    */
-    ?>
+                    </li> 
                     <li>
                         <label  class="er_ticket_info" title="<?php _e('Please select the country in which the currency format will be used','evr_language');?>"><?php _e('Custom Currency','evr_language');?><a><span>?</span></a></label>
         					<select class="select" name = "custom_cur">
@@ -440,7 +380,7 @@ $end = strtotime('11:45pm');
                 <input class="button-primary" type="SUBMIT" value="<?php _e('UPDATE COST/TICKET','evr_language');?>"/>
             </form>	 
 </div>   
-<?php }  ?>
+<?php }}  ?>
 <!--END POPUP-->
 <div style="clear: both; display: block; padding: 10px 0; text-align:center;">If you find this plugin useful, please contribute to enable its continued development!<br />
 <p align="center">

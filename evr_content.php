@@ -8,9 +8,9 @@ function evr_main_content(){
 }
 //function that provides the content in the content replacement for widget
 function evr_widget_content(){
-    global $wpdb;    
+    global $wpdb, $company_options;    
     $curdate = date("Y-m-d");
-    $company_options = get_option('evr_company_settings');
+    //$company_options = get_option('evr_company_settings');
     $record_limit = 5;
     echo '<div id="evr_widget">';
         echo "<U><h3>UPCOMING EVENTS</H3></U><br/>";
@@ -31,8 +31,8 @@ function evr_widget_content(){
 }
 //function to add payment shortcode option page on public page for plugin
 function evr_payment_page(){
-        global $wpdb;
-        $company_options = get_option('evr_company_settings');
+        global $wpdb, $company_options;
+        //$company_options = get_option('evr_company_settings');
 		$attendee_id="";
         $first = "";
         $passed_attendee_id = $_GET['id'];
@@ -40,103 +40,72 @@ function evr_payment_page(){
         if (is_numeric($passed_attendee_id)){$attendee_id = $passed_attendee_id;}
             else {
                 $attendee_id = "0";
-                echo "Failure - please retry!"; 
+                echo "Failure - please retry!<br/>"; 
                 }
-        if (($attendee_id =="")||($attendee_id =="0")) {_e('Please check your email for payment information. Click the link provided in the registration confirmation.','evr_language');}
+        if (($attendee_id =="")||($attendee_id =="0")) {_e('Please check your registration confirmation email for payment information. Click the link provided in the registration confirmation email.','evr_language');}
         else {
-			$query  = "SELECT * FROM ".get_option('evr_attendee')." WHERE id='$attendee_id'";
-	   		$result = mysql_query($query) or die('Error : ' . mysql_error());
-	   		while ($row = mysql_fetch_assoc ($result))
-				{
-	  		    $attendee_id = $row['id'];
-				$lname = $row['lname'];
-				$fname = $row['fname'];
-				$address = $row['address'];
-				$city = $row['city'];
-				$state = $row['state'];
-				$zip = $row['zip'];
-				$email = $row['email'];
-				$phone = $row['phone'];
-				$date = $row['date'];
-				$payment = $row['payment'];
-				$event_id = $row['event_id'];
-                $quantity = $row ['quantity'];
- 			    $reg_type = $row['reg_type'];
-                $ticket_order = unserialize($row['tickets']);
-                $coupon = $row['coupon'];
-				$attendee_name = $fname." ".$lname;
-				}
-            if ($passed_first==$fname){}
+			$attendee = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . get_option ( 'evr_attendee' ). " WHERE id = %d", $attendee_id ) );
+            $ticket_order = unserialize($attendee->tickets);
+            if ($passed_first==$attendee->fname){}
             else {
-                echo "Failure - please retry!"; 
+                echo "Failure - please retry! <br/>"; 
                 exit;}
 		//Query Database for event and get variable
-			$sql = "SELECT * FROM ". get_option('evr_event') . " WHERE id='$event_id'";
-			$result = mysql_query($sql);
-			while ($row = mysql_fetch_assoc ($result))
-			{
-						//$event_id = $row['id'];
-						$event_name = stripslashes($row['event_name']);
-						$event_desc = stripslashes($row['event_desc']);
-						$event_description = stripslashes($row['event_desc']);
-						$event_identifier = $row['event_identifier'];
-							}
-echo "<br><br><strong>".__('Payment Page for','evr_language')." " .$fname." ".$lname." ".__('for event','evr_language')." ".$event_name."</strong><br><br>";
+        $event = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . get_option ( 'evr_event' ). " WHERE id = %d", $attendee->event_id) );
+echo "<br><br><strong>".__('Payment Page for','evr_language')." " .stripslashes($attendee->fname)." ".stripslashes($attendee->lname)." ".__('for ','evr_language')." ".stripslashes($event->event_name)."</strong><br><br>";
 // Print the Order Verification to the screen.
         ?>				  
                         <p align="left"><strong>Registration Detail Summary:</strong></p>
                             <table width="95%" border="0">
                               <tr>
                                 <td><strong>Event Name/Cost:</strong></td>
-                                <td><?php echo $event_name;?> - <?php echo $ticket_order[0]['ItemCurrency'];?><?php echo $payment;?></td>
+                                <td><?php echo stripslashes($event->event_name);?> - <?php echo $ticket_order[0]['ItemCurrency'];?><?php echo $attendee->payment;?></td>
                               </tr>
                               <tr>
                                 <td><strong>Attendee Name:</strong></td>
-                                <td><?php echo $attendee_name?></td>
+                                <td><?php echo stripslashes($attendee->fname)." ".stripslashes($attendee->lname)?></td>
                               </tr>
                               <tr>
                                 <td><strong>Email Address:</strong></td>
-                                <td><?php echo $email?></td>
+                                <td><?php echo $attendee->email?></td>
                               </tr>
                                <tr>
                                 <td><strong>Number of Attendees:</strong></td>
-                                <td><?php echo $quantity?></td>
+                                <td><?php echo $attendee->quantity?></td>
                               </tr>
                                <tr>
                                 <td><strong>Order Details:</strong></td>
                                 <td><?php $row_count = count($ticket_order);
             for ($row = 0; $row < $row_count; $row++) {
-            if ($ticket_order[$row]['ItemQty'] >= "1"){ echo $ticket_order[$row]['ItemQty']." ".$ticket_order[$row]['ItemCat']."-".$ticket_order[$row]['ItemName']." ".$ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']."<br \>";}
+            if ($ticket_order[$row]['ItemQty'] >= "1"){ echo "QTY: ".$ticket_order[$row]['ItemQty']." - ".$ticket_order[$row]['ItemCat']."-".$ticket_order[$row]['ItemName']." ".$ticket_order[$row]['ItemCurrency'] . " " . $ticket_order[$row]['ItemCost']." Each<br \>";}
             } ?></td>
                               </tr>
                             </table><br />
         <?php
-//End Verification
-$sql3 = "SELECT * FROM " . get_option('evr_payment') . " WHERE payer_id='$attendee_id' ";
-                             $result3 = mysql_query ( $sql3 );
-                             $made_payments = mysql_num_rows($result3); // number of total rows in the database
-                            if($made_payments > 0)  { 
-                                $payment_made="0";
+                            $made_payments = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM " . get_option('evr_payment') . " WHERE payer_id=%d",$attendee->id));
+                                $rows = $wpdb->get_results( "SELECT * FROM ". get_option('evr_payment') ." WHERE payer_id= $attendee->id" );
+                                if ($rows){
+                                    $payment_made="0";
                                 echo '<p align="left"><strong>';
                                 _e('Payments Received:','evr_language');
                                 echo "</strong></p>";
-                            while ( $row3 = mysql_fetch_assoc ( $result3 ) ) {
-                                echo  __('Payment','evr_language')." ".$row3['mc_currency']." ".$row3['mc_gross']." ".$row3['txn_type']." ".$row3['txn_id']." (".$row3['payment_date'].")"."<br />";
-                                $payment_made = $payment_made + $row3['mc_gross'];
-                                }
+                                	foreach ($rows as $payment){
+                                		echo  __('Payment','evr_language')." ".$payment->mc_currency." ".$payment->mc_gross." ".$payment->txn_type." ".$payment->txn_id." (".$payment->payment_date.")"."<br />";
+                                        $payment_made = $payment_made + $payment->mc_gross;
+                                	}
                                 echo '<font color="red">';
-                                echo "<br/>";
-                                _e('Total Outstanding Payment Due*:','evr_language');
-                                $total_due = $payment - $payment_made;
-                                echo $ticket_order[0]['ItemCurrency']." ".$total_due;
-                                echo '</font><br/><br/>';
+                                        echo "<br/>";
+                                        _e('Total Outstanding Payment Due*:','evr_language');
+                                        $total_due = $attendee->payment - $payment_made;
+                                        echo $ticket_order[0]['ItemCurrency']." ".$total_due;
+                                        echo '</font><br/><br/>';
                                 }
                                 else {
                                     echo '<font color="red">';
                                 _e('No Payments Received!','evr_language');
                                 echo "<br/>";
                                 _e('Total Payment Due*:','evr_language');
-                                $total_due = $payment;
+                                $total_due = $attendee->payment;
                                 echo $ticket_order[0]['ItemCurrency']." ".$total_due;
                                 echo '</font><br/><br/>';}
 _e('*Payments could take several days to post to this page. Please check back in several days if you made a payment and your payment is not showing at this time.','evr_language');
@@ -155,7 +124,7 @@ $payment=$total_due;
 		$p->paypal_url = 'https://www.paypal.com/cgi-bin/webscr'; // paypal url
 	}
     	if ($payment != "0.00" || $payment != "" || $payment != " "){
-				  $p->add_field('business', $company_options['payment_vendor_id']);
+				  $p->add_field('business', $company_options['paypal_id']);
                   $p->add_field('return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
 				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
 				  $p->add_field('cancel_return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
@@ -165,17 +134,17 @@ $payment=$total_due;
 				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
 				  //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&attendee_action=post_payment&form_action=payment');
 				  //$p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
-                  $p->add_field('item_name', $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity);
+                  $p->add_field('item_name', $event->event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee->fname." ".$attendee->lname .' | Total Registrants: '.$attendee->quantity);
 				  $p->add_field('amount', $payment);
-				  $p->add_field('currency_code', $ticket_order[0]['ItemCurrency']);
+				  $p->add_field('currency_code', $company_options['default_currency']);
 				  //Post variables
-				  $p->add_field('first_name', $fname);
-				  $p->add_field('last_name', $lname);
-				  $p->add_field('email', $email);
-				  $p->add_field('address1', $address);
-				  $p->add_field('city', $city);
-				  $p->add_field('state', $state);
-				  $p->add_field('zip', $zip);				 
+				  $p->add_field('first_name', $attendee->fname);
+				  $p->add_field('last_name', $attendee->lname);
+				  $p->add_field('email', $attendee->email);
+				  $p->add_field('address1', $attendee->address);
+				  $p->add_field('city', $attendee->city);
+				  $p->add_field('state', $attendee->state);
+				  $p->add_field('zip', $attendee->zip);				 
                   $p->submit_paypal_post($pay_now); // submit the fields to paypal
 				  if ($company_options['use_sandbox'] == "Y") {
 					  $p->dump_fields(); // for debugging, output a table of all the fields
@@ -190,13 +159,13 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         // 5.1.2 - http://hmhash.sourceforge.net/
         // the parameters for the payment can be configured here
         // the API Login ID and Transaction Key must be replaced with valid values
-        $loginID		= $company_options['payment_vendor_id'];
-        $transactionKey = $company_options['$txn_key'];
+        $loginID		= $company_options['authorize_id'];
+        $transactionKey = $company_options['authorize_key'];
         $amount 		= $payment;
-        $description 	= $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;
+        $description 	= $event->event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee->fname." ".$attendee->lname .' | Total Registrants: '.$attendee->quantity;
         $label 			= $pay_now; // The is the label on the 'submit' button
-        if ($company_options['use_sandbox'] == "Y") {$testMode		= "true";}
-        if ($company_options['use_sandbox'] == "N") {$testMode		= "false";}
+        if ($company_options['use_authorize_testmode'] == "Y") {$testMode		= "true";}
+        if ($company_options['use_authorize_testmode'] == "N") {$testMode		= "false";}
         // By default, this sample code is designed to post to our test server for
         // developer accounts: https://test.authorize.net/gateway/transact.dll
         // for real accounts (even in test mode), please make sure that you are
@@ -234,7 +203,7 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         echo "	<INPUT type='hidden' name='x_fp_hash' value='$fingerprint' />";
         echo "	<INPUT type='hidden' name='x_test_request' value='$testMode' />";
         echo "	<INPUT type='hidden' name='x_show_form' value='PAYMENT_FORM' />";
-        echo "	<input type='submit' value='$label' />";
+        echo "	<input type='submit' value='$pay_now' />";
         echo "</FORM>";
 // This is the end of the code generating the "submit payment" button.    -->
 }
@@ -244,14 +213,14 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         // Create the HTML Payment Button
     //Google Payment Button
     ?>
-     <form action="https://checkout.google.com/api/checkout/v2/checkoutForm/Merchant/<?php echo $company_options['payment_vendor_id'];?>" id="BB_BuyButtonForm" method="post" name="BB_BuyButtonForm" target="_top">
-    <input name="item_name_1" type="hidden" value="<?php echo $event_name."-".$attendee_name;?>"/>
-    <input name="item_description_1" type="hidden" value="<?php echo $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;?>"/>
+     <form action="https://checkout.google.com/api/checkout/v2/checkoutForm/Merchant/<?php echo $company_options['google_id'];?>" id="BB_BuyButtonForm" method="post" name="BB_BuyButtonForm" target="_top">
+    <input name="item_name_1" type="hidden" value="<?php echo $event->event_name."-".$attendee->fname." ".$attendee->lname;?>"/>
+    <input name="item_description_1" type="hidden" value="<?php echo $event->event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;?>"/>
     <input name="item_quantity_1" type="hidden" value="1"/>
     <input name="item_price_1" type="hidden" value="<?php echo $payment;?>"/>
-        <input name="item_currency_1" type="hidden" value="<?php echo $ticket_order[0]['ItemCurrency'];?>"/>
+        <input name="item_currency_1" type="hidden" value="<?php echo $company_options['default_currency'];?>"/>
     <input name="_charset_" type="hidden" value="utf-8"/>
-    <input alt="" src="https://checkout.google.com/buttons/buy.gif?merchant_id=<?php echo $company_options['payment_vendor_id'];?>&amp;w=117&amp;h=48&amp;style=trans&amp;variant=text&amp;loc=en_US" type="image"/>
+    <input alt="" src="https://checkout.google.com/buttons/buy.gif?merchant_id=<?php echo $company_options['google_id'];?>&amp;w=117&amp;h=48&amp;style=trans&amp;variant=text&amp;loc=en_US" type="image"/>
     </form>
     <?php
 }
@@ -262,12 +231,12 @@ if ($company_options['payment_vendor']=="MONSTER"){
 ?>    
 <form action="https://www.monsterpay.com/secure/index.cfm" method="POST" enctype="APPLICATION/X-WWW-FORM-URLENCODED" target="_BLANK">
 <input type="hidden" name="ButtonAction" value="buynow">
-<input type="hidden" name="MerchantIdentifier" value="<?php echo $company_options['payment_vendor_id'];?>">
-<input type="hidden" name="LIDDesc" value="<?php echo $event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;?>">
-<input type="hidden" name="LIDSKU" value="<?php echo $event_name."-".$attendee_name;?>">
+<input type="hidden" name="MerchantIdentifier" value="<?php echo $company_options['monster_id'];?>">
+<input type="hidden" name="LIDDesc" value="<?php echo $event->event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee->fname." ".$attendee->lname .' | Total Registrants: '.$attendee->quantity;?>">
+<input type="hidden" name="LIDSKU" value="<?php echo $event->event_name."-".$attendee_name;?>">
 <input type="hidden" name="LIDPrice" value="<?php echo $payment;?>">
 <input type="hidden" name="LIDQty" value="1">
-<input type="hidden" name="CurrencyAlphaCode" value="<?php echo $ticket_order[0]['ItemCurrency'];?>">
+<input type="hidden" name="CurrencyAlphaCode" value="<?php echo $company_options['default_currency'];?>">
 <input type="hidden" name="ShippingRequired" value="0">
 <input type="hidden" name="MerchRef" value="">
 <input type="submit" value="<?php echo $pay_now;?>" style="background-color: #DCDCDC; font-family: Arial; font-size: 11px; color: #000000; font-weight: bold; border: 1px groove #000000;">
@@ -309,30 +278,25 @@ function display_events_by_category($atts, $content=null) {
 */
 //function to add events by category page on public page for plugin
 function evr_by_category($atts, $content=null){
-    global $wpdb, $evr_date_format;
+    global $wpdb, $evr_date_format, $company_options;
     $curdate = date ( "Y-m-j" );
     extract(shortcode_atts(array('event_category_id' => 'No Category ID Supplied'), $atts));
 	$event_category_id = "{$event_category_id}";
     ob_start();
 	$curdate = date ( "Y-m-j" );
     $category_id = null;    
-    $sql = null;    
+    $sql = null; 
 		if ($event_category_id != ""){
-		  $sql2  = "SELECT * FROM " . get_option('evr_category') . " WHERE category_identifier = '".$event_category_id."'";
-					$result = mysql_query($sql2);
-					while ($row = mysql_fetch_assoc ($result)){
-					$category_id= $row['id'];
-                                    	$category_name=stripslashes(htmlspecialchars_decode($row['category_name']));
-                                    	$category_identifier=stripslashes(htmlspecialchars_decode($row['category_identifier']));
-                                    	$category_desc=stripslashes(htmlspecialchars_decode($row['category_desc']));
-                                    	$display_category_desc=$row['display_desc'];
-                                        $category_color = $row['category_color'];
-                                        $font_color = $row['font_color'];
-					echo "<p><b>".$category_name."</b><br>".$category_desc."</p>";
-                    }
-                  	$sql = "SELECT * FROM " . get_option('evr_event') ." WHERE category_id LIKE '%\"$category_id\"%' AND str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')"; 
-   //$sql = "SELECT * FROM " . get_option('evr_event');
-    $result = mysql_query ( $sql );
+            $sql = "SELECT * FROM " . get_option('evr_category') . " WHERE category_identifier = '".$event_category_id."'";;
+            $cat_info = $wpdb->get_row($sql);
+            $category_id = $cat_info->id;
+            echo "<p><b>".stripslashes(htmlspecialchars_decode($cat_info->category_name))."</b><br>".stripslashes(htmlspecialchars_decode($cat_info->category_desc))."</p>";
+            //Get Events from database with matching category
+           
+            $sql = "SELECT * FROM " . get_option('evr_event') ." WHERE category_id LIKE '%\"$category_id\"%' AND str_to_date(end_date, '%Y-%m-%e') >= '$curdate' ORDER BY str_to_date(start_date, '%Y-%m-%e')"; 
+            
+           
+            $events = $wpdb->get_results( $sql );
 ?>
 <div class="evr_event_list">
 <b>Click on Event Name for description/registration</b>
@@ -342,130 +306,106 @@ function evr_by_category($atts, $content=null){
 </thead>
 <tbody>
 <?php
-   $color_row= "1";
-   $month_no = $end_month_no = '01';  
-   $start_date = $end_date = '';
-   while ( $row = mysql_fetch_assoc ( $result ) ) {
-		            $event_id= $row['id'];
-			        $event_name =  stripslashes(htmlspecialchars_decode($row ['event_name']));
-					$event_identifier = stripslashes(htmlspecialchars_decode($row ['event_identifier'])); 
-					$event_desc =  stripslashes(htmlspecialchars_decode($row ['event_desc']));  
-					$start_date = $row['start_date'];
-                    $end_date = $row['end_date'];
-					$start_month = $row ['start_month'];
-					$start_day = $row ['start_day'];
-					$start_year = $row ['start_year'];
-					$end_month = $row ['end_month'];
-					$end_day = $row ['end_day'];
-					$end_year = $row ['end_year'];
-					$start_time = $row ['start_time'];
-					$end_time = $row ['end_time'];  
-					 $outside_reg = $row['outside_reg'];  // Yor N
-                    $external_site = $row['external_site'];
-		$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
-		$result2 = mysql_query($sql2);
-                $num = 0;   
-		while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
-        $available_spaces = 0;  
-		if ($reg_limit != ""){$available_spaces = $reg_limit - $num;}
-	    if ($reg_limit == "" || $reg_limit == " " || $reg_limit == "999"){$available_spaces = "UNLIMITED";}
-          $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
-$close_dt = $end_date." ".$end_time;
-$today = strtotime($current_dt);
-$stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
-$expiration_date = strtotime($stp);
-if ($stp >= $current_dt){
-      if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
-        ?>
-            <td class="er_title er_ticket_info"><b>
-           <?php $company_options = get_option('evr_company_settings');
-            if ($company_options['evr_list_format']=="link"){
-                if ($outside_reg == "Y"){  echo '<a href="'.$external_site.'">' ;
-	}  else {
-                echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
-                }}
-            else {?>
-         <a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo $event_name;?>">
-                  <!--  //use this for fancybox window
-          <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
-            <?php } echo $event_name;?></a></b></td>
-            <td></td><td></td>
-            <td class="er_date"><?php echo date($evr_date_format,strtotime($start_date))." ".$start_time;?> </td><td>-</td>
-            <td class="er_date"><?php if ($end_date != $start_date) {echo date($evr_date_format,strtotime($end_date));} echo " ".$end_time;?></td></tr>
-            <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}
-        }}
+           $color_row= "1";
+           $month_no = $end_month_no = '01';  
+           $start_date = $end_date = '';
+           if ($events){
+            	foreach ($events as $event){
+            		$event_id       = $event->id;
+                    $qty_count = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id= %d", $event_id));
+                    $available_spaces = 0; 
+            		if ($event->reg_limit != ""){$available_spaces = $event->reg_limit - $qty_count;}
+            	    if ($event->reg_limit == "" || $event->reg_limit == " " || $event->reg_limit == "999"){$available_spaces = "UNLIMITED";}
+                    $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
+                    $close_dt = $end_date." ".$end_time;
+                    $today = strtotime($current_dt);
+                    $stp = DATE("Y-m-d H:i", STRTOTIME($close_dt));
+                    $expiration_date = strtotime($stp);
+                    if ($stp >= $current_dt){
+                          if($color_row==1){ ?> <tr class="odd"> <?php } else if($color_row==2){ ?> <tr class="even"> <?php } 
+                            ?>
+                                <td class="er_title er_ticket_info"><b>
+                               <?php //$company_options = get_option('evr_company_settings');  event->
+                                if ($company_options['evr_list_format']=="link"){
+                                    if ($event->outside_reg == "Y"){  echo '<a href="'.$event->external_site.'">' ;
+                    	}  else {
+                                    echo '<a href="'.evr_permalink($company_options['evr_page_id']).'action=evregister&event_id='.$event_id.'">';
+                                    }}
+                                else {?>
+                             <a class="thickbox" href="#TB_inline?width=640&height=1005&inlineId=popup<?php echo $event_id;?>&modal=false"  title="<?php echo stripslashes(htmlspecialchars_decode($event->event_name));?>">
+                                      <!--  //use this for fancybox window
+                              <a href="#?w=800" rel="popup<?php echo $event_id;?>" class="poplight"> -->
+                                <?php } echo stripslashes(htmlspecialchars_decode($event->event_name));?></a></b></td>
+                                <td></td><td></td>
+                                <td class="er_date"><?php echo date($evr_date_format,strtotime($event->start_date))." ".$event->start_time;?> </td><td>-</td>
+                                <td class="er_date"><?php if ($event->end_date != $event->start_date) {echo date($evr_date_format,strtotime($event->end_date));} echo " ".$event->end_time;?></td></tr>
+                                <?php  if ($color_row ==1){$color_row = "2";} else if ($color_row ==2){$color_row = "1";}
+                            }
+        }
+            }
         ?>
     </tbody></table></div>
        <?php 
-    $company_options = get_option('evr_company_settings');
+    //$company_options = get_option('evr_company_settings');
     //Section for popup listings
-    //$sql = "SELECT * FROM " . get_option('evr_event') ." WHERE str_to_date(start_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')";
-      //$sql = "SELECT * FROM " . get_option('evr_event');
-                    	//	$result = mysql_query ($sql);
-                        	$sql = "SELECT * FROM " . get_option('evr_event');
-   //$sql = "SELECT * FROM " . get_option('evr_event');
-    $result = mysql_query ( $sql );
-                            while ($row = mysql_fetch_assoc ($result)){  
-                            $event_id = $row['id'];
-                            $reg_form_defaults = unserialize($row['reg_form_defaults']);
-                            if ($reg_form_defaults !=""){
-                            if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
-                            if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
-                            if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
-                            if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
-                            if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
-                            }
-                        $use_coupon = $row['use_coupon'];
-                        $reg_limit = $row['reg_limit'];
-                   	    $event_name = stripslashes($row['event_name']);
-        					$event_identifier = stripslashes($row['event_identifier']);
-        					$display_desc = $row['display_desc'];  // Y or N
-                            $event_desc = stripslashes($row['event_desc']);
-                            $event_category = unserialize($_REQUEST['event_category']);
-        					$reg_limit = $row['reg_limit'];
-        					$event_location = stripslashes($row['event_location']);
-                            $event_address = $row['event_address'];
-                            $event_city = $row['event_city'];
-                            $event_state =$row['event_state'];
-                            $event_postal=$row['event_postcode'];
-                            $google_map = $row['google_map'];  // Y or N
-                            $start_month = $row['start_month'];
-        					$start_day = $row['start_day'];
-        					$start_year = $row['start_year'];
-                            $end_month = $row['end_month'];
-        					$end_day = $row['end_day'];
-        					$end_year = $row['end_year'];
-                            $start_time = $row['start_time'];
-        					$end_time = $row['end_time'];
-                            $allow_checks = $row['allow_checks'];
-                            $outside_reg = $row['outside_reg'];  // Yor N
-                            $external_site = $row['external_site'];
-                            $more_info = $row['more_info'];
-        					$image_link = $row['image_link'];
-        					$header_image = $row['header_image'];
-                            $event_cost = $row['event_cost'];
-                            $allow_checks = $row['allow_checks'];
-        					$is_active = $row['is_active'];
-        					$send_mail = $row['send_mail'];  // Y or N
-        					$conf_mail = stripslashes($row['conf_mail']);
-        					$start_date = $row['start_date'];
-                            $end_date = $row['end_date'];
-                            $sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event_id'";
-                             $result2 = mysql_query($sql2);
-            			     //$num = mysql_num_rows($result2);
-                             //$number_attendees = $num;
-                             while($row = mysql_fetch_array($result2)){
-                                $number_attendees = $row['SUM(quantity)'];
-                                }
-            				if ($number_attendees == '' || $number_attendees == 0){
-            					$number_attendees = '0';
-            				}
-            				if ($reg_limit == "" || $reg_limit == " "){
-            					$reg_limit = "Unlimited";}
-                               $available_spaces = $reg_limit;
-                               //div for popup goes here.
-                            include "public/evr_event_popup_pop.php";
-                              } 
+                           $rows = $wpdb->get_results( "SELECT * FROM ". get_option('evr_event') ." ORDER BY date(start_date) DESC ".$limit );
+if ($rows){
+	foreach ($rows as $event){
+		$event_id       = $event->id;
+            $event_id = $event->id;
+            $reg_form_defaults = unserialize($event->reg_form_defaults);
+            if ($reg_form_defaults !=""){
+            if (in_array("Address", $reg_form_defaults)) {$inc_address = "Y";}
+            if (in_array("City", $reg_form_defaults)) {$inc_city = "Y";}
+            if (in_array("State", $reg_form_defaults)) {$inc_state = "Y";}
+            if (in_array("Zip", $reg_form_defaults)) {$inc_zip = "Y";}
+            if (in_array("Phone", $reg_form_defaults)) {$inc_phone = "Y";}
+            }
+            $use_coupon = $event->use_coupon;
+            $reg_limit = $event->reg_limit;
+            $event_name = stripslashes($event->event_name);
+            $event_identifier = stripslashes($event->event_identifier);
+            $display_desc = $event->display_desc;  // Y or N
+            $event_desc = stripslashes($event->event_desc);
+            $event_category = unserialize($event->event_category);
+            $reg_limit = $event->reg_limit;
+            $event_location = stripslashes($event->event_location);
+            $event_address = $event->event_address;
+            $event_city = $event->event_city;
+            $event_state =$event->event_state;
+            $event_postal=$event->event_postcode;
+            $google_map = $event->google_map;  // Y or N
+            $start_month = $event->start_month;
+            $start_day = $event->start_day;
+            $start_year = $event->start_year;
+            $end_month = $event->end_month;
+            $end_day = $event->end_day;
+            $end_year = $event->end_year;
+            $start_time = $event->start_time;
+            $end_time = $event->end_time;
+            $allow_checks = $event->allow_checks;
+            $outside_reg = $event->outside_reg;  // Yor N
+            $external_site = $event->external_site;
+            $more_info = $event->more_info;
+            $image_link = $event->image_link;
+            $header_image = $event->header_image;
+            $event_cost = $event->event_cost;
+            $allow_checks = $event->allow_checks;
+            $is_active = $event->is_active;
+            $send_mail = $event->send_mail;  // Y or N
+            $conf_mail = stripslashes($event->conf_mail);
+            $start_date = $event->start_date;
+            $end_date = $event->end_date;
+            $number_attendees = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id=%d",$event_id));
+            if ($number_attendees == '' || $number_attendees == 0){
+            	$number_attendees = '0';
+            }
+            if ($reg_limit == "" || $reg_limit == " "){
+            	$reg_limit = "Unlimited";}
+               $available_spaces = $reg_limit;
+               //div for popup goes here.
+            include "public/evr_event_popup_pop.php";
+              } }
 }
 $buffer = ob_get_contents();
     ob_end_clean();
@@ -488,33 +428,33 @@ function evr_attendee_list($event_id){
     _e('Attendee List for ','evr_language');
     echo stripslashes($event->event_name)."</h2>";
     $participants = $wpdb->get_results("SELECT * from ".get_option('evr_attendee')." where event_id = '$event_id'");
-//get attendeeds from each registration and put them into a single array    
-    if ($participants) {
-        $people = array();
-       	foreach ($participants as $participant) {
-            $attendee_array = unserialize($participant->attendees);
-            if ( count($attendee_array)>"0"){
-                $i = 0;
-                 do {
-                    array_push($people,$attendee_array[$i]);
-                    ++$i;
-                 } while ($i < count($attendee_array));
+        //get attendeeds from each registration and put them into a single array    
+            if ($participants) {
+                $people = array();
+               	foreach ($participants as $participant) {
+                    $attendee_array = unserialize($participant->attendees);
+                    if ( count($attendee_array)>"0"){
+                        $i = 0;
+                         do {
+                            array_push($people,$attendee_array[$i]);
+                            ++$i;
+                         } while ($i < count($attendee_array));
+                    }
+                }
             }
-        }
-    }
-//sort array of all attendees
- $tmp = Array();
- foreach($people as &$aSingleArray)    $tmp[] = $aSingleArray["last_name"];
- $tmp = array_map('strtolower', $tmp);
- array_multisort($tmp, $people);
- if ( count($people)>"0"){
-                $i = 0;
-                 do {
-                    $digit = $i + 1;
-                    echo $digit.".)  ".$people[$i]["first_name"]." ".$people[$i]['last_name']."<br/>";
-                    ++$i;
-                 } while ($i < count($people));
-            }
+        //sort array of all attendees
+         $tmp = Array();
+         foreach($people as &$aSingleArray)    $tmp[] = $aSingleArray["last_name"];
+         $tmp = array_map('strtolower', $tmp);
+         array_multisort($tmp, $people);
+         if ( count($people)>"0"){
+                        $i = 0;
+                         do {
+                            $digit = $i + 1;
+                            echo $digit.".)  ".$people[$i]["first_name"]." ".$people[$i]['last_name']."<br/>";
+                            ++$i;
+                         } while ($i < count($people));
+                    }
 }
 //function to add quick link to Plugin Activation Menu - used as a filter
 function evr_quick_action($links, $file)
@@ -535,8 +475,8 @@ function evr_quick_action($links, $file)
 //function to replace content on public page for plugin
 /*function evr_content_replace($content)
 {
-   global $wpdb;
-   $company_options = get_option('evr_company_settings');
+   global $wpdb, $company_options;
+  //$company_options = get_option('evr_company_settings');
     if (preg_match('{EVRREGIS}', $content)) {
         ob_start();
         //event_regis_run($event_single_ID);
@@ -559,8 +499,8 @@ function evr_quick_action($links, $file)
 */
 function evr_content_replace($content)
 {
-   global $wpdb;
-   $company_options = get_option('evr_company_settings');
+   global $wpdb, $company_options;
+   //$company_options = get_option('evr_company_settings');
     if (preg_match('{EVRREGIS}', $content)) {
         ob_start();
         evr_registration_main(); //function with main content

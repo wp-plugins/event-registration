@@ -8,6 +8,21 @@ $captcha = $_GET['captcha'];
 header("content-type: application/x-javascript");
 
 ?>
+function validateRadio( obj,correct ){
+    var result = 0;
+    for(var i=0; i < obj.length; i++){
+        if(obj[i].checked==true && obj[i].value==correct){
+            result = 1;
+        }
+    }
+    if(!result && obj.value == correct){
+        result = 1;
+    }
+    return result
+}
+
+
+
 function checkInternationalPhone(strPhone){
     var digits = "0123456789";
     var phoneNumberDelimiters = "()- ";
@@ -137,6 +152,7 @@ function validateConfirmationForm(confForm) {
         return true;
  }
 
+
 function validateForm(form) { 
     var msg = "";
     if (form.fname.value == "") {  msg += "\n " +"Please enter your first name"; 
@@ -174,7 +190,7 @@ function validateForm(form) {
    	        }
         }
     if(form.zip) {   	    
-        if (form.zip.value == "") {  msg += "\n " +"Please enter your zip/postal code."; 
+        if (form.zip.value == "") { msg += "\n " +"Please enter your zip/postal code.";  
    		   form.zip.focus( ); 
             }
         }
@@ -184,6 +200,13 @@ function validateForm(form) {
             } 
         return null;
         }
+    
+    if(form.waiver_agree){
+        if( !validateRadio( form.waiver_agree, 'Y' ) ){ msg += "\n " +"You must agree to the Disclaimer/Waiver.";}
+        }
+        
+  
+        
     var inputs = form.getElementsByTagName("input");
     var e;
     for( var i = 0, e; e = inputs[i]; i++ ){
@@ -192,6 +215,8 @@ function validateForm(form) {
                 msg += "\n " + e.title;
                 }
             if ((e.type == "radio" || e.type == "checkbox") && e.className == "r") {
+                
+                
 				var rd =""
 				var controls = form.elements;
 				function getSelectedControl(group) 

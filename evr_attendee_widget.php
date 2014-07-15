@@ -20,9 +20,9 @@ function evr_attendee_details($atts){
 
 function evr_advanced_attendee_list($event_id = '0', $custom, $record_template = '')
 {
-    global $wpdb;    
+    global $wpdb,$company_options;    
     $curdate = date("Y-m-d");
-    $company_options = get_option('evr_company_settings');
+    //$company_options = get_option('evr_company_settings');
 	$category_query = '';
 	//if (intval( $record_limit ) > 20) $record_limit = '20';
     //$sql = "SELECT * FROM " . get_option('evr_event')." WHERE str_to_date(end_date, '%Y-%m-%e') >= curdate() $category_query ORDER BY str_to_date(start_date, '%Y-%m-%e') LIMIT 0,".$record_limit;    

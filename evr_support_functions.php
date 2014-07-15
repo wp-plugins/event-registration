@@ -7,7 +7,6 @@
 function evr_dashboard_upcomingevents(){
     wp_add_dashboard_widget('dashboard_custom_feed', __( '<a href ="admin.php?page=event-registration/EVNTREG.php"><b> EVENTS REGISTRATION DASHBOARD</b></a>' ), 'evr_dashboard_events');
 }
-
 function evr_donate_add() {
     ?>
 <h3>Support Event Registration</h3>
@@ -51,7 +50,6 @@ function evr_retrieve_all_events($where ='', $orderby='',$limit=''){
     $results = $wpdb->get_results( $sql );
     return $results;
 }
-
 function evr_dashboard_events(){
     global $wpdb;
 ?>
@@ -253,7 +251,6 @@ function evr_form_build($question, $answer = "") {
 				//echo "<label><input id=\"SINGLE_$question->id_ $key\ "$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</label><br/>\n";
 			// echo "<span class=\"radio\"><input id=\"SINGLE_$question->id_ $key\"$required name=\"SINGLE_$question->id\" title=\"$question->question\" type=\"radio\" value=\"$value\"$checked /> $value</span>\n";
  echo '<span class="radio"><input id="SINGLE_'.$question->id.'_'.$key.'" '.$required.' name="SINGLE_'.$question->id.'" title="'.$question->question.'" type="radio" value="'.$value.'" '.$checked.' /> '.$value.'</span>';
-			
             }
 			break;
 		case "MULTIPLE" :
@@ -264,7 +261,6 @@ function evr_form_build($question, $answer = "") {
 			/*	echo "<label><input type=\"checkbox\"$required id=\"MULTIPLE_$question->id_$key\" name=\"MULTIPLE_$question->id_$key\" title=\"$question->question\" value=\"$value\"$checked /> $value</label><br/>\n"; */
 			//echo "<label><input id=\"$value\"$required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\"$checked /> $value</label><br/>\n";
 			echo "<span class=\"radio\"><input id=\"$value\" $required name=\"MULTIPLE_$question->id[]\" title=\"$question->question\" type=\"checkbox\" value=\"$value\" $checked /> $value</span>\n";
-			
             }
 			break;
 		case "DROPDOWN" :
@@ -326,7 +322,6 @@ function evr_form_build_edit ($question, $edits) {
 			break;
 	}
 }
-
 function evr_greaterDate($start_date,$end_date)
 {
   $start = strtotime($start_date);
@@ -336,7 +331,6 @@ function evr_greaterDate($start_date,$end_date)
   else
    return 0;
 }
-
 function evr_registration(){
     evr_reg_box_content();
  }
