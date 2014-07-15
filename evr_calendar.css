@@ -1,7 +1,7 @@
 ﻿.calendar-table {
     table-layout:fixed;
     border-collapse: collapse;
-   	border-spacing:0;
+    border-spacing:0;
     width:100%;
 }
 #calendar-table tr td {
@@ -58,14 +58,14 @@
     height:60px;
 }
 span.weekend {
-	
+    
 }
 .current-day {
     height:60px;
     background-color:#b8ced6;
 }
 span.event {
-	 	text-align:left;
+        text-align:left;
     font-size:1em;
 }
 
@@ -80,7 +80,7 @@ span.event {
     padding:0;
 }
 .calendar-date-switcher input {
-	
+    
 }
 .calendar-date-switcher select {
 
@@ -125,7 +125,7 @@ span.event {
     line-height:1.2em;
 }
 .calnk .time {
-		font-size:0.8em;
+        font-size:0.8em;
 }
 .page-upcoming-events {
     font-size:95%;
@@ -136,36 +136,36 @@ span.event {
 /*Calendar tooltip */
 
   /*  
-		.tooltip {
-			border-bottom: 1px dotted #000000; color: #000000; outline: none;
-			cursor: help; text-decoration: none;
-			position: relative;
+        .tooltip {
+            border-bottom: 1px dotted #000000; color: #000000; outline: none;
+            cursor: help; text-decoration: none;
+            position: relative;
             
-		}
-		.tooltip span:hover {
-		   z-index:25; color: #aaaaff;
-			background:;
-		}
+        }
+        .tooltip span:hover {
+           z-index:25; color: #aaaaff;
+            background:;
+        }
           .tooltip span {
-			display:none;
-		}
-		.tooltip:hover span {
+            display:none;
+        }
+        .tooltip:hover span {
                display:block;
-			border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
-			box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
-			font-family: Calibri, Tahoma, Geneva, sans-serif;
-			position: absolute; left: 1em; top: 2em; 
+            border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+            box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+            font-family: Calibri, Tahoma, Geneva, sans-serif;
+            position: absolute; left: 1em; top: 2em; 
                z-index: 999;
-			margin-left: 0; width: 250px;
-		}
-		.tooltip:hover img {
-			border: 0; margin: -10px 0 0 -55px;
-			float: left; position: absolute;
-		}
-		.tooltip:hover em {
-			font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
-			display: block; padding: 0.2em 0 0.6em 0;
-		}
+            margin-left: 0; width: 250px;
+        }
+        .tooltip:hover img {
+            border: 0; margin: -10px 0 0 -55px;
+            float: left; position: absolute;
+        }
+        .tooltip:hover em {
+            font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+            display: block; padding: 0.2em 0 0.6em 0;
+        }
           */
           
 a.tooltip {
@@ -214,35 +214,35 @@ a.tooltip:hover em {
      padding:0.2em 0 0.6em 0;
      }
           
-		.classic { padding: 0.8em 1em; }
-		.custom { padding: 0.5em 0.8em 0.8em 2em; }
+        .classic { padding: 0.8em 1em; }
+        .custom { padding: 0.5em 0.8em 0.8em 2em; }
         .help { padding: 0.5em 0.8em 0.8em 2em; }
-		* html a:hover { background: transparent; }
-		.classic {background: #FFFFAA; border: 1px solid #FFAD33; }
-		.critical { background: #FFCCAA; border: 1px solid #FF3334;	}
-		/*.help { background: #9FDAEE; border: 1px solid #2BB0D7;	}*/
+        * html a:hover { background: transparent; }
+        .classic {background: #FFFFAA; border: 1px solid #FFAD33; }
+        .critical { background: #FFCCAA; border: 1px solid #FF3334;	}
+        /*.help { background: #9FDAEE; border: 1px solid #2BB0D7;	}*/
         .help { background: white; border: 2px solid #2BB0D7;	}
-		.info { background: #9FDAEE; border: 1px solid #2BB0D7;	}
-		.warning { background: #FFFFAA; border: 1px solid #FFAD33; }
+        .info { background: #9FDAEE; border: 1px solid #2BB0D7;	}
+        .warning { background: #FFFFAA; border: 1px solid #FFAD33; }
         .catgry {
-	/* sold out class */
-	border-left: solid 3px #b8ced6 /* dark tomato */;
-	margin-left: 4px;
-	margin-bottom: 8px;
+    /* sold out class */
+    border-left: solid 3px #b8ced6 /* dark tomato */;
+    margin-left: 4px;
+    margin-bottom: 8px;
 }
 .catgry h3 {
-	/* class title */
-	font-weight: normal;
-	font-size: .50em;
-	margin: 0;
-	padding: 2px 2px 2px 4px;
+    /* class title */
+    font-weight: normal;
+    font-size: .50em;
+    margin: 0;
+    padding: 2px 2px 2px 4px;
 }
 .catgry p.time, .catgry p.seats {
-	/* class price, time of day, type of class, class status, sale pricing */
-	font-weight: normal;
-	font-size: .70em;
-	padding: 0 0 0 20px;
-	margin: 0;
+    /* class price, time of day, type of class, class status, sale pricing */
+    font-weight: normal;
+    font-size: .70em;
+    padding: 0 0 0 20px;
+    margin: 0;
     /*line-height : 2px;*/
     }
 
@@ -270,7 +270,7 @@ a.tooltip:hover em {
 }
 .calnk .evr_mini_cal_add_extra_nfo:hover  , .calnk a:hover .evr_mini_cal_add_extra_nfo{
 
-	
+    
 }
 .evr_mini_cal-custom-cat {width:40px;height:40px;float:left;}
 .evr_mini_cal_custom_cat_1 {background:url('catimages/baking.png') no-repeat 0 center ;
@@ -289,7 +289,7 @@ a.tooltip:hover em {
         background: none repeat scroll 0 0 #583C32;
     border: 1px solid #583C32;
     width: 175px!important;
-	color:white!important;
+    color:white!important;
 }
 .monthYearText {
     color: #252216;
@@ -305,7 +305,7 @@ a.tooltip:hover em {
       padding: 4px !important;
     text-align: center !important;
     vertical-align: middle;
-	color:white!important;
+    color:white!important;
 }
 .dayNamesText {
     background-image: url("dayBg.gif");
@@ -313,7 +313,7 @@ a.tooltip:hover em {
     font-family: Geneva,Verdana,Arial,sans-serif;
     font-size: 10px;
     font-weight: bold;
-	    padding: 4px !important;
+        padding: 4px !important;
     text-align: center !important;
 }
 .dayNamesRow {
@@ -321,7 +321,7 @@ a.tooltip:hover em {
     line-height: 11pt;
     text-align: center;
     vertical-align: middle;
-	    padding: 4px !important;
+        padding: 4px !important;
     text-align: center !important;
 }
 .rows {
@@ -340,7 +340,7 @@ a.tooltip:hover em {
 }
 .s2 {
     background-color: #F9F0E1;
-	    padding: 4px !important;
+        padding: 4px !important;
     text-align: center !important;
 }
 .s21 {
@@ -349,13 +349,13 @@ a.tooltip:hover em {
     color: white;
     padding: 4px !important;
     text-align: center !important;
-	cursor:pointer;
+    cursor:pointer;
 }
 .s22 {
     background-color: #A6ADBB;
-	    padding: 4px !important;
+        padding: 4px !important;
     text-align: center !important;
-	cursor:pointer;
+    cursor:pointer;
 }
 .today {
       color: #6FA9BE;
@@ -363,7 +363,7 @@ a.tooltip:hover em {
 }
 .mainTable td {
     border-right: 1px solid #DDDDDD;
-	padding:4px!important;
+    padding:4px!important;
     
 }
 .day-with-datedrt {position:relative;}
@@ -380,9 +380,9 @@ background:white;
 .evr_mini_cal_new_stylinnnng.evr_events thead tr th {
     background: none repeat scroll 0 0 #6FA9BE!important;
         color: #56534c;
-		padding:2px;
-		line-height:22px;
-		 text-transform: lowercase;
+        padding:2px;
+        line-height:22px;
+         text-transform: lowercase;
 }
 .evr_mini_cal_new_stylinnnng.evr_events tbody { border-bottom: 1px solid #C2B9A8;}
 .evr_mini_cal_new_stylinnnng.evr_events thead tr th:first-letter {text-transform:uppercase;}

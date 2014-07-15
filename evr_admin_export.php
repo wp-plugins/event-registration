@@ -42,17 +42,21 @@ $events_payment_tbl = $tblname["evr_payment"];
 
 
 $today = date("Y-m-d_Hi",time()); 
-
+/*
  $DB = new evr_DBConfig();
  $DB -> config();
  $DB -> conn($host,$dbuser,$pass,$db);
+ 
+*/
+$mysqli = new mysqli($host, $dbuser, $pass, $db);
 
 
+/*
+$sql  = "SELECT event_name, waiver FROM " . $events_detail_tbl . " WHERE id='$event_id'";
 
-$sql  = "SELECT * FROM " . $events_detail_tbl . " WHERE id='$event_id'";
-$result = mysql_query($sql);
-list($event_id, $event_name, $event_description, $event_identifier, $event_cost, $allow_checks, $is_active) = mysql_fetch_array($result, MYSQL_NUM);
-
+$result = mysqli->query($sql);
+list($event_name, $waiver) = mysql_fetch_array($result, MYSQL_NUM);
+*/
 //generate report switch
 switch ($_REQUEST['action']) {
 	case "excel";
@@ -61,14 +65,23 @@ switch ($_REQUEST['action']) {
 			$et = "\t";
 			$s = $et . $st;
 	        //Base array for cell column headings
-			$basic_header = array('Reg ID', 'Reg Date','Type','Last Name', 'First Name', 'Attendees', 'Email', 'Address', 
+			
+            if ($waiver == "Y"){
+                $basic_header = array('Reg ID', 'Reg Date','Type','Agreed to Waiver','Last Name', 'First Name', 'Attendees', 'Email', 'Address', 
 					'City', 'State', 'Zip', 'Phone','Co Name', 'Co Address', 'Co City', 'Co State/Prov', 'Co Postal','Num People', 'Payment','Tickets');
+                    }
+                    else {
+                       $basic_header = array('Reg ID', 'Reg Date','Type','Last Name', 'First Name', 'Attendees', 'Email', 'Address', 
+					'City', 'State', 'Zip', 'Phone','Co Name', 'Co Address', 'Co City', 'Co State/Prov', 'Co Postal','Num People', 'Payment','Tickets'); 
+                    }
+                    
+                    
             //check for extra questions        
 			$question_sequence = array();
 			$qry = "select question, sequence from ".$events_question_tbl." where event_id = '$event_id' order by sequence" ;
-            $results = mysql_query($qry);
+            if ($result = $mysqli->query($qry)){}
             //get additional question for header array & question order for answers
-            while ($questions = mysql_fetch_array($results)){
+            while ($questions = mysqli_fetch_array($results)){
              	array_push($basic_header, $questions['question']);
 				array_push($question_sequence, $questions['sequence']);
  			}
@@ -83,12 +96,13 @@ switch ($_REQUEST['action']) {
         //echo colulmn heading to report output
         echo implode($s, $basic_header) . $et . "\r\n";
         //get information to complete table    
-        $results = mysql_query("SELECT * from $events_attendee_tbl where event_id = '$event_id'");
-        while($participant = mysql_fetch_array($results)) {
+        $results = $mysqli->query("SELECT * from $events_attendee_tbl where event_id = '$event_id'");
+        while($participant = mysqli_fetch_array($results)) {
 					echo $participant ["id"]
 					. $s . $participant ["date"]
-                    . $s . $participant ["reg_type"]
-                    . $s . $participant ["lname"]
+                    . $s . $participant ["reg_type"];
+                    if ($waiver =="Y"){echo $s.$participant['waiver_agree'];}
+                    echo $s . $participant ["lname"]
 					. $s . $participant ["fname"];
                   //list all attendee names                   
                    $attendee_array = unserialize($participant["attendees"]);
@@ -132,8 +146,8 @@ switch ($_REQUEST['action']) {
                                 " WHERE ".$events_question_tbl.".id = ".$events_answer_tbl.".question_id ".
                                 " AND ".$events_answer_tbl.".registration_id = ".$participant["id"].
                                 " ORDER by sequence";
-                       $results2 = mysql_query($qry);
-                        while ($answer = mysql_fetch_array($results2)){ echo $s . $answer["answer"];}
+                       $results2 = $mysqli->query($qry);
+                        while ($answer = mysqli_fetch_array($results2)){ echo $s . $answer["answer"];}
         echo $et . "\r\n";
         } 
             

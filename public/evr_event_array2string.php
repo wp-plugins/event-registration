@@ -20,25 +20,15 @@ $inc_copostal = '';
 $inc_cophone = '';
 if ($reg_form_defaults != "") {
     if (in_array("Address", $reg_form_defaults)) { $inc_address = "Y"; }
-
     if (in_array("City", $reg_form_defaults)) { $inc_city = "Y"; }
-
     if (in_array("State", $reg_form_defaults)) { $inc_state = "Y"; }
-
     if (in_array("Zip", $reg_form_defaults)) { $inc_zip = "Y"; }
-
     if (in_array("Phone", $reg_form_defaults)) {  $inc_phone = "Y";  }
-    
     if (in_array("Company", $reg_form_defaults)) { $inc_comp = "Y"; }
-    
     if (in_array("CoAddress", $reg_form_defaults)) { $inc_coadd = "Y"; }
-    
     if (in_array("CoCity", $reg_form_defaults)) { $inc_cocity = "Y";}
-    
     if (in_array("CoState", $reg_form_defaults)) { $inc_costate = "Y"; }
-    
     if (in_array("CoPostal", $reg_form_defaults)) { $inc_copostal = "Y"; }
-    
     if (in_array("CoPhone", $reg_form_defaults)) { $inc_cophone = "Y"; }
 }
 $use_coupon = $event->use_coupon;
@@ -49,7 +39,6 @@ $display_desc = $event->display_desc; // Y or N
 $event_desc = stripslashes($event->event_desc);
 $event_category = unserialize($event->category_id);
 $reg_limit = $event->reg_limit;
-
 /*
 $event_location = stripslashes($event->event_location);
 $event_address = $event->event_address;
@@ -69,14 +58,12 @@ if((get_option('evr_location_active')=="Y") && ( $event->location_list >= '1')){
                                             $event_postal   = $location->postal;
                                             $event_phone    = $location->phone;
                                             }
-                                                                                 			                                           
                                         } else {
                                         $event_location = stripslashes($event->event_location);
                                         $event_address  = $event->event_address;
                                         $event_city     = $event->event_city;
                                         $event_postal   = $event->event_postal;
                                         }
-
 $google_map = $event->google_map; // Y or N
 $start_month = $event->start_month;
 $start_day = $event->start_day;
@@ -102,13 +89,9 @@ $end_date = $event->end_date;
 $event_close = $event->close;
 #In order to get the number of seats we need to count all attendees for this event
 #Retrieve the number of registered attendees for this event from attendee db
-$sql2= "SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id='$event->id'";
-$result2 = mysql_query($sql2);
-$num = 0;   
-$available_spaces = 0;
-while($row = mysql_fetch_array($result2)){$num =  $row['SUM(quantity)'];};
-$attendee_count = $num;                            
-if ($event->reg_limit != ""){$available_spaces = $event->reg_limit - $num;}
-if ($event->reg_limit == "" || $event->reg_limit == " " || $event->reg_limit == "999"){$available_spaces = "UNLIMITED";}
+$qty_count = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id= %d", $event->id));
+                    $available_spaces = 0; 
+            		if ($event->reg_limit != ""){$available_spaces = $event->reg_limit - $qty_count;}
+            	    if ($event->reg_limit == "" || $event->reg_limit == " " || $event->reg_limit == "999"){$available_spaces = "UNLIMITED";}
 #End of string generation
 ?>

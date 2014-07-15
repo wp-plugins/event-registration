@@ -1,9 +1,6 @@
 <?php
 function evr_admin_payment_update(){
-    global $wpdb;
-   
-   
-
+    global $wpdb, $company_options;
     $payment_id = $_REQUEST['payment_id'];
                 $payer_id = $_REQUEST['attendee_id'];
                 //$event_id = $_REQUEST['event_id'];
@@ -40,10 +37,7 @@ function evr_admin_payment_update(){
      			$payer_business_name = $_REQUEST['payer_business_name'];
      			$pending_reason = $_REQUEST['pending_reason'];
      			$reason_code = $_REQUEST['reason_code'];
-                
-                
                 $send_payment_rec = $_REQUEST['send_payment_rec'];                
-                
                 $sql=array('payer_id'=>$payer_id, 'event_id'=>$event_id, 'payment_date'=>$payment_date, 'txn_id'=>$txn_id, 
                             'first_name'=>$first_name, 'last_name'=>$last_name, 'payer_email'=>$payer_email, 'payer_status'=>$payer_status,
                             'payment_type'=>$payment_type, 'memo'=>$memo, 'item_name'=>$item_name, 'item_number'=>$item_number,
@@ -51,7 +45,6 @@ function evr_admin_payment_update(){
                             'address_street'=>$address_street, 'address_city'=>$address_city, 'address_state'=>$address_state, 'address_zip'=>$address_zip,
                             'address_country'=>$address_country, 'address_status'=>$address_status, 'payer_business_name'=>$payer_business_name, 'payment_status'=>$payment_status,
                             'pending_reason'=>$pending_reason, 'reason_code'=>$reason_code, 'txn_type'=>$txn_type);
-                            
                  $payment_dtl=array('payer_id'=>$payer_id, 'event_id'=>$event_id, 'payment_date'=>$payment_date, 'txn_id'=>$txn_id, 
                             'first_name'=>$first_name, 'last_name'=>$last_name, 'payer_email'=>$payer_email, 'payer_status'=>$payer_status,
                             'payment_type'=>$payment_type, 'memo'=>$memo, 'item_name'=>$item_name, 'item_number'=>$item_number,
@@ -59,78 +52,51 @@ function evr_admin_payment_update(){
                             'address_street'=>$address_street, 'address_city'=>$address_city, 'address_state'=>$address_state, 'address_zip'=>$address_zip,
                             'address_country'=>$address_country, 'address_status'=>$address_status, 'payer_business_name'=>$payer_business_name, 'payment_status'=>$payment_status,
                             'pending_reason'=>$pending_reason, 'reason_code'=>$reason_code, 'txn_type'=>$txn_type);              
-					  
-	   
-        		
      $sql_data = array('%s','%s','%s','%s','%s','%s','%s','%s','%s',
                         '%s','%s','%s','%s','%s','%s','%s','%s','%s',
                        '%s','%s','%s','%s','%s','%s','%s','%s','%s');
-        	
         $update_id = array('id'=> $payment_id);
-            
             if ($wpdb->update( get_option('evr_payment'), $sql, $update_id, $sql_data, array( '%d' ) )){?>
-    
         	         	<div id="message" class="updated fade"><p><strong><?php _e('The payment has been updated.','evr_language');?> </strong></p></div>
-                
                 <?php }else { ?>
-        		<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The payment was not updated!','evr_language');?><?php print mysql_error() ?>.</strong></p>
+        		<div id="message" class="error"><p><strong><?php _e('There was an error in your submission, please try again. The payment was not updated!','evr_language');?><?php print $wpdb->last_error; ?>.</strong></p>
                 <p><strong><?php _e(' . . .Now returning you to the payment section . . ','evr_language');?><meta http-equiv="Refresh" content="3; url=admin.php?page=payments&action=view_payments&event_id=<?php echo $event_id;?>"></strong></p>
                 </div>
                 <?php } 
-    			
-   
-   
    	if ($send_payment_rec == "Y") {	
- 		 
-					$company_options = get_option('evr_company_settings');
-                    
-                    $sql = "SELECT * FROM " . get_option('evr_attendee') . " WHERE id ='$payer_id'";
-					$result = mysql_query ( $sql );
-					$attendee_dtl = mysql_fetch_assoc ( $result );
-					
-                    $sql= "SELECT * FROM ". get_option('evr_event')." WHERE id=".$event_id; 
-                    $result = mysql_query ( $sql );
-                    $event_dtl = mysql_fetch_assoc ($result);  
-				
+                    $attendee_dtl = $wpdb->get_row($wpdb->prepare("SELECT * FROM ". get_option('evr_attendee') ." WHERE id = %d",$payer_id)); 
+                    $event_dtl = $wpdb->get_row($wpdb->prepare("SELECT * FROM ". get_option('evr_event') ." WHERE id = %d",$event_id)); 
 					//get return URL
-                                       
-					$payment_link = evr_permalink($company_options['return_url']). "id=".$payment_dtl['payer_id']."&fname=".$payment_dtl['first_name'];
-                    
-					$subject = "Updated " .$company_options['payment_subj'];
-					$distro = $email;              
+					$payment_link = evr_permalink($company_options['return_url']). "id=".$payment_dtl->payer_id."&fname=".$payment_dtl->first_name;
+                    $payment_cue = __("To make payment or view your payment information go to",'evr_language');
+                    $payment_text = $payment_cue.": " . $payment_link;
+					$subject = $company_options['payment_subj'];
+					$distro = $email;
+                    $ticket_order = unserialize($attendee_dtl->tickets);
 					$message = html_entity_decode(nl2br($company_options['payment_message']));
-                    //search and replace tags
-                    $SearchValues = array("[id]","[fname]","[lname]","[payer_email]","[event_name]", "[contact]",
+                        $SearchValues = array("[id]","[fname]","[lname]","[payer_email]","[event_name]", "[contact]",
                         "[payment_url]", "[amnt_pd]","[txn_id]","[txn_type]","[address_street]","[address_city]",
                         "[address_state]","[address_zip]","[address_country]","
                         [start_date]","[start_time]","[end_date]","[end_time]" );
-                    $ReplaceValues = array($payment_dtl['payer_id'], $payment_dtl['first_name'],$payment_dtl['last_name'],$payment_dtl['payer_email'],stripslashes($event_dtl['event_name']), $company_options['company_email'], 
-                       $payment_link, $payment_dtl['mc_gross'], $payment_dtl['txn_id'], $payment_dtl['txn_type'],$payment_dtl['address_street'], $payment_dtl['address_city'], 
-                       $payment_dtl['address_state'],$payment_dtl['address_zip'],$payment_dtl['address_country'], 
-                       $event_dtl['start_date'], $event_dtl['start_time'],$event_dtl['end_date'],$event_dtl['end_time'], );     
-                
+                       $ReplaceValues = array($payment_dtl->payer_id, $payment_dtl->first_name,$payment_dtl->last_name,$payment_dtl->payer_email,stripslashes($event_dtl->event_name), $company_options['company_email'], 
+                       $payment_link, $payment_dtl->mc_gross, $payment_dtl->txn_id, $payment_dtl->txn_type,$payment_dtl->address_street, $payment_dtl->address_city, 
+                       $payment_dtl->address_state,$payment_dtl->address_zip,$payment_dtl->address_country, 
+                       $event_dtl->start_date, $event_dtl->start_time,$event_dtl->end_date,$event_dtl->end_time, );     
                     $email_content = str_replace($SearchValues, $ReplaceValues, $message);
+                    //$email_content .= "</br>".$payment_text;
                     $message_top = "<html><body>"; 
                     $message_bottom = "</html></body>";
                     $email_body = $message_top.$email_content.$message_bottom;
-                            
                     $headers = "MIME-Version: 1.0\r\n";
                     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
                     $headers .= 'From: "' . $company_options['company'] . '" <' . $company_options['company_email'] . ">\r\n";
-                    
-                    wp_mail($attendee_dtl['email'], $subject, html_entity_decode($email_body), $headers);
-                    
+                    wp_mail($attendee_dtl->email, $subject, html_entity_decode($email_body), $headers);
                    ?>
 				<div id="message" class="updated fade"><p><strong><?php _e('Payment Received Notification sent.','evr_language');?> </strong></p></div>
                 <?php
 				}
-   
-		
-			
             ?>
-
             <META HTTP-EQUIV="refresh" content="3;URL=admin.php?page=payments&action=view_payments&event_id=<?php echo $event_id;?>">
             <?php
-        
 }
 ?>

@@ -1,7 +1,15 @@
 <?php
 function evr_questions_default(){
-    $record_limit = "10";
-    global $wpdb;
+    
+    global $wpdb,$company_options;
+    if ($company_options['eventpaging'] >= "1"){
+                   //define # of records to display per page
+                    $record_limit = $company_options['eventpaging'];  
+                } else
+                {
+                    //define # of records to display per page
+                    $record_limit = 10; 
+                }
     ?>
 <div class="wrap">
 <h2><a href="http://www.wpeventregister.com"><img src="<?php echo EVR_PLUGINFULLURL ?>images/evr_icon.png" alt="Event Registration for Wordpress" /></a></h2>
@@ -11,15 +19,10 @@ function evr_questions_default(){
 	<div class='postbox-container' style='width:auto;'>
         <div id='normal-sortables' class='meta-box-sortables'>
             <div id="dashboard_right_now" class="postbox " >
-                 
                 <h3 class='hndle'><span><?php _e('Select An Event','evr_language');?></span></h3>
                 <?php
-                //check database for number of records with date of today or in the future
-                $sql = "SELECT * FROM ".get_option('evr_event');
-                $records = mysql_query($sql);
-                $items = mysql_num_rows($records); // number of total rows in the database
-                
-                	if($items > 0) {
+                  $items = $wpdb->get_var( 'SELECT COUNT(*) FROM '.get_option('evr_event' ));              
+	if($items > 0) {
                 		$p = new evr_pagination;
                 		$p->items($items);
                 		$p->limit($record_limit); // Limit entries per page
@@ -28,16 +31,13 @@ function evr_questions_default(){
                 		$p->calculate(); // Calculates what to show
                 		$p->parameterName('paging');
                 		$p->adjacents(1); //No. of page away from the current page
-                
                 		if(!isset($_GET['paging'])) {
                 			$p->page = 1;
                 		} else {
                 			$p->page = $_GET['paging'];
                 		}
-                
                 		//Query for limit paging
                 		$limit = "LIMIT " . ($p->page - 1) * $p->limit  . ", " . $p->limit;
-                
                 } else {
                 	_e('No Record Found','evr_language');
                 }//End pagination
@@ -68,16 +68,16 @@ function evr_questions_default(){
                         </tfoot>
                         <tbody>
                         <?php
-                        
                         $rows = $wpdb->get_results( "SELECT * FROM ". get_option('evr_event') ." ORDER BY date(start_date) DESC ".$limit );
                           if ($rows){
                             foreach ($rows as $event){
-                            
                                         $id       = $event->id;
+                                        $event_id = $event->id;
                         				$event_name     = stripslashes($event->event_name);
                         				$event_location = stripslashes($event->event_location);
                                         $event_address  = $event->event_address;
                                         $event_city     = $event->event_city;
+                                        $event_state    = $event->event_state;
                                         $event_postal   = $event->event_postal;
                                         $reg_limit      = $event->reg_limit;
                                 		$start_time     = $event->start_time;
@@ -86,12 +86,9 @@ function evr_questions_default(){
                                         $custom_mail    = $event->custom_mail;
                                 		$start_date     = $event->start_date;
                                 		$end_date       = $event->end_date;
-                                                                       
-                        
                             ?>
-                            
-            			    <tr><td><?php echo $start_date;?></td><td><a href="admin.php?page=questions&action=new&event_id=<?php echo $id;?>&event_name=<?php echo stripslashes($event_name);?>">
-                                <?php echo $event_name;?> (<?php echo $event_identifier;?>)</a></td><td><?php echo $event_location.", ".$event_city.", ".$event_state;?></td><td>
+            			    <tr><td><?php echo $start_date;?></td><td><a href="admin.php?page=questions&action=new&event_id=<?php echo $event_id;?>&event_name=<?php echo stripslashes($event_name);?>">
+                                <?php echo $event_name;?> (<?php echo $event->event_identifier;?>)</a></td><td><?php echo $event_location.", ".$event_city.", ".$event_state;?></td><td>
                                 <?php
                              $questions = $wpdb->get_results ( "SELECT * from ".get_option('evr_question')." where event_id = $id order by sequence" );
             			     if ($questions) {
@@ -103,10 +100,8 @@ function evr_questions_default(){
                             ?>
                             <font color="red"><?php _e('No Custom Questions','evr_language');?></font>
                             <?php } ?>
-                                                    
                             </td></tr>
                             <?php
-                            
                         	}}
                             else {
                             ?>

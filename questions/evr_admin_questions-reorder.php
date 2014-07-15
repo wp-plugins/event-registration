@@ -38,7 +38,7 @@ margin: 0 3px 3px 3px;
 padding: 0.4em; 
 padding-left: 1.5em; 
 font-size: .8em; 
-height: 30px; 
+ 
 } 
 #er_ticket_sortable li span { 
 position: absolute; 
@@ -47,11 +47,9 @@ margin-left: -1.3em;
  </style> 
 <br />
 <div class="wrap">
-    <div id="dashboard-widgets-wrap">
-        <div id="dashboard-widgets" class="metabox-holder">
-        	<div class='postbox-container' style='width:65%;'>
-                <div id='normal-sortables' class='meta-box-sortables'>
-                    <div id="dashboard_right_now" class="postbox " >
+          	<div class='postbox-container' style='width:90%;'>
+                
+                    <div class="postbox " >
                         <h3 class='hndle'><span><?php _e('ReOrder Event Questions for display order: ','evr_language');?><?php echo stripslashes($event_name);?></span></h3>
                          <div class="inside">
                             <div class="padding">        
@@ -76,8 +74,8 @@ margin-left: -1.3em;
                         					           }
                                                        ?>
                                            ||  <font color='blue' size = '1'> <?php _e('TYPE','evr_language');?>:</font> <?php echo $question->question_type;?>
-                                           ||  <font color='blue' size = '1'><?php _e('QUESTION','evr_language');?>:</font> <?php echo $question->question;?>
-                                           ||  <font color='blue' size = '1'><?php _e('RESPONSES','evr_language');?>:</font> <?php echo $question->response;?>
+                                           <br />  <font color='blue' size = '1'><?php _e('QUESTION','evr_language');?>:</font> <?php echo $question->question;?>
+                                           <br />  <font color='blue' size = '1'><?php _e('RESPONSES','evr_language');?>:</font> <?php echo $question->response;?>
                                         
                                        
                                         </li>                      
@@ -93,12 +91,11 @@ margin-left: -1.3em;
                             <a class="button-primary" href="admin.php?page=questions&action=new&event_id=<?php echo $event_id;?>" title="Process Change"><?php _e('Apply Changes','evr_language');?></a>
                             
                             </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
-        </div>            
-    </div>
+        
 </div> 
 <?php
 }

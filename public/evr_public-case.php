@@ -1,8 +1,8 @@
 <?php
 function evr_registration_main(){
     
-    global $wpdb;
-    $company_options = get_option('evr_company_settings');
+    global $wpdb,$company_options;
+    //$company_options = get_option('evr_company_settings');
     if (!isset($_REQUEST['action'])) {$action = '';} else { $action = $_REQUEST['action'];}
     if (!isset($_REQUEST['event_id'])) {$event_id = '';} 
     else {  
@@ -49,6 +49,19 @@ function evr_registration_main(){
                 else {
                     _e('IPN is only avialble with PAYPAL with this version of Event Reigstration','evr_language');
                 }
+            break;
+            case "authorize_txn":
+               if ($company_options['payment_vendor']=="AUTHORIZE"){          
+                evr_authorize_txn();
+                }
+                else {
+                    _e('IPN is currently not available.','evr_language');
+                }
+            break;
+            case "payfast_itn":
+                wp_mail('dfleming@microsoft.com'.'IPN Test Notice',"It works - 1!");
+                evr_payfast_itn();
+                wp_mail('dfleming@microsoft.com'.'IPN Test Notice',"It works - 2!");
             break;
             
             default:

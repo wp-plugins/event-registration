@@ -3,8 +3,8 @@
 function evr_confirm_form(){
 
     $_SESSION['token'] = md5(session_id() . time());
-    global $wpdb, $qanda, $posted_data;
-    $company_options = get_option('evr_company_settings');
+    global $wpdb, $qanda, $posted_data, $company_options;
+    //$company_options = get_option('evr_company_settings');
     $num_people = 0;
     $item_order = array();
         
@@ -36,30 +36,36 @@ function evr_confirm_form(){
     if (isset($_POST['co_state'])){ $costate = $_POST['co_state'];} else { $costate = '';}
     if (isset($_POST['co_zip'])){$cozip = $_POST['co_zip'];} else { $cozip = '';}
     if (isset($_POST['co_phone'])){$cophone = $_POST['co_phone'];} else { $cophone = '';}
+    if (isset($_POST['waiver_agree'])){$waiver_agree = $_POST['waiver_agree'];} else { $waiver_agree = '';}
+    
     
     $attendee_name = $fname." ".$lname;
     
     //echo "Registration Type is: ".$reg_type."!";
     
-    
+    $items = $wpdb->get_results( "SELECT * FROM ". get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC" );
+                                                if ($items){
+                                                    foreach ($items as $item){
+                                                        
+                                                        $item_id          = $item->id;
+                                                        $item_sequence    = $item->sequence;
+                                            			$event_id         = $item->event_id;
+                                                        $item_title       = $item->item_title;
+                                                        $item_description = $item->item_description; 
+                                                        $item_cat         = $item->item_cat;
+                                                        $item_limit       = $item->item_limit;
+                                                        $item_price       = $item->item_price;
+                                                        $free_item        = $item->free_item;
+                                                        $item_start_date  = $item->item_available_start_date;
+                                                        $item_end_date    = $item->item_available_end_date;
+                                                        $item_custom_cur  = $item->item_custom_cur;
+                                                        if ($item_custom_cur == "GBP"){$item_display_cur = "&pound;";}
+                                                        if ($item_custom_cur == "USD"){$item_display_cur = "$";}
+                                            
    
-    $sql = "SELECT * FROM " . get_option('evr_cost') . " WHERE event_id = " . $event_id. " ORDER BY sequence ASC";
-    $result = mysql_query ( $sql );
-	while ($row = mysql_fetch_assoc ($result)){
-            $item_id          = $row['id'];
-            $item_sequence    = $row['sequence'];
-			$event_id         = $row['event_id'];
-            $item_title       = $row['item_title'];
-            $item_description = $row['item_description']; 
-            $item_cat         = $row['item_cat'];
-            $item_limit       = $row['item_limit'];
-            $item_price       = $row['item_price'];
-            $free_item        = $row['free_item'];
-            $item_start_date  = $row['item_available_start_date'];
-            $item_end_date    = $row['item_available_end_date'];
-            $item_custom_cur  = $row['item_custom_cur'];
+    
                              
-            $item_post = str_replace(".", "_", $row['item_price']);
+            $item_post = str_replace(".", "_", $item->item_price);
             $item_qty = $_REQUEST['PROD_' . $event_id . '-' . $item_id . '_' . $item_post];
             
             if ($item_cat == "REG"){$num_people = $num_people + $item_qty;}
@@ -70,7 +76,7 @@ function evr_confirm_form(){
                 'ItemEnd' => $item_end_date, 'ItemQty' => $item_qty);
             array_push($item_order, $item_info);
             
-            }
+            }}
     if ($reg_type == "WAIT"){$quantity = "1";}
     else {$quantity = $num_people;}
     
@@ -110,26 +116,27 @@ function evr_confirm_form(){
                     }
                 }    
                 
-$sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id=". $event_id;
-                    		$result = mysql_query ($sql);
-                            while ($row = mysql_fetch_assoc ($result)){  
-                         
-                            $event_id           = $row['id'];
-            				$event_name         = stripslashes($row['event_name']);
-            				$event_location     = $row['event_location'];
-                            $event_address      = $row['event_address'];
-                            $event_city         = $row['event_city'];
-                            $event_postal       = $row['event_postal'];
-                            $reg_limit          = $row['reg_limit'];
-                    		$start_time         = $row['start_time'];
-                    		$end_time           = $row['end_time'];
-                    		$start_date         = $row['start_date'];
-                    		$end_date           = $row['end_date'];
-                            $use_coupon         = $row['use_coupon'];
-                            $coupon_code        = $row['coupon_code'];
-                            $coupon_code_price  = $row['coupon_code_price'];
+                
+     
+    $sql = "SELECT * FROM ". get_option('evr_event') ." WHERE id = $event_id";
+    $event = $wpdb->get_row($sql);               
+
+        $event_id           = $event->id;
+		$event_name         = stripslashes($event->event_name);
+		$event_location     = stripslashes($event->event_location);
+        $event_address      = $event->event_address;
+        $event_city         = $event->event_city;
+        $event_postal       = $event->event_postal;
+        $reg_limit          = $event->reg_limit;
+		$start_time         = $event->start_time;
+		$end_time           = $event->end_time;
+		$start_date         = $event->start_date;
+		$end_date           = $event->end_date;
+        $use_coupon         = $event->use_coupon;
+        $coupon_code        = $event->coupon_code;
+        $coupon_code_price  = $event->coupon_code_price;
                             
-                            }
+                           
 
 // GT Validate coupon code and deduct discount	
 if ($use_coupon == "Y"){
@@ -140,14 +147,17 @@ $posted_data =array('lname'=>$lname, 'fname'=>$fname, 'address'=>$address, 'city
                 'state'=>$state, 'zip'=>$zip, 'reg_type'=>$reg_type, 'email'=>$email,
                 'phone'=>$phone, 'email'=>$email, 'coupon'=>$coupon, 'event_id'=>$event_id,'event_name'=>$event_name,
                 'company'=>$company, 'co_add'=>$coadd, 'co_city'=>$cocity, 'co_state'=>$costate, 'co_zip'=>$cozip,
-                'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment, 'fees'=>$fees, 'tax'=>$tax);
+                'num_people'=>$quantity, 'tickets'=>$ticket_data, 'payment'=>$payment, 'fees'=>$fees, 'tax'=>$tax,'waiver_agree'=>$waiver_agree);
        
 
 #Begin display of confirmation form
+$item_custom_cur  = $item_order[0]['ItemCurrency'];
+    if ($item_custom_cur == "GBP"){$item_display_cur = "&pound;";}
+    if ($item_custom_cur == "USD"){$item_display_cur = "$";}
 echo '<script type="text/javascript" src="'.EVR_PLUGINFULLURL.'public/validate.js.php"></script>';
 echo '<p align="left"><strong>'.__('Please verify your registration details:','evr_language').'</strong></p>';
 echo '<table width="95%" border="0"><tr><td><strong>'.__('Event Name/Cost:','evr_language').'</strong></td><td>';
-echo $event_name.' - '.$item_order[0]['ItemCurrency'].'&nbsp;'.$payment.'</td></tr><tr><td><strong>';
+echo $event_name.' - '.$item_display_cur.'&nbsp;'.$payment.'</td></tr><tr><td><strong>';
 _e('Registering Name:','evr_language');
 echo '</strong></td><td>'.$attendee_name.'</td></tr><tr><td><strong>'.__('Email Address:','evr_language').'</strong></td><td>';
 echo $email.'</td></tr><tr><td><strong>'.__('Number of Attendees:','evr_language');
@@ -158,7 +168,8 @@ else {
     $row_count = count($item_order);
     for ($row = 0; $row < $row_count; $row++) {
     if ($item_order[$row]['ItemQty'] >= "1"){ 
-        echo $item_order[$row]['ItemQty']." ".$item_order[$row]['ItemCat']."-".$item_order[$row]['ItemName']." ".$item_order[$row]['ItemCurrency'] . '  ' . $item_order[$row]['ItemCost']."<br \>";}
+        
+        echo $item_order[$row]['ItemQty']." ".$item_order[$row]['ItemCat']."-".$item_order[$row]['ItemName']." ".$item_display_cur . '  ' . $item_order[$row]['ItemCost']."<br \>";}
     } }
 echo '</td></tr><tr>';    
 if ($use_coupon == "Y"){
@@ -175,8 +186,9 @@ if ($company_options['use_sales_tax'] == "Y"){
     _e('Sales Tax:','evr_language'); 
     echo '  '.$tax.'</td></tr>';
 }
+                                                        
 echo '<tr><td colspan="2"></td></tr><tr><td><strong>'.__('Event Name / Total Cost:','evr_language').'</strong></td><td>';
-echo $event_name.': '.$item_order[0]['ItemCurrency'].'<strong>  '.number_format($payment,2).'</strong></td></tr></table>';
+echo $event_name.': '.$item_display_cur.'<strong>  '.number_format($payment,2).'</strong></td></tr></table>';
 echo '<p align="left"><strong>';
 if ($reg_type == "WAIT"){
     $type = __('You are on the waiting list.','evr_language');

@@ -1,6 +1,6 @@
 <?php
 function evr_admin_view_attendee(){
-    global $wpdb;
+    global $wpdb,$company_options;
     //$event_id = $_REQUEST['event_id'];
     (is_numeric($_REQUEST['event_id'])) ? $event_id = $_REQUEST['event_id'] : $event_id = "0";
     $event = $wpdb->get_row('SELECT * FROM ' . get_option('evr_event') . ' WHERE id = ' . $event_id);
@@ -46,23 +46,71 @@ function evr_admin_view_attendee(){
                 <div id='normal-sortables' class='meta-box-sortables'>
                     <div id="dashboard_right_now" class="postbox " >
                         <h3 class='hndle'><span><?php _e('View Attendee:','evr_language');?><a href="#?w=700" rel="popup<?php echo $event->id;?>" class="poplight">   <?php echo stripslashes($event->event_name); ?></a></span></h3>
-                         <div class="inside">
+                         <?php
+                //check database for number of records with date of today or in the future
+                if ($company_options['attendeepaging'] >= "1"){
+                   //define # of records to display per page
+                    $record_limit = $company_options['attendeepaging'];  
+                } else
+                {
+                    //define # of records to display per page
+                    $record_limit = 25; 
+                }
+                $items = $wpdb->get_var( 'SELECT COUNT(*) FROM '.get_option('evr_attendee').' WHERE event_id = ' . $event_id );
+            
+                	if($items > 0) {
+                		$p = new evr_pagination;
+                		$p->items($items);
+                		$p->limit($record_limit); // Limit entries per page
+                		$p->target("admin.php?page=attendee&action=view_attendee&event_id=".$event_id);
+                		$p->currentPage($_GET[$p->paging]); // Gets and validates the current page
+                		$p->calculate(); // Calculates what to show
+                		$p->parameterName('paging');
+                		$p->adjacents(1); //No. of page away from the current page
+                
+                		if(!isset($_GET['paging'])) {
+                			$p->page = 1;
+                		} else {
+                			$p->page = $_GET['paging'];
+                		}
+                
+                		//Query for limit paging
+                		$limit = "LIMIT " . ($p->page - 1) * $p->limit  . ", " . $p->limit;
+                
+                } else {
+                	echo "No Record Found";
+                }//End pagination
+                ?>
+                <div class="inside">
+                    <div class="padding">
+                    <div class="tablenav">
+                        <div class='tablenav-pages'>
+                            <?php if($items > 0) { echo $p->show();}  // Echo out the list of paging. ?>
+                        </div>
+                    </div>
+                    <div class="inside">
                             <div class="padding">        
                             <table class="widefat">
                                 <thead>
-                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th><th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
+                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th>
+                                <?php if ($event->waiver=="Y"){echo "<th>Agreed to Waiver</th>";} ?>
+                                <th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
                                 </thead>
                                 <tfoot>
-                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th><th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
+                                <tr><th><?php _e('Type','evr_language');?></th><th><?php _e('# People','evr_language');?></th><th><?php _e('Registered Name','evr_language');?> </th>
+                                <?php if ($event->waiver=="Y"){echo "<th>Agreed to Waiver</th>";} ?>
+                                <th><?php _e('Attendees','evr_language');?></th><th><?php _e('Email','evr_language');?></th><th><?php _e('Phone','evr_language');?></th><th><?php _e('Action','evr_language');?></th></tr>
                                 </tfoot>
                                 <tbody>
 <?php
-$rows = $wpdb->get_results('SELECT * FROM ' . get_option('evr_attendee') . ' WHERE event_id = ' . $event_id);
+$rows = $wpdb->get_results('SELECT * FROM ' . get_option('evr_attendee') . ' WHERE event_id = ' . $event_id." ".$limit );
 if ($rows){
     foreach ($rows as $attendee){
-        echo "<tr><td>".$attendee->reg_type."</td><td>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td><td>";
+        echo "<tr><td>".$attendee->reg_type."</td><td align='center'>".$attendee->quantity."</td><td align='left'>" . $attendee->lname . ", " . $attendee->fname . " ( ID: ".$attendee->id.")</td>";
+        if ($event->waiver=="Y"){echo "<td align='center'>".$attendee->waiver_agree."</td>";}
         /*if ($attendee->attendees ==""){echo "<font color='red'>Please Update This Attendee</font>";}*/
         /* Glenn Tate: */
+        echo "<td>";
         if ($attendee->attendees =="" || $attendee->attendees =="N;"){echo "<font color='red'>Please Update This Attendee</font>";}
         else {$attendee_array = unserialize($attendee->attendees);
         foreach($attendee_array as $ma) 
@@ -81,6 +129,11 @@ if ($rows){
                             <?php evr_excel_export($event_id);?>
                         </div>
                         </div>
+                        <div class="tablenav">
+                        <div class='tablenav-pages'>
+                            <?php if($items > 0) { echo $p->show();  }// Echo out the list of paging. ?>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -91,71 +144,33 @@ if ($rows){
 }
 function evr_excel_export($event_id){
     global $wpdb;
-    $today = date("Y-m-d_Hi",time()); 
-$info = array(
-        "dbuser" => $wpdb->dbuser, 
-        "dbpass" => $wpdb->dbpassword, 
-        "db" =>$wpdb->dbname, 
-        "host" =>$wpdb->dbhost
-        );
-$tables = array(
-        "evr_answer" => get_option('evr_answer'),
-        "evr_question" => get_option('evr_question'),
-        "evr_event" => get_option('evr_event'),
-        "evr_attendee" => get_option('evr_attendee'),
-        "evr_payment" => get_option ('evr_payment')
-        );
+    $today = date("Y-m-d_Hi",time());
+    $report_url = admin_url( 'admin.php?page=excel&noheader=true', '' );
+ 
+
 ?>
 <div style="float:left; margin-right:10px;">
-    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
-                                <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
-                               <input type="hidden" name="export" value="report" /> 
-                               <input type="hidden" name="action" value="excel" />
-                               <input type="hidden" name="key" value="5678" /> 
-                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
-                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input class="xls_btn" type="submit" value="Export Details - Excel"/>
-                                </form>
-    </div>
-<div style="float:left;">
-    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
-                                <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
-                               <input type="hidden" name="export" value="report" /> 
-                               <input type="hidden" name="action" value="csv" />
-                               <input type="hidden" name="key" value="5678" /> 
-                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
-                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input class="csv_btn" type="submit" value="Export Details - CSV"/>
+    <form method="POST" action="<?php echo $report_url;?>">
+                               <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
+                               <input type="hidden" name="action" value="attendee"/>
+                               <?php wp_nonce_field( 'reporting','report_nonce' ); ?>
+                               <input class="xls_btn" type="submit" name="report" value="Export Details - Excel"/>
                                 </form>
     </div>
 <?php
 }
 function evr_payment_export($event_id){
     global $wpdb;
-    $today = date("Y-m-d_Hi",time()); 
-$info = array(
-        "dbuser" => $wpdb->dbuser, 
-        "dbpass" => $wpdb->dbpassword, 
-        "db" =>$wpdb->dbname, 
-        "host" =>$wpdb->dbhost
-        );
-$tables = array(
-        "evr_answer" => get_option('evr_answer'),
-        "evr_question" => get_option('evr_question'),
-        "evr_event" => get_option('evr_event'),
-        "evr_attendee" => get_option('evr_attendee'),
-        "evr_payment" => get_option ('evr_payment')
-        );
+    $today = date("Y-m-d_Hi",time());
+    $report_url = admin_url( 'admin.php?page=excel&noheader=true', '' ); 
+
 ?>
 <div style="display: inline-block;">
-    <form method="POST" action="<?php echo EVR_PLUGINFULLURL . 'evr_admin_export.php';?>">
+    <form method="POST" action="<?php echo $report_url;?>">
                                 <input type="hidden" name="id" value="<?php echo $event_id; ?>" /> 
-                               <input type="hidden" name="export" value="report" /> 
-                               <input type="hidden" name="action" value="payment" />
-                               <input type="hidden" name="key" value="5678" /> 
-                               <input type="hidden" name="info" value="<?php echo base64_encode(serialize($info)); ?>" />
-                               <input type="hidden" name="tables" value="<?php echo base64_encode(serialize($tables)); ?>" />
-                               <input type="submit" value="Export Payments - Excel"/>
+                               <input type="hidden" name="action" value="payment"/>
+                               <?php wp_nonce_field( 'reporting','report_nonce' ); ?>
+                               <input class="xls_btn" type="submit" name="report" value="Export Payments - Excel"/>
                                 </form>
     </div>
 <?php

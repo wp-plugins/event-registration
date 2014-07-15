@@ -111,12 +111,12 @@ table.evr_events td {
 
 /*Textfield style*/
 #evrRegForm li .fieldbox {
-    height:15px;    
+    height:30px;    
     padding-left:5px;
     } 
    
 #evrRegForm li .fieldbox input {    
-    height:15px;    
+    height:30px;    
     padding-top:5px;    
     width:300px;
     }

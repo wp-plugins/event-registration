@@ -539,12 +539,12 @@ table.evr_evntpop {
 	}    
     
     
-//Style for Tabs 
-//GT Removed width attribute on evr_container to fix company settings tab wrap. Now it auto sizes.
+//Style for Tabs
+
 h1 {font-size: 3em; margin: 20px 0;}
 
 .evr_container {
-     
+    width: 900px; 
     margin: 10px auto;
     float: left;
     

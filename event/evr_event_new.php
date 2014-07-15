@@ -121,13 +121,12 @@ function evr_new_event(){
                <tr><td colspan="2">
                     <?php 
                     $sql = "SELECT * FROM ". get_option('evr_category');
-                    $result = mysql_query ($sql);
-                    while ($row = mysql_fetch_assoc ($result)){
-                    $category_id= $row['id'];
-                    $category_name=$row['category_name'];
-                    echo '<input class="checkbox" value="'.$category_id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$category_id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $category_name. "&nbsp;&nbsp;&nbsp; ";
+                    $myrows = $wpdb->get_results($sql);
+                    foreach ($myrows as $row){
+                        echo '<input class="checkbox" value="'.$row->id.'" type="checkbox" name="event_category[]" id="in-event-category-'.$row->id.'"'. ($checked ? ' checked="checked"' : "" ). '/>  '."&nbsp;". $row->category_name. "&nbsp;&nbsp;&nbsp; ";
                     }
-                    ?></td>
+                    ?>
+                    </td>
                </tr></table> 
             
             
@@ -144,14 +143,19 @@ function evr_new_event(){
                     <input  class="count" name="reg_limit">
                     </td>
                 </tr>
-                <?php    
+                
+            </table>
+<?php    
     global $wpdb;
+    $locations_array = array();
+    $location_status 	= get_option( 'evr_location_license_status' );
+    if ($location_status !== false && $location_status == 'valid' ) {
     $sql = "SELECT * FROM " . get_option('evr_location')." ORDER BY location_name";
     $locations_array = $wpdb->get_results( $sql );
-    if( (!empty( $locations_array )) && (get_option('evr_location_active')=="Y")) :
-    ?>
-</table>
-<script type="text/javascript">
+    }
+
+    if( (!empty( $locations_array )) && ($location_status=="valid")) {
+    ?><script type="text/javascript">
 
 	/* <![CDATA[ */
 $j = jQuery.noConflict();
@@ -193,11 +197,11 @@ jQuery(document).ready(function($j){
 				<option value="">(choose one)</option>
 				<option value="0">Custom</option>
     <?php
-		foreach( $locations_array as $location ) : 
+		foreach( $locations_array as $location ) { 
         ?>
 			<option value="<?php echo $location->id; ?>"><?php echo stripslashes($location->location_name); ?></option>
 		<?php
-		endforeach;
+		}
         ?>
         </select>
             </td></tr></table>
@@ -240,8 +244,8 @@ jQuery(document).ready(function($j){
 		</div>
         <table>
         <?php
-	else : ?>
-		<tr>
+	} else { ?>
+		<table><tr>
                     <td>
                     <label class="tooltip" title="<?php _e('Enter the name of the business or facility where the event is being held','evr_language');?>" for="event_location">
                     <?php _e('Event Location/Venue','evr_language');?><a><span> ?</span></a></label>
@@ -272,9 +276,9 @@ jQuery(document).ready(function($j){
                     <td>
                     <input id="event_postcode" name="event_postcode" type="text" value="Postcode" />
                     </td>
-                </tr>
+                </tr></table>
 		<?php 
-	endif; 
+	} 
 ?>  
                 
                 <tr>
@@ -287,7 +291,16 @@ jQuery(document).ready(function($j){
                     <label for="google_map_no"><input type="radio" class="radio" name="google_map" value="N"><?php _e('No','evr_language');?>
                     </label>
                     </td>
-                </tr> </table>
+                </tr> <tr></tr></table><br/>
+                <?php
+                if ($location_status!=="valid"){
+                    echo "<hr><br/><br/><p align='center'>Stop typing your locations over and over<br/>";
+                    echo "Get the Location Add-On for Event Registration Today<br/>";
+                    echo "Have all your locations accessible in an easy dropdown list<br/>";
+                    echo '<a href="http://wpeventregister.com/a-new-add-on-for-event-registration/">Location Module</a><br/></p>';
+                    
+                }
+                ?>
         </div>
         <div id="tab3" class="tab_content">
             <h2><?php _e('EVENT TIMES','evr_language');?></h2>
@@ -382,6 +395,35 @@ jQuery(document).ready(function($j){
                 
         </table>
         <hr />
+                <h4><?php _e('Event Waiver Options','evr_language');?>  <font color="red"><?php _e('Optional','evr_language');?></font></h4>
+        <table>
+            <tr><td>
+            <label  class="tooltip" title="<?php _e('Will require the person signing up to accept or decline an event waiver','evr_language');?>">
+            <?php _e('Use event waiver?','evr_language');?> <a><span>?</span></a></label></td>
+            <td><label>
+            <input type="radio" name="waiver" class="radio" value="Y" />&nbsp;<?php _e('Yes','evr_language');?>
+            </label></td>
+            <td>
+            <label>
+            <input type="radio" name="waiver" class="radio" value="N" />&nbsp;<?php _e('No','evr_language');?> 
+            </label></td></tr>
+            <tr><td colspan="3">          
+            <label  class="tooltip" title="<?php _e('Enter the content for the event waiver','evr_language');?>" >
+            <?php _e('Waiver Content','evr_language');?> <a><span>?</span></a></label>
+              <?php
+             
+             
+              if (function_exists('wp_editor')){
+               echo "</td></tr></table>";
+              wp_editor( '', 'waiver_content', $editor_settings ); 
+                    } else {  ?>
+               <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
+               </td></tr></table>
+               <textarea name="waiver_content" id="waiver_content" style="width: 100%; height: 200px;"></textarea>
+                    <?php } ?>
+             
+                    
+        <hr />
         <br />
         <h3><?php _e('Event Listing Options','evr_language');?>  <font color="red"><?php _e('Optional','evr_language');?></font></h3>
         <table>
@@ -408,7 +450,9 @@ jQuery(document).ready(function($j){
         </table>
     </div>
     
-    <?php if (get_option('evr_coordinator_active')=="Y"){ ?>
+    <?php 
+        $coordinator_status 	= get_option( 'evr_coordinator_license_status' );
+        if( ($coordinator_status !== false && $coordinator_status == 'valid' )|| (get_option('evr_coordinator_active')=="Y")) { ?>
         <div id="tab5" class="tab_content">
             <h2><?php _e('Coordinator Options','evr_language');?></h2>
             <label  class="tooltip" title="<?php _e('If you want to send alerts to a unique event coordinator','evr_language');?>">
@@ -470,14 +514,14 @@ jQuery(document).ready(function($j){
         <?php } else { ?>
              <div id="tab5" class="tab_content">
                 <h2><?php _e('Coordinator Options','evr_language');?></h2>
-                <font color="red">This feature is available in an add on module.</font>
+                <font color="red">This feature is available in an add on module. </font>
                 <ul>
                 <li>Option to send unique email to a unique coordinators email address for each event registration.</li>
                 <li>WYSIWYG editor for coordinator's email registration alert.</li>
                 <li>Option to send unique email to a unique coordinators email address for each event payment recieved via PayPal IPN.</li>
                 <li>WYSIWYG editor for coordinator's email payment notification alert.</li>
                 </ul>
-                <p><a href="http://wpeventregister.com/shop/event-registration-coordinator-module/">BUY COORDINATOR MODULE</a></p><br />
+                <p><a href="http://wpeventregister.com/downloads/event-registration-coordinator-module/">BUY COORDINATOR MODULE</a></p><br />
                 <p>Once purchased, you will recieve an email with activation directions.</p>
 
                 
