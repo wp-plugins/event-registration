@@ -106,7 +106,7 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 == Change Log ==
 
-= Version 6.01.07 +
+= Version 6.01.07 =
 *Fixed bug in default payment on return page for payments
 
 = Version 6.01.06 =
