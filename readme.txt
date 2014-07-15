@@ -12,7 +12,7 @@ Event Registration is a WordPress plugin that allows you to manage events with a
 
 == Description ==
 
-Event Registration is the original plugin for event management.  It serves as a great tool for an Events Planner or Events Registration Coordinator. This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. It is designed to be easy to navigate.
+This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. It is designed to be easy to navigate.
 It allows you to capture the registering persons contact information and any additional infromation you request to a database and provides an association to an events database. 
 It provides the ability to send the register to either a Paypal, Google Pay, Monster Pay,  or Authorize.net online payment site for online collection of event fees.
 Additionally it allows support for checks and cash payments.  
@@ -105,6 +105,18 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.01.06 =
+*Added support for location module
+*Fixed bug in Event Category Display Page Content
+*Fixed bug in Edit Event - Description - stripslashes 
+*Fixed bug in Edit Event - Venue  Name - stripslashes
+*Fixed bug in Edit Event Venue - location not displaying
+*Fixed bug in Edit Event Venue - Location Module not displaying locations correctly
+*Fixed bug in Edit Event Venue - Google Maps yes/no radio button selection
+*Fixed bug in Edit Event - Event Name not displaying in title
+*Fixed bug in Edit Event - Coordinator Module - Mail Stripslahes from mail message
+*Fixed bug in Edit Event - Confirmation Mail - stripslashes from mail message
 
 = Version 6.01.05 =
 *Changed stable version in readme

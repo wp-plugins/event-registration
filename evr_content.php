@@ -124,7 +124,7 @@ $payment=$total_due;
 		$p->paypal_url = 'https://www.paypal.com/cgi-bin/webscr'; // paypal url
 	}
     	if ($payment != "0.00" || $payment != "" || $payment != " "){
-				  $p->add_field('business', $company_options['payment_vendor_id']);
+				  $p->add_field('business', $company_options['paypal_id']);
                   $p->add_field('return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
 				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
 				  $p->add_field('cancel_return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
@@ -159,13 +159,13 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         // 5.1.2 - http://hmhash.sourceforge.net/
         // the parameters for the payment can be configured here
         // the API Login ID and Transaction Key must be replaced with valid values
-        $loginID		= $company_options['payment_vendor_id'];
-        $transactionKey = $company_options['$txn_key'];
+        $loginID		= $company_options['authorize_id'];
+        $transactionKey = $company_options['authorize_key'];
         $amount 		= $payment;
         $description 	= $event->event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee->fname." ".$attendee->lname .' | Total Registrants: '.$attendee->quantity;
         $label 			= $pay_now; // The is the label on the 'submit' button
-        if ($company_options['use_sandbox'] == "Y") {$testMode		= "true";}
-        if ($company_options['use_sandbox'] == "N") {$testMode		= "false";}
+        if ($company_options['use_authorize_testmode'] == "Y") {$testMode		= "true";}
+        if ($company_options['use_authorize_testmode'] == "N") {$testMode		= "false";}
         // By default, this sample code is designed to post to our test server for
         // developer accounts: https://test.authorize.net/gateway/transact.dll
         // for real accounts (even in test mode), please make sure that you are
@@ -213,14 +213,14 @@ if ($company_options['payment_vendor']=="AUHTHORIZE"){
         // Create the HTML Payment Button
     //Google Payment Button
     ?>
-     <form action="https://checkout.google.com/api/checkout/v2/checkoutForm/Merchant/<?php echo $company_options['payment_vendor_id'];?>" id="BB_BuyButtonForm" method="post" name="BB_BuyButtonForm" target="_top">
+     <form action="https://checkout.google.com/api/checkout/v2/checkoutForm/Merchant/<?php echo $company_options['google_id'];?>" id="BB_BuyButtonForm" method="post" name="BB_BuyButtonForm" target="_top">
     <input name="item_name_1" type="hidden" value="<?php echo $event->event_name."-".$attendee->fname." ".$attendee->lname;?>"/>
     <input name="item_description_1" type="hidden" value="<?php echo $event->event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee_name .' | Total Registrants: '.$quantity;?>"/>
     <input name="item_quantity_1" type="hidden" value="1"/>
     <input name="item_price_1" type="hidden" value="<?php echo $payment;?>"/>
         <input name="item_currency_1" type="hidden" value="<?php echo $ticket_order[0]['ItemCurrency'];?>"/>
     <input name="_charset_" type="hidden" value="utf-8"/>
-    <input alt="" src="https://checkout.google.com/buttons/buy.gif?merchant_id=<?php echo $company_options['payment_vendor_id'];?>&amp;w=117&amp;h=48&amp;style=trans&amp;variant=text&amp;loc=en_US" type="image"/>
+    <input alt="" src="https://checkout.google.com/buttons/buy.gif?merchant_id=<?php echo $company_options['google_id'];?>&amp;w=117&amp;h=48&amp;style=trans&amp;variant=text&amp;loc=en_US" type="image"/>
     </form>
     <?php
 }
@@ -231,7 +231,7 @@ if ($company_options['payment_vendor']=="MONSTER"){
 ?>    
 <form action="https://www.monsterpay.com/secure/index.cfm" method="POST" enctype="APPLICATION/X-WWW-FORM-URLENCODED" target="_BLANK">
 <input type="hidden" name="ButtonAction" value="buynow">
-<input type="hidden" name="MerchantIdentifier" value="<?php echo $company_options['payment_vendor_id'];?>">
+<input type="hidden" name="MerchantIdentifier" value="<?php echo $company_options['monster_id'];?>">
 <input type="hidden" name="LIDDesc" value="<?php echo $event->event_name . ' | Reg. ID: '.$attendee_id. ' | Name: '. $attendee->fname." ".$attendee->lname .' | Total Registrants: '.$attendee->quantity;?>">
 <input type="hidden" name="LIDSKU" value="<?php echo $event->event_name."-".$attendee_name;?>">
 <input type="hidden" name="LIDPrice" value="<?php echo $payment;?>">
@@ -289,9 +289,13 @@ function evr_by_category($atts, $content=null){
 		if ($event_category_id != ""){
             $sql = "SELECT * FROM " . get_option('evr_category') . " WHERE category_identifier = '".$event_category_id."'";;
             $cat_info = $wpdb->get_row($sql);
+            $category_id = $cat_info->id;
             echo "<p><b>".stripslashes(htmlspecialchars_decode($cat_info->category_name))."</b><br>".stripslashes(htmlspecialchars_decode($cat_info->category_desc))."</p>";
             //Get Events from database with matching category
-            $sql = "SELECT * FROM " . get_option('evr_event') ." WHERE category_id LIKE '%\"$category_id\"%' AND str_to_date(end_date, '%Y-%m-%e') >= curdate() ORDER BY str_to_date(start_date, '%Y-%m-%e')"; 
+           
+            $sql = "SELECT * FROM " . get_option('evr_event') ." WHERE category_id LIKE '%\"$category_id\"%' AND str_to_date(end_date, '%Y-%m-%e') >= '$curdate' ORDER BY str_to_date(start_date, '%Y-%m-%e')"; 
+            
+           
             $events = $wpdb->get_results( $sql );
 ?>
 <div class="evr_event_list">
@@ -311,7 +315,7 @@ function evr_by_category($atts, $content=null){
                     $qty_count = $wpdb->get_var($wpdb->prepare("SELECT SUM(quantity) FROM " . get_option('evr_attendee') . " WHERE event_id= %d", $event_id));
                     $available_spaces = 0; 
             		if ($event->reg_limit != ""){$available_spaces = $event->reg_limit - $qty_count;}
-            	    if ($$event->reg_limit == "" || $event->reg_limit == " " || $event->reg_limit == "999"){$available_spaces = "UNLIMITED";}
+            	    if ($event->reg_limit == "" || $event->reg_limit == " " || $event->reg_limit == "999"){$available_spaces = "UNLIMITED";}
                     $current_dt= date('Y-m-d H:i',current_time('timestamp',0));
                     $close_dt = $end_date." ".$end_time;
                     $today = strtotime($current_dt);

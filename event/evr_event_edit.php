@@ -13,7 +13,7 @@ function evr_edit_event(){
 <br />
 <form id="er_popup_Form" method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
 <div class="evr_container">
-	<h2><?php _e('EDIT','evr_language');?> <?php echo $active_event." - ".$event_name;?></h2>
+	<h2><?php _e('EDIT EVENT: ','evr_language');?> <?php echo " ".stripslashes($event->event_name);?></h2>
     <ul class="tabs">
     <script type="text/javascript">
  /* <![CDATA[ */
@@ -94,11 +94,11 @@ function evr_edit_event(){
                    <?php
                     if (function_exists('the_editor')){
                         echo "</td></tr></table>";
-                        the_editor(htmlspecialchars_decode($event->event_desc), "event_desc", '', false);
+                        the_editor(htmlspecialchars_decode(stripslashes($event->event_desc)), "event_desc", '', false);
                     } else {  ?>
                     <a href="javascript:void(0)" onclick="tinyfy(1,'event_desc')"><input type="button" value="WYSIWG"/></a>
                     </td></tr></table>
-                    <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"><?php echo $event->event_desc;?></textarea>
+                    <textarea name="event_desc" id="event_desc" style="width: 100%; height: 200px;"><?php echo stripslashes($event->event_desc);?></textarea>
                     <?php }  ?>
                    
                     <br />
@@ -136,9 +136,10 @@ function evr_edit_event(){
     </div>
     <div id="tab2"class="tab_content">
     <?php
-    $location_list = $event->location_list;
-    
-            if((get_option('evr_location_active')=="Y") && ( $event->location_list >= '1')){
+   $location_status 	= get_option( 'evr_location_license_status' );
+   $location_list = $event->location_list;
+    echo "List is ".$location_list;
+            if(($location_status=="valid") && ( $event->location_list >= '1')){
                 
                 $sql = "SELECT * FROM " . get_option('evr_location')." WHERE id = $location_list";
                 $location = $wpdb->get_row( $sql, OBJECT );//default object
@@ -155,12 +156,22 @@ function evr_edit_event(){
                     $location_list = '0';
                     $location_tag = 'Custom';    
                     $event_location = stripslashes($event->event_location);
-                    $event_address = $$event->event_address;
+                    $event_address = $event->event_address;
                     $event_city = $event->event_city;
                     $event_state =$event->event_state;
                     $event_postal=$event->event_postal;
                 }
             }
+            elseif (($location_status=="valid") ){
+                    $location_list = '0';
+                    $location_tag = 'Custom';    
+                    $event_location = stripslashes($event->event_location);
+                    $event_address = $event->event_address;
+                    $event_city = $event->event_city;
+                    $event_state =$event->event_state;
+                    $event_postal=$event->event_postal;
+            }
+                
             
             //set reg limit if not set
             if ($event->reg_limit == ''|| $reg_limit == ' '){$reg_limit = 9999;}
@@ -178,9 +189,14 @@ function evr_edit_event(){
                 </tr>
 <?php    
     global $wpdb;
+    $locations_array = array();
+    $location_status 	= get_option( 'evr_location_license_status' );
+    if ($location_status !== false && $location_status == 'valid' ) {
     $sql = "SELECT * FROM " . get_option('evr_location')." ORDER BY location_name";
     $locations_array = $wpdb->get_results( $sql );
-    if( (!empty( $locations_array )) && (get_option('evr_location_active')=="Y")) :
+    }
+
+    if( (!empty( $locations_array )) && ($location_status=="valid")):
 ?>
 </table>
 <script type="text/javascript">
@@ -264,7 +280,7 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                     <?php _e('Event Location/Venue','evr_language');?><a><span> ?</span></a></label>
                     </td>
                     <td>
-                    <input class= "title" id="event_location" name="event_location" type="text" size="50" value="<?php echo $event_location;?>" />
+                    <input class= "title" id="event_location" name="event_location" type="text" size="50" value="<?php echo stripslashes($event->event_location);?>" />
                     </td>
                 </tr>
                 <tr>
@@ -272,22 +288,22 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                     <label class="first" for="event_street"><?php _e('Street','evr_language');?></label>
                     </td>
                     <td>
-                    <input  class= "title" id="event_street" name="event_street" type="text"  value="<?php echo $event_address;?>" />
+                    <input  class= "title" id="event_street" name="event_street" type="text"  value="<?php echo $event->event_address;?>" />
                     </td>
                 </tr>		
 				<tr>
                     <td><label for="event_city">
-					<?php _e('City','evr_language');?></label></td><td><input id="event_city" name="event_city" type="text" value="<?php echo $event_city;?>"/></td></tr>
+					<?php _e('City','evr_language');?></label></td><td><input id="event_city" name="event_city" type="text" value="<?php echo $event->event_city;?>"/></td></tr>
                 <tr>
                     <td><label for="event_state">
-					<?php _e('State','evr_language');?></label></td><td><input id="event_state" name="event_state" type="text" value="<?php echo $event_state;?>" /></td></tr>
+					<?php _e('State','evr_language');?></label></td><td><input id="event_state" name="event_state" type="text" value="<?php echo $event->event_state;?>" /></td></tr>
                 <tr>
                     <td>
                     <label for="event_postcode">
 					<?php _e('Postcode','evr_language');?></label>
                     </td>
                     <td>
-                    <input id="event_postcode" name="event_postcode" type="text" value="<?php echo $event_postal;?>"/>
+                    <input id="event_postcode" name="event_postcode" type="text" value="<?php echo $event->event_postal;?>"/>
                     </td>
                 </tr>
 		<?php 
@@ -301,10 +317,19 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                     </td>
                     <td>
                     <label for="google_map_yes"><input type="radio" class="radio" name="google_map" value="Y" <?php if ($event->google_map == "Y"){echo "checked";}?> /><?php _e('Yes','evr_language');?></label>
-                    <label for="google_map_no"><input type="radio" class="radio" name="google_map" value="N"  <?php if ($google->google_map == "N"){echo "checked";}?> /><?php _e('No','evr_language');?>
+                    <label for="google_map_no"><input type="radio" class="radio" name="google_map" value="N"  <?php if ($event->google_map == "N"){echo "checked";}?> /><?php _e('No','evr_language');?>
                     </label>
                     </td>
                 </tr> </table>
+                <?php
+                if ($location_status!=="valid"){
+                    echo "<hr><font color='red'><br/><br/><p align='center'>Stop typing your locations over and over<br/>";
+                    echo "Get the Location Add-On for Event Registration Today<br/>";
+                    echo "Have all your locations accessible in an easy dropdown list<br/>";
+                    echo '<a href="http://wpeventregister.com/a-new-add-on-for-event-registration/">Location Module</a><br/></p></font>';
+                    
+                }
+                ?>
         </div>
         <div id="tab3"class="tab_content">
             <h2>EVENT TIMES</h2>
@@ -512,10 +537,10 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
                 
                if (function_exists('the_editor')){
                //wp_editor( $coord_msg, 'coord_msg', $editor_settings );
-                 the_editor($event->coord_msg, "coord_msg", '', false);
+                 the_editor(stripslashes($event->coord_msg), "coord_msg", '', false);
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
-               <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo $event->coord_msg;?></textarea>
+               <textarea name="coord_msg" id="coord_msg" style="width: 100%; height: 200px;"><?php echo stripslashes($event->coord_msg);?></textarea>
                     <?php } ?>
             <hr />
 <table><tr><td colspan="2"><label  class="tooltip" title="<?php _e('Enter the text for the payment alert email.  This email will be sent in text format.  See User Manual for data tags.','evr_language');?>" >
@@ -524,10 +549,10 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
             <?php
                 if (function_exists('the_editor')){
                //wp_editor( $coord_pay_msg, 'coord_pay_msg', $editor_settings );
-                the_editor($event->coord_pay_msg, "coord_pay_msg", '', false);
+                the_editor(stripslashes($event->coord_pay_msg), "coord_pay_msg", '', false);
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
-               <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo $cevent->oord_pay_msg;?></textarea>
+               <textarea name="coord_pay_msg" id="coord_pay_msg" style="width: 100%; height: 200px;"><?php echo stripslashes($event->oord_pay_msg);?></textarea>
                     <?php } ?>
                
         </div>
@@ -570,11 +595,11 @@ echo '<style type="text/css">.custom_addrs{display:none;}</style>';
              
               if (function_exists('wp_editor')){
                echo "</td></tr></table>";
-              wp_editor( htmlspecialchars_decode($event->conf_mail), 'conf_mail', $editor_settings ); 
+              wp_editor( htmlspecialchars_decode(stripslashes($event->conf_mail)), 'conf_mail', $editor_settings ); 
                     } else {  ?>
                <a href="javascript:void(0)" onclick="tinyfy(1,'conf_mail')"><input type="button" value="WYSIWG"/></a>
                </td></tr></table>
-               <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo $event->conf_mail;?></textarea>
+               <textarea name="conf_mail" id="conf_mail" style="width: 100%; height: 200px;"><?php echo stripslashes($event->conf_mail);?></textarea>
                     <?php } ?>
              
              

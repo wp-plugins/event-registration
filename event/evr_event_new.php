@@ -148,12 +148,13 @@ function evr_new_event(){
 <?php    
     global $wpdb;
     $locations_array = array();
-    if (get_option('evr_location_active')=="Y") {
+    $location_status 	= get_option( 'evr_location_license_status' );
+    if ($location_status !== false && $location_status == 'valid' ) {
     $sql = "SELECT * FROM " . get_option('evr_location')." ORDER BY location_name";
     $locations_array = $wpdb->get_results( $sql );
     }
 
-    if( (!empty( $locations_array )) && (get_option('evr_location_active')=="Y")) :
+    if( (!empty( $locations_array )) && ($location_status=="valid")) {
     ?><script type="text/javascript">
 
 	/* <![CDATA[ */
@@ -196,11 +197,11 @@ jQuery(document).ready(function($j){
 				<option value="">(choose one)</option>
 				<option value="0">Custom</option>
     <?php
-		foreach( $locations_array as $location ) : 
+		foreach( $locations_array as $location ) { 
         ?>
 			<option value="<?php echo $location->id; ?>"><?php echo stripslashes($location->location_name); ?></option>
 		<?php
-		endforeach;
+		}
         ?>
         </select>
             </td></tr></table>
@@ -243,7 +244,7 @@ jQuery(document).ready(function($j){
 		</div>
         <table>
         <?php
-	else : ?>
+	} else { ?>
 		<table><tr>
                     <td>
                     <label class="tooltip" title="<?php _e('Enter the name of the business or facility where the event is being held','evr_language');?>" for="event_location">
@@ -277,7 +278,7 @@ jQuery(document).ready(function($j){
                     </td>
                 </tr></table>
 		<?php 
-	endif; 
+	} 
 ?>  
                 
                 <tr>
@@ -290,7 +291,16 @@ jQuery(document).ready(function($j){
                     <label for="google_map_no"><input type="radio" class="radio" name="google_map" value="N"><?php _e('No','evr_language');?>
                     </label>
                     </td>
-                </tr> </table>
+                </tr> <tr></tr></table><br/>
+                <?php
+                if ($location_status!=="valid"){
+                    echo "<hr><br/><br/><p align='center'>Stop typing your locations over and over<br/>";
+                    echo "Get the Location Add-On for Event Registration Today<br/>";
+                    echo "Have all your locations accessible in an easy dropdown list<br/>";
+                    echo '<a href="http://wpeventregister.com/a-new-add-on-for-event-registration/">Location Module</a><br/></p>';
+                    
+                }
+                ?>
         </div>
         <div id="tab3" class="tab_content">
             <h2><?php _e('EVENT TIMES','evr_language');?></h2>
