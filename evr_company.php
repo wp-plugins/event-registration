@@ -175,7 +175,7 @@ jQuery(document).ready(function() {
                         <input  type="submit" name="update_button" value="<?php _e('Save Changes','evr_language'); ?>" id="update_button" class="button button-primary"/>
                     </form>
         		</div>
-        		<div id="plugin_config-6">
+        		<div id="plugin_config-5">
         			<form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
                         <div class="error"><p><?php _e('You must click the Save Changes button at the bottom of this tab for changes on this tab to take effect.','');?></p></div>
                         <?php evr_adminMisc();?>
