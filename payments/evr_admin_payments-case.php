@@ -67,7 +67,7 @@ function evr_send_payment_reminders ($event_id = ''){
                     $email_body = $message_top.$email_content.$message_bottom;
                     $headers = "MIME-Version: 1.0\r\n";
                     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-                    $headers .= 'From: "test" <' . $company_options['company_email'] . ">\r\n";
+                    $headers .= 'From: "' . $company_options['company'] . '" <' . $company_options['company_email'] . ">\r\n";
                     wp_mail($distro, $subject, html_entity_decode($email_body), $headers);
                    ?>
 				<div id="message" class="updated fade"><p><strong>
