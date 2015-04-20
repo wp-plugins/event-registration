@@ -127,7 +127,7 @@ echo '<tbody>';
         }
 echo '</tbody></table></div>';
 #Now that we have returned the table, we need to return the hidden html that provides the popups.
-#Once again we will go through the retruned event data to generate the popup html
+#Once again we will go through the returned event data to generate the popup html
     if ($rows){
         foreach ($rows as $event){                             
             #use the included file to put all the event data for this event into strings
@@ -156,7 +156,7 @@ function evr_show_event_accordian(){
     #Clear start date and end date fields to ensure no carry over data 
     $start_date = $end_date = '';
     #retrieve company and configuration settings
-    //$company_options = get_option('evr_company_settings');
+    
     #include style sheet for accordian here to esnure style was not overwritten by other style elsewhere!
     include "evr_public_accordian_style.php";
     #start accordian html outpupt
@@ -197,8 +197,8 @@ echo '<section id="close"><h2><a href="#Close">Click on Event for Details - Clic
                     if ($fee_rows){
                             foreach ($fee_rows as $fee){ 
                                 $item_custom_cur  = $fee->item_custom_cur;
-                                if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound;";}
-                                if ($item_custom_cur == "USD"){$item_custom_cur = "$";}
+                                if ($item_custom_cur == "GBP"){$item_custom_cur = "&pound; ";}
+                                if ($item_custom_cur == "USD"){$item_custom_cur = "$ ";}
                                 $codeToReturn .=$fee->item_title.'   '.$item_custom_cur.' '.$fee->item_price.'<br />';
                                 }
                             } 

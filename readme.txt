@@ -3,8 +3,8 @@ Contributors: avdude
 Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.7
-Tested up to: 3.9.1
-Stable tag: 6.01.07
+Tested up to: 4.1.1
+Stable tag: 6.01.08
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Event Registration is a WordPress plugin that allows you to manage events with a
 
 This wordpress plugin is designed to run on a Wordpress website and provide registration events, classes, or parties. It is designed to be easy to navigate.
 It allows you to capture the registering persons contact information and any additional infromation you request to a database and provides an association to an events database. 
-It provides the ability to send the register to either a Paypal, Google Pay, Monster Pay,  or Authorize.net online payment site for online collection of event fees.
+It provides the ability to send the register to either a Paypal, Monster Pay, or Authorize.net online payment site for online collection of event fees.
 Additionally it allows support for checks and cash payments.  
 Optional Captcha field on registration form.
 Detailed payment management system to track and record event payments and support for PayPal payment notification.  
@@ -106,55 +106,70 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 == Change Log ==
 
+= Version 6.01.08 =
+* Verfied compatability with WordPress version 4.1.1
+* Fixed bug in evr_public_form.php where php tag was not complete cause failure to activate on some servers.
+* Fixed bug in company settings where two submit buttons on each tab
+* Fixed bug in General Settings tab where help information not rendering properly
+* Remove "Test" from email headers in Payment Reminder
+* Fixed small issues in process confirmation script
+* Removed duplicate line of code evr_public-show_event_list.php
+* Resolved security hole in evr_public-show_event_list.php
+* Made company options a global variable for evr_public-show_event_list.php
+* Modify question table to use installer/updater function
+* Updated plugin dashboard to use tabs; included quick start steps.
+* Turn off error reporting causing other plugin and theme errors to be displayed
+
+
 = Version 6.01.07 =
-*Fixed bug in default payment on return page for payments
+* Fixed bug in default payment on return page for payments
 
 = Version 6.01.06 =
-*Added support for location module
-*Fixed bug in Event Category Display Page Content
-*Fixed bug in Edit Event - Description - stripslashes 
-*Fixed bug in Edit Event - Venue  Name - stripslashes
-*Fixed bug in Edit Event Venue - location not displaying
-*Fixed bug in Edit Event Venue - Location Module not displaying locations correctly
-*Fixed bug in Edit Event Venue - Google Maps yes/no radio button selection
-*Fixed bug in Edit Event - Event Name not displaying in title
-*Fixed bug in Edit Event - Coordinator Module - Mail Stripslahes from mail message
-*Fixed bug in Edit Event - Confirmation Mail - stripslashes from mail message
+* Added support for location module
+* Fixed bug in Event Category Display Page Content
+* Fixed bug in Edit Event - Description - stripslashes 
+* Fixed bug in Edit Event - Venue  Name - stripslashes
+* Fixed bug in Edit Event Venue - location not displaying
+* Fixed bug in Edit Event Venue - Location Module not displaying locations correctly
+* Fixed bug in Edit Event Venue - Google Maps yes/no radio button selection
+* Fixed bug in Edit Event - Event Name not displaying in title
+* Fixed bug in Edit Event - Coordinator Module - Mail Stripslahes from mail message
+* Fixed bug in Edit Event - Confirmation Mail - stripslashes from mail message
 
 = Version 6.01.05 =
-*Changed stable version in readme
+* Changed stable version in readme
 
 = Version 6.01.04 =
-*Layout Change: Custom Questions Order - fixed spacing issue to allow readability
-*Bug Fix related to custom question answer table only posting 1 repsone
-*Bug Fix related to paging event listing on admin pages
-*Add Feature to Settings Misc. Tab to control number of events and number of attendees when paging on the admin side
+* Layout Change: Custom Questions Order - fixed spacing issue to allow readability
+* Bug Fix related to custom question answer table only posting 1 repsone
+* Bug Fix related to paging event listing on admin pages
+* Add Feature to Settings Misc. Tab to control number of events and number of attendees when paging on the admin side
 
 
 = Version 6.01.03 =
-*Bug Fix related to currency format with PayPal
+* Bug Fix related to currency format with PayPal
 
 = Version 6.01.02 = 
-*Minor Bug Fix
+* Minor Bug Fix
 
 = Version 6.00.01 =
-*Too many to list in detail, but a few are:
-*Improved admin Settings interface
-*Improved add-on module activation (more to come!!!)
-*Various bug fixes.
+* Too many to list in detail, but a few are:
+* Improved admin Settings interface
+* Improved add-on module activation (more to come!!!)
+* Various bug fixes.
 
 = Version 6.00.31 =
-*Resolved issue where fees would be deleted if event was attempted to be deleted but had attendees
-*Changed files for compatibility with WordPress 3.5 prepare
-*evr_admin_attendee_listing.php
-*evr_event_delete.php
-*evr_event_listing.php
-*evr_install.php
-*evr_ipn.php
-*evr_support_functions.php
-*evr_three_cal.php
-*evr_admin_payments-case.php
-*evr_admin_payments-event_list.php
+* Resolved issue where fees would be deleted if event was attempted to be deleted but had attendees
+* Changed files for compatibility with WordPress 3.5 prepare
+* evr_admin_attendee_listing.php
+* evr_event_delete.php
+* evr_event_listing.php
+* evr_install.php
+* evr_ipn.php
+* evr_support_functions.php
+* evr_three_cal.php
+* evr_admin_payments-case.php
+* evr_admin_payments-event_list.php
 
 = Version 6.00.30 =
 * fixe bug preventing posting of payments by paypal
@@ -455,14 +470,6 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 . . . See changelog.txt for more changes
 
 
-To Do List:
-
-
-Excel export code page
-Event Import Tool
-Reports Tool
-Support tool
-Send Mail tool
 
 
 

@@ -4,6 +4,7 @@
  * @copyright 2010
  */
 /*
+6.01.08 - Modify question table to use installer/updater
 6.01.07 - No db changes
 6.01.06 - No db changes
 6.01.05 - No db changes
@@ -84,7 +85,7 @@ function evr_install()
 {
     global $evr_date_format, $evr_ver, $wpdb, $cur_build, $table_message;
     $table_message = '';
-    $cur_build = "6.01.06";
+    $cur_build = "6.01.08";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
     if ((get_option('evr_was_upgraded')!= "Y")&& ($old_db_version < $cur_build)){
@@ -134,7 +135,7 @@ function evr_change_array2options(){
 
 function evr_upgrade_tables(){
     global $wpdb;
-    $upgrade_version = "6.01.06";
+    $upgrade_version = "6.01.08";
 //
 // Attendee Table Copy Table, Replace Data, Add Colulmns        
 //
@@ -813,20 +814,16 @@ function evr_payment_db()
              $wpdb->query($sql);
             }
 }
-function evr_question_db()
-{
-    
-
-
+function evr_question_db(){
     //Define global variables
     global $wpdb, $cur_build, $table_message;
     global $evr_question_version;
     require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
     //Create new variables for this function
     $table_name = $wpdb->prefix . "evr_question";
+    $evr_question_version = $cur_build;
 
-    $sql = "CREATE TABLE " . $table_name . " (
-    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    $sql = "id mediumint(9) NOT NULL AUTO_INCREMENT,
     event_id int(11) NOT NULL DEFAULT '0',
     sequence int(11) NOT NULL DEFAULT '0',
     question_type enum('TEXT','TEXTAREA','MULTIPLE','SINGLE','DROPDOWN') NOT NULL DEFAULT 'TEXT',
@@ -834,10 +831,10 @@ function evr_question_db()
     response text NOT NULL,
     required enum('Y','N') NOT NULL DEFAULT 'N',
     remark text NOT NULL,
-    UNIQUE KEY id (id)
-    ) DEFAULT CHARSET=utf8;";
-
-    if (dbDelta($sql)){
+    UNIQUE KEY id (id)";
+  evr_installer( "evr_question", $table_version = '', $sql );
+    
+    /*if (dbDelta($sql)){
             //create option in the wordpress options tale for the event question table name
         $option_name = 'evr_question';
         $newvalue = $table_name;
@@ -851,6 +848,7 @@ function evr_question_db()
         else {
         $table_message .= __('Failure Updating table - ','').$table_name.'<br/>'; 
         }
+        */
 }
 //
 //Create the table for the answers for the questions

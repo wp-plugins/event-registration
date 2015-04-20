@@ -201,13 +201,13 @@ evr_generate_frm_defaults('email',__('Email Address','evr_language'));
 ?>
 <!--End Custom Questions -->
 <!--Waiver Content if active-->
-<?if ($event->waiver == "Y"){
-   ?>
+<?php if ($event->waiver == "Y"){
+    ?>
    <hr /><h3>Event Waiver/Disclaimer</h3>
    
    <div style="overflow: scroll;height: 250px;" id="WaiverArea">
    <div style="margin-left: 10px;margin-right: 20px;">
-   <? 
+   <?php 
 $waivertext = apply_filters('the_content', $event->waiver_content);
 echo($waivertext) ;?></div>
    </div> 

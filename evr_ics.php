@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
+//error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
 /*
 define( 'ABSPATH', '../../../' );
 if ( file_exists( ABSPATH . 'wp-config.php') ) {

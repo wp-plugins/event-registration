@@ -3,11 +3,11 @@
 Plugin Name: Event Registration
 Plugin URI: http://www.wpeventregister.com
 Description: This wordpress plugin is designed to run on a Wordpress webpage and provide registration for an event or class. It allows you to capture the registering persons contact information to a database and provides an association to an events database. It provides the ability to send the register to either a Paypal, Google Pay, or Authorize.net online payment site for online collection of event fees. Detailed payment management system to track and record event payments. Reporting features provide a list of events, list of attendees, and excel export. 
-Version: 6.01.07
+Version: 6.01.08
 Author: David Fleming - Edge Technology Consulting
 Author URI: http://www.wpeventregister.com
 */
-/*  Copyright 2008 - 2014  DAVID_FLEMING  (email : support@wpeventregister.com)
+/*  Copyright 2008 - 2015  DAVID_FLEMING  (email : support@wpeventregister.com)
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $evr_date_format, $evr_ver, $wpdb;
 $evr_date_format = "M j,Y";
-$evr_ver = "6.01.07";
+$evr_ver = "6.01.08";
 /**
  * To change date format in event listing display
  * Tuesday, Jan 23, 2011  -  "l, M j,Y"
@@ -50,7 +50,10 @@ $evr_ver = "6.01.07";
  * 
  */
 /*********************************   ERROR REPORTING   ********************************/
-error_reporting(E_ALL ^ E_NOTICE);
+if (get_option('evr_error_on')=="true"){
+   error_reporting(E_ALL ^ E_NOTICE); 
+}
+
 function evr_save_error(){
     update_option('plugin_error',  ob_get_contents());
 }
@@ -308,4 +311,32 @@ function get_evr_option($setting) {
 	$option = $wpdb->get_var( $wpdb->prepare("SELECT evr_option_value FROM $config_table WHERE evr_option_name = %s", $setting ) );
 	return maybe_unserialize( $option );
 }
+
+function evr_dashboard_link( $links ) {
+    $url = get_admin_url() . 'admin.php?page=event-registration/EVNTREG.php';
+    $settings_link = '<a href="' . $url . '">' . __('Dashboard', 'textdomain') . '</a>';
+    array_unshift( $links, $settings_link );
+    return $links;
+}
+ 
+function evr_after_setup_theme() {
+     add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'evr_dashboard_link');
+}
+add_action ('after_setup_theme', 'evr_after_setup_theme');
+// add links
+add_filter('plugin_row_meta', 'evr_addPluginPageLinks', 10, 2);
+
+// links on the plugin page
+function evr_addPluginPageLinks($links, $file){
+  // current plugin ?
+  if ($file == 'event-registration/EVNTREG.php'){
+    //$links[] = '<a href="'.admin_url('options-general.php?page='.plugin_basename(__FILE__)).'">'.__('Settings', 'enlighter').'</a>';
+    $links[] = '<a href="'.admin_url('admin.php?page='.plugin_basename(__FILE__)).'">' . __('Dashboard', 'textdomain') . '</a>';
+    $links[] = '<a href="https://www.facebook.com/EventRegistration">'.__('Facebook', 'textdomain').'</a>';
+  }
+  
+  return $links;
+}
+
+
 ?>
