@@ -78,25 +78,24 @@ function evr_update_attendee(){
             				case "TEXT" :
             				case "TEXTAREA" :
             				case "DROPDOWN" :
-            					$post_val = $_POST [$question->question_type . '_' . $question->id];
-            					$sql = "REPLACE INTO " . get_option('evr_answer') . " SET answer='$post_val' WHERE registration_id = '$reg_id' 
-                                AND question_id ='$question->id'";
+            					$post_val = $_REQUEST [$question->question_type . '_' . $question->id];
+            				
+                                $sql = "INSERT INTO " . get_option('evr_answer') . " (answer,registration_id,question_id) VALUES ('$post_val', '$reg_id', '$question->id') ON DUPLICATE KEY UPDATE answer='$post_val'"; 
+                                
             					$wpdb->query ($sql);
             					break;
             				case "SINGLE" :
-            					$post_val = $_POST [$question->question_type . '_' . $question->id];
-            					$sql = "REPLACE INTO " . get_option('evr_answer') . " SET answer='$post_val' WHERE registration_id = '$reg_id' 
-                                AND question_id ='$question->id'";
-            					$wpdb->query ($sql);
+            					$post_val = $_REQUEST [$question->question_type . '_' . $question->id];
+            					$sql = "INSERT INTO " . get_option('evr_answer') . " (answer,registration_id,question_id) VALUES ('$post_val', '$reg_id', '$question->id') ON DUPLICATE KEY UPDATE answer='$post_val'"; 
+                                $wpdb->query ($sql);
             					break;
             				case "MULTIPLE" :
             					$value_string = '';
-            					for ($i=0; $i<count($_POST[$question->question_type.'_'.$question->id]); $i++){ 
-            					$value_string .= $_POST[$question->question_type.'_'.$question->id][$i].","; 
+            					for ($i=0; $i<count($_REQUEST[$question->question_type.'_'.$question->id]); $i++){ 
+            					$value_string .= $_REQUEST[$question->question_type.'_'.$question->id][$i].","; 
             					}
-            					$sql = "REPLACE INTO " . get_option('evr_answer') . " SET answer='$value_string' WHERE registration_id = '$reg_id' 
-                                AND question_id ='$question->id'";
-            					$wpdb->query ($sql);
+            					$sql = "INSERT INTO " . get_option('evr_answer') . " (answer,registration_id,question_id) VALUES ('$value_string', '$reg_id', '$question->id') ON DUPLICATE KEY UPDATE answer='$value_string'"; 
+                                $wpdb->query ($sql);
             					break;
             			}
         }

@@ -3,7 +3,7 @@ Contributors: avdude
 Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.7
-Tested up to: 4.2
+Tested up to: 4.1.1
 Stable tag: 6.01.08
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -105,6 +105,9 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 
 
 == Change Log ==
+
+= Version 6.01.09
+* Fixed bug in Attendee Edit where custom question answers were not saving.
 
 = Version 6.01.08 =
 * Verfied compatability with WordPress version 4.1.1
