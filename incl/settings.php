@@ -155,28 +155,9 @@ function evr_adminCalendar(){
                         </p>
                         <p><?php _e('Select color for Calendar Display','event-registration');?>:</p>
                                         <script type="text/javascript" charset="utf-8">
-                                         jQuery(document).ready(function() {    
-                                                jQuery('#picker').hide();    
-                                                /* jQuery('#picker').farbtastic("#cat_back"); */
-                                                jQuery.farbtastic('#picker').linkTo('#evr_cal_head');   
-                                                jQuery("#evr_cal_head").click(function(){jQuery('#picker').slideToggle()});  
-                                                });
-                                         jQuery(document).ready(function() {    
-                                                jQuery('#daypicker').hide();    
-                                                jQuery.farbtastic('#daypicker').linkTo('#evr_cal_cur_day');   
-                                                jQuery("#evr_cal_cur_day").click(function(){jQuery('#daypicker').slideToggle()});  
-                                                });
-                                         jQuery(document).ready(function() {    
-                                                jQuery('#brdrpicker').hide();    
-                                                /* jQuery('#picker').farbtastic("#cat_back"); */
-                                                jQuery.farbtastic('#brdrpicker').linkTo('#evr_cal_pop_border');   
-                                                jQuery("#evr_cal_pop_border").click(function(){jQuery('#brdrpicker').slideToggle()});  
-                                                });
-                                         jQuery(document).ready(function() {    
-                                                jQuery('#hdrpicker').hide();    
-                                                jQuery.farbtastic('#hdrpicker').linkTo('#evr_cal_day_head');   
-                                                jQuery("#evr_cal_day_head").click(function(){jQuery('#hdrpicker').slideToggle()});  
-                                                });
+                                          jQuery(document).ready(function($){
+                                                   $('.color-picker').wpColorPicker();
+                                          });
                                         </script>
                                         <small><?php _e('Click on each field to display the color picker. Click again to close it.','event-registration');?></small>
                                         <hr />
@@ -185,14 +166,15 @@ function evr_adminCalendar(){
                         <input type="radio" name="evr_date_select" class="regular-radio" value="N"  <?php if ($company_options['evr_date_select'] == "N"){echo "checked";}?> /><?php _e('No','event-registration');?><br />  
                         </p>
                                         <p><label for="color"><?php _e('Calender Date Selector Background Color','event-registration');?>: 
-                                        <input type="text" id="evr_cal_head" name="evr_cal_head" value="<?php if ($company_options['evr_cal_head'] !="") {echo $company_options['evr_cal_head'];} else {echo "#583c32";}?>"  style="width: 195px"/>
+                                        <input type="text" class="color-picker" id="evr_cal_head" name="evr_cal_head" value="<?php if ($company_options['evr_cal_head'] !="") {echo $company_options['evr_cal_head'];} else {echo "#583c32";}?>"  style="width: 195px"/>
                                         </label><div id="picker" style="margin-bottom: 1em;"></div></p><p><?php _e('Selector Text Color','event-registration');?>: <select style="width:70px;" name='cal_head_txt_clr' >
                                         <option value="<?php  echo $company_options['cal_head_txt_clr'];?>"><?php if ($company_options['cal_head_txt_clr']=="#000000"){echo "Black";} if ($company_options['cal_head_txt_clr']=="#FFFFFF"){echo "White";} ?></option>
                                         <option value="#000000"><?php _e('Black','event-registration');?></option>
                                         <option value="#FFFFFF"><?php _e('White','event-registration');?></option></select></p>
                                         <hr />
+                                        
                                         <p><label for="color"><?php _e('Calender Day Header Background Color','event-registration');?>: 
-                                        <input type="text" id="evr_cal_day_head" name="evr_cal_day_head" value="<?php  if ($company_options['evr_cal_day_head'] !=""){
+                                        <input type="text" class="color-picker" id="evr_cal_day_head" name="evr_cal_day_head" value="<?php  if ($company_options['evr_cal_day_head'] !=""){
                                         echo $company_options['evr_cal_day_head'];} else {echo "#b8ced6";}?>"  style="width: 195px"/>
                                         </label><div id="hdrpicker" style="margin-bottom: 1em;"></div></p>
                                         <p><?php _e('Selector Text Color','event-registration');?>: <select style="width:70px;" name='cal_day_head_txt_clr' >
@@ -201,7 +183,7 @@ function evr_adminCalendar(){
                                         <option value="#FFFFFF"><?php _e('White','event-registration');?></option></select></p>
                                         <hr />
                                         <p><label for="color"><?php _e('Current Day Background Color','event-registration');?>: 
-                                        <input type="text" id="evr_cal_cur_day" name="evr_cal_cur_day" value="<?php if ($company_options['evr_cal_cur_day'] !="") {echo $company_options['evr_cal_cur_day'];} else {echo  "#b8ced6"; }
+                                        <input type="text" class="color-picker" id="evr_cal_cur_day" name="evr_cal_cur_day" value="<?php if ($company_options['evr_cal_cur_day'] !="") {echo $company_options['evr_cal_cur_day'];} else {echo  "#b8ced6"; }
                                         ?>"  style="width: 195px"/>
                                         </label><div id="daypicker" style="margin-bottom: 1em;"></div></p>
                                         <p><?php _e('Current Day Text Color','event-registration');?>: <select style="width:70px;" name='cal_day_txt_clr' >
@@ -210,7 +192,7 @@ function evr_adminCalendar(){
                                         <option value="#FFFFFF"><?php _e('White','event-registration');?></option></select></p>
                                         <hr />
                                         <p><label for="color"><?php _e('Description Pop Border Color','event-registration');?>: 
-                                        <input type="text" id="evr_cal_pop_border" name="evr_cal_pop_border" value="<?php  if ($company_options['evr_cal_pop_border'] !=""){ echo $company_options['evr_cal_pop_border'];} else {echo  "#b8ced6";}?>"  style="width: 195px"/>
+                                        <input type="text" class="color-picker" id="evr_cal_pop_border" name="evr_cal_pop_border" value="<?php  if ($company_options['evr_cal_pop_border'] !=""){ echo $company_options['evr_cal_pop_border'];} else {echo  "#b8ced6";}?>"  style="width: 195px"/>
                                         </label><div id="brdrpicker" style="margin-bottom: 1em;"></div></p>
                     </div>  
 <?php

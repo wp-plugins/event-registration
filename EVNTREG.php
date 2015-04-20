@@ -209,7 +209,7 @@ function evr_admin_css_all_page() {
        wp_enqueue_style('evr_fancy_css');
        wp_enqueue_style('evr_fa_css');
        wp_enqueue_style('evr_admin_css');
-       wp_enqueue_style( 'farbtastic' );
+       
        //added for new system
        wp_enqueue_style('jquery-ui', plugins_url('/css/jquery-ui.css', __FILE__));
 }
@@ -223,7 +223,7 @@ function evr_admin_scripts_all_page() {
        wp_enqueue_script('evr_admin_fancy');
        wp_enqueue_script('evr_tab_script');
        wp_enqueue_script('evr_tooltip_script');  
-       wp_enqueue_script( 'farbtastic' );
+      
         //added for new system
         wp_enqueue_script('jquery-ui-core');
     		wp_enqueue_script('jquery-ui-tabs');
@@ -337,6 +337,15 @@ function evr_addPluginPageLinks($links, $file){
   
   return $links;
 }
+add_action( 'admin_enqueue_scripts', 'evr_color_picker_function' );
 
+function evr_color_picker_function() {
+   wp_enqueue_style( 'wp-color-picker' );
+   wp_enqueue_script( 'script_handle', plugins_url('/scripts/evr.js', __FILE__ ), array( 'wp-color-picker' ), false, true );
+}
+add_action('wp_head', 'evr_style_incl_function', 10);
 
+function evr_style_incl_function() {
+    wp_enqueue_style( 'wp-color-picker' );
+}
 ?>

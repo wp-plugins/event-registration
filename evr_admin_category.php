@@ -44,13 +44,28 @@ function evr_admin_categories(){
                                     
                                     <form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
                                     <input type="hidden" name="action" value="add">
-                                    <ul>
-                                    <li><label><?php _e('Category Name','evr_language');?></label> <input name="category_name" size="25"></li>
-                                    <li><label><?php _e('Unique ID For Category','evr_language');?></label> <input name="category_identifier"></li>
-                                    <li><?php _e('Do you want to display the category description on the events page?','evr_language');?>
+                                    <label><?php _e('Category Name','evr_language');?></label> <input name="category_name" size="25"/>
+                                    <label><?php _e('Unique ID For Category','evr_language');?></label> <input name="category_identifier"/>
+                                    <p>Select color for Calendar Display:</p>
+                                        <script type="text/javascript" charset="utf-8">
+                                          jQuery(document).ready(function($){
+                                                   $('.color-picker').wpColorPicker();
+                                          });
+                                        </script>
+                                       
+                                        <label for="color">Category Background Color: 
+                                        <input type="text" class="color-picker"  id="cat_back" name="cat_back" value="#123456"  style="width: 195px"/>
+                                        <small>Click on each field to display the color picker. Click again to close it.</small></label>
+                                        
+                                        <div id="picker" style="margin-bottom: 1em;"></div>
+                                        
+                                        <p>Category Text Color: <select style="width:70px;" name='cat_text' >
+                                        <option value="#000000">Black</option>
+                                        <option value="#FFFFFF">White</option></select></p><br />
+                                    <?php _e('Do you want to display the category description on the events page?','evr_language');?>
                                     <input type='radio' name='display_desc' value='Y'><?php _e('Yes','evr_language');?>
-                                    <input type='radio' name='display_desc' checked value='N'><?php _e('No','evr_language');?></li>
-                                    <li><p><?php _e('Category Description','evr_language');?><br />
+                                    <input type='radio' name='display_desc' checked value='N'><?php _e('No','evr_language');?>
+                                    <p><?php _e('Category Description','evr_language');?><br />
                                     <?php 
                                     if (!version_compare($wp_version, '3.3', '>=')) { 
                                         the_editor('',$id='category_desc',$media_buttons=false, $extended=false);
@@ -58,28 +73,10 @@ function evr_admin_categories(){
                                     else { wp_editor( '', 'category_desc', $settings );}
                                     
                                     ?>
-                                    </li>
-                                        <p>Select color for Calendar Display:</p>
-                                        <script type="text/javascript" charset="utf-8">
-                                         jQuery(document).ready(function() {    
-                                                jQuery('#picker').hide();    
-                                                /* jQuery('#picker').farbtastic("#cat_back"); */
-                                                jQuery.farbtastic('#picker').linkTo('#cat_back');   
-                                                jQuery("#cat_back").click(function(){jQuery('#picker').slideToggle()});  
-                                                });
-                                        </script>
-                                        <small>Click on each field to display the color picker. Click again to close it.</small>
-                                        <li><label for="color">Category Background Color: 
-                                        <input type="text" id="cat_back" name="cat_back" value="#123456"  style="width: 195px"/>
-                                        </label>
-                                        </li>
-                                        <div id="picker" style="margin-bottom: 1em;"></div>
+                                   </p>
                                         
-                                        <li><p>Category Text Color: <select style="width:70px;" name='cat_text' >
-                                        <option value="#000000">Black</option>
-                                        <option value="#FFFFFF">White</option></select></p></li>
-                                    <li><p><input class="button-primary" type="submit" name="Submit" value="<?php _e('Add Category','evr_language');?>" id="add_new_category" /></p></li>
-                                    </ul>
+                                    <p><input class="button-primary" type="submit" name="Submit" value="<?php _e('Add Category','evr_language');?>" id="add_new_category" /></p>
+                                    
                                     </form>
                                     <br/><br/></div></div>
                                     <?php
@@ -110,17 +107,42 @@ function evr_admin_categories(){
                                       <div class="inside">
                                         <div class="padding">
                                     <form method="post" action="<?php echo $_SERVER['REQUEST_URI'];?>">
-                                    <input type="hidden" name="category_id" value="<?php echo $category_id; ?>">
-                                    <input type="hidden" name="action" value="update">
-                                    <ul>
-                                    <li><label><strong><?php _e('Category Name','evr_language');?>:</strong></label> <input name="category_name" size="25" value="<?php echo $category_name;?>"></li>
-                                    <li><label><strong><?php _e('Unique Category Identifier','evr_language')?>:</strong></label> 
-                                    <input name="category_identifier" value="<?php echo $category_identifier;?>"> </a></li>
-                                    <li><?php _e('Do you want to display the event description on the events page?','evr_language');?>
+                                    <input type="hidden" name="category_id" value="<?php echo $category_id; ?>"/>
+                                    <input type="hidden" name="action" value="update"/>
+                                    <label><strong><?php _e('Category Name','evr_language');?>:</strong></label> <input name="category_name" size="25" value="<?php echo $category_name;?>"/>
+                                    <label><strong><?php _e('Unique Category Identifier','evr_language')?>:</strong></label> 
+                                    <input name="category_identifier" value="<?php echo $category_identifier;?>"/> 
+                                     <p>Select color for Calendar Display:</p>
+                                        <script type="text/javascript" charset="utf-8">
+                                          jQuery(document).ready(function($){
+                                                   $('.color-picker').wpColorPicker();
+                                          });
+                                        </script>
+                                                                              
+                                        
+                                        <label for="color">Category Background Color: 
+                                        
+                                        <?php
+                                        if ($category_color !=""){$bkgd = $category_color;}
+                                        else {$bkgd = "#123456"; }
+                                        ?>
+                                        <input type="text" class="color-picker" id="cat_back" name="cat_back" value="<?php echo $bkgd;?>"  style="width: 195px"/>
+                                        <small>Click on each field to display the color picker. Click again to close it.</small></label>
+                                        
+                                        
+                                        
+                                        <p>Category Text Color: <select style="width:70px;" name='cat_text' >
+                                        <?php
+                                        if ($font_color =="#000000") { ?> <option value="#000000">Black</option><?php }
+                                        if ($font_color =="#FFFFFF") { ?> <option value="#FFFFFF">White</option><?php } ?>
+                                        <option value="#000000">Black</option>
+                                        <option value="#FFFFFF">White</option></select></p>
+                                        
+                                        <?php _e('Do you want to display the event description on the events page?','evr_language');?>
                                     <input type="radio" name="display_desc" value="Y" <?php if($display_category_desc=="Y"){echo "checked";};?>/><?php _e('Yes','evr_language');?>
                                     <input type="radio" name="display_desc" value="N" <?php if($display_category_desc=="N"){echo "checked";};?>/><?php _e('No','evr_language');?>
-                                    </li>
-                                    <li><strong><?php _e('Category Description','evr_language');?>:</strong><br />
+                                    <br />
+                                    <p><?php _e('Category Description','evr_language');?>:<br />
                                     
                                     <?php 
                                     if (!version_compare($wp_version, '3.3', '>=')) { 
@@ -128,36 +150,10 @@ function evr_admin_categories(){
                                        	}
                                     else { wp_editor( $category_desc, 'category_desc', $settings );}
                                     ?>
-                                    </li>
-                                        <p>Select color for Calendar Display:</p>
-                                        <script type="text/javascript" charset="utf-8">
-                                         jQuery(document).ready(function() {    
-                                                jQuery('#picker').hide();    
-                                                /* jQuery('#picker').farbtastic("#cat_back"); */
-                                                jQuery.farbtastic('#picker').linkTo('#cat_back');   
-                                                jQuery("#cat_back").click(function(){jQuery('#picker').slideToggle()});  
-                                                });
-                                        </script>
-                                        <small>Click on each field to display the color picker. Click again to close it.</small>
-                                        <li><label for="color">Category Background Color: 
-                                        
-                                        <?php
-                                        if ($category_color !=""){$bkgd = $category_color;}
-                                        else {$bkgd = "#123456"; }
-                                        ?>
-                                        <input type="text" id="cat_back" name="cat_back" value="<?php echo $bkgd;?>"  style="width: 195px"/>
-                                        </label>
-                                        </li>
-                                        <div id="picker" style="margin-bottom: 1em;"></div>
-                                        
-                                        <li><p>Category Text Color: <select style="width:70px;" name='cat_text' >
-                                        <?php
-                                        if ($font_color =="#000000") { ?> <option value="#000000">Black</option><?php }
-                                        if ($font_color =="#FFFFFF") { ?> <option value="#FFFFFF">White</option><?php } ?>
-                                        <option value="#000000">Black</option>
-                                        <option value="#FFFFFF">White</option></select></p></li>
-                                    <li><p><input class="button-primary" type="submit" name="Submit" value="<?php _e('Add Category','evr_language');?>" id="add_new_category" /></p></li>
-                                    </ul>
+                                    
+                                    </p>   
+                                    <p><input class="button-primary" type="submit" name="Submit" value="<?php _e('Add Category','evr_language');?>" id="add_new_category" /></p>
+                                    
                                     </form>
                                     </div>
                                     </div>
