@@ -13,7 +13,7 @@ if ($event_id == '0'){
     echo "Invalid attempt";
     exit;}
 
-error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
+//error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
 
 function _e($text,$lang){
     echo $text;

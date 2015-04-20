@@ -9,7 +9,6 @@ function evr_process_confirmation(){
     ?>
     <img src="<?php echo EVR_PLUGINFULLURL;?>colorbox/images/loading.gif" />
     <?php
-    //$company_options = get_option('evr_company_settings');
     $num_people = 0;
     #For security purposes we serialized all form data on the confirmation page
     #this helps eliminate spam regisrations
@@ -311,6 +310,10 @@ if ($send_coord =="Y"){
    }
 //If there is a balance of payment over 0, then notify attendee of payment need.  
    if ($reg_form['payment'] > "0"){
+    
+    //need to make this a an option
+    //echo $company_options['payment_alert'];
+    
              _e("Registration, however, is not complete until we have received your payment.",'evr_language'); 
            echo "<br/> ";
            if ($company_options['checks'] == "Yes"){

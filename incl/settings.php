@@ -97,7 +97,8 @@ function evr_adminGeneral(){
                             </select>
                             <a class="ev_reg-fancylink" href="#registration_page_info">
                             <img src="<?php echo EVR_PLUGINFULLURL?>/img/question-frame.png" width="16" height="16" /></a><br />
-                            <font  size="-2"><?_e('(This page should contain the ','event-registration')._e(' <strong>{EVRREGIS}</strong> ','')._e('filter. This page should be public and can be hidden from navigation, if desired.)','event-registration');?></font></p>
+                            <font  size="-2">
+                            <?php _e('(This page should contain the ','event-registration')._e(' <strong>{EVRREGIS}</strong> ','')._e('filter. This page should be public and can be hidden from navigation, if desired.)','event-registration');?></font></p>
                             </div>
                          <!--Paylment Page URL Settings-->   
                           <div class="padding"> 
@@ -107,7 +108,7 @@ function evr_adminGeneral(){
                             <?php parent_dropdown ($default=$company_options['return_url']); ?>
                             </select>
                             <a class="ev_reg-fancylink" href="#payment_page_info"><img src="<?php echo EVR_PLUGINFULLURL?>/images/question-frame.png" width="16" height="16" /></a><br />
-                            <font  size="-2"><?_e('(This page will contain the ','event-registration')._e(' <strong>EVR_PAYMENT</strong> ','')._e('payment shortcode. This page should public and hidden from navigation.)','event-registration');?></font></p>
+                            <font  size="-2"><?php _e('(This page will contain the ','event-registration')._e(' <strong>EVR_PAYMENT</strong> ','')._e('payment shortcode. This page should public and hidden from navigation.)','event-registration');?></font></p>
                     </div>
                     <hr />
                     <hr />
