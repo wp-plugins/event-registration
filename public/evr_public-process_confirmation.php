@@ -186,6 +186,23 @@ if ($company_options['send_confirm']=="Y"){
     if ($ticket_array[$row]['ItemQty'] >= "1"){ $ticket_list.= $ticket_array[$row]['ItemQty']." ".$ticket_array[$row]['ItemCat']."-".$ticket_array[$row]['ItemName']." ".$ticket_array[$row]['ItemCurrency'] . " " . $ticket_array[$row]['ItemCost']."<br \>";}
     } 
     $payment_link = evr_permalink($company_options['return_url']). "id=".$reg_id."&fname=".$reg_form['fname'];
+    //Get responses to custom questions
+    $events_answer_tbl = get_option('evr_answer');
+    $events_question_tbl = get_option('evr_question');
+    $qry = "SELECT ".$events_question_tbl.".id, ".
+                                $events_question_tbl.".sequence, ".
+                                $events_question_tbl.".question, ".
+                                $events_answer_tbl.".answer ".
+                                " FROM ".$events_question_tbl.", ".$events_answer_tbl.
+                                " WHERE ".$events_question_tbl.".id = ".$events_answer_tbl.".question_id ".
+                                " AND ".$events_answer_tbl.".registration_id = ".$reg_id.
+                                " ORDER by sequence";
+     $rows = $wpdb->get_results( $qry);
+        if ($rows){
+        	foreach ($rows as $answer){
+        		$custom_responses .=  $answer->question."   ".$answer->answer."<br/>";
+        	}
+        }
     //search and replace tags
     $SearchValues = array(  "[id]","[fname]", "[lname]", "[phone]", 
                             "[address]","[city]","[state]","[zip]","[email]",
@@ -218,7 +235,7 @@ if ($company_options['send_confirm']=="Y"){
                             "[event]","[description]", "[cost]", "[currency]",
                             "[contact]", "[coordinator]","[company]", "[co_add1]", "[co_add2]", "[co_city]", "[co_state]","[co_zip]", 
                             "[payment_url]", "[start_date]", "[start_time]", "[end_date]","[end_time]", 
-                            "[num_people]","[attendees]","[tickets]");
+                            "[num_people]","[attendees]","[tickets]","[custom]");
     $ReplaceValues = array($reg_id, $reg_form['fname'], $reg_form['lname'], $reg_form['phone'], 
                             $reg_form['address'], $reg_form['city'], $reg_form['state'], $reg_form['zip'], $reg_form['email'],
                             $event_name, $event_desc, $reg_form['payment'],$company_options['default_currency'], 
@@ -226,7 +243,7 @@ if ($company_options['send_confirm']=="Y"){
                             $company_options['company_street1'], $company_options['company_street2'],$company_options['company_city'],                                      
                             $company_options['company_state'], $company_options['company_postal'],
                             $payment_link , $start_date,$start_time, $end_date, $end_time, 
-                            $reg_form['quantity'],$attendee_names, $ticket_list);
+                            $reg_form['quantity'],$attendee_names, $ticket_list, $custom_responses);
     $wait_message_replaced = str_replace($SearchValues, $ReplaceValues, $wait_message);
     if ($reg_form['reg_type']=="WAIT"){$email_content = $wait_message_replaced;}
     $email_body = $email_content;

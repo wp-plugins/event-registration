@@ -110,6 +110,7 @@ Create a few categories for your events,  Then create a few events.  Make sure y
 * Fixed bug in Attendee Edit where custom question answers were not saving.
 * Changed color picker from Farbtastic to wp-color-picker
 * Changed public style to resolve conflict with themeforest themes
+* Added ability to add custom question responses to attendee confirmation emails. Use tag [custom].
 
 = Version 6.01.08 =
 * Verfied compatability with WordPress version 4.1.1
