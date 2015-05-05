@@ -1,5 +1,5 @@
 === Event Registration ===
-Contributors: avdude
+Contributors: avdude,radices
 Donate link: http://www.wpeventregister.com/donations
 Tags:   event, events, event registration, events registration,events managment, event calendar
 Requires at least: 3.7
