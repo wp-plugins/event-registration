@@ -88,6 +88,14 @@ function evr_install()
     $cur_build = "6.01.08";
     $old_event_tbl = $wpdb->prefix . "events_detail";
     $old_db_version = get_option('events_detail_tbl_version');
+//Update pages to new shortcode for events
+    $wpdb->query("SELECT id FROM " . $wpdb->prefix . "posts " . " WHERE (post_content LIKE '%{EVRREGIS}%' AND post_type = 'page')");
+    if ($wpdb->num_rows > 0) {
+
+			$wpdb->query("UPDATE " . $wpdb->prefix . "posts SET post_content = REPLACE(post_content,'{EVRREGIS}','[EVR_EVENTS]')");
+            
+            } 
+            //End update
     if ((get_option('evr_was_upgraded')!= "Y")&& ($old_db_version < $cur_build)){
     if ($wpdb->get_var("SHOW TABLES LIKE '$old_event_tbl'") == $old_event_tbl) {
         evr_upgrade_tables();

@@ -139,7 +139,20 @@ add_shortcode('EVR_CALENDAR', 'evr_calendar_page');
 add_shortcode('EVR_SINGLE', 'evr_single_event');
 add_shortcode('EVR_CATEGORY', 'evr_by_category');
 add_shortcode('EVR_ATTENDEE', 'evr_attendee_short');
-//
+//Added shortcode [EVR_EVENTS] for events page to replace {EVRREGIS}
+add_shortcode( 'EVR_EVENTS', 'evr_events_page' );
+function evr_events_page($atts) {
+    extract(shortcode_atts(array('event_id' => 'No ID Supplied'), $atts));
+	$id = "{$event_id}";
+	ob_start();
+    evr_registration_main($id);
+    $buffer = ob_get_contents();
+    ob_end_clean();
+    return $buffer;
+}
+//Function to search old filter for events and replace with new shortcode
+
+
 //
 /*********************************   STARTUP FUNCTIONS   ********************************/
 //

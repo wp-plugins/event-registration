@@ -49,11 +49,11 @@ function evr_splash(){
      	                  <style>ul.c {list-style-type: square;}</style>
                     		
                                 <ul class="c">
-                                    <li>For event listings and registration to work you must create a new page on your site and on that page, in html view, put this text: {EVRREGIS} Save the page.  This page needs to be public, but does not need to be in your menu.</li> 
+                                    <li>For event listings and registration to work you must create a new page on your site and on that page, in html view, put this text: [EVR_EVENTS] Save the page.  This page needs to be public, but does not need to be in your menu.</li> 
                                     <li>For an events calendar with hover over event information and hyperlinks, create a page and on that page, in html view, put this text: {EVR_CALENDAR} Save the page.</li>
-                                    <li>Disable comments on pages that are used for registration, pages that you use the shortcodes {EVRREGIS} or {EVR_CALENDAR}.</li> 
+                                    <li>Disable comments on pages that are used for registration, pages that you use the shortcodes [EVR_EVENTS] or {EVR_CALENDAR}.</li> 
                                     <li>For managing online payments and Paypal payment notifications, create a page on your site and hide the page hidden from navigation. On that page, in the html view, put this text: [EVR_PAYMENT] Save the page. Use that page hyperlink in the Company Settings for Paypal Notifications</li> 
-                                    <li>In order to use single event or category shortcodes, you still need a page setup with the {EVRREGIS} shortcode.</li>
+                                    <li>In order to use single event or category shortcodes, you still need a page setup with the [EVR_EVENTS] shortcode.</li>
                                     <li>If you want to setup a page for a single event, use this shortcode on the page: [EVR_SINGLE event_id="??"] where ?? is the ID number of the event (you can only use one shortcode per page!)</li>
                                     <li>If you want to setup a page for a particular category of events, use this shortcode on the page: [EVR_CATEGORY event_category_id"????"] where ???? is your custom identfier - see category listing (you can only use one shortcode per page!)</li>
                                     <li>Complete all the <?php echo $settingslink;?> information.</li>

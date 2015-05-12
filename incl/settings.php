@@ -98,7 +98,7 @@ function evr_adminGeneral(){
                             <a class="ev_reg-fancylink" href="#registration_page_info">
                             <img src="<?php echo EVR_PLUGINFULLURL?>/img/question-frame.png" width="16" height="16" /></a><br />
                             <font  size="-2">
-                            <?php _e('(This page should contain the ','event-registration')._e(' <strong>{EVRREGIS}</strong> ','')._e('filter. This page should be public and can be hidden from navigation, if desired.)','event-registration');?></font></p>
+                            <?php _e('(This page should contain the ','event-registration')._e(' <strong>[EVR_EVENTS]</strong> ','')._e('shortcode. This page should be public and can be hidden from navigation, if desired.)','event-registration');?></font></p>
                             </div>
                          <!--Paylment Page URL Settings-->   
                           <div class="padding"> 
@@ -510,7 +510,7 @@ function evr_adminHelp(){
         <h2>Main Events Page</h2>
         <p>This is the page that displays your events.</p>
         <p>Additionally, all registration process pages will use this page as well.</p>
-        <p>This page should contain the <strong>{EVRREGIS}</strong> shortcode.</p>
+        <p>This page should contain the <strong>[EVR_EVENTS]</strong> shortcode.</p>
     </div>
 </div>
 <div style="display:none;">

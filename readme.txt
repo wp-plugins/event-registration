@@ -35,8 +35,7 @@ All your old data will still be in tact as the upgrade copies and creates new ta
 
 Please note that because of conflicts with other plugins (people copying my work!), I have changed many of the shortcodes and functions, so you will need to update all your shortcodes on your pages.
 
-
-* {EVENTREGIS}   Now -> {EVRREGIS}
+* {EVENTREGIS} and {EVRREGIS}  Now -> [EVR_EVENTS]
 * [Event_Registration_Calendar] Now -> {EVR_CALENDAR}
 * {EVENTREGPAY}  Now -> [EVR_PAYMENT]
 * [EVENT_REGIS_CATEGORY event_category_id="??"]  Now -> [EVR_CATEGORY event_category_id="????"] where ???? is your custom identfier - see category listing.
@@ -59,7 +58,7 @@ I recommend activating and deactivating the new version several times. if you ar
 
 3. Activate the plugin, then read the directions (http://wpeventregister.com/wp-content/uploads/2012/05/EventRegistrationGuide_60008a.pdf).
 
-4. Create a new page on your site and title it Registration. On that page, in html view, put this text:   {EVRREGIS}  Save the page.
+4. Create a new page on your site and title it Registration. On that page, in html view, put this text:   [EVR_EVENTS]  Save the page.
 
 5. Create another page on your site and title it Calendar. On that page, in html view, put this text:  {EVR_CALENDAR}  Save the page.
 
@@ -87,7 +86,7 @@ In the company information, under page settings, the events payment page, there 
 
 How to Use:
 Must Do! Create a new page on your site and title it Registration.
-On that page, in html view, put this text:   {EVRREGIS}
+On that page, in html view, put this text:   [EVR_EVENTS]
 Save the page.
 
 Create another page on your site and title it Calendar
