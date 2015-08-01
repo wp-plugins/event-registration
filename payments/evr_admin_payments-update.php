@@ -67,7 +67,7 @@ function evr_admin_payment_update(){
                     $attendee_dtl = $wpdb->get_row($wpdb->prepare("SELECT * FROM ". get_option('evr_attendee') ." WHERE id = %d",$payer_id)); 
                     $event_dtl = $wpdb->get_row($wpdb->prepare("SELECT * FROM ". get_option('evr_event') ." WHERE id = %d",$event_id)); 
 					//get return URL
-					$payment_link = evr_permalink($company_options['return_url']). "id=".$payment_dtl->payer_id."&fname=".$payment_dtl->first_name;
+					$payment_link = evr_permalink($company_options['return_url']). "id=".$payment_dtl['payer_id']."&fname=".$payment_dtl['first_name'];
                     $payment_cue = __("To make payment or view your payment information go to",'evr_language');
                     $payment_text = $payment_cue.": " . $payment_link;
 					$subject = $company_options['payment_subj'];
@@ -78,10 +78,13 @@ function evr_admin_payment_update(){
                         "[payment_url]", "[amnt_pd]","[txn_id]","[txn_type]","[address_street]","[address_city]",
                         "[address_state]","[address_zip]","[address_country]","
                         [start_date]","[start_time]","[end_date]","[end_time]" );
-                       $ReplaceValues = array($payment_dtl->payer_id, $payment_dtl->first_name,$payment_dtl->last_name,$payment_dtl->payer_email,stripslashes($event_dtl->event_name), $company_options['company_email'], 
-                       $payment_link, $payment_dtl->mc_gross, $payment_dtl->txn_id, $payment_dtl->txn_type,$payment_dtl->address_street, $payment_dtl->address_city, 
-                       $payment_dtl->address_state,$payment_dtl->address_zip,$payment_dtl->address_country, 
-                       $event_dtl->start_date, $event_dtl->start_time,$event_dtl->end_date,$event_dtl->end_time, );     
+                    $ReplaceValues = array($payment_dtl['payer_id'], $payment_dtl['first_name'], $payment_dtl['last_name'],$payment_dtl['payer_email'], 
+                        stripslashes($event_dtl->event_name), $company_options['company_email'], $payment_link, $payment_dtl['mc_gross'], 
+                        $payment_dtl['txn_id'], $payment_dtl['txn_type'], $payment_dtl['address_street'], $payment_dtl['address_city'], 
+                        $payment_dtl['address_state'], $payment_dtl['address_zip'], $payment_dtl['address_country'], $event_dtl->start_date, 
+                        $event_dtl->start_time, $event_dtl->end_date, $event_dtl->end_time);
+                       
+                          
                     $email_content = str_replace($SearchValues, $ReplaceValues, $message);
                     //$email_content .= "</br>".$payment_text;
                     $message_top = "<html><body>"; 
