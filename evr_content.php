@@ -125,9 +125,9 @@ $payment=$total_due;
 	}
     	if ($payment != "0.00" || $payment != "" || $payment != " "){
 				  $p->add_field('business', $company_options['paypal_id']);
-                  $p->add_field('return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
+                  $p->add_field('return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$attendee->fname);
 				  //$p->add_field('cancel_return', evr_permalink($company_options['cancel_return']));
-				  $p->add_field('cancel_return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$fname);
+				  $p->add_field('cancel_return', evr_permalink($company_options['return_url']).'&id='.$attendee_id.'&fname='.$attendee->fname);
                   //$p->add_field('notify_url', evr_permalink($company_options['notify_url']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
 				  $p->add_field('notify_url', evr_permalink($company_options['evr_page_id']).'id='.$attendee_id.'&event_id='.$event_id.'&action=paypal_txn');
 				  //$p->add_field('return', evr_permalink($company_options['return_url']));
